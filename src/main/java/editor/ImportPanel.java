@@ -3,6 +3,7 @@ package editor;
 import editor.data.Leagues;
 import editor.data.OptionFile;
 import editor.data.Stadiums;
+import editor.ui.LeaguePanel;
 import editor.ui.StadiumPanel;
 import editor.ui.WenShopPanel;
 import editor.util.Strings;

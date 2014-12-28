@@ -67,6 +67,13 @@ public class OptionFile implements Serializable {
 
 	//endregion
 
+	@Override
+	public String toString() {
+		return !isLoaded() ? super.toString() : String.format(
+				"{ format: %s, gameId: '%s', gameName: '%s', saveName: '%s', notes='%s', filename: '%s' }",
+				getFormat(), getGameId(), gameName, getSaveName(), notes, getFilename());
+	}
+
 	//region Load Game File
 
 	public boolean load(File file) {

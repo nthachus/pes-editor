@@ -6,14 +6,17 @@ import editor.data.Stats;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 
-public class Player implements Serializable, Comparable {
+public class Player implements Serializable, Comparable<Player> {
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Record size in bytes.
 	 */
 	public static final int SIZE = 124;
 
-	public static final int START_ADR = 34920;
 	public static final int START_EDIT_ADR = 12092;
+	public static final int START_ADR = 34920;
+
 	//public static int firstJapan = 4485;
 	public static final int firstML = 4603;
 	public static final int firstShop = 4631;
@@ -28,10 +31,11 @@ public class Player implements Serializable, Comparable {
 	public static final int firstClub = 1542;
 	public static final int firstPESUnited = 4584;
 
+	private final OptionFile of;
+
 	public String name;
 	public int index;
 	public int adr;
-	private OptionFile of;
 
 	public Player(OptionFile opf, int i, int sa) {
 		of = opf;
@@ -83,19 +87,20 @@ public class Player implements Serializable, Comparable {
 		}
 	}
 
+	@Override
 	public String toString() {
 		return name;
 	}
 
-	public int compareTo(Object o) {
-		Player n = (Player) o;
-		int cmp = name.compareTo(n.name);
-		if (cmp == 0) {
-			cmp = new Integer(Stats.getValue(of, index, Stats.AGE))
-					.compareTo(new Integer(Stats.getValue(of, n.index, Stats.AGE)));
-		}
-		return cmp;
+	public int compareTo(Player other) {
+		if (null == other)
+			return 1;
 
+		int cmp = name.compareTo(other.name);
+		if (cmp == 0)
+			cmp = Integer.compare(Stats.getValue(of, index, Stats.AGE), Stats.getValue(of, other.index, Stats.AGE));
+
+		return cmp;
 	}
 
 	public void setName(String newName) {

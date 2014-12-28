@@ -53,4 +53,9 @@ public class Stat implements Serializable {
 		return ofs + 48 + this.getOffset();
 	}
 
+	@Override
+	public String toString() {
+		return name;
+	}
+
 }

@@ -318,8 +318,10 @@ public final class Stats {
 	//endregion
 
 	public static int getValue(OptionFile of, int player, Stat stat) {
-		int ofs = stat.getOffset(player);
+		if (null == of) throw new NullPointerException("of");
+		if (null == stat) throw new NullPointerException("stat");
 
+		int ofs = stat.getOffset(player);
 		int val = Bits.toInt16(of.getData(), ofs - 1);
 		val = (val >>> stat.getShift()) & stat.getMask();
 
@@ -335,7 +337,8 @@ public final class Stats {
 	}
 
 	public static void setValue(OptionFile of, int player, Stat stat, int value) {
-		int ofs = stat.getOffset(player);
+		if (null == of) throw new NullPointerException("of");
+		if (null == stat) throw new NullPointerException("stat");
 
 		if (stat.getType() == StatType.nationId) {
 			if (value == NATION.length - 1) {
@@ -345,6 +348,7 @@ public final class Stats {
 			}
 		}
 
+		int ofs = stat.getOffset(player);
 		int old = Bits.toInt16(of.getData(), ofs - 1);
 		old &= stat.getUnmask();
 
@@ -355,6 +359,8 @@ public final class Stats {
 	}
 
 	public static void setValue(OptionFile of, int player, Stat stat, String value) throws NumberFormatException {
+		if (null == stat) throw new NullPointerException("stat");
+
 		int val = 0;
 		if (stat.getType() == StatType.integer) {
 			val = Integer.parseInt(value);

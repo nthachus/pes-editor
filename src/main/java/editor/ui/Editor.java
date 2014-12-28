@@ -17,6 +17,8 @@ public final class Editor extends JFrame {
 	private final OptionFile of;
 	private final OptionFile of2;
 
+	public static final float LINE_HEIGHT = 4f / 3;
+
 	//region Initialize Components
 
 	private final JFileChooser opFileChooser;

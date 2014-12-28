@@ -6,6 +6,7 @@ import editor.SquadList;
 import editor.Squads;
 import editor.data.OptionFile;
 import editor.data.Stats;
+import editor.util.Strings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -108,7 +109,7 @@ public class SelectByTeam extends JPanel {
 		System.arraycopy(Squads.EXTRAS, Squads.EXTRA_COUNT, squads, ofs, Squads.EXTRAS.length - Squads.EXTRA_COUNT);
 
 		if (!isNormal) {
-			squads[squads.length - 1] = "All Players";
+			squads[squads.length - 1] = Strings.getMessage("All Players");
 		}
 
 		return squads;

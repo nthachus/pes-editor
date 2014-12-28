@@ -23,6 +23,7 @@ public final class Stadiums {
 
 	public static String get(OptionFile of, int stadium) {
 		if (null == of) throw new NullPointerException("of");
+		if (stadium < 0 || stadium >= TOTAL) throw new ArrayIndexOutOfBoundsException("stadium");
 
 		int ofs = getOffset(stadium);
 		String name = new String(of.getData(), ofs, NAME_LEN, Strings.UTF8);
@@ -43,6 +44,7 @@ public final class Stadiums {
 
 	public static void set(OptionFile of, int stadium, String name) {
 		if (null == of) throw new NullPointerException("of");
+		if (stadium < 0 || stadium >= TOTAL) throw new ArrayIndexOutOfBoundsException("stadium");
 
 		byte[] temp = new byte[SIZE];
 		Arrays.fill(temp, (byte) 0);

@@ -9,13 +9,20 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 
-public class XPortInfo implements Serializable {
+public class SaveGameInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private volatile String gameName = "";
 	private volatile String saveName = "";
 	private volatile String notes = "";
 	private volatile String game = "";
+
+	/**
+	 * Game ID.
+	 */
+	public String getGame() {
+		return game;
+	}
 
 	public String getGameName() {
 		return gameName;
@@ -27,10 +34,6 @@ public class XPortInfo implements Serializable {
 
 	public String getNotes() {
 		return notes;
-	}
-
-	public String getGame() {
-		return game;
 	}
 
 	public boolean getInfo(File file) {
@@ -111,6 +114,12 @@ public class XPortInfo implements Serializable {
 		byte[] temp = new byte[OptionFile.GAME_LEN];
 		rf.read(temp);
 		game = new String(temp);
+	}
+
+	@Override
+	public String toString() {
+		return String.format("{ game: '%s', gameName: '%s', saveName: '%s', notes: '%s' }",
+				getGame(), getGameName(), getSaveName(), getNotes());
 	}
 
 }

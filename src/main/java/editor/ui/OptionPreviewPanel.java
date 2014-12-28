@@ -1,6 +1,6 @@
 package editor.ui;
 
-import editor.data.XPortInfo;
+import editor.data.SaveGameInfo;
 import editor.util.Files;
 import editor.util.Strings;
 
@@ -15,7 +15,7 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 	private final FileFilter filter;
 	private final JTextArea previewText;
 
-	private final XPortInfo xpInfo = new XPortInfo();
+	private final SaveGameInfo saveInfo = new SaveGameInfo();
 	private volatile File file = null;
 
 	public OptionPreviewPanel(JFileChooser fc) {
@@ -39,16 +39,16 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 	public void loadImage() {
 		String text = "";
 		if (null != file && !file.isDirectory() && filter.accept(file)) {
-			if (xpInfo.getInfo(file)) {
+			if (saveInfo.getInfo(file)) {
 				String extension = Files.getExtension(file);
 
 				if (Files.isXPortFile(extension)) {
 					text = Strings.getMessage("preview.xPort",
-							xpInfo.getGame(), xpInfo.getGameName(), xpInfo.getSaveName(), xpInfo.getNotes());
+							saveInfo.getGame(), saveInfo.getGameName(), saveInfo.getSaveName(), saveInfo.getNotes());
 				} else if (Files.isARMaxFile(extension)) {
-					text = Strings.getMessage("preview.arMax", xpInfo.getGame(), xpInfo.getGameName());
+					text = Strings.getMessage("preview.arMax", saveInfo.getGame(), saveInfo.getGameName());
 				} else if (Files.isEmsFile(extension)) {
-					text = Strings.getMessage("preview.ems", xpInfo.getGame());
+					text = Strings.getMessage("preview.ems", saveInfo.getGame());
 				}
 			}
 		}
