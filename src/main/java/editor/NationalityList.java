@@ -33,7 +33,7 @@ public class NationalityList extends JList<Player> {
 		} else if (nation == Stats.NATION.length + 3) {
 			boolean free;
 
-			for (int p = 1; p < Player.firstClassic; p++) {
+			for (int p = 1; p < Player.FIRST_CLASSIC; p++) {
 				free = true;
 				a = Squads.CLUB_ADR - 2;
 				do {
@@ -49,7 +49,7 @@ public class NationalityList extends JList<Player> {
 				}
 			}
 
-			for (int p = Player.firstClub; p < Player.firstML; p++) {
+			for (int p = Player.FIRST_CLUB; p < Player.FIRST_ML; p++) {
 				free = true;
 				a = Squads.CLUB_ADR - 2;
 				do {
@@ -65,7 +65,7 @@ public class NationalityList extends JList<Player> {
 				}
 			}
 		} else if (nation == Stats.NATION.length + 2) {
-			for (int p = Player.firstClub; p < Player.firstPESUnited; p++) {
+			for (int p = Player.FIRST_CLUB; p < Player.FIRST_JAPAN; p++) {
 				int dupe = getDupe(p);
 				if (dupe != -1) {
 					model.addElement(new Player(of, p, 0));
@@ -73,11 +73,11 @@ public class NationalityList extends JList<Player> {
 				}
 			}
 		} else if (nation == Stats.NATION.length + 1) {
-			for (int p = Player.firstYoung; p < Player.firstOld; p++) {
+			for (int p = Player.FIRST_YOUNG; p < Player.FIRST_OLD; p++) {
 				model.addElement(new Player(of, p, 0));
 			}
 		} else if (nation == Stats.NATION.length) {
-			for (int p = Player.firstOld; p < Player.FIRST_UNUSED; p++) {
+			for (int p = Player.FIRST_OLD; p < Player.FIRST_UNUSED; p++) {
 				model.addElement(new Player(of, p, 0));
 			}
 		} else {
@@ -100,7 +100,7 @@ public class NationalityList extends JList<Player> {
 	}
 
 	private int getDupe(int p) {
-		for (int i = 1; i < Player.firstClassic; i++) {
+		for (int i = 1; i < Player.FIRST_CLASSIC; i++) {
 			boolean isDupe = true;
 			if (Stats.getValue(of, p, Stats.NATIONALITY) != Stats.getValue(of,
 					i, Stats.NATIONALITY)) {

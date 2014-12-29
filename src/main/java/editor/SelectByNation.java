@@ -1,70 +1,36 @@
-/*
- * Copyright 2008-9 Compulsion
- * <pes_compulsion@yahoo.co.uk>
- * <http://www.purplehaze.eclipse.co.uk/>
- * <http://uk.geocities.com/pes_compulsion/>
- *
- * This file is part of PES Editor.
- *
- * PES Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PES Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PES Editor.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package editor;
 
 import editor.data.OptionFile;
 import editor.data.Stats;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
-
 public class SelectByNation extends JPanel {
-	public NationalityList freeList;
+	private final NationalityList freeList;
+	private final JComboBox<String> nationBox;
+	private final JButton sortButton;
 
-	JComboBox nationBox;
+	private volatile boolean isAlphaOrder = true;
 
-	JButton sort;
-
-	boolean alpha;
-
-	public SelectByNation(OptionFile opf) {
+	public SelectByNation(OptionFile of) {
 		super(new BorderLayout());
-		JScrollPane scroll = new JScrollPane(
-				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		freeList = new NationalityList(opf);
-		alpha = true;
-		sort = new JButton("Alpha Order");
-		sort.addActionListener(new ActionListener() {
+		freeList = new NationalityList(of);
+
+		sortButton = new JButton("Alpha Order");
+		sortButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent a) {
-				if (alpha) {
-					sort.setText("Index Order");
-					alpha = false;
+				if (isAlphaOrder) {
+					sortButton.setText("Index Order");
+					isAlphaOrder = false;
 				} else {
-					sort.setText("Alpha Order");
-					alpha = true;
+					sortButton.setText("Alpha Order");
+					isAlphaOrder = true;
 				}
 				int i = nationBox.getSelectedIndex();
-				freeList.refresh(i, alpha);
+				freeList.refresh(i, isAlphaOrder);
 			}
 		});
 		String[] boxChoice = new String[Stats.NATION.length + 5];
@@ -75,7 +41,7 @@ public class SelectByNation extends JPanel {
 		boxChoice[boxChoice.length - 2] = "Free Agents";
 		boxChoice[boxChoice.length - 1] = "All Players";
 		System.arraycopy(Stats.NATION, 0, boxChoice, 0, Stats.NATION.length);
-		nationBox = new JComboBox(boxChoice);
+		nationBox = new JComboBox<String>(boxChoice);
 		nationBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent a) {
 
@@ -85,7 +51,7 @@ public class SelectByNation extends JPanel {
 					// if (i == 0) {
 					// freeList.refresh(999);
 					// } else {
-					freeList.refresh(i, alpha);
+					freeList.refresh(i, isAlphaOrder);
 					// }
 				}
 			}
@@ -94,17 +60,33 @@ public class SelectByNation extends JPanel {
 		freeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		freeList.setLayoutOrientation(JList.VERTICAL);
 		freeList.setVisibleRowCount(11);
+
+		JScrollPane scroll = new JScrollPane(
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setViewportView(freeList);
 		add(nationBox, BorderLayout.NORTH);
 		add(scroll, BorderLayout.CENTER);
-		add(sort, BorderLayout.SOUTH);
+		add(sortButton, BorderLayout.SOUTH);
 		// refresh();
 		setPreferredSize(new Dimension(164, 601));
 	}
 
+	public NationalityList getFreeList() {
+		return freeList;
+	}
+
+	public JComboBox<String> getNationBox() {
+		return nationBox;
+	}
+
+	public boolean isAlphaOrder() {
+		return isAlphaOrder;
+	}
+
 	public void refresh() {
 		nationBox.setSelectedIndex(nationBox.getItemCount() - 1);
-		freeList.refresh(nationBox.getSelectedIndex(), alpha);
+		freeList.refresh(nationBox.getSelectedIndex(), isAlphaOrder);
 	}
 
 }

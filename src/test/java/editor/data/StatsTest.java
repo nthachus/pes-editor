@@ -7,24 +7,26 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 public final class StatsTest extends BaseTest {
+	private static final int FOR_PLAYER = 1;
+
 	@Test(expected = NullPointerException.class)
 	public void testGetValueWithNullStat() throws Exception {
-		Stats.getValue(new OptionFile(), 0, null);
+		Stats.getValue(new OptionFile(), FOR_PLAYER, null);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testGetValueWithNullOF() throws Exception {
-		Stats.getValue(null, 0, Stats.AGE);
+		Stats.getValue(null, FOR_PLAYER, Stats.AGE);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testSetValueWithNullStat() throws Exception {
-		Stats.setValue(new OptionFile(), 0, null, 1);
+		Stats.setValue(new OptionFile(), FOR_PLAYER, null, 1);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testSetValueWithNullOF() throws Exception {
-		Stats.setValue(null, 0, Stats.AGE, 1);
+		Stats.setValue(null, FOR_PLAYER, Stats.AGE, 1);
 	}
 
 	@Test
@@ -40,11 +42,11 @@ public final class StatsTest extends BaseTest {
 				st = (Stat) f.get(null);
 				//System.out.println("Process Stat: " + st);
 
-				int old = Stats.getValue(of, 0, st);
+				int old = Stats.getValue(of, FOR_PLAYER, st);
 				int val = (old > 0) ? old - 1 : old + 1;
 
-				Stats.setValue(of, 0, st, val);
-				int v = Stats.getValue(of, 0, st);
+				Stats.setValue(of, FOR_PLAYER, st, val);
+				int v = Stats.getValue(of, FOR_PLAYER, st);
 				Assert.assertNotEquals(old, v);
 				Assert.assertEquals(val, v);
 			}

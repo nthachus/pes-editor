@@ -1,41 +1,14 @@
-/*
- * Copyright 2008-9 Compulsion
- * <pes_compulsion@yahoo.co.uk>
- * <http://www.purplehaze.eclipse.co.uk/>
- * <http://uk.geocities.com/pes_compulsion/>
- *
- * This file is part of PES Editor.
- *
- * PES Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PES Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PES Editor.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package editor;
 
 import editor.data.OptionFile;
 import editor.data.Stat;
 import editor.data.Stats;
 
-import java.awt.Color;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 
-import javax.swing.JList;
-import javax.swing.ListSelectionModel;
-
-//import java.util.*;
-
-public class PositionList extends JList {
-	private OptionFile of;
+public class PositionList extends JList<String> {
+	private final OptionFile of;
 
 	boolean tran;
 
@@ -62,8 +35,7 @@ public class PositionList extends JList {
 		posNum = new int[32];
 		if (tran && ((t > 66 && t < 75) || t > 204)) {
 			setListData(pos);
-		} 
-		else {
+		} else {
 			if (tran && t > 74) {
 				t = t - 8;
 			}

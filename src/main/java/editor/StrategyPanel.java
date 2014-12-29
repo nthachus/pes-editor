@@ -1,25 +1,3 @@
-/*
- * Copyright 2008-9 Compulsion
- * <pes_compulsion@yahoo.co.uk>
- * <http://www.purplehaze.eclipse.co.uk/>
- * <http://uk.geocities.com/pes_compulsion/>
- *
- * This file is part of PES Editor.
- *
- * PES Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PES Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PES Editor.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package editor;
 
 import editor.data.ControlButton;
@@ -32,23 +10,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class StrategyPanel extends JPanel {
-	private OptionFile of;
+	private final OptionFile of;
+	private final SquadList list;
 
-	private SquadList list;
+	private volatile boolean ok = false;
+	private volatile int squad = 0;
+	//private volatile boolean auto = false;
 
-	int squad = 0;
-
-	private JComboBox[] butBox = new JComboBox[4];
-
-	// private JButton autoButton;
-
-	private JComboBox overBox;
-
-	private boolean ok = false;
-
-	// private boolean auto = false;
-
-	private JLabel[] label = new JLabel[4];
+	private final JComboBox<SweItem> overBox;
+	private final JComboBox[] butBox = new JComboBox[4];
+	//private final JButton autoButton;
 
 	public StrategyPanel(OptionFile opf, SquadList l, PositionList pl) {
 		super(new GridBagLayout());
@@ -58,7 +29,7 @@ public class StrategyPanel extends JPanel {
 		ActionListener act = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (ok) {
-					int b = new Integer(e.getActionCommand()).intValue();
+					int b = Integer.parseInt(e.getActionCommand());
 					byte strat = (byte) butBox[b].getSelectedIndex();
 					// System.out.println(b + ", " + strat);
 					Formations.setStrategy(of, squad, b, strat);
@@ -86,12 +57,15 @@ public class StrategyPanel extends JPanel {
 				"Pressure", "Counter Attack", "Offside Trap",
 				"Strategy Plan A", "Strategy Plan B"
 		};
+
+		JLabel[] labels = new JLabel[4];
 		for (int i = 0; i < 4; i++) {
-			label[i] = new JLabel();
-			label[i].setPreferredSize(new Dimension(42, 17));
-			label[i].setText(null);
-			label[i].setIcon(new Ps2ButtonIcon(ControlButton.valueOf(i)));
-			butBox[i] = new JComboBox(items);
+			labels[i] = new JLabel();
+			labels[i].setPreferredSize(new Dimension(42, 17));
+			labels[i].setText(null);
+			labels[i].setIcon(new Ps2ButtonIcon(ControlButton.valueOf(i)));
+
+			butBox[i] = new JComboBox<String>(items);
 			butBox[i].setActionCommand(String.valueOf(i));
 			butBox[i].addActionListener(act);
 		}
@@ -104,7 +78,7 @@ public class StrategyPanel extends JPanel {
 		 * squad) + 6232] = 0; autoButton.setText("Manual"); }
 		 * Formations.setStrategyAuto(of, squad, auto); refresh(squad); } } });
 		 */
-		overBox = new JComboBox();
+		overBox = new JComboBox<SweItem>();
 		overBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (ok) {
@@ -120,8 +94,7 @@ public class StrategyPanel extends JPanel {
 		GridBagConstraints c = new GridBagConstraints();
 
 		// c.anchor = GridBagConstraints.EAST;
-		int x = 0;
-		int y = 0;
+		int x, y;
 		for (int i = 0; i < 4; i++) {
 			if (i < 2) {
 				x = i + 1;
@@ -132,7 +105,7 @@ public class StrategyPanel extends JPanel {
 			}
 			c.gridx = x;
 			c.gridy = y;
-			add(label[i], c);
+			add(labels[i], c);
 
 			c.gridx = x;
 			c.gridy = y + 1;
@@ -211,7 +184,7 @@ public class StrategyPanel extends JPanel {
 
 		public SweItem(byte i) {
 			index = i;
-			name = ((Player) list.getModel().getElementAt(index)).name;
+			name = list.getModel().getElementAt(index).name;
 		}
 
 		public String toString() {

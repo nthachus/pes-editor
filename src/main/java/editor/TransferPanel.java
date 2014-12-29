@@ -1,25 +1,3 @@
-/*
- * Copyright 2008-9 Compulsion
- * <pes_compulsion@yahoo.co.uk>
- * <http://www.purplehaze.eclipse.co.uk/>
- * <http://uk.geocities.com/pes_compulsion/>
- *
- * This file is part of PES Editor.
- *
- * PES Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PES Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PES Editor.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package editor;
 
 import editor.data.OptionFile;
@@ -40,73 +18,51 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class TransferPanel extends JPanel implements MouseListener,
-		DropTargetListener, DragSourceListener, DragGestureListener {
+public class TransferPanel extends JPanel
+		implements MouseListener, DropTargetListener, DragSourceListener, DragGestureListener {
 
-	private SelectByTeam selectorL;
+	private final OptionFile of;
+	private final PlayerDialog playerDia;
+	private final FormationDialog teamDia;
 
-	private SelectByTeam selectorR;
-
-	private SelectByNation freeList;
-
-	private OptionFile of;
-
-	private NameEditor nameEditor;
-
-	private NumEditor numEditor;
-
-	private InfoPanel infoPanel;
-
-	private ShirtNameEditor shirtEditor;
-
-	private PlayerDialog playerDia;
-
-	private FormationDialog teamDia;
-
-	private JCheckBox autoRel = new JCheckBox("Auto Release");
-
-	private JCheckBox autoRep = new JCheckBox("Auto Sub");
-
-	private JCheckBox safeMode = new JCheckBox("Safe Mode");
-
-	private JButton compare;
+	private final SelectByTeam selectorL;
+	private final SelectByTeam selectorR;
+	private final SelectByNation freeList;
+	private final NameEditor nameEditor;
+	private final NumEditor numEditor;
+	private final InfoPanel infoPanel;
+	private final ShirtNameEditor shirtEditor;
+	private final JCheckBox autoRel = new JCheckBox("Auto Release");
+	private final JCheckBox autoRep = new JCheckBox("Auto Sub");
+	private final JCheckBox safeMode = new JCheckBox("Safe Mode");
 
 	private int releasedIndex = 0;
-
-	private DragSource sourceF = null;
-
-	private DragSource sourceL = null;
-
-	private DragSource sourceR = null;
-
 	private Component sourceComp = null;
-
 	private int sourceIndex = -1;
-
 	private DataFlavor localPlayerFlavor;
-
 	private int compIndex = 0;
-
 	private int lastIndex = 0;
 
-	public TransferPanel(PlayerDialog pd, OptionFile opf, FormationDialog td) {
+	public TransferPanel(OptionFile of, PlayerDialog pd, FormationDialog td) {
 		super();
-		of = opf;
-		teamDia = td;
-		playerDia = pd;
-		autoRel
-				.setToolTipText(
-						"When a player is transfered to a club squad he will be automatically released from his old squad");
+
+		if (null == of) throw new NullPointerException("of");
+		if (null == pd) throw new NullPointerException("pd");
+		if (null == td) throw new NullPointerException("td");
+		this.of = of;
+		this.playerDia = pd;
+		this.teamDia = td;
+
+		autoRel.setToolTipText(
+				"When a player is transferred to a club squad he will be automatically released from his old squad");
 		autoRel.setSelected(true);
-		autoRep
-				.setToolTipText(
-						"Gaps made in a team's first 11 will be automatically filled with the most appropriate sub");
+		autoRep.setToolTipText(
+				"Gaps made in a team's first 11 will be automatically filled with the most appropriate sub");
 		autoRep.setSelected(true);
-		safeMode
-				.setToolTipText("Only transfers that are possible in-game will be allowed");
+		safeMode.setToolTipText("Only transfers that are possible in-game will be allowed");
 		safeMode.setSelected(true);
 
-		compare = new JButton("Compare Stats");
+		JButton compare = new JButton("Compare Stats");
 		compare.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent rl) {
 				if (compIndex == 0) {
@@ -144,38 +100,35 @@ public class TransferPanel extends JPanel implements MouseListener,
 		JPanel rPanel = new JPanel(new BorderLayout());
 		selectorR = new SelectByTeam(of, true);
 		addListen();
-		freeList.freeList.addMouseListener(this);
+		freeList.getFreeList().addMouseListener(this);
 		selectorL.getSquadList().addMouseListener(this);
 		selectorR.getSquadList().addMouseListener(this);
 
-		String localPlayerType = DataFlavor.javaJVMLocalObjectMimeType
-				+ ";class=editor.Player";
+		String localPlayerType = DataFlavor.javaJVMLocalObjectMimeType + ";class=editor.Player";
 		try {
 			localPlayerFlavor = new DataFlavor(localPlayerType);
 		} catch (ClassNotFoundException e) {
-			System.out
-					.println("FormTransferHandler: unable to create data flavor");
+			System.out.println("FormTransferHandler: unable to create data flavor");
 		}
-		new DropTarget(freeList.freeList, this);
+
+		new DropTarget(freeList.getFreeList(), this);
 		new DropTarget(selectorL.getSquadList(), this);
 		new DropTarget(selectorR.getSquadList(), this);
-		sourceF = new DragSource();
-		sourceF.createDefaultDragGestureRecognizer(freeList.freeList,
+		DragSource sourceF = new DragSource();
+		sourceF.createDefaultDragGestureRecognizer(freeList.getFreeList(),
 				DnDConstants.ACTION_MOVE, this);
-		sourceL = new DragSource();
+		DragSource sourceL = new DragSource();
 		sourceL.createDefaultDragGestureRecognizer(selectorL.getSquadList(),
 				DnDConstants.ACTION_MOVE, this);
-		sourceR = new DragSource();
+		DragSource sourceR = new DragSource();
 		sourceR.createDefaultDragGestureRecognizer(selectorR.getSquadList(),
 				DnDConstants.ACTION_MOVE, this);
 
 		infoPanel = new InfoPanel(selectorL, of);
 
-		selectorL.getSquadList()
-				.setToolTipText("Double click to edit player, right click to edit formation");
-		selectorR.getSquadList()
-				.setToolTipText("Double click to edit player, right click to edit formation");
-		freeList.freeList.setToolTipText("Double click to edit player");
+		selectorL.getSquadList().setToolTipText("Double click to edit player, right click to edit formation");
+		selectorR.getSquadList().setToolTipText("Double click to edit player, right click to edit formation");
+		freeList.getFreeList().setToolTipText("Double click to edit player");
 
 		editPanel.add(nameEditor);
 		editPanel.add(shirtEditor);
@@ -220,8 +173,7 @@ public class TransferPanel extends JPanel implements MouseListener,
 	}
 
 	public void refreshLists() {
-		freeList.freeList.refresh(freeList.nationBox.getSelectedIndex(),
-				freeList.alpha);
+		freeList.getFreeList().refresh(freeList.getNationBox().getSelectedIndex(), freeList.isAlphaOrder());
 		selectorL.getSquadList().refresh(selectorL.getTeamBox().getSelectedIndex(), true);
 		selectorR.getSquadList().refresh(selectorR.getTeamBox().getSelectedIndex(), true);
 		selectorL.getNumList().refresh(selectorL.getTeamBox().getSelectedIndex());
@@ -248,17 +200,16 @@ public class TransferPanel extends JPanel implements MouseListener,
 		}
 
 		public void valueChanged(ListSelectionEvent e) {
-			if (e.getValueIsAdjusting() == false) {
-				if (e.getSource() == freeList.freeList) {
-					if (freeList.freeList.isSelectionEmpty()) {
+			if (!e.getValueIsAdjusting()) {
+				if (e.getSource() == freeList.getFreeList()) {
+					if (freeList.getFreeList().isSelectionEmpty()) {
 						setText("");
 						lastIndex = 0;
 					} else {
-						setText(((Player) freeList.freeList.getSelectedValue()).name);
+						setText(freeList.getFreeList().getSelectedValue().name);
 						source = 1;
 						selectAll();
-						lastIndex = ((Player) freeList.freeList
-								.getSelectedValue()).index;
+						lastIndex = freeList.getFreeList().getSelectedValue().index;
 					}
 				}
 				if (e.getSource() == selectorL.getSquadList()) {
@@ -266,16 +217,14 @@ public class TransferPanel extends JPanel implements MouseListener,
 						setText("");
 						lastIndex = 0;
 					} else {
-						if (((Player) selectorL.getSquadList().getSelectedValue()).index != 0) {
-							setText(((Player) selectorL.getSquadList()
-									.getSelectedValue()).name);
+						if (selectorL.getSquadList().getSelectedValue().index != 0) {
+							setText(selectorL.getSquadList().getSelectedValue().name);
 						} else {
 							setText("");
 						}
 						source = 2;
 						selectAll();
-						lastIndex = ((Player) selectorL.getSquadList()
-								.getSelectedValue()).index;
+						lastIndex = selectorL.getSquadList().getSelectedValue().index;
 					}
 				}
 				if (e.getSource() == selectorR.getSquadList()) {
@@ -283,16 +232,14 @@ public class TransferPanel extends JPanel implements MouseListener,
 						setText("");
 						lastIndex = 0;
 					} else {
-						if (((Player) selectorR.getSquadList().getSelectedValue()).index != 0) {
-							setText(((Player) selectorR.getSquadList()
-									.getSelectedValue()).name);
+						if (selectorR.getSquadList().getSelectedValue().index != 0) {
+							setText(selectorR.getSquadList().getSelectedValue().name);
 						} else {
 							setText("");
 						}
 						source = 3;
 						selectAll();
-						lastIndex = ((Player) selectorR.getSquadList()
-								.getSelectedValue()).index;
+						lastIndex = selectorR.getSquadList().getSelectedValue().index;
 					}
 				}
 				infoPanel.refresh(lastIndex, compIndex);
@@ -300,32 +247,25 @@ public class TransferPanel extends JPanel implements MouseListener,
 		}
 
 		public void actionPerformed(ActionEvent evt) {
-			if (source == 1 && !freeList.freeList.isSelectionEmpty()
+			if (source == 1 && !freeList.getFreeList().isSelectionEmpty()
 					&& getText().length() < 16 && getText().length() != 0) {
-				int i = freeList.freeList.getSelectedIndex();
-				if (!(((Player) freeList.freeList.getSelectedValue()).name
-						.equals(getText()))) {
-					((Player) freeList.freeList.getSelectedValue())
-							.setName(getText());
-					((Player) freeList.freeList.getSelectedValue())
-							.makeShirt(getText());
+				int i = freeList.getFreeList().getSelectedIndex();
+				if (!freeList.getFreeList().getSelectedValue().name.equals(getText())) {
+					freeList.getFreeList().getSelectedValue().setName(getText());
+					freeList.getFreeList().getSelectedValue().makeShirt(getText());
 					refreshLists();
 				}
-				if (!freeList.alpha
-						&& i < freeList.freeList.getModel().getSize() - 1) {
-					freeList.freeList.setSelectedIndex(i + 1);
-					freeList.freeList.ensureIndexIsVisible(i + 1);
+				if (!freeList.isAlphaOrder() && i < freeList.getFreeList().getModel().getSize() - 1) {
+					freeList.getFreeList().setSelectedIndex(i + 1);
+					freeList.getFreeList().ensureIndexIsVisible(i + 1);
 				}
 			}
 			if (source == 2 && !selectorL.getSquadList().isSelectionEmpty()
 					&& getText().length() < 16 && getText().length() != 0) {
 				int i = selectorL.getSquadList().getSelectedIndex();
-				if (!(((Player) selectorL.getSquadList().getSelectedValue()).name
-						.equals(getText()))) {
-					((Player) selectorL.getSquadList().getSelectedValue())
-							.setName(getText());
-					((Player) selectorL.getSquadList().getSelectedValue())
-							.makeShirt(getText());
+				if (!selectorL.getSquadList().getSelectedValue().name.equals(getText())) {
+					selectorL.getSquadList().getSelectedValue().setName(getText());
+					selectorL.getSquadList().getSelectedValue().makeShirt(getText());
 					refreshLists();
 				}
 				if (i < selectorL.getSquadList().getModel().getSize() - 1) {
@@ -335,12 +275,9 @@ public class TransferPanel extends JPanel implements MouseListener,
 			if (source == 3 && !selectorR.getSquadList().isSelectionEmpty()
 					&& getText().length() < 16 && getText().length() != 0) {
 				int i = selectorR.getSquadList().getSelectedIndex();
-				if (!(((Player) selectorR.getSquadList().getSelectedValue()).name
-						.equals(getText()))) {
-					((Player) selectorR.getSquadList().getSelectedValue())
-							.setName(getText());
-					((Player) selectorR.getSquadList().getSelectedValue())
-							.makeShirt(getText());
+				if (!selectorR.getSquadList().getSelectedValue().name.equals(getText())) {
+					selectorR.getSquadList().getSelectedValue().setName(getText());
+					selectorR.getSquadList().getSelectedValue().makeShirt(getText());
 					refreshLists();
 				}
 				if (i < selectorR.getSquadList().getModel().getSize() - 1) {
@@ -367,8 +304,7 @@ public class TransferPanel extends JPanel implements MouseListener,
 					setText("");
 				} else {
 					source = 2;
-					setText(String.valueOf(getShirt(source, selectorL.getNumList()
-							.getSelectedIndex())));
+					setText(String.valueOf(getShirt(source, selectorL.getNumList().getSelectedIndex())));
 					selectorR.getNumList().clearSelection();
 					selectAll();
 				}
@@ -378,8 +314,7 @@ public class TransferPanel extends JPanel implements MouseListener,
 					setText("");
 				} else {
 					source = 3;
-					setText(String.valueOf(getShirt(source, selectorR.getNumList()
-							.getSelectedIndex())));
+					setText(String.valueOf(getShirt(source, selectorR.getNumList().getSelectedIndex())));
 					selectorL.getNumList().clearSelection();
 					selectAll();
 				}
@@ -390,7 +325,7 @@ public class TransferPanel extends JPanel implements MouseListener,
 			if (source == 2 && !selectorL.getNumList().isSelectionEmpty()) {
 				int i = selectorL.getNumList().getSelectedIndex();
 				try {
-					int v = new Integer(getText()).intValue();
+					int v = Integer.parseInt(getText());
 					if (v != 0 && v <= 99) {
 						setShirt(source, i, v);
 					}
@@ -407,7 +342,7 @@ public class TransferPanel extends JPanel implements MouseListener,
 			if (source == 3 && !selectorR.getNumList().isSelectionEmpty()) {
 				int i = selectorR.getNumList().getSelectedIndex();
 				try {
-					int v = new Integer(getText()).intValue();
+					int v = Integer.parseInt(getText());
 					if (v != 0 && v <= 99) {
 						setShirt(source, i, v);
 					}
@@ -464,12 +399,11 @@ public class TransferPanel extends JPanel implements MouseListener,
 
 		public void valueChanged(ListSelectionEvent e) {
 			if (!e.getValueIsAdjusting()) {
-				if (e.getSource() == freeList.freeList) {
-					if (freeList.freeList.isSelectionEmpty()) {
+				if (e.getSource() == freeList.getFreeList()) {
+					if (freeList.getFreeList().isSelectionEmpty()) {
 						setText("");
 					} else {
-						setText(((Player) freeList.freeList.getSelectedValue())
-								.getShirtName());
+						setText(freeList.getFreeList().getSelectedValue().getShirtName());
 						source = 1;
 						selectAll();
 					}
@@ -478,8 +412,7 @@ public class TransferPanel extends JPanel implements MouseListener,
 					if (selectorL.getSquadList().isSelectionEmpty()) {
 						setText("");
 					} else {
-						setText(((Player) selectorL.getSquadList()
-								.getSelectedValue()).getShirtName());
+						setText(selectorL.getSquadList().getSelectedValue().getShirtName());
 						source = 2;
 						selectAll();
 					}
@@ -488,8 +421,7 @@ public class TransferPanel extends JPanel implements MouseListener,
 					if (selectorR.getSquadList().isSelectionEmpty()) {
 						setText("");
 					} else {
-						setText(((Player) selectorR.getSquadList()
-								.getSelectedValue()).getShirtName());
+						setText(selectorR.getSquadList().getSelectedValue().getShirtName());
 						source = 3;
 						selectAll();
 					}
@@ -498,17 +430,15 @@ public class TransferPanel extends JPanel implements MouseListener,
 		}
 
 		public void actionPerformed(ActionEvent evt) {
-			if (source == 1 && !freeList.freeList.isSelectionEmpty()
+			if (source == 1 && !freeList.getFreeList().isSelectionEmpty()
 					&& getText().length() < 16) {
-				((Player) freeList.freeList.getSelectedValue())
-						.setShirtName(getText());
+				freeList.getFreeList().getSelectedValue().setShirtName(getText());
 				refreshLists();
 			}
 			if (source == 2 && !selectorL.getSquadList().isSelectionEmpty()
 					&& getText().length() < 16) {
 				int i = selectorL.getSquadList().getSelectedIndex();
-				((Player) selectorL.getSquadList().getSelectedValue())
-						.setShirtName(getText());
+				selectorL.getSquadList().getSelectedValue().setShirtName(getText());
 				refreshLists();
 				if (i < selectorL.getSquadList().getModel().getSize() - 1) {
 					selectorL.getSquadList().setSelectedIndex(i + 1);
@@ -517,8 +447,7 @@ public class TransferPanel extends JPanel implements MouseListener,
 			if (source == 3 && !selectorR.getSquadList().isSelectionEmpty()
 					&& getText().length() < 16) {
 				int i = selectorR.getSquadList().getSelectedIndex();
-				((Player) selectorR.getSquadList().getSelectedValue())
-						.setShirtName(getText());
+				selectorR.getSquadList().getSelectedValue().setShirtName(getText());
 				refreshLists();
 				if (i < selectorR.getSquadList().getModel().getSize() - 1) {
 					selectorR.getSquadList().setSelectedIndex(i + 1);
@@ -529,19 +458,17 @@ public class TransferPanel extends JPanel implements MouseListener,
 
 	public void mousePressed(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON1 && e.isControlDown()) {
-			if (e.getSource() != freeList.freeList) {
+			if (e.getSource() != freeList.getFreeList()) {
 				e.consume();
 				SquadList list = (SquadList) (e.getSource());
 				int t = list.getTeam();
 				if (t >= 0 && t < 66) {
-					teamDia.show(t, (String) selectorL.getTeamBox().getItemAt(t));
+					teamDia.show(t, selectorL.getTeamBox().getItemAt(t));
 					Squads.fixForm(of, t, false);
 					refreshLists();
 				}
 				if (t >= 75 && t < 205) {
-					teamDia
-							.show(t - 8, (String) selectorL.getTeamBox()
-									.getItemAt(t));
+					teamDia.show(t - 8, selectorL.getTeamBox().getItemAt(t));
 					Squads.fixForm(of, t, false);
 					refreshLists();
 				}
@@ -567,29 +494,27 @@ public class TransferPanel extends JPanel implements MouseListener,
 			if (pi != 0) {
 				if (safeMode.isSelected()) {
 					if (inNatSquad(pi)) {
-						playerDia.genPanel.nationBox.setEnabled(false);
+						playerDia.genPanel.getNationBox().setEnabled(false);
 					} else {
-						playerDia.genPanel.nationBox.setEnabled(true);
+						playerDia.genPanel.getNationBox().setEnabled(true);
 					}
 				} else {
-					playerDia.genPanel.nationBox.setEnabled(true);
+					playerDia.genPanel.getNationBox().setEnabled(true);
 				}
 				playerDia.show(p);
 				refreshLists();
 			}
 		} else if (clicks == 1 && e.getButton() == MouseEvent.BUTTON3) {
-			if (e.getSource() != freeList.freeList) {
+			if (e.getSource() != freeList.getFreeList()) {
 				SquadList list = (SquadList) (e.getSource());
 				int t = list.getTeam();
 				if (t >= 0 && t < 67) {
-					teamDia.show(t, (String) selectorL.getTeamBox().getItemAt(t));
+					teamDia.show(t, selectorL.getTeamBox().getItemAt(t));
 					Squads.fixForm(of, t, false);
 					refreshLists();
 				}
 				if (t >= 75 && t < 205) {
-					teamDia
-							.show(t - 8, (String) selectorL.getTeamBox()
-									.getItemAt(t));
+					teamDia.show(t - 8, selectorL.getTeamBox().getItemAt(t));
 					Squads.fixForm(of, t, false);
 					refreshLists();
 				}
@@ -774,8 +699,8 @@ public class TransferPanel extends JPanel implements MouseListener,
 				indexT = 0;
 			}
 
-			if (sourceList != freeList.freeList
-					&& targetList != freeList.freeList) {
+			if (sourceList != freeList.getFreeList()
+					&& targetList != freeList.getFreeList()) {
 				int squadS = ((SelectByTeam) (sourceList.getParent())).getTeamBox()
 						.getSelectedIndex();
 				int squadT = ((SelectByTeam) (targetList.getParent())).getTeamBox()
@@ -797,20 +722,20 @@ public class TransferPanel extends JPanel implements MouseListener,
 					event.acceptDrop(DnDConstants.ACTION_MOVE);
 					transferRL(sourcePlayer);
 				}
-			} else if (sourceList == freeList.freeList
+			} else if (sourceList == freeList.getFreeList()
 					&& targetList == selectorL.getSquadList()) {
 				event.acceptDrop(DnDConstants.ACTION_MOVE);
 				transferFL(indexS);
-			} else if (sourceList == freeList.freeList
+			} else if (sourceList == freeList.getFreeList()
 					&& targetList == selectorR.getSquadList()) {
 				event.acceptDrop(DnDConstants.ACTION_MOVE);
 				transferFR(indexS);
 			} else if (sourceList == selectorL.getSquadList()
-					&& targetList == freeList.freeList) {
+					&& targetList == freeList.getFreeList()) {
 				event.acceptDrop(DnDConstants.ACTION_MOVE);
 				tranRelL(sourcePlayer, sourceIndex);
 			} else if (sourceList == selectorR.getSquadList()
-					&& targetList == freeList.freeList) {
+					&& targetList == freeList.getFreeList()) {
 				event.acceptDrop(DnDConstants.ACTION_MOVE);
 				tranRelR(sourcePlayer, sourceIndex);
 			} else {
@@ -842,9 +767,8 @@ public class TransferPanel extends JPanel implements MouseListener,
 				nameEditor.source = 0;
 				shirtEditor.source = 0;
 				PlayerTransferable playerTran = new PlayerTransferable(p);
-				if (list != freeList.freeList) {
-					int squadS = ((SelectByTeam) (list.getParent())).getTeamBox()
-							.getSelectedIndex();
+				if (list != freeList.getFreeList()) {
+					int squadS = ((SelectByTeam) (list.getParent())).getTeamBox().getSelectedIndex();
 					if (squadS < 67 || (squadS > 74 && squadS < 213)) {
 						if (list == selectorL.getSquadList()) {
 							selectorL.getPosList().selectPos(selectorL.getSquadList(),
@@ -928,10 +852,10 @@ public class TransferPanel extends JPanel implements MouseListener,
 		int squadS = -1;
 
 		int indexF = 0;
-		if (sourceList == freeList.freeList) {
+		if (sourceList == freeList.getFreeList()) {
 			indexF = indexS;
 			fEmpty = false;
-		} else if (targetList == freeList.freeList) {
+		} else if (targetList == freeList.getFreeList()) {
 			indexF = indexT;
 			fEmpty = false;
 		}
@@ -968,12 +892,12 @@ public class TransferPanel extends JPanel implements MouseListener,
 				minSizeR = 23;
 			}
 
-			if (indexF >= Player.firstYoung && indexF < Player.FIRST_EDIT) {
+			if (indexF >= Player.FIRST_YOUNG && indexF < Player.FIRST_EDIT) {
 				tranFL = false;
 				tranFR = false;
 			}
 
-			if (indexF >= Player.firstML && indexF < Player.firstShop) {
+			if (indexF >= Player.FIRST_ML && indexF < Player.FIRST_SHOP) {
 				tranFL = false;
 				tranFR = false;
 			}
@@ -1182,11 +1106,11 @@ public class TransferPanel extends JPanel implements MouseListener,
 					}
 				}
 			}
-
 		}
+
 		boolean result = false;
 
-		if (sourceList != freeList.freeList && targetList != freeList.freeList) {
+		if (sourceList != freeList.getFreeList() && targetList != freeList.getFreeList()) {
 			if (sourceList == targetList) {
 				if (squadS < 67 || (squadS > 74 && squadS < 213)) {
 					if (indexS != indexT) {
@@ -1202,24 +1126,24 @@ public class TransferPanel extends JPanel implements MouseListener,
 					&& indexS != 0) {
 				result = true;
 			}
-		} else if (sourceList == freeList.freeList
+		} else if (sourceList == freeList.getFreeList()
 				&& targetList == selectorL.getSquadList() && tranFL) {
 			result = true;
-		} else if (sourceList == freeList.freeList
+		} else if (sourceList == freeList.getFreeList()
 				&& targetList == selectorR.getSquadList() && tranFR) {
 			result = true;
 		} else if (sourceList == selectorL.getSquadList()
-				&& targetList == freeList.freeList && relL) {
+				&& targetList == freeList.getFreeList() && relL) {
 			result = true;
 		} else if (sourceList == selectorR.getSquadList()
-				&& targetList == freeList.freeList && relR) {
+				&& targetList == freeList.getFreeList() && relR) {
 			result = true;
 		}
 		return result;
 	}
 
 	private void transferFL(int index) {
-		int adr = ((Player) (selectorL.getSquadList().getSelectedValue())).adr;
+		int adr = selectorL.getSquadList().getSelectedValue().adr;
 		int ti = selectorL.getTeamBox().getSelectedIndex();
 		int n = -1;
 		if (ti >= 75 && ti < 213 && autoRel.isSelected()) {
@@ -1242,7 +1166,7 @@ public class TransferPanel extends JPanel implements MouseListener,
 	}
 
 	private void transferFR(int index) {
-		int adr = ((Player) (selectorR.getSquadList().getSelectedValue())).adr;
+		int adr = selectorR.getSquadList().getSelectedValue().adr;
 		int ti = selectorR.getTeamBox().getSelectedIndex();
 		int n = -1;
 		if (ti >= 75 && ti < 213 && autoRel.isSelected()) {
@@ -1265,7 +1189,7 @@ public class TransferPanel extends JPanel implements MouseListener,
 	}
 
 	private void transferLR(Player player) {
-		int adrR = ((Player) (selectorR.getSquadList().getSelectedValue())).adr;
+		int adrR = selectorR.getSquadList().getSelectedValue().adr;
 		int index = player.index;
 		if (index != 0) {
 			int tiR = selectorR.getTeamBox().getSelectedIndex();
@@ -1294,7 +1218,7 @@ public class TransferPanel extends JPanel implements MouseListener,
 	}
 
 	private void transferRL(Player player) {
-		int adrL = ((Player) (selectorL.getSquadList().getSelectedValue())).adr;
+		int adrL = selectorL.getSquadList().getSelectedValue().adr;
 		int index = player.index;
 		if (index != 0) {
 			int tiL = selectorL.getTeamBox().getSelectedIndex();
@@ -1361,8 +1285,7 @@ public class TransferPanel extends JPanel implements MouseListener,
 							of,
 							tiT,
 							targetList.getSelectedIndex(),
-							((SelectByTeam) (targetList.getParent())).getPosList().posNum[targetList
-									.getSelectedIndex()]);
+							((SelectByTeam) (targetList.getParent())).getPosList().posNum[targetList.getSelectedIndex()]);
 				}
 			}
 		}
@@ -1379,8 +1302,7 @@ public class TransferPanel extends JPanel implements MouseListener,
 			Squads.tidy(of, selectorL.getTeamBox().getSelectedIndex());
 		} else {
 			if (autoRep.isSelected()) {
-				Squads.tidy11(of, selectorL.getTeamBox().getSelectedIndex(), si,
-						selectorL.getPosList().posNum[si]);
+				Squads.tidy11(of, selectorL.getTeamBox().getSelectedIndex(), si, selectorL.getPosList().posNum[si]);
 			}
 		}
 		refreshLists();
@@ -1395,8 +1317,7 @@ public class TransferPanel extends JPanel implements MouseListener,
 			Squads.tidy(of, selectorR.getTeamBox().getSelectedIndex());
 		} else {
 			if (autoRep.isSelected()) {
-				Squads.tidy11(of, selectorR.getTeamBox().getSelectedIndex(), si,
-						selectorR.getPosList().posNum[si]);
+				Squads.tidy11(of, selectorR.getTeamBox().getSelectedIndex(), si, selectorR.getPosList().posNum[si]);
 			}
 		}
 		refreshLists();
@@ -1405,10 +1326,10 @@ public class TransferPanel extends JPanel implements MouseListener,
 	private void addListen() {
 		selectorL.getSquadList().addListSelectionListener(nameEditor);
 		selectorR.getSquadList().addListSelectionListener(nameEditor);
-		freeList.freeList.addListSelectionListener(nameEditor);
+		freeList.getFreeList().addListSelectionListener(nameEditor);
 		selectorL.getSquadList().addListSelectionListener(shirtEditor);
 		selectorR.getSquadList().addListSelectionListener(shirtEditor);
-		freeList.freeList.addListSelectionListener(shirtEditor);
+		freeList.getFreeList().addListSelectionListener(shirtEditor);
 		selectorL.getNumList().addListSelectionListener(numEditor);
 		selectorR.getNumList().addListSelectionListener(numEditor);
 	}
@@ -1416,10 +1337,10 @@ public class TransferPanel extends JPanel implements MouseListener,
 	private void removeListen() {
 		selectorL.getSquadList().removeListSelectionListener(nameEditor);
 		selectorR.getSquadList().removeListSelectionListener(nameEditor);
-		freeList.freeList.removeListSelectionListener(nameEditor);
+		freeList.getFreeList().removeListSelectionListener(nameEditor);
 		selectorL.getSquadList().removeListSelectionListener(shirtEditor);
 		selectorR.getSquadList().removeListSelectionListener(shirtEditor);
-		freeList.freeList.removeListSelectionListener(shirtEditor);
+		freeList.getFreeList().removeListSelectionListener(shirtEditor);
 		selectorL.getNumList().removeListSelectionListener(numEditor);
 		selectorR.getNumList().removeListSelectionListener(numEditor);
 	}

@@ -1,25 +1,3 @@
-/*
- * Copyright 2008-9 Compulsion
- * <pes_compulsion@yahoo.co.uk>
- * <http://www.purplehaze.eclipse.co.uk/>
- * <http://uk.geocities.com/pes_compulsion/>
- *
- * This file is part of PES Editor.
- *
- * PES Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PES Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PES Editor.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package editor;
 
 import editor.data.OptionFile;
@@ -32,9 +10,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PlayerDialog extends JDialog {// implements ListSelectionListener,
-	// MouseListener {
-	OptionFile of;
+public class PlayerDialog extends JDialog {// implements ListSelectionListener, MouseListener
+	private final OptionFile of;
 
 	// OptionFile of2;
 	// OptionFile of2;
@@ -58,8 +35,6 @@ public class PlayerDialog extends JDialog {// implements ListSelectionListener,
 	SpecialAbilityPanel spePanel;
 
 	JButton acceptButton;
-
-	JButton cancelButton;
 
 	JButton importButton;
 
@@ -142,7 +117,7 @@ public class PlayerDialog extends JDialog {// implements ListSelectionListener,
 			}
 		}
 		try {
-			v = new Integer(genPanel.heightField.getText()).intValue();
+			v = Integer.parseInt(genPanel.getHeightField().getText());
 			if (v < 148 || v > 211) {
 				ok = false;
 			}
@@ -150,7 +125,7 @@ public class PlayerDialog extends JDialog {// implements ListSelectionListener,
 			ok = false;
 		}
 		try {
-			v = new Integer(genPanel.weightField.getText()).intValue();
+			v = Integer.parseInt(genPanel.getWeightField().getText());
 			if (v < 1 || v > 127) {
 				ok = false;
 			}
@@ -158,7 +133,7 @@ public class PlayerDialog extends JDialog {// implements ListSelectionListener,
 			ok = false;
 		}
 		try {
-			v = new Integer(genPanel.ageField.getText()).intValue();
+			v = Integer.parseInt(genPanel.getAgeField().getText());
 			if (v < 15 || v > 46) {
 				ok = false;
 			}
@@ -171,59 +146,47 @@ public class PlayerDialog extends JDialog {// implements ListSelectionListener,
 	private void updateStats() {
 		for (int i = 0; i < Stats.ROLES.length; i++) {
 			if (i != 1) {
-				Stats.setValue(of, index, Stats.ROLES[i],
-						boToInt(posPanel.checkBox[i].isSelected()));
+				Stats.setValue(of, index, Stats.ROLES[i], boToInt(posPanel.getRegCheck(i).isSelected()));
 			}
 		}
 		int v = 0;
 		for (int i = 0; i < Stats.ROLES.length; i++) {
-			if (((String) (posPanel.regBox.getSelectedItem()))
-					.equals(Stats.ROLES[i].getName())) {
+			if (posPanel.getRegBox().getSelectedItem().equals(Stats.ROLES[i].getName())) {
 				v = i;
 			}
 		}
 		Stats.setValue(of, index, Stats.REG_POS, v);
 
-		Stats.setValue(of, index, Stats.HEIGHT, genPanel.heightField.getText());
+		Stats.setValue(of, index, Stats.HEIGHT, genPanel.getHeightField().getText());
 
-		int item = genPanel.footBox.getSelectedIndex();
+		int item = genPanel.getFootBox().getSelectedIndex();
 		int foot = item / 3;
 		int side = item - (foot * 3);
 		Stats.setValue(of, index, Stats.FOOT, foot);
 		Stats.setValue(of, index, Stats.FAVORITE_SIDE, side);
-		Stats.setValue(of, index, Stats.WEAK_FOOT_ACC, (String) (genPanel.wfaBox
-				.getSelectedItem()));
-		Stats.setValue(of, index, Stats.WEAK_FOOT_FREQ, (String) (genPanel.wffBox
-				.getSelectedItem()));
+		Stats.setValue(of, index, Stats.WEAK_FOOT_ACC, (String) (genPanel.getWeakFootAccBox().getSelectedItem()));
+		Stats.setValue(of, index, Stats.WEAK_FOOT_FREQ, (String) (genPanel.getWeakFootFreqBox().getSelectedItem()));
 
 		for (int i = 0; i < Stats.ABILITY99.length; i++) {
 			Stats.setValue(of, index, Stats.ABILITY99[i], abiPanel.getField(i).getText());
 		}
 
-		Stats.setValue(of, index, Stats.CONSISTENCY, (String) (genPanel.consBox
-				.getSelectedItem()));
-		Stats.setValue(of, index, Stats.CONDITION, (String) (genPanel.condBox
-				.getSelectedItem()));
+		Stats.setValue(of, index, Stats.CONSISTENCY, (String) (genPanel.getConsistencyBox().getSelectedItem()));
+		Stats.setValue(of, index, Stats.CONDITION, (String) (genPanel.getConditionBox().getSelectedItem()));
 
 		for (int i = 0; i < Stats.ABILITY_SPECIAL.length; i++) {
 			Stats.setValue(of, index, Stats.ABILITY_SPECIAL[i],
 					boToInt(spePanel.checkBox[i].isSelected()));
 		}
 
-		Stats.setValue(of, index, Stats.INJURY, (String) (genPanel.injuryBox
-				.getSelectedItem()));
-		Stats.setValue(of, index, Stats.FREE_KICK, (String) (genPanel.fkBox
-				.getSelectedItem()));
-		Stats.setValue(of, index, Stats.PK_STYLE, (String) (genPanel.pkBox
-				.getSelectedItem()));
-		Stats.setValue(of, index, Stats.AGE, genPanel.ageField.getText());
-		Stats.setValue(of, index, Stats.WEIGHT, genPanel.weightField.getText());
-		Stats.setValue(of, index, Stats.NATIONALITY,
-				(String) (genPanel.nationBox.getSelectedItem()));
-		Stats.setValue(of, index, Stats.DRIBBLE_STYLE, (String) (genPanel.dribBox
-				.getSelectedItem()));
-		Stats.setValue(of, index, Stats.DK_STYLE, (String) (genPanel.dkBox
-				.getSelectedItem()));
+		Stats.setValue(of, index, Stats.INJURY, (String) (genPanel.getInjuryBox().getSelectedItem()));
+		Stats.setValue(of, index, Stats.FREE_KICK, (String) (genPanel.getFreeKickBox().getSelectedItem()));
+		Stats.setValue(of, index, Stats.PK_STYLE, (String) (genPanel.getPenaltyBox().getSelectedItem()));
+		Stats.setValue(of, index, Stats.AGE, genPanel.getAgeField().getText());
+		Stats.setValue(of, index, Stats.WEIGHT, genPanel.getWeightField().getText());
+		Stats.setValue(of, index, Stats.NATIONALITY, (String) (genPanel.getNationBox().getSelectedItem()));
+		Stats.setValue(of, index, Stats.DRIBBLE_STYLE, (String) (genPanel.getDribbleBox().getSelectedItem()));
+		Stats.setValue(of, index, Stats.DK_STYLE, (String) (genPanel.getDropKickBox().getSelectedItem()));
 
 		Stats.setValue(of, index, Stats.ABILITY_EDITED, 1);
 	}

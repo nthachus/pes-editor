@@ -1,11 +1,10 @@
-package editor;
+package editor.ui;
 
+import editor.*;
+import editor.data.Boots;
 import editor.data.Leagues;
 import editor.data.OptionFile;
 import editor.data.Stadiums;
-import editor.ui.LeaguePanel;
-import editor.ui.StadiumPanel;
-import editor.ui.WenShopPanel;
 import editor.util.Strings;
 
 import javax.swing.*;
@@ -25,15 +24,15 @@ public class ImportPanel extends JPanel {
 	private final LogoPanel logoPan;
 	private final TransferPanel transferPan;
 
-	private final JLabel importFile;
-	private final JPanel contentPane;
-	private final JButton optionsButton;
-	private final JButton stadiumButton;
-	private final JButton leagueButton;
-	private final JButton bootsButton;
-	private final JButton clubNameButton;
-	private final JButton playerButton;
-	private final JButton allKitButton;
+	private/* final*/ JLabel msgLabel;
+	private/* final*/ JPanel contentPane;
+	private/* final*/ JButton optionsButton;
+	private/* final*/ JButton stadiumButton;
+	private/* final*/ JButton leagueButton;
+	private/* final*/ JButton bootsButton;
+	private/* final*/ JButton clubNameButton;
+	private/* final*/ JButton playerButton;
+	private/* final*/ JButton allKitButton;
 
 	public ImportPanel(
 			OptionFile of, OptionFile of2,
@@ -53,49 +52,53 @@ public class ImportPanel extends JPanel {
 		this.logoPan = logoPan;
 		this.transferPan = transferPan;
 
-		optionsButton = new JButton("Options / PES Points / Shop Items / Cup Gallery / Track Record / Playlist");
+		initComponents();
+	}
+
+	private void initComponents() {
+		optionsButton = new JButton(Strings.getMessage("import.options"));
 		optionsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importOptions();
 			}
 		});
 
-		stadiumButton = new JButton("Stadium names");// TODO: Localization!!!
+		stadiumButton = new JButton(Strings.getMessage("import.stadiums"));
 		stadiumButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importStadiums();
 			}
 		});
 
-		leagueButton = new JButton("League names");
+		leagueButton = new JButton(Strings.getMessage("import.leagues"));
 		leagueButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importLeagues();
 			}
 		});
 
-		bootsButton = new JButton("Boots");
+		bootsButton = new JButton(Strings.getMessage("import.boots"));
 		bootsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importBoots();
 			}
 		});
 
-		playerButton = new JButton("Players / Squads / Formations");
+		playerButton = new JButton(Strings.getMessage("import.players"));
 		playerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importPlayers();
 			}
 		});
 
-		clubNameButton = new JButton("Club names");
+		clubNameButton = new JButton(Strings.getMessage("import.clubs"));
 		clubNameButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importClubs();
 			}
 		});
 
-		allKitButton = new JButton("Kits / Emblems / Logos / Club stadiums, flags, colours");
+		allKitButton = new JButton(Strings.getMessage("import.kits"));
 		allKitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importKits();
@@ -115,9 +118,9 @@ public class ImportPanel extends JPanel {
 		contentPane.add(buttonsPan);
 		contentPane.setEnabled(false);
 
-		importFile = new JLabel("To use the import options you must first use File > Open OF2...");
+		msgLabel = new JLabel(Strings.getMessage("import.todo"));
 
-		add(importFile, BorderLayout.NORTH);
+		add(msgLabel, BorderLayout.NORTH);
 		add(contentPane, BorderLayout.CENTER);
 	}
 
@@ -158,7 +161,7 @@ public class ImportPanel extends JPanel {
 	}
 
 	private void importBoots() {
-		System.arraycopy(of2.getData(), 654732, of.getData(), 654732, 828);
+		Boots.importData(of2, of);
 
 		bootsButton.setEnabled(false);
 	}
@@ -197,9 +200,9 @@ public class ImportPanel extends JPanel {
 	public void refresh() {
 		if (!of2.isLoaded()) {
 			contentPane.setVisible(false);
-			importFile.setText("To use the import options you must first use File > Open OF2...");
+			msgLabel.setText(Strings.getMessage("import.todo"));
 		} else {
-			importFile.setText("From:  " + of2.getFilename());
+			msgLabel.setText(Strings.getMessage("import.label", of2.getFilename()));
 			contentPane.setVisible(true);
 
 			optionsButton.setEnabled(Strings.equalsIgnoreCase(of.getGameId(), of2.getGameId()));

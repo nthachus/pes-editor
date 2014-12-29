@@ -1,25 +1,3 @@
-/*
- * Copyright 2008-9 Compulsion
- * <pes_compulsion@yahoo.co.uk>
- * <http://www.purplehaze.eclipse.co.uk/>
- * <http://uk.geocities.com/pes_compulsion/>
- *
- * This file is part of PES Editor.
- *
- * PES Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PES Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PES Editor.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package editor;
 
 import editor.data.OptionFile;
@@ -44,29 +22,21 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 
-public class FormPanel extends JPanel implements ListSelectionListener,
-		DropTargetListener, DragSourceListener, DragGestureListener {
-	int team;
+public class FormPanel extends JPanel
+		implements ListSelectionListener, DropTargetListener, DragSourceListener, DragGestureListener {
+	private final OptionFile of;
 
-	OptionFile of;
+	private int team;
 
-	SquadList squadList;
+	private SquadList squadList;
+	private PositionList posList;
 
-	PositionList posList;
-
-	JobList sFK;
-
-	JobList lFK;
-
-	JobList rCR;
-
-	JobList lCR;
-
-	JobList pk;
-
-	JobList cap;
-
-	// byte[] original = new byte[31];
+	private JobList sFK;
+	private JobList lFK;
+	private JobList rCR;
+	private JobList lCR;
+	private JobList pk;
+	private JobList cap;
 
 	private static final byte[] formData = {
 			9, 63, 9, 41, 12, 87, 12, 17, 26,
@@ -91,138 +61,42 @@ public class FormPanel extends JPanel implements ListSelectionListener,
 			80, 31, 24, 43, 52, 0, 7, 3, 1, 9, 8, 14, 10, 23, 22, 38
 	};
 
-	/*private static final byte[] formData = { 9, 63, 9, 41, 11, 85, 11, 19, 18,
-			52, 26, 75, 26, 29, 34, 64, 34, 40, 43, 52, 0, 7, 1, 9, 8, 12, 23,
-			22, 28, 24, 38, 9, 63, 9, 41, 11, 85, 11, 19, 18, 61, 18, 43, 26,
-			75, 26, 29, 34, 52, 43, 52, 0, 7, 1, 9, 8, 14, 10, 23, 22, 26, 38,
-			9, 63, 9, 41, 11, 85, 11, 19, 18, 52, 26, 75, 26, 29, 34, 52, 43,
-			66, 43, 38, 0, 7, 1, 9, 8, 12, 23, 22, 26, 40, 36, 9, 63, 9, 41,
-			11, 85, 11, 19, 18, 61, 18, 43, 30, 70, 30, 34, 43, 66, 43, 38, 0,
-			7, 1, 9, 8, 14, 10, 28, 24, 40, 36, 9, 63, 9, 41, 11, 85, 11, 19,
-			26, 77, 26, 61, 26, 43, 26, 27, 43, 66, 43, 38, 0, 7, 1, 9, 8, 20,
-			21, 17, 18, 40, 36, 9, 63, 9, 41, 11, 85, 11, 19, 18, 52, 30, 64,
-			30, 40, 43, 72, 43, 32, 43, 52, 0, 7, 1, 9, 8, 12, 28, 24, 30, 29,
-			38, 9, 63, 9, 41, 11, 85, 11, 19, 18, 61, 18, 43, 30, 52, 43, 72,
-			43, 32, 43, 52, 0, 7, 1, 9, 8, 14, 10, 26, 30, 29, 38, 9, 63, 9,
-			41, 11, 85, 11, 19, 26, 77, 26, 52, 26, 27, 43, 72, 43, 32, 43, 52,
-			0, 7, 1, 9, 8, 21, 19, 17, 30, 29, 38, 9, 72, 9, 52, 9, 32, 18, 52,
-			26, 52, 26, 77, 26, 27, 34, 64, 34, 40, 43, 52, 0, 7, 3, 1, 12, 19,
-			23, 22, 28, 24, 38, 9, 72, 9, 52, 9, 32, 18, 61, 18, 43, 26, 77,
-			26, 27, 34, 64, 34, 40, 43, 52, 0, 7, 3, 1, 14, 10, 23, 22, 28, 24,
-			38, 9, 72, 9, 52, 9, 32, 18, 52, 26, 77, 26, 27, 34, 64, 34, 40,
-			43, 66, 43, 38, 0, 7, 3, 1, 12, 23, 22, 28, 24, 40, 36, 9, 72, 9,
-			52, 9, 32, 18, 61, 18, 43, 26, 77, 26, 27, 34, 52, 43, 66, 43, 38,
-			0, 7, 3, 1, 14, 10, 23, 22, 26, 40, 36, 9, 72, 9, 52, 9, 32, 18,
-			52, 26, 77, 26, 27, 34, 52, 43, 72, 43, 32, 43, 52, 0, 7, 3, 1, 12,
-			23, 22, 26, 30, 29, 38, 9, 72, 9, 52, 9, 32, 18, 61, 18, 43, 30,
-			70, 30, 34, 43, 72, 43, 32, 43, 52, 0, 7, 3, 1, 14, 10, 28, 24, 30,
-			29, 38, 9, 72, 9, 52, 9, 32, 26, 77, 26, 61, 26, 43, 26, 27, 43,
-			72, 43, 32, 43, 52, 0, 7, 3, 1, 20, 21, 17, 18, 30, 29, 38, 9, 72,
-			9, 52, 9, 32, 12, 87, 12, 17, 18, 52, 26, 75, 26, 29, 34, 52, 43,
-			52, 0, 7, 3, 1, 9, 8, 12, 23, 22, 26, 38, 9, 72, 9, 52, 9, 32, 12,
-			87, 12, 17, 18, 61, 18, 43, 30, 70, 30, 34, 43, 52, 0, 7, 3, 1, 9,
-			8, 14, 10, 28, 24, 38, 9, 72, 9, 52, 9, 32, 12, 87, 12, 17, 26, 77,
-			26, 61, 26, 43, 26, 27, 43, 52, 0, 7, 3, 1, 9, 8, 20, 21, 17, 18,
-			38, 9, 72, 9, 52, 9, 32, 12, 87, 12, 17, 18, 52, 34, 64, 34, 40,
-			43, 66, 43, 38, 0, 7, 3, 1, 9, 8, 12, 28, 24, 40, 36, 9, 72, 9, 52,
-			9, 32, 12, 87, 12, 17, 18, 61, 18, 43, 34, 52, 43, 66, 43, 38, 0,
-			7, 3, 1, 9, 8, 14, 10, 26, 40, 36, 9, 72, 9, 52, 9, 32, 12, 87, 12,
-			17, 26, 77, 26, 52, 26, 27, 43, 66, 43, 38, 0, 7, 3, 1, 9, 8, 21,
-			19, 17, 40, 36 };*/
-
-	/*
-	 * private byte[] formData = { 9, 9, 11, 11, 18, 26, 26, 34, 34, 43, 63, 41,
-	 * 85, 19, 52, 75, 29, 64, 40, 52, 0, 7, 1, 9, 8, 12, 23, 22, 28, 24, 38, 9,
-	 * 9, 11, 11, 18, 18, 26, 26, 34, 43, 63, 41, 85, 19, 61, 43, 75, 29, 52,
-	 * 52, 0, 7, 1, 9, 8, 14, 10, 23, 22, 26, 38, 9, 9, 11, 11, 18, 26, 26, 34,
-	 * 43, 43, 63, 41, 85, 19, 52, 75, 29, 52, 66, 38, 0, 7, 1, 9, 8, 12, 23,
-	 * 22, 26, 40, 36, 9, 9, 11, 11, 18, 18, 30, 30, 43, 43, 63, 41, 85, 19, 61,
-	 * 43, 70, 34, 66, 38, 0, 7, 1, 9, 8, 14, 10, 28, 24, 40, 36, 9, 9, 11, 11,
-	 * 26, 26, 26, 26, 43, 43, 63, 41, 85, 19, 77, 61, 43, 27, 66, 38, 0, 7, 1,
-	 * 9, 8, 20, 21, 17, 18, 40, 36, 9, 9, 11, 11, 18, 30, 30, 43, 43, 43, 63,
-	 * 41, 85, 19, 52, 64, 40, 72, 32, 52, 0, 7, 1, 9, 8, 12, 28, 24, 30, 29,
-	 * 38, 9, 9, 11, 11, 18, 18, 30, 43, 43, 43, 63, 41, 85, 19, 61, 43, 52, 72,
-	 * 32, 52, 0, 7, 1, 9, 8, 14, 10, 26, 30, 29, 38, 9, 9, 11, 11, 26, 26, 26,
-	 * 43, 43, 43, 63, 41, 85, 19, 77, 52, 27, 72, 32, 52, 0, 7, 1, 9, 8, 21,
-	 * 19, 17, 30, 29, 38, 9, 9, 9, 18, 26, 26, 26, 34, 34, 43, 72, 52, 32, 52,
-	 * 52, 77, 27, 64, 40, 52, 0, 7, 3, 1, 12, 19, 23, 22, 28, 24, 38, 9, 9, 9,
-	 * 18, 18, 26, 26, 34, 34, 43, 72, 52, 32, 61, 43, 77, 27, 64, 40, 52, 0, 7,
-	 * 3, 1, 14, 10, 23, 22, 28, 24, 38, 9, 9, 9, 18, 26, 26, 34, 34, 43, 43,
-	 * 72, 52, 32, 52, 77, 27, 64, 40, 66, 38, 0, 7, 3, 1, 12, 23, 22, 28, 24,
-	 * 40, 36, 9, 9, 9, 18, 18, 26, 26, 34, 43, 43, 72, 52, 32, 61, 43, 77, 27,
-	 * 52, 66, 38, 0, 7, 3, 1, 14, 10, 23, 22, 26, 40, 36, 9, 9, 9, 18, 26, 26,
-	 * 34, 43, 43, 43, 72, 52, 32, 52, 77, 27, 52, 72, 32, 52, 0, 7, 3, 1, 12,
-	 * 23, 22, 26, 30, 29, 38, 9, 9, 9, 18, 18, 30, 30, 43, 43, 43, 72, 52, 32,
-	 * 61, 43, 70, 34, 72, 32, 52, 0, 7, 3, 1, 14, 10, 28, 24, 30, 29, 38, 9, 9,
-	 * 9, 26, 26, 26, 26, 43, 43, 43, 72, 52, 32, 77, 61, 43, 27, 72, 32, 52, 0,
-	 * 7, 3, 1, 20, 21, 17, 18, 30, 29, 38, 9, 9, 9, 12, 12, 18, 26, 26, 34, 43,
-	 * 72, 52, 32, 87, 17, 52, 75, 29, 52, 52, 0, 7, 3, 1, 9, 8, 12, 23, 22, 26,
-	 * 38, 9, 9, 9, 12, 12, 18, 18, 30, 30, 43, 72, 52, 32, 87, 17, 61, 43, 70,
-	 * 34, 52, 0, 7, 3, 1, 9, 8, 14, 10, 28, 24, 38, 9, 9, 9, 12, 12, 26, 26,
-	 * 26, 26, 43, 72, 52, 32, 87, 17, 77, 61, 43, 27, 52, 0, 7, 3, 1, 9, 8, 20,
-	 * 21, 17, 18, 38, 9, 9, 9, 12, 12, 18, 34, 34, 43, 43, 72, 52, 32, 87, 17,
-	 * 52, 64, 40, 66, 38, 0, 7, 3, 1, 9, 8, 12, 28, 24, 40, 36, 9, 9, 9, 12,
-	 * 12, 18, 18, 34, 43, 43, 72, 52, 32, 87, 17, 61, 43, 52, 66, 38, 0, 7, 3,
-	 * 1, 9, 8, 14, 10, 26, 40, 36, 9, 9, 9, 12, 12, 26, 26, 26, 43, 43, 72, 52,
-	 * 32, 87, 17, 77, 52, 27, 66, 38, 0, 7, 3, 1, 9, 8, 21, 19, 17, 40, 36 };
-	 */
-
-
-	private String[] formName = {
+	private static final String[] formName = {
 			"Formation", "4-4-2", "4-3-1-2", "4-4-1-1", "4-2-1-3",
 			"4-5-1", "4-1-2-3", "4-3-3", "4-3-2-1", "3-4-1-2", "3-3-2-2",
 			"3-4-3", "5-4-1"
 	};
 
-	private JComboBox formBox;
+	private JComboBox<String> formBox;
 
-	boolean ok = false;
-
-	PitchPanel pitchPanel;
+	private boolean ok = false;
+	private PitchPanel pitchPanel;
 
 	static boolean fromPitch = false;
 
-	private JButton snapButton;
-
-	AttDefPanel adPanel;
-
-	JComboBox roleBox;
-
-	Role[] role;
-
-	// JCheckBox roleCheck;
-	// JCheckBox defAttCheck;
-	// JCheckBox numCheck;
-	JComboBox altBox;
-
-	SquadNumberList numList;
+	private AttDefPanel adPanel;
+	private JComboBox<Role> roleBox;
+	private JComboBox<String> altBox;
+	private SquadNumberList numList;
 
 	private JFileChooser chooserPNG = new JFileChooser();
 
-	private PngFilter pngFilter = new PngFilter();
-
-	int def = 0;
-
-	int mid = 0;
-
-	int mid2 = 0;
-
-	int att = 0;
+	private int def = 0;
+	private int mid = 0;
+	private int mid2 = 0;
+	private int att = 0;
 
 	private TeamSettingPanel teamSetPan;
-
 	private StrategyPanel stratPan;
 
 	private DataFlavor localPlayerFlavor;
-
 	private int sourceIndex = -1;
 
 	public FormPanel(OptionFile opf) {
 		super();
 		of = opf;
 
-		String localPlayerType = DataFlavor.javaJVMLocalObjectMimeType
-				+ ";class=editor.Player";
+		String localPlayerType = DataFlavor.javaJVMLocalObjectMimeType + ";class=editor.Player";
 		try {
 			localPlayerFlavor = new DataFlavor(localPlayerType);
 		} catch (ClassNotFoundException e) {
@@ -230,6 +104,7 @@ public class FormPanel extends JPanel implements ListSelectionListener,
 					.println("FormTransferHandler: unable to create data flavor");
 		}
 
+		PngFilter pngFilter = new PngFilter();
 		chooserPNG.addChoosableFileFilter(pngFilter);
 		chooserPNG.setAcceptAllFileFilterUsed(false);
 		chooserPNG.setDialogTitle("Save Snapshot");
@@ -242,7 +117,7 @@ public class FormPanel extends JPanel implements ListSelectionListener,
 		numList = new SquadNumberList(of);
 
 		String[] items = {"Normal", "Strategy Plan A", "Strategy Plan B"};
-		altBox = new JComboBox(items);
+		altBox = new JComboBox<String>(items);
 		altBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (e.getActionCommand() == "y") {
@@ -275,7 +150,7 @@ public class FormPanel extends JPanel implements ListSelectionListener,
 		 * numCheck.addActionListener(chkAct);
 		 */
 
-		roleBox = new JComboBox();
+		roleBox = new JComboBox<Role>();
 		roleBox.setPreferredSize(new Dimension(56, 25));
 		roleBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -439,7 +314,7 @@ public class FormPanel extends JPanel implements ListSelectionListener,
 		pk.setToolTipText("Penalty");
 		cap = new JobList(of, 5, " C ", Color.red);
 		cap.setToolTipText("Captain");
-		formBox = new JComboBox();
+		formBox = new JComboBox<String>();
 		formBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int i = formBox.getSelectedIndex();
@@ -503,7 +378,7 @@ public class FormPanel extends JPanel implements ListSelectionListener,
 		});
 		// formBox.setEnabled(false);
 
-		snapButton = new JButton("Snapshot");
+		JButton snapButton = new JButton("Snapshot");
 		snapButton
 				.setToolTipText("Save the formation diagram to a .png image file");
 		snapButton.addActionListener(new ActionListener() {
@@ -589,7 +464,7 @@ public class FormPanel extends JPanel implements ListSelectionListener,
 			fromPitch = false;
 			updateRoleBox();
 		} else {
-			if (e.getValueIsAdjusting() == false && ok) {
+			if (!e.getValueIsAdjusting() && ok) {
 				int i = squadList.getSelectedIndex();
 				updateRoleBox();
 				if (i >= 0 && i < 11) {
@@ -886,7 +761,7 @@ public class FormPanel extends JPanel implements ListSelectionListener,
 			formName[0] = String.valueOf(def) + "-" + String.valueOf(mid) + "-"
 					+ String.valueOf(att);
 		}
-		DefaultComboBoxModel model = new DefaultComboBoxModel(formName);
+		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>(formName);
 		formBox.setModel(model);
 		formBox.setActionCommand("y");
 		// System.out.println(def + "-" + mid + "-" + att);
@@ -969,7 +844,7 @@ public class FormPanel extends JPanel implements ListSelectionListener,
 
 	public void dragOver(DropTargetDragEvent event) {
 		int i = squadList.locationToIndex(event.getLocation());
-		Player p = (Player) (squadList.getModel().getElementAt(i));
+		Player p = squadList.getModel().getElementAt(i);
 		squadList.setSelectedIndex(i);
 		if (i != -1 && i != sourceIndex && p.index != 0) {
 			event.acceptDrag(DnDConstants.ACTION_MOVE);
@@ -1026,7 +901,7 @@ public class FormPanel extends JPanel implements ListSelectionListener,
 
 	public void dragGestureRecognized(DragGestureEvent event) {
 		sourceIndex = squadList.getSelectedIndex();
-		Player p = (Player) squadList.getSelectedValue();
+		Player p = squadList.getSelectedValue();
 		if (sourceIndex != -1 && p.index != 0) {
 			posList.selectPos(squadList, sourceIndex);
 

@@ -63,7 +63,7 @@ public final class Editor extends JFrame {
 		PlayerDialog playerDia = new PlayerDialog(this, of, playerImportDia);
 		FormationDialog teamDia = new FormationDialog(this, of);
 		//
-		transferPan = new TransferPanel(playerDia, of, teamDia);
+		transferPan = new TransferPanel(of, playerDia, teamDia);
 
 		logoImportDia = new LogoImportDialog(this, of, of2);
 		imagePanel = new LogoPanel(of, logoImportDia);

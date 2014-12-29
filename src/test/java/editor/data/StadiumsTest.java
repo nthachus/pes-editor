@@ -40,7 +40,7 @@ public final class StadiumsTest extends BaseTest {
 		OptionFile of = loadOriginalOF();
 		OptionFile of2 = loadLatestOF();
 
-		// first difference league name
+		// first difference stadium name
 		int i = 0;
 		for (; i < Stadiums.TOTAL; i++) {
 			if (!Stadiums.get(of2, i).equals(Stadiums.get(of, i)))

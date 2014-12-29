@@ -340,6 +340,8 @@ public final class Stats {
 		if (null == of) throw new NullPointerException("of");
 		if (null == stat) throw new NullPointerException("stat");
 
+		int ofs = stat.getOffset(player);
+
 		if (stat.getType() == StatType.nationId) {
 			if (value == NATION.length - 1) {
 				value = 100;
@@ -348,7 +350,6 @@ public final class Stats {
 			}
 		}
 
-		int ofs = stat.getOffset(player);
 		int old = Bits.toInt16(of.getData(), ofs - 1);
 		old &= stat.getUnmask();
 

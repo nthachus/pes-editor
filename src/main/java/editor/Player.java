@@ -9,27 +9,82 @@ import java.io.UnsupportedEncodingException;
 public class Player implements Serializable, Comparable<Player> {
 	private static final long serialVersionUID = 1L;
 
+	//region Constants
+
+	public static final int TOTAL_CLUB_PLAYERS = 3042;
+
+	/**
+	 * The first ID of Classic players.
+	 */
+	public static final int FIRST_CLASSIC = Squads.NATION_COUNT * Formations.NATION_TEAM_SIZE + 1;
+	/**
+	 * The first ID of Club players.
+	 */
+	public static final int FIRST_CLUB = FIRST_CLASSIC + Squads.CLASSIC_COUNT * Formations.NATION_TEAM_SIZE;
+	/**
+	 * The first ID of Japan plus players (NOTE: Also is the first "PES United" ID).
+	 */
+	public static final int FIRST_JAPAN = FIRST_CLUB + TOTAL_CLUB_PLAYERS;
+	public static final int TOTAL_JAPAN_PLAYERS = 19;
+	/**
+	 * The first ID of Master League default players.
+	 */
+	public static final int FIRST_ML = FIRST_JAPAN + TOTAL_JAPAN_PLAYERS;
+	public static final int TOTAL_ML_PLAYERS = 28;
+	public static final int FIRST_SHOP = FIRST_ML + TOTAL_ML_PLAYERS;
+	public static final int TOTAL_SHOP = 160;
+
+	public static final int FIRST_YOUNG = FIRST_SHOP + TOTAL_SHOP;
+	/**
+	 * NOTE: There are 150 Free-Agents (Old and young players).
+	 */
+	public static final int TOTAL_YOUNG_PLAYERS = 140;
+	public static final int FIRST_OLD = FIRST_YOUNG + TOTAL_YOUNG_PLAYERS;
+	public static final int TOTAL_OLD_PLAYERS = 10;
+	public static final int FIRST_UNUSED = FIRST_OLD + TOTAL_OLD_PLAYERS;
+
+	/**
+	 * The first custom (edited) player ID (32768).
+	 */
+	public static final int FIRST_EDIT = 0x8000;
+	public static final int TOTAL_EDIT = 184;
+
+	//endregion
+
+	//region Player Offset
+
 	/**
 	 * Record size in bytes.
 	 */
 	public static final int SIZE = 124;
 
-	public static final int START_EDIT_ADR = 12092;
-	public static final int START_ADR = 34920;
+	public static final int START_EDIT_ADR = OptionFile.blockAddress(3);
+	public static final int START_ADR = OptionFile.blockAddress(4);
 
-	//public static int firstJapan = 4485;
-	public static final int firstML = 4603;
-	public static final int firstShop = 4631;
-	public static final int firstYoung = 4791;
-	public static final int firstOld = 4931;
-	public static final int FIRST_UNUSED = 4941;
-	public static final int FIRST_EDIT = 32768;
-	public static final int TOTAL = 4941;
-	public static final int TOTAL_EDIT = 184;
-	public static final int TOTAL_SHOP = 160;
-	public static final int firstClassic = 1381;
-	public static final int firstClub = 1542;
-	public static final int firstPESUnited = 4584;
+	public static final int TOTAL = FIRST_UNUSED;
+	public static final int END_ADR = START_ADR + TOTAL * SIZE;
+
+	/**
+	 * We don't have the player at index 0.
+	 */
+	public static void validatePlayerId(int player) throws IndexOutOfBoundsException {
+		if (player <= 0 || (player >= TOTAL && player < FIRST_EDIT) || player >= FIRST_EDIT + TOTAL_EDIT)
+			throw new IndexOutOfBoundsException("player");
+	}
+
+	/**
+	 * Entry point address of a player.
+	 */
+	public static int getOffset(int player) {
+		validatePlayerId(player);
+
+		if (player >= FIRST_EDIT)
+			return START_EDIT_ADR + (player - FIRST_EDIT) * SIZE;
+
+		return START_ADR + player * SIZE;
+	}
+
+	//endregion
 
 	private final OptionFile of;
 
@@ -37,26 +92,26 @@ public class Player implements Serializable, Comparable<Player> {
 	public int index;
 	public int adr;
 
-	public Player(OptionFile opf, int i, int sa) {
-		of = opf;
-		if (of == null)
-			throw new NullPointerException();
+	public Player(OptionFile of, int index, int squadNumAdr) {
+		if (of == null) throw new NullPointerException();
+		this.of = of;
+
 		boolean end;
-		index = i;
-		adr = sa;
-		if (i == 0) {
+		this.index = index;
+		adr = squadNumAdr;
+		if (index == 0) {
 			name = "<empty>";
-		} else if (i < 0 || (i >= TOTAL && i < FIRST_EDIT) || i > 32951) {
+		} else if (index < 0 || (index >= TOTAL && index < FIRST_EDIT) || index > 32951) {
 			name = "<ERROR>";
-			index = 0;
+			this.index = 0;
 		} else {
 			// adr = 31568 + (i * 124);
 			int a = START_ADR;
-			int offSet = i * 124;
-			if (i >= FIRST_EDIT) {
+			int offSet = index * 124;
+			if (index >= FIRST_EDIT) {
 				// adr = 8744 + (i * 124);
 				a = START_EDIT_ADR;
-				offSet = (i - FIRST_EDIT) * 124;
+				offSet = (index - FIRST_EDIT) * 124;
 			}
 			byte[] nameBytes = new byte[32];
 			System.arraycopy(of.getData(), a + offSet, nameBytes, 0, 32);
@@ -71,17 +126,17 @@ public class Player implements Serializable, Comparable<Player> {
 			try {
 				name = new String(nameBytes, 0, len, "UTF-16LE");
 			} catch (UnsupportedEncodingException e) {
-				name = "<Error " + String.valueOf(index) + ">";
+				name = "<Error " + String.valueOf(this.index) + ">";
 			}
 
-			if (name.equals("") && index >= FIRST_EDIT) {
+			if (name.equals("") && this.index >= FIRST_EDIT) {
 				// name = "<???>";
-				name = "<Edited " + String.valueOf(index - FIRST_EDIT) + ">";
+				name = "<Edited " + String.valueOf(this.index - FIRST_EDIT) + ">";
 			} else if (name.equals("")) {
-				if (index >= FIRST_UNUSED) {
-					name = "<Unused " + String.valueOf(index) + ">";
+				if (this.index >= FIRST_UNUSED) {
+					name = "<Unused " + String.valueOf(this.index) + ">";
 				} else {
-					name = "<L " + String.valueOf(index) + ">";
+					name = "<L " + String.valueOf(this.index) + ">";
 				}
 			}
 		}
@@ -97,9 +152,10 @@ public class Player implements Serializable, Comparable<Player> {
 			return 1;
 
 		int cmp = name.compareTo(other.name);
-		if (cmp == 0)
-			cmp = Integer.compare(Stats.getValue(of, index, Stats.AGE), Stats.getValue(of, other.index, Stats.AGE));
-
+		if (cmp == 0) {
+			cmp = Integer.compare(Stats.getValue(of, index, Stats.AGE),
+					Stats.getValue(of, other.index, Stats.AGE));
+		}
 		return cmp;
 	}
 
@@ -207,13 +263,6 @@ public class Player implements Serializable, Comparable<Player> {
 		}
 		result = result + n.substring(n.length() - 1, n.length());
 		setShirtName(result);
-	}
-
-	public static int getOffset(int player) {
-		if (player >= FIRST_EDIT)
-			return START_EDIT_ADR + (player - FIRST_EDIT) * SIZE;
-
-		return START_ADR + player * SIZE;
 	}
 
 }
