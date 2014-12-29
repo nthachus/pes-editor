@@ -30,7 +30,7 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 		JPanel flagPanel = new JPanel(new GridLayout(3, 4));
 		for (int i = 0; i < flagButton.length; i++) {
 			// load each flag background images
-			URL backUrl = getClass().getResource("/images/backFlag" + i + ".png");
+			URL backUrl = getClass().getResource("/META-INF/images/backFlag" + i + ".png");
 			if (null != backUrl) {
 				try {
 					BufferedImage img = ImageIO.read(backUrl);

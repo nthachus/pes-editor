@@ -35,8 +35,9 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 		editor.addActionListener(this);
 
 		list = new JList<String>();
+		list.setFixedCellHeight(Math.round(Editor.LINE_HEIGHT * getFont().getSize()));
+		list.setVisibleRowCount(Stadiums.TOTAL);
 		list.addListSelectionListener(this);
-		list.setVisibleRowCount(21);
 
 		JScrollPane scroll = new JScrollPane(
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -59,7 +60,7 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 		int stadiumId = list.getSelectedIndex();
 		String text = editor.getText();
 
-		if (stadiumId >= 0 && !Strings.isEmpty(text) && text.length() <= Stadiums.NAME_LEN) {
+		if (stadiumId >= 0 && null != text && text.length() <= Stadiums.NAME_LEN) {
 			if (!text.equals(Stadiums.get(of, stadiumId))) {
 				Stadiums.set(of, stadiumId, text);
 				teamPanel.refresh();

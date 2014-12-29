@@ -13,14 +13,19 @@ import java.awt.event.ActionListener;
 public class LeaguePanel extends JPanel implements ActionListener, ListSelectionListener {
 	private final OptionFile of;
 
-	private final JTextField editor;
-	private final JList<String> list;
+	private/* final*/ JTextField editor;
+	private/* final*/ JList<String> list;
 
 	public LeaguePanel(OptionFile of) {
 		super();
 		if (null == of) throw new NullPointerException("of");
 		this.of = of;
 
+		initComponents();
+		//refresh();
+	}
+
+	private void initComponents() {
 		editor = new JTextField(15);
 		editor.setToolTipText(Strings.getMessage("league.tooltip"));
 		editor.addActionListener(this);
@@ -35,7 +40,6 @@ public class LeaguePanel extends JPanel implements ActionListener, ListSelection
 		contentPane.add(editor);
 
 		add(contentPane);
-		//refresh();
 	}
 
 	public void refresh() {

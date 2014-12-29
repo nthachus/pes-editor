@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 public class ImportPanel extends JPanel {
 	private final OptionFile of;
 	private final OptionFile of2;
+
 	private final WenShopPanel wenShop;
 	private final StadiumPanel stadiumPan;
 	private final LeaguePanel leaguePan;

@@ -1,25 +1,3 @@
-/*
- * Copyright 2008-9 Compulsion
- * <pes_compulsion@yahoo.co.uk>
- * <http://www.purplehaze.eclipse.co.uk/>
- * <http://uk.geocities.com/pes_compulsion/>
- *
- * This file is part of PES Editor.
- *
- * PES Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PES Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PES Editor.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package editor;
 
 import editor.data.OptionFile;
@@ -41,53 +19,39 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class TeamPanel extends JPanel implements ActionListener,
-		ListSelectionListener, MouseListener {
-	OptionFile of;
+public class TeamPanel extends JPanel implements ActionListener, ListSelectionListener, MouseListener {
+	private final OptionFile of;
+	private final OptionFile of2;
 
-	OptionFile of2;
+	private final JList<String> list;
+	private final JTextField editor;
+	private final JTextField abvEditor;
 
-	private final JList list;
+	private final TransferPanel tran;
 
-	JTextField editor;
+	private String[] team = new String[Clubs.TOTAL];
 
-	JTextField abvEditor;
+	private final JButton badgeButton;
+	private final JButton backButton;
+	private final JComboBox<String> stadiumBox;
 
-	TransferPanel tran;
-
-	String[] team = new String[Clubs.TOTAL];
-
-	String[] abv = new String[Clubs.TOTAL];
-
-	JButton badgeButton;
-
-	JButton backButton;
-
-	JComboBox stadiumBox;
-
-	JPanel panel3;
-
-	EmblemChooserDialog flagChooser;
-
-	LogoChooserDialog logoChooser;
-
-	LogoPanel imagePan;
+	private final JPanel panel3;
+	private final EmblemChooserDialog flagChooser;
+	private final LogoChooserDialog logoChooser;
+	private final LogoPanel imagePan;
 
 	private volatile EmblemPanel emblemPan;
+	private volatile boolean ok = false;
 
-	private boolean ok = false;
+	private final GlobalPanel globalPanel;
+	private final BackChooserDialog backChooser;
 
-	private GlobalPanel globalPanel;
+	private final JButton colour1But;
+	private final JButton colour2But;
 
-	private BackChooserDialog backChooser;
+	private final KitImportDialog kitImpDia;
 
-	private JButton colour1But;
-
-	private JButton colour2But;
-
-	private KitImportDialog kitImpDia;
-
-	private DefaultIcon defaultIcon = new DefaultIcon();
+	private final DefaultIcon defaultIcon = new DefaultIcon();
 
 	public TeamPanel(
 			OptionFile opf, TransferPanel tr, EmblemChooserDialog fc,
@@ -192,7 +156,7 @@ public class TeamPanel extends JPanel implements ActionListener,
 			}
 		});
 
-		stadiumBox = new JComboBox();
+		stadiumBox = new JComboBox<String>();
 		stadiumBox.setAlignmentX(CENTER_ALIGNMENT);
 		stadiumBox.setPreferredSize(new Dimension(375, 25));
 		stadiumBox.addActionListener(new ActionListener() {
@@ -205,7 +169,7 @@ public class TeamPanel extends JPanel implements ActionListener,
 			}
 		});
 
-		list = new JList();
+		list = new JList<String>();
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setLayoutOrientation(JList.VERTICAL);
 		list.setVisibleRowCount(11);

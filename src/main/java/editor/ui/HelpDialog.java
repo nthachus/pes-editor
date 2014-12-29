@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.Locale;
 
 public class HelpDialog extends JDialog {
-	private static final String INDEX_PAGE = "/help/index%s.html";
+	private static final String INDEX_PAGE = "/META-INF/help/index%s.html";
 	private final JEditorPane editPanel;
 
 	public HelpDialog(Frame owner) {

@@ -59,7 +59,7 @@ public final class Strings {
 
 	public static ResourceBundle getMessages() {
 		if (null == messages)
-			messages = ResourceBundle.getBundle("i18n/messages");
+			messages = ResourceBundle.getBundle("META-INF/i18n/messages");
 		return messages;
 	}
 

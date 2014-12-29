@@ -27,9 +27,12 @@ public final class StadiumsTest extends BaseTest {
 			Assert.assertNotNull(s);
 		Assert.assertEquals(FIRST_STADIUM, list[0]);
 
-		String ln = FIRST_STADIUM + " " + getClass().getSimpleName();
-		Stadiums.set(of, 0, ln);
-		Assert.assertEquals(ln, Stadiums.get(of, 0));
+		String sn = FIRST_STADIUM + " " + getClass().getSimpleName();
+		Stadiums.set(of, 0, sn);
+		Assert.assertEquals(sn, Stadiums.get(of, 0));
+
+		Stadiums.set(of, 0, null);
+		Assert.assertEquals("", Stadiums.get(of, 0));
 	}
 
 	@Test

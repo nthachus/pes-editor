@@ -6,6 +6,7 @@ import editor.data.OfFormat;
 import editor.data.OptionFile;
 import editor.util.Files;
 import editor.util.Strings;
+import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -114,7 +115,7 @@ public final class Editor extends JFrame {
 	}
 
 	private void initIcon() {
-		URL imageUrl = getClass().getResource("/images/icon.png");
+		URL imageUrl = getClass().getResource("/META-INF/images/icon.png");
 		if (imageUrl != null) {
 			ImageIcon icon = new ImageIcon(imageUrl);
 			setIconImage(icon.getImage());
@@ -547,6 +548,8 @@ public final class Editor extends JFrame {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
+
 				try {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					//System.setProperty("swing.metalTheme", "steel");
