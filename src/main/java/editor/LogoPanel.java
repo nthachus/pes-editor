@@ -1,25 +1,3 @@
-/*
- * Copyright 2008-9 Compulsion
- * <pes_compulsion@yahoo.co.uk>
- * <http://www.purplehaze.eclipse.co.uk/>
- * <http://uk.geocities.com/pes_compulsion/>
- *
- * This file is part of PES Editor.
- *
- * PES Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PES Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PES Editor.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package editor;
 
 import editor.data.OptionFile;
@@ -45,7 +23,7 @@ public class LogoPanel extends JPanel {
 
 	private boolean trans = true;
 
-	private OptionFile of;
+	private final OptionFile of;
 
 	private JFileChooser chooser = new JFileChooser();
 
@@ -74,11 +52,10 @@ public class LogoPanel extends JPanel {
 			flagButton[l] = new JButton();
 			flagButton[l].setBackground(new Color(204, 204, 204));
 			flagButton[l].setMargin(new Insets(0, 0, 0, 0));
-			flagButton[l].setActionCommand((new Integer(l)).toString());
+			flagButton[l].setActionCommand(Integer.toString(l));
 			flagButton[l].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent b) {
-					int slot = (new Integer(((JButton) b.getSource())
-							.getActionCommand())).intValue();
+					int slot = Integer.parseInt(((JButton) b.getSource()).getActionCommand());
 					ImageIcon icon = null;
 					icon = new ImageIcon(Logos.get(of, slot, !trans));
 					Object[] options;
@@ -91,7 +68,7 @@ public class LogoPanel extends JPanel {
 							"Cancel"
 					};
 
-					if (imageImpDia.isOf2Open()) {
+					if (imageImpDia.isOf2Loaded()) {
 						options = options1;
 					} else {
 						options = options2;
@@ -124,7 +101,7 @@ public class LogoPanel extends JPanel {
 						savePNG(slot);
 					}
 
-					if (imageImpDia.isOf2Open() && n == 2) {
+					if (imageImpDia.isOf2Loaded() && n == 2) {
 						imageImpDia.show(slot, "Import Logo");
 						flagButton[slot].setIcon(new ImageIcon(Logos.get(of,
 								slot, !trans)));

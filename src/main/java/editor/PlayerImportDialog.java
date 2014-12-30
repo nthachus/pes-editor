@@ -1,25 +1,3 @@
-/*
- * Copyright 2008-9 Compulsion
- * <pes_compulsion@yahoo.co.uk>
- * <http://www.purplehaze.eclipse.co.uk/>
- * <http://uk.geocities.com/pes_compulsion/>
- *
- * This file is part of PES Editor.
- *
- * PES Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PES Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PES Editor.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package editor;
 
 import editor.data.OptionFile;
@@ -34,27 +12,18 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class PlayerImportDialog extends JDialog implements
-		ListSelectionListener, MouseListener {
-	OptionFile of;
+public class PlayerImportDialog extends JDialog implements ListSelectionListener, MouseListener {
+	private final OptionFile of;
+	private final OptionFile of2;
 
-	OptionFile of2;
+	private volatile int index;
+	private volatile int replacement;
 
-	JLabel fileLabel;
-
-	SelectByTeam plList;
-
-	InfoPanel infoPanel;
-
-	private volatile boolean of2Open;
-
-	int index;
-
-	int replacement;
-
-	JRadioButton allButton;
-
-	JRadioButton statsButton;
+	private JLabel fileLabel;
+	private SelectByTeam plList;
+	private InfoPanel infoPanel;
+	private JRadioButton allButton;
+	private JRadioButton statsButton;
 
 	public PlayerImportDialog(Frame owner, OptionFile opf, OptionFile opf2) {
 		super(owner, "Import Player", true);
@@ -90,19 +59,14 @@ public class PlayerImportDialog extends JDialog implements
 		getContentPane().add(cancelButton, BorderLayout.SOUTH);
 		getContentPane().add(topPanel, BorderLayout.NORTH);
 
-		of2Open = false;
 		index = 0;
 		replacement = 0;
 		pack();
 		setResizable(false);
 	}
 
-	public boolean isOf2Open() {
-		return of2Open;
-	}
-
-	public void setOf2Open(boolean of2Open) {
-		this.of2Open = of2Open;
+	public boolean isOf2Loaded() {
+		return of2.isLoaded();
 	}
 
 	public void show(int i) {
@@ -112,7 +76,6 @@ public class PlayerImportDialog extends JDialog implements
 
 	public void refresh() {
 		plList.refresh();
-		of2Open = true;
 		fileLabel.setText("  From:  " + of2.getFilename());
 		index = 0;
 		replacement = 0;

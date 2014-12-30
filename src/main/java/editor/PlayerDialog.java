@@ -90,8 +90,8 @@ public class PlayerDialog extends JDialog {// implements ListSelectionListener, 
 	public void show(Player p) {
 		index = p.index;
 		player = p;
-		setTitle("Edit Player - " + String.valueOf(index) + " - " + p.name);
-		if (plImpDia.isOf2Open()) {
+		setTitle("Edit Player - " + Integer.toString(index) + " - " + p.name);
+		if (plImpDia.isOf2Loaded()) {
 			importButton.setVisible(true);
 		} else {
 			importButton.setVisible(false);

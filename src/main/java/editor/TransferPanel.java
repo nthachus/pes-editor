@@ -304,7 +304,7 @@ public class TransferPanel extends JPanel
 					setText("");
 				} else {
 					source = 2;
-					setText(String.valueOf(getShirt(source, selectorL.getNumList().getSelectedIndex())));
+					setText(Integer.toString(getShirt(source, selectorL.getNumList().getSelectedIndex())));
 					selectorR.getNumList().clearSelection();
 					selectAll();
 				}
@@ -314,7 +314,7 @@ public class TransferPanel extends JPanel
 					setText("");
 				} else {
 					source = 3;
-					setText(String.valueOf(getShirt(source, selectorR.getNumList().getSelectedIndex())));
+					setText(Integer.toString(getShirt(source, selectorR.getNumList().getSelectedIndex())));
 					selectorL.getNumList().clearSelection();
 					selectAll();
 				}

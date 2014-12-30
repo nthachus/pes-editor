@@ -29,7 +29,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 			regCheck[i] = new JCheckBox(Stats.ROLES[i].getName());
 
 			if (i != 1) {
-				regCheck[i].setActionCommand(String.valueOf(i));
+				regCheck[i].setActionCommand(Integer.toString(i));
 				regCheck[i].addActionListener(this);
 				panel.add(regCheck[i]);
 			}

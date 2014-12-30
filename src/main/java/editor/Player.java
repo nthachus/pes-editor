@@ -126,17 +126,17 @@ public class Player implements Serializable, Comparable<Player> {
 			try {
 				name = new String(nameBytes, 0, len, "UTF-16LE");
 			} catch (UnsupportedEncodingException e) {
-				name = "<Error " + String.valueOf(this.index) + ">";
+				name = "<Error " + Integer.toString(this.index) + ">";
 			}
 
 			if (name.equals("") && this.index >= FIRST_EDIT) {
 				// name = "<???>";
-				name = "<Edited " + String.valueOf(this.index - FIRST_EDIT) + ">";
+				name = "<Edited " + Integer.toString(this.index - FIRST_EDIT) + ">";
 			} else if (name.equals("")) {
 				if (this.index >= FIRST_UNUSED) {
-					name = "<Unused " + String.valueOf(this.index) + ">";
+					name = "<Unused " + Integer.toString(this.index) + ">";
 				} else {
-					name = "<L " + String.valueOf(this.index) + ">";
+					name = "<L " + Integer.toString(this.index) + ">";
 				}
 			}
 		}

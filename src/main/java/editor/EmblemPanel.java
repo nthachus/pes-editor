@@ -1,25 +1,3 @@
-/*
- * Copyright 2008-9 Compulsion
- * <pes_compulsion@yahoo.co.uk>
- * <http://www.purplehaze.eclipse.co.uk/>
- * <http://uk.geocities.com/pes_compulsion/>
- *
- * This file is part of PES Editor.
- *
- * PES Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PES Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PES Editor.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package editor;
 
 import editor.data.OptionFile;
@@ -47,7 +25,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 
 	private boolean trans = true;
 
-	private OptionFile of;
+	private final OptionFile of;
 
 	private JFileChooser chooser = new JFileChooser();
 
@@ -91,12 +69,11 @@ public class EmblemPanel extends JPanel implements MouseListener {
 			flagButton[l] = new JButton();
 			flagButton[l].setBackground(new Color(204, 204, 204));
 			flagButton[l].setMargin(new Insets(0, 0, 0, 0));
-			flagButton[l].setActionCommand((new Integer(l)).toString());
+			flagButton[l].setActionCommand(Integer.toString(l));
 			flagButton[l].addMouseListener(this);
 			flagButton[l].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent b) {
-					int slot = (new Integer(((JButton) b.getSource())
-							.getActionCommand())).intValue();
+					int slot = Integer.parseInt(((JButton) b.getSource()).getActionCommand());
 					ImageIcon icon = null;
 					boolean is128 = false;
 					if (slot >= Emblems.count16(of)) {
@@ -117,7 +94,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 							"Delete", "Import PNG / GIF",
 							"Export as PNG", "Cancel"
 					};
-					if (flagImpDia.isOf2Open()) {
+					if (flagImpDia.isOf2Loaded()) {
 						options = options1;
 					} else {
 						options = options2;
@@ -174,22 +151,19 @@ public class EmblemPanel extends JPanel implements MouseListener {
 					if (n == 2) {
 						savePNG(is128, slot);
 					}
-					if (flagImpDia.isOf2Open() && n == 3) {
+					if (flagImpDia.isOf2Loaded() && n == 3) {
 						int replacement = -1;
 						if (is128) {
-							replacement = flagImpDia
-									.getFlag("Import Emblem", 2);
+							replacement = flagImpDia.getFlag("Import Emblem", 2);
 							if (replacement != -1) {
-								Emblems.import128(of, slot, flagImpDia.of,
-										replacement);
+								flagImpDia.import128(of, slot, replacement);
 							}
 						} else {
 							replacement = flagImpDia
 									.getFlag("Import Emblem", 1);
 							if (replacement != -1) {
 								replacement = replacement - Emblems.TOTAL128;
-								Emblems.import16(of, slot, flagImpDia.of,
-										replacement);
+								flagImpDia.import16(of, slot, replacement);
 							}
 						}
 
@@ -226,14 +200,12 @@ public class EmblemPanel extends JPanel implements MouseListener {
 							int check = checkImage(image);
 							if (check != -1) {
 								if (check < 16) {
-									Emblems.set16(of, Emblems.count16(of),
-											image);
+									Emblems.set16(of, Emblems.count16(of), image);
 								} else {
 									if (Emblems.getFree128(of) == 0) {
 										noSpaceMsg();
 									} else {
-										Emblems.set128(of,
-												Emblems.count128(of), image);
+										Emblems.set128(of, Emblems.count128(of), image);
 									}
 								}
 								teamPanel.refresh();
@@ -262,11 +234,9 @@ public class EmblemPanel extends JPanel implements MouseListener {
 				if (emblem != -1) {
 					if (emblem > Emblems.TOTAL128 - 1) {
 						emblem = emblem - Emblems.TOTAL128;
-						Emblems.import16(of, Emblems.count16(of),
-								flagImpDia.of, emblem);
+						flagImpDia.import16(of, Emblems.count16(of), emblem);
 					} else {
-						Emblems.import128(of, Emblems.count128(of),
-								flagImpDia.of, emblem);
+						flagImpDia.import128(of, Emblems.count128(of), emblem);
 					}
 					teamPanel.refresh();
 					refresh();
@@ -379,7 +349,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 		free16Label.setText("16-colour, can stock: " + Emblems.getFree16(of));
 		free128Label
 				.setText("128-colour, can stock: " + Emblems.getFree128(of));
-		if (flagImpDia.isOf2Open()) {
+		if (flagImpDia.isOf2Loaded()) {
 			add2Button.setVisible(true);
 		} else {
 			add2Button.setVisible(false);
@@ -401,14 +371,12 @@ public class EmblemPanel extends JPanel implements MouseListener {
 
 	public void mouseEntered(MouseEvent e) {
 		JButton but = (JButton) e.getSource();
-		int slot = new Integer(but.getActionCommand()).intValue();
+		int slot = Integer.parseInt(but.getActionCommand());
 		if (slot >= Emblems.count16(of)) {
 			slot = Emblems.TOTAL16 - 1 - slot;
-			largeFlag.setIcon(new ImageIcon(Emblems.get128(of, slot, !trans,
-					false)));
+			largeFlag.setIcon(new ImageIcon(Emblems.get128(of, slot, !trans, false)));
 		} else {
-			largeFlag.setIcon(new ImageIcon(Emblems.get16(of, slot, !trans,
-					false)));
+			largeFlag.setIcon(new ImageIcon(Emblems.get16(of, slot, !trans, false)));
 		}
 	}
 

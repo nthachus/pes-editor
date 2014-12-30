@@ -9,65 +9,46 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class EmblemImportDialog extends JDialog {
-	private JButton[] flagButton;
+	private final OptionFile of2;
 
-	private boolean trans = true;
+	private volatile boolean trans = true;
+	private volatile int slot;
+	private volatile byte max;
+	private volatile int type;
 
-	OptionFile of;
+	private final JButton[] emblemButtons;
+	private final JLabel fileLabel;
 
-	int slot;
-
-	byte max;
-
-	int type;
-
-	private volatile boolean of2Open = false;
-
-	JLabel fileLabel;
-
-	public EmblemImportDialog(Frame owner, OptionFile opt) {
+	public EmblemImportDialog(Frame owner, OptionFile of2) {
 		super(owner, true);
-		of = opt;
+		this.of2 = of2;
+
 		JPanel flagPanel;
 		max = Emblems.TOTAL16;
 		flagPanel = new JPanel(new GridLayout(6, 10));
-		flagButton = new JButton[max];
+		emblemButtons = new JButton[max];
 		fileLabel = new JLabel("From:");
 
 		for (int l = 0; l < max; l++) {
-			flagButton[l] = new JButton(new ImageIcon(Emblems.get16(of, -1,
-					false, true)));
-			// flagButton[l].setIcon();
-			flagButton[l].setMargin(new Insets(0, 0, 0, 0));
-			flagButton[l].setActionCommand((new Integer(l)).toString());
-			flagButton[l].addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent b) {
-					slot = (new Integer(((JButton) b.getSource())
-							.getActionCommand())).intValue();
-					if (slot >= Emblems.count16(of)) {
-						slot = Emblems.TOTAL16 - 1 - slot;
-					} else {
-						slot = slot + Emblems.TOTAL128;
-					}
-					setVisible(false);
+			emblemButtons[l] = new JButton(new ImageIcon(Emblems.get16(of2, -1, false, true)));
+			// emblemButtons[l].setIcon();
+			emblemButtons[l].setMargin(new Insets(0, 0, 0, 0));
+			emblemButtons[l].setActionCommand(Integer.toString(l));
+			emblemButtons[l].addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					selectEmblem(evt);
 				}
 			});
-			flagPanel.add(flagButton[l]);
+			flagPanel.add(emblemButtons[l]);
 		}
 
 		JButton transButton = new JButton("Transparency");
 		transButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent t) {
-				trans = !trans;
-				refresh();
-				// System.out.println(trans);
-				/*
-				 * for (int f = 0; f < 64; f++) { if (trans) {
-				 * flagButton[f].setIcon(of.tranFlag[f]); } else {
-				 * flagButton[f].setIcon(of.flag[f]); } }
-				 */
+			public void actionPerformed(ActionEvent evt) {
+				toggleTransparent(evt);
 			}
 		});
+
 		CancelButton cancelButton = new CancelButton(this);
 		JPanel pan1 = new JPanel(new BorderLayout());
 		pan1.add(transButton, BorderLayout.NORTH);
@@ -80,32 +61,53 @@ public class EmblemImportDialog extends JDialog {
 		pack();
 	}
 
-	public boolean isOf2Open() {
-		return of2Open;
+	private void toggleTransparent(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+		trans = !trans;
+		refresh();
+		// System.out.println(trans);
+				/*
+				 * for (int f = 0; f < 64; f++) { if (trans) {
+				 * emblemButtons[f].setIcon(of2.tranFlag[f]); } else {
+				 * emblemButtons[f].setIcon(of2.flag[f]); } }
+				 */
 	}
 
-	public void setOf2Open(boolean of2Open) {
-		this.of2Open = of2Open;
+	private void selectEmblem(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+
+		slot = Integer.parseInt(((JButton) evt.getSource()).getActionCommand());
+		if (slot >= Emblems.count16(of2)) {
+			slot = Emblems.TOTAL16 - 1 - slot;
+		} else {
+			slot = slot + Emblems.TOTAL128;
+		}
+
+		setVisible(false);
+	}
+
+	public boolean isOf2Loaded() {
+		return of2.isLoaded();
 	}
 
 	public void refresh() {
 		if (type == 0 || type == 1) {
-			for (int i = 0; i < Emblems.count16(of); i++) {
-				flagButton[i].setIcon(new ImageIcon(Emblems.get16(of, i,
+			for (int i = 0; i < Emblems.count16(of2); i++) {
+				emblemButtons[i].setIcon(new ImageIcon(Emblems.get16(of2, i,
 						!trans, true)));
-				flagButton[i].setVisible(true);
+				emblemButtons[i].setVisible(true);
 			}
 		}
 		if (type == 0 || type == 2) {
-			for (int i = 0; i < Emblems.count128(of); i++) {
-				flagButton[Emblems.TOTAL16 - 1 - i].setIcon(new ImageIcon(
-						Emblems.get128(of, i, !trans, true)));
-				flagButton[Emblems.TOTAL16 - 1 - i].setVisible(true);
+			for (int i = 0; i < Emblems.count128(of2); i++) {
+				emblemButtons[Emblems.TOTAL16 - 1 - i].setIcon(new ImageIcon(
+						Emblems.get128(of2, i, !trans, true)));
+				emblemButtons[Emblems.TOTAL16 - 1 - i].setVisible(true);
 			}
 		}
 
-		int s = Emblems.count16(of);
-		int e = Emblems.TOTAL16 - Emblems.count128(of);
+		int s = Emblems.count16(of2);
+		int e = Emblems.TOTAL16 - Emblems.count128(of2);
 		if (type == 1) {
 			e = Emblems.TOTAL16;
 		}
@@ -113,7 +115,7 @@ public class EmblemImportDialog extends JDialog {
 			s = 0;
 		}
 		for (int i = s; i < e; i++) {
-			flagButton[i].setVisible(false);
+			emblemButtons[i].setVisible(false);
 		}
 	}
 
@@ -121,10 +123,18 @@ public class EmblemImportDialog extends JDialog {
 		type = t;
 		slot = -1;
 		setTitle(title);
-		fileLabel.setText("  From:  " + of.getFilename());
+		fileLabel.setText("  From:  " + of2.getFilename());
 		refresh();
 		setVisible(true);
 		return slot;
+	}
+
+	public void import128(OptionFile of, int slot, int replacement) {
+		Emblems.import128(of, slot, of2, replacement);
+	}
+
+	public void import16(OptionFile of, int slot, int replacement) {
+		Emblems.import16(of, slot, of2, replacement);
 	}
 
 }

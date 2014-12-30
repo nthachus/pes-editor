@@ -234,7 +234,7 @@ public class FormPanel extends JPanel
 							 * (altBox.getSelectedIndex() 171)] = 0;
 							 * of.data[670784 + (628 team) + 6232 +
 							 * (altBox.getSelectedIndex() 171)] = 0;
-							 * 
+							 *
 							 * for (int i = 1; swe == of.data[670785 + (628
 							 * team) + 6232 + (altBox.getSelectedIndex() 171)]
 							 * && i < 11; i++) { String pos =
@@ -243,7 +243,7 @@ public class FormPanel extends JPanel
 							 * pos.equals("ASW")) { of.data[670785 + (628 team)
 							 * + 6232 + (altBox.getSelectedIndex() 171)] =
 							 * (byte)i; } }
-							 * 
+							 *
 							 * }
 							 */
 
@@ -337,14 +337,14 @@ public class FormPanel extends JPanel
 					 * of.data[670784 + (628 team) + 6232 +
 					 * (altBox.getSelectedIndex() 171)] = 0; //
 					 * System.out.println("changing");
-					 * 
+					 *
 					 * for (byte k = 1; swe == of.data[670785 + (628 team) +
 					 * 6232 + (altBox.getSelectedIndex() 171)] && k < 11; k++) {
 					 * String posS = (String)posList.getModel().getElementAt(k);
 					 * if (posS.equals("CBT") || posS.equals("CBW") ||
 					 * posS.equals("ASW")) { of.data[670785 + (628 team) + 6232
 					 * + (altBox.getSelectedIndex() 171)] = (byte)k; } }
-					 * 
+					 *
 					 * }
 					 */
 
@@ -718,7 +718,7 @@ public class FormPanel extends JPanel
 			}
 
 			if (index > 40) {
-				name = String.valueOf(index);
+				name = Integer.toString(index);
 			}
 		}
 
@@ -751,15 +751,15 @@ public class FormPanel extends JPanel
 		if (mid2 > 0 && mid2 < 3) {
 			mid = mid - mid2;
 			if (mid == 0) {
-				formName[0] = String.valueOf(def) + "-" + String.valueOf(mid2) + "-"
-						+ String.valueOf(att);
+				formName[0] = Integer.toString(def) + "-" + Integer.toString(mid2) + "-"
+						+ Integer.toString(att);
 			} else {
-				formName[0] = String.valueOf(def) + "-" + String.valueOf(mid) + "-"
-						+ String.valueOf(mid2) + "-" + String.valueOf(att);
+				formName[0] = Integer.toString(def) + "-" + Integer.toString(mid) + "-"
+						+ Integer.toString(mid2) + "-" + Integer.toString(att);
 			}
 		} else {
-			formName[0] = String.valueOf(def) + "-" + String.valueOf(mid) + "-"
-					+ String.valueOf(att);
+			formName[0] = Integer.toString(def) + "-" + Integer.toString(mid) + "-"
+					+ Integer.toString(att);
 		}
 		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>(formName);
 		formBox.setModel(model);

@@ -34,7 +34,6 @@ public final class Editor extends JFrame {
 	private final LeaguePanel leaguePan;
 	private final JTabbedPane tabbedPane;
 	private final PlayerImportDialog playerImportDia;
-	private final EmblemImportDialog emblemImportDia;
 	private final LogoImportDialog logoImportDia;
 	private final ImportPanel importPanel;
 	private final HelpDialog helpDia;
@@ -75,7 +74,7 @@ public final class Editor extends JFrame {
 		teamPan = new TeamPanel(
 				of, transferPan, emblemChooser, of2, imagePanel, globalPan, kitImportDia, logoChooser);
 
-		emblemImportDia = new EmblemImportDialog(this, of2);
+		EmblemImportDialog emblemImportDia = new EmblemImportDialog(this, of2);
 		flagPanel = new EmblemPanel(of, emblemImportDia, teamPan);
 		teamPan.setEmblemPan(flagPanel);
 
@@ -411,7 +410,6 @@ public final class Editor extends JFrame {
 			Squads.fixAll(of2);
 
 			playerImportDia.refresh();
-			emblemImportDia.setOf2Open(true);
 			logoImportDia.refresh();
 			importPanel.refresh();
 			flagPanel.refresh();
@@ -420,9 +418,6 @@ public final class Editor extends JFrame {
 
 		} else {
 			teamPan.getList().setToolTipText(null);
-			playerImportDia.setOf2Open(false);
-			emblemImportDia.setOf2Open(false);
-			logoImportDia.setOf2Open(false);
 			flagPanel.refresh();
 			importPanel.refresh();
 			convertItem.setEnabled(false);

@@ -100,7 +100,7 @@ public class PositionList extends JList<String> {
 				}
 
 				if (p > 40) {
-					pos[i + 1] = String.valueOf(p);
+					pos[i + 1] = Integer.toString(p);
 				}
 			}
 			for (int i = 11; i < 32; i++) {

@@ -3,10 +3,7 @@ package editor;
 import editor.data.OptionFile;
 import editor.data.Stadiums;
 import editor.data.Stats;
-import editor.ui.BackChooserDialog;
-import editor.ui.CopySwapIcon;
-import editor.ui.DefaultIcon;
-import editor.ui.EmblemChooserDialog;
+import editor.ui.*;
 import editor.util.Bits;
 import editor.util.Strings;
 
@@ -455,7 +452,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				logos[l] = 88;
 			}
 		}
-		for (int t = 0; t < Clubs.TOTAL + Kits.totalN; t++) {
+		for (int t = 0; t < Clubs.TOTAL + Squads.NATION_COUNT + Squads.CLASSIC_COUNT; t++) {
 			for (int l = 0; t != t1 && l < 4; l++) {
 				if (logos[l] != 88) {
 					for (int k = 0; k < 4; k++) {

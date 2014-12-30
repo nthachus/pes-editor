@@ -66,7 +66,7 @@ public class StrategyPanel extends JPanel {
 			labels[i].setIcon(new Ps2ButtonIcon(ControlButton.valueOf(i)));
 
 			butBox[i] = new JComboBox<String>(items);
-			butBox[i].setActionCommand(String.valueOf(i));
+			butBox[i].setActionCommand(Integer.toString(i));
 			butBox[i].addActionListener(act);
 		}
 		/*

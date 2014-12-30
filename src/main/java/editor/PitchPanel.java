@@ -1,25 +1,3 @@
-/*
- * Copyright 2008-9 Compulsion
- * <pes_compulsion@yahoo.co.uk>
- * <http://www.purplehaze.eclipse.co.uk/>
- * <http://uk.geocities.com/pes_compulsion/>
- *
- * This file is part of PES Editor.
- *
- * PES Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PES Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PES Editor.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package editor;
 
 import editor.data.OptionFile;
@@ -41,9 +19,8 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-public class PitchPanel extends JPanel implements MouseListener,
-		MouseMotionListener {
-	OptionFile of;
+public class PitchPanel extends JPanel implements MouseListener, MouseMotionListener {
+	private final OptionFile of;
 
 	SquadList list;
 
@@ -423,7 +400,7 @@ public class PitchPanel extends JPanel implements MouseListener,
 		}
 
 		if (p > 40) {
-			label = String.valueOf(p);
+			label = Integer.toString(p);
 		}
 		return label;
 	}

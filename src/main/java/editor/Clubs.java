@@ -74,10 +74,10 @@ public final class Clubs {
 			try {
 				club = new String(of.getData(), a, len, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				club = "<" + String.valueOf(c) + ">";
+				club = "<" + Integer.toString(c) + ">";
 			}
 		} else {
-			club = "<" + String.valueOf(c) + ">";
+			club = "<" + Integer.toString(c) + ">";
 		}
 		return club;
 	}

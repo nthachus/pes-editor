@@ -1,25 +1,3 @@
-/*
- * Copyright 2008-9 Compulsion
- * <pes_compulsion@yahoo.co.uk>
- * <http://www.purplehaze.eclipse.co.uk/>
- * <http://uk.geocities.com/pes_compulsion/>
- *
- * This file is part of PES Editor.
- *
- * PES Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PES Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PES Editor.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package editor;
 
 import editor.data.OptionFile;
@@ -31,27 +9,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LogoImportDialog extends JDialog {
-	private JButton[] flagButton;// = new JButton[64];
+	private final OptionFile of;
+	private final OptionFile of2;
 
-	private boolean trans = true;
+	private volatile boolean trans = true;
+	private volatile int slot;
+	private volatile int replacement;
 
-	private OptionFile of;
-
-	private OptionFile of2;
-
-	JLabel fileLabel;
-
-	private volatile boolean of2Open;
-
-	int slot;
-
-	int replacement;
-
-	byte max;
-
-	int adr;
-
-	int size;
+	private final JButton[] flagButton;// = new JButton[64];
+	private final JLabel fileLabel;
 
 	public LogoImportDialog(Frame owner, OptionFile opt, OptionFile opf2) {
 		super(owner, true);// "Import Flag / Emblem"
@@ -61,7 +27,7 @@ public class LogoImportDialog extends JDialog {
 		JPanel flagPanel;// = new JPanel(new GridLayout(8, 8));
 
 		// if (logoType) {
-		max = Logos.total;
+		int max = Logos.total;
 		flagPanel = new JPanel(new GridLayout(8, 10));
 		/*
 		 * } else { max = Flags.TOTAL; emptyFlag = of2.emptyFlag; flag =
@@ -73,11 +39,10 @@ public class LogoImportDialog extends JDialog {
 		for (int l = 0; l < max; l++) {
 			flagButton[l] = new JButton(new ImageIcon(Logos.get(of, -1, false)));
 			flagButton[l].setMargin(new Insets(0, 0, 0, 0));
-			flagButton[l].setActionCommand((new Integer(l)).toString());
+			flagButton[l].setActionCommand(Integer.toString(l));
 			flagButton[l].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent b) {
-					replacement = (new Integer(((JButton) b.getSource())
-							.getActionCommand())).intValue();
+					replacement = Integer.parseInt(((JButton) b.getSource()).getActionCommand());
 					importFlag();
 					setVisible(false);
 				}
@@ -100,19 +65,16 @@ public class LogoImportDialog extends JDialog {
 		getContentPane().add(topPan, BorderLayout.NORTH);
 		getContentPane().add(cancelButton, BorderLayout.SOUTH);
 		getContentPane().add(flagPanel, BorderLayout.CENTER);
-		of2Open = false;
+
 		slot = 0;
 		replacement = 0;
+
 		setResizable(false);
 		pack();
 	}
 
-	public boolean isOf2Open() {
-		return of2Open;
-	}
-
-	public void setOf2Open(boolean of2Open) {
-		this.of2Open = of2Open;
+	public boolean isOf2Loaded() {
+		return of2.isLoaded();
 	}
 
 	private void updateFlags() {
@@ -123,7 +85,7 @@ public class LogoImportDialog extends JDialog {
 
 	public void refresh() {
 		updateFlags();
-		of2Open = true;
+
 		slot = 0;
 		replacement = 0;
 

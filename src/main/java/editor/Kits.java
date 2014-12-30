@@ -1,45 +1,22 @@
-/*
- * Copyright 2008-9 Compulsion
- * <pes_compulsion@yahoo.co.uk>
- * <http://www.purplehaze.eclipse.co.uk/>
- * <http://uk.geocities.com/pes_compulsion/>
- *
- * This file is part of PES Editor.
- *
- * PES Editor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PES Editor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PES Editor.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package editor;
 
 import editor.data.OptionFile;
 
-public class Kits {
-	static final int totalN = 67;
+public final class Kits {
+	private Kits() {
+	}
 
-	static final int startAdrN = 751254;
+	public static final int START_NATION_ADR = 751254;
+	public static final int START_CLUB_ADR = 781806;
 
-	static final int sizeN = 456;
+	public static final int SIZE_NATION = 456;
+	public static final int SIZE_CLUB = 648;
 
-	static final int startAdrC = 781806;
-
-	static final int sizeC = 648;
-
-	static boolean logoUsed(OptionFile of, int team, int logo) {
-		int a = startAdrC + 358 + (sizeC * team) + (logo * 24) + 2;
+	public static boolean logoUsed(OptionFile of, int team, int logo) {
+		int a = START_CLUB_ADR + 358 + (SIZE_CLUB * team) + (logo * 24) + 2;
 		if (team >= Clubs.TOTAL) {
 			team = team - Clubs.TOTAL;
-			a = startAdrN + 358 + (sizeN * team) + (logo * 24) + 2;
+			a = START_NATION_ADR + 358 + (SIZE_NATION * team) + (logo * 24) + 2;
 		}
 		if (of.getData()[a] == 1) {
 			return true;
@@ -48,45 +25,45 @@ public class Kits {
 		}
 	}
 
-	static byte getLogo(OptionFile of, int team, int logo) {
-		int a = startAdrC + 358 + (sizeC * team) + (logo * 24) + 3;
+	public static byte getLogo(OptionFile of, int team, int logo) {
+		int a = START_CLUB_ADR + 358 + (SIZE_CLUB * team) + (logo * 24) + 3;
 		if (team >= Clubs.TOTAL) {
 			team = team - Clubs.TOTAL;
-			a = startAdrN + 358 + (sizeN * team) + (logo * 24) + 3;
+			a = START_NATION_ADR + 358 + (SIZE_NATION * team) + (logo * 24) + 3;
 		}
 		return of.getData()[a];
 	}
 
-	static void setLogo(OptionFile of, int team, int logo, byte slot) {
-		int a = startAdrC + 358 + (sizeC * team) + (logo * 24) + 3;
+	public static void setLogo(OptionFile of, int team, int logo, byte slot) {
+		int a = START_CLUB_ADR + 358 + (SIZE_CLUB * team) + (logo * 24) + 3;
 		if (team >= Clubs.TOTAL) {
 			team = team - Clubs.TOTAL;
-			a = startAdrN + 358 + (sizeN * team) + (logo * 24) + 3;
+			a = START_NATION_ADR + 358 + (SIZE_NATION * team) + (logo * 24) + 3;
 		}
 		of.getData()[a] = slot;
 	}
 
-	static void setLogoUnused(OptionFile of, int team, int logo) {
-		int a = startAdrC + 358 + (sizeC * team) + (logo * 24) + 2;
+	public static void setLogoUnused(OptionFile of, int team, int logo) {
+		int a = START_CLUB_ADR + 358 + (SIZE_CLUB * team) + (logo * 24) + 2;
 		if (team >= Clubs.TOTAL) {
 			team = team - Clubs.TOTAL;
-			a = startAdrN + 358 + (sizeN * team) + (logo * 24) + 2;
+			a = START_NATION_ADR + 358 + (SIZE_NATION * team) + (logo * 24) + 2;
 		}
 		of.getData()[a] = 0;
 		of.getData()[a + 1] = 88;
 	}
 
-	static void importKit(OptionFile of1, int team1, OptionFile of2, int team2) {
+	public static void importKit(OptionFile of1, int team1, OptionFile of2, int team2) {
 		// int t = team1;
-		int a1 = startAdrC + (sizeC * team1);
-		int a2 = startAdrC + (sizeC * team2);
-		int size = sizeC;
+		int a1 = START_CLUB_ADR + (SIZE_CLUB * team1);
+		int a2 = START_CLUB_ADR + (SIZE_CLUB * team2);
+		int size = SIZE_CLUB;
 		if (team1 >= Clubs.TOTAL) {
 			team1 = team1 - Clubs.TOTAL;
-			a1 = startAdrN + (sizeN * team1);
+			a1 = START_NATION_ADR + (SIZE_NATION * team1);
 			team2 = team2 - Clubs.TOTAL;
-			a2 = startAdrN + (sizeN * team2);
-			size = sizeN;
+			a2 = START_NATION_ADR + (SIZE_NATION * team2);
+			size = SIZE_NATION;
 		}
 		System.arraycopy(of2.getData(), a2, of1.getData(), a1, size);
 
@@ -95,19 +72,19 @@ public class Kits {
 		 */
 	}
 
-	static boolean isLic(OptionFile of,int team){
-		int a = startAdrC + 78 + (sizeC * team);
-		int b = startAdrC + 79 + (sizeC * team);
+	public static boolean isLicensed(OptionFile of, int team) {
+		int a = START_CLUB_ADR + 78 + (SIZE_CLUB * team);
+		int b = START_CLUB_ADR + 79 + (SIZE_CLUB * team);
 		//System.out.println(Clubs.getName(of, team) + " : " +of.data[a] +" " +of.data[b]);
-		if(team>= Clubs.TOTAL){
+		if (team >= Clubs.TOTAL) {
 			team = team - Clubs.TOTAL;
-			a = startAdrN + 78 + (sizeN * team);
-			b= startAdrN + 79 + (sizeN * team);
-		//	System.out.println(Stats.NATION[team] + " : " +of.data[a] +" " +of.data[b]);
+			a = START_NATION_ADR + 78 + (SIZE_NATION * team);
+			b = START_NATION_ADR + 79 + (SIZE_NATION * team);
+			//	System.out.println(Stats.NATION[team] + " : " +of.data[a] +" " +of.data[b]);
 		}
-		if(of.getData()[a] != -1 && of.getData()[b]!= -1) {
+		if (of.getData()[a] != -1 && of.getData()[b] != -1) {
 			return true;
-		} 
+		}
 		return false;
 	}
 }
