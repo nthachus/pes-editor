@@ -1,5 +1,6 @@
 package editor;
 
+import editor.data.Logos;
 import editor.data.OptionFile;
 import editor.ui.ImageFileFilter;
 import editor.ui.PngFilter;
@@ -45,10 +46,10 @@ public class LogoPanel extends JPanel {
 		chooserPNG.addChoosableFileFilter(pngFilter);
 		chooserPNG.setAcceptAllFileFilterUsed(false);
 		chooserPNG.setDialogTitle("Export Logo");
-		flagButton = new JButton[Logos.total];
+		flagButton = new JButton[Logos.TOTAL];
 		JPanel flagPanel = new JPanel(new GridLayout(8, 10));
 
-		for (int l = 0; l < Logos.total; l++) {
+		for (int l = 0; l < Logos.TOTAL; l++) {
 			flagButton[l] = new JButton();
 			flagButton[l].setBackground(new Color(204, 204, 204));
 			flagButton[l].setMargin(new Insets(0, 0, 0, 0));
@@ -181,7 +182,7 @@ public class LogoPanel extends JPanel {
 	}
 
 	public void refresh() {
-		for (int f = 0; f < Logos.total; f++) {
+		for (int f = 0; f < Logos.TOTAL; f++) {
 			flagButton[f].setIcon(new ImageIcon(Logos.get(of, f, !trans)));
 		}
 	}

@@ -17,6 +17,8 @@ public abstract class BaseTest {
 
 	protected static final String[] OF_ALL = {OF_ORIGINAL, OF_LICENSED, OF_LATEST};
 
+	protected static final String IMG_FORMAT = "png";
+
 	protected static String getResourcePath(String resourceName) {
 		if (!Strings.isEmpty(resourceName) && !resourceName.startsWith("/"))
 			return "/" + resourceName;

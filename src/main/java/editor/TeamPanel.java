@@ -1,8 +1,6 @@
 package editor;
 
-import editor.data.OptionFile;
-import editor.data.Stadiums;
-import editor.data.Stats;
+import editor.data.*;
 import editor.ui.*;
 import editor.util.Bits;
 import editor.util.Strings;
@@ -442,11 +440,12 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				Emblems.deleteImage(of, emblem1);
 			}
 		}
-		byte[] logos = new byte[4];
+
+		int[] logos = new int[4];
 		boolean[] delete = new boolean[4];
 		for (int l = 0; l < 4; l++) {
 			delete[l] = true;
-			if (Kits.logoUsed(of, t1, l)) {
+			if (Kits.isLogoUsed(of, t1, l)) {
 				logos[l] = Kits.getLogo(of, t1, l);
 			} else {
 				logos[l] = 88;
@@ -457,7 +456,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				if (logos[l] != 88) {
 					for (int k = 0; k < 4; k++) {
 						if (Kits.getLogo(of, t, k) == logos[l]) {
-							if (Kits.logoUsed(of, t, k)) {
+							if (Kits.isLogoUsed(of, t, k)) {
 								delete[l] = false;
 							} else {
 								Kits.setLogoUnused(of, t, k);
@@ -522,10 +521,10 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			}
 		}
 
-		Kits.importKit(of, t1, of2, t2);
+		Kits.importData(of2, t2, of, t1);
 
 		for (int l = 0; l < 4; l++) {
-			if (Kits.logoUsed(of2, t2, l)) {
+			if (Kits.isLogoUsed(of2, t2, l)) {
 				boolean dupe = false;
 				for (int k = 0; !dupe && k < l; k++) {
 					if (Kits.getLogo(of2, t2, l) == Kits.getLogo(of2, t2, k)) {
@@ -536,7 +535,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 					byte targ = logoChooser.getFlag("Choose logo to replace",
 							Logos.get(of2, Kits.getLogo(of2, t2, l), false));
 					if (targ != 88) {
-						Logos.importLogo(of2, Kits.getLogo(of2, t2, l), of,
+						Logos.importData(of2, Kits.getLogo(of2, t2, l), of,
 								targ);
 						for (int k = l; k < 4; k++) {
 							if (Kits.getLogo(of2, t2, l) == Kits.getLogo(of2,

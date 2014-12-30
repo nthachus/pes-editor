@@ -1,8 +1,8 @@
 package editor.ui;
 
 import editor.Clubs;
-import editor.Kits;
 import editor.Squads;
+import editor.data.Kits;
 import editor.data.OptionFile;
 import editor.data.Stats;
 import editor.util.Strings;

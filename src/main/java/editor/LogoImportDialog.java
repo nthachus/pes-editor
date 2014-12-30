@@ -1,5 +1,6 @@
 package editor;
 
+import editor.data.Logos;
 import editor.data.OptionFile;
 import editor.ui.CancelButton;
 
@@ -27,7 +28,7 @@ public class LogoImportDialog extends JDialog {
 		JPanel flagPanel;// = new JPanel(new GridLayout(8, 8));
 
 		// if (logoType) {
-		int max = Logos.total;
+		int max = Logos.TOTAL;
 		flagPanel = new JPanel(new GridLayout(8, 10));
 		/*
 		 * } else { max = Flags.TOTAL; emptyFlag = of2.emptyFlag; flag =
@@ -78,7 +79,7 @@ public class LogoImportDialog extends JDialog {
 	}
 
 	private void updateFlags() {
-		for (int f = 0; f < Logos.total; f++) {
+		for (int f = 0; f < Logos.TOTAL; f++) {
 			flagButton[f].setIcon(new ImageIcon(Logos.get(of2, f, !trans)));
 		}
 	}
@@ -99,7 +100,7 @@ public class LogoImportDialog extends JDialog {
 	}
 
 	private void importFlag() {
-		Logos.importLogo(of2, replacement, of, slot);
+		Logos.importData(of2, replacement, of, slot);
 	}
 
 }

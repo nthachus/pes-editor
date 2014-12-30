@@ -20,50 +20,37 @@ import java.io.File;
 import java.io.IOException;
 
 public class EmblemPanel extends JPanel implements MouseListener {
-
-	private JButton[] flagButton;
-
-	private boolean trans = true;
-
 	private final OptionFile of;
+	private final EmblemImportDialog flagImpDia;
+	private final TeamPanel teamPanel;
 
 	private JFileChooser chooser = new JFileChooser();
-
 	private JFileChooser chooserPNG = new JFileChooser();
 
-	private ImageFileFilter filter128 = new ImageFileFilter();
-
-	private PngFilter pngFilter = new PngFilter();
-
-	private EmblemImportDialog flagImpDia;
-
-	private TeamPanel teamPanel;
-
-	private JPanel flagPanel;
-
+	private JButton[] flagButton;
 	private JButton addButton;
-
 	private JButton add2Button;
-
 	private JLabel free16Label;
-
 	private JLabel free128Label;
-
 	private JLabel largeFlag;
+
+	private volatile boolean trans = true;
 
 	public EmblemPanel(OptionFile opt, EmblemImportDialog fid, TeamPanel tp) {
 		super();
 		of = opt;
 		flagImpDia = fid;
 		teamPanel = tp;
+		ImageFileFilter filter128 = new ImageFileFilter();
 		chooser.addChoosableFileFilter(filter128);
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setDialogTitle("Import Emblem");
+		PngFilter pngFilter = new PngFilter();
 		chooserPNG.addChoosableFileFilter(pngFilter);
 		chooserPNG.setAcceptAllFileFilterUsed(false);
 		chooserPNG.setDialogTitle("Export Emblem");
 		flagButton = new JButton[Emblems.TOTAL16];
-		flagPanel = new JPanel(new GridLayout(6, 10));
+		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
 
 		for (int l = 0; l < Emblems.TOTAL16; l++) {
 			flagButton[l] = new JButton();
@@ -74,7 +61,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 			flagButton[l].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent b) {
 					int slot = Integer.parseInt(((JButton) b.getSource()).getActionCommand());
-					ImageIcon icon = null;
+					ImageIcon icon;
 					boolean is128 = false;
 					if (slot >= Emblems.count16(of)) {
 						is128 = true;
@@ -142,8 +129,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 									refresh();
 								}
 							} catch (Exception e) {
-								JOptionPane.showMessageDialog(null,
-										"Could not open file", "Error",
+								JOptionPane.showMessageDialog(null, "Could not open file", "Error",
 										JOptionPane.ERROR_MESSAGE);
 							}
 						}
@@ -152,7 +138,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 						savePNG(is128, slot);
 					}
 					if (flagImpDia.isOf2Loaded() && n == 3) {
-						int replacement = -1;
+						int replacement;
 						if (is128) {
 							replacement = flagImpDia.getFlag("Import Emblem", 2);
 							if (replacement != -1) {
@@ -314,7 +300,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 	}
 
 	private boolean writeFile(File dest, boolean is128, int slot) {
-		boolean ok = false;
+		boolean ok;
 		BufferedImage image;
 		if (is128) {
 			image = (BufferedImage) Emblems.get128(of, slot, false, false);
@@ -392,10 +378,10 @@ public class EmblemPanel extends JPanel implements MouseListener {
 		if (image.getWidth() == 64 && image.getHeight() == 64) {
 			ColorModel colorMod = image.getColorModel();
 			if (colorMod instanceof IndexColorModel) {
-				int[] pix = new int[Emblems.RASTER_SIZE128];
+				int[] pix = new int[Emblems.IMG_SIZE * Emblems.IMG_SIZE];
 				Raster rast = image.getData();
-				rast.getPixels(0, 0, 64, 64, pix);
-				for (int i = 0; i < Emblems.RASTER_SIZE128; i++) {
+				rast.getPixels(0, 0, Emblems.IMG_SIZE, Emblems.IMG_SIZE, pix);
+				for (int i = 0; i < pix.length; i++) {
 					if (pix[i] > max) {
 						max = pix[i];
 					}

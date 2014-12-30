@@ -1,5 +1,6 @@
 package editor;
 
+import editor.data.Logos;
 import editor.data.OptionFile;
 import editor.ui.CancelButton;
 
@@ -33,9 +34,9 @@ public class LogoChooserDialog extends JDialog {
 		of = opt;
 		JPanel flagPanel;
 		flagPanel = new JPanel(new GridLayout(8, 10));
-		flagButton = new JButton[Logos.total];
+		flagButton = new JButton[Logos.TOTAL];
 
-		for (int l = 0; l < Logos.total; l++) {
+		for (int l = 0; l < Logos.TOTAL; l++) {
 			flagButton[l] = new JButton(new ImageIcon(Logos.get(of, -1, false)));
 			// flagButton[l].setIcon();
 			flagButton[l].setMargin(new Insets(0, 0, 0, 0));
@@ -78,7 +79,7 @@ public class LogoChooserDialog extends JDialog {
 	}
 
 	public void refresh() {
-		for (int f = 0; f < Logos.total; f++) {
+		for (int f = 0; f < Logos.TOTAL; f++) {
 			flagButton[f].setIcon(new ImageIcon(Logos.get(of, f, !trans)));
 		}
 		// slot = 99;

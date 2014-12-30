@@ -42,7 +42,7 @@
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifest>
-							<mainClass>editor.ui.Editor</mainClass>
+							<mainClass>editor.Splasher</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -55,7 +55,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>editor.ui.Editor</mainClass>
+							<mainClass>editor.Splasher</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
