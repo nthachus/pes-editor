@@ -22,7 +22,7 @@ public final class Leagues {
 
 	public static String get(OptionFile of, int league) {
 		if (null == of) throw new NullPointerException("of");
-		if (league < 0 || league >= TOTAL) throw new ArrayIndexOutOfBoundsException("league");
+		if (league < 0 || league >= TOTAL) throw new IndexOutOfBoundsException("league");
 
 		int ofs = getOffset(league);
 		int adr = ofs + BASE_NAME_LEN + 1;  // the modified league name
@@ -50,7 +50,7 @@ public final class Leagues {
 
 	public static void set(OptionFile of, int league, String name) {
 		if (null == of) throw new NullPointerException("of");
-		if (league < 0 || league >= TOTAL) throw new ArrayIndexOutOfBoundsException("league");
+		if (league < 0 || league >= TOTAL) throw new IndexOutOfBoundsException("league");
 
 		byte[] temp = new byte[NAME_LEN + 2];
 		Arrays.fill(temp, (byte) 0);

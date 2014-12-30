@@ -62,7 +62,7 @@ public final class StadiumsTest extends BaseTest {
 		Stadiums.get(null, 0);
 	}
 
-	@Test(expected = ArrayIndexOutOfBoundsException.class)
+	@Test(expected = IndexOutOfBoundsException.class)
 	public void testLoadWithInvalidIndex() throws Exception {
 		Stadiums.get(new OptionFile(), -1);
 	}
@@ -72,7 +72,7 @@ public final class StadiumsTest extends BaseTest {
 		Stadiums.set(null, 0, null);
 	}
 
-	@Test(expected = ArrayIndexOutOfBoundsException.class)
+	@Test(expected = IndexOutOfBoundsException.class)
 	public void testSaveWithInvalidIndex() throws Exception {
 		Stadiums.set(new OptionFile(), -1, null);
 	}

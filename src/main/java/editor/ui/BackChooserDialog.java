@@ -89,7 +89,7 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public ImageIcon getFlagBackground(Image image, int bgIndex, byte[] red, byte[] green, byte[] blue) {
-		if (bgIndex < 0 || bgIndex >= rasterData.length) throw new ArrayIndexOutOfBoundsException("bgIndex");
+		if (bgIndex < 0 || bgIndex >= rasterData.length) throw new IndexOutOfBoundsException("bgIndex");
 
 		IndexColorModel colorModel = new IndexColorModel(1, 2, red, green, blue);
 		BufferedImage bi = new BufferedImage(colorModel, (WritableRaster) rasterData[bgIndex], false, null);

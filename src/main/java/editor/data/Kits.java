@@ -23,8 +23,8 @@ public final class Kits {
 	public static final int START_CLUB_ADR = START_ADR + (TOTAL - Clubs.TOTAL) * SIZE_NATION;
 	public static final int END_ADR = START_CLUB_ADR + Clubs.TOTAL * SIZE_CLUB;
 
-	private static final int USED_LOGO_OFS = 358;// TODO: Kits.UsedLogo offset should be 256 or 358 ?
-	private static final int IS_LICENSED_OFS = 78;// TODO: Kits.isLicensed offset should be 58 or 78 ?
+	private static final int USED_LOGO_OFS = 358;
+	private static final int IS_LICENSED_OFS = 78;
 
 	public static int getOffset(int teamId) {
 		if (teamId < 0 || teamId >= TOTAL) throw new IndexOutOfBoundsException("teamId");

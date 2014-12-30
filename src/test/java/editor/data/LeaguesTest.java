@@ -59,7 +59,7 @@ public final class LeaguesTest extends BaseTest {
 		Leagues.get(null, 0);
 	}
 
-	@Test(expected = ArrayIndexOutOfBoundsException.class)
+	@Test(expected = IndexOutOfBoundsException.class)
 	public void testLoadWithInvalidIndex() throws Exception {
 		Leagues.get(new OptionFile(), -1);
 	}
@@ -69,7 +69,7 @@ public final class LeaguesTest extends BaseTest {
 		Leagues.set(null, 0, null);
 	}
 
-	@Test(expected = ArrayIndexOutOfBoundsException.class)
+	@Test(expected = IndexOutOfBoundsException.class)
 	public void testSaveWithInvalidIndex() throws Exception {
 		Leagues.set(new OptionFile(), -1, null);
 	}
