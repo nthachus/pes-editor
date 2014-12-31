@@ -1,5 +1,6 @@
 package editor.ui;
 
+import editor.JTextFieldLimit;
 import editor.data.OptionFile;
 import editor.util.Bits;
 import editor.util.Strings;
@@ -29,6 +30,7 @@ public class WenPanel extends JPanel implements ActionListener {
 
 		field = new JTextField(8);
 		field.setToolTipText(Strings.getMessage("wen.tooltip", MAX_WEN));
+		field.setDocument(new JTextFieldLimit(Integer.toString(MAX_WEN).length()));
 		field.addActionListener(this);
 
 		JPanel contentPane = new JPanel(new GridLayout(0, 1));

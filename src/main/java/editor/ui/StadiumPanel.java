@@ -1,5 +1,6 @@
 package editor.ui;
 
+import editor.JTextFieldLimit;
 import editor.TeamPanel;
 import editor.data.OptionFile;
 import editor.data.Stadiums;
@@ -32,6 +33,7 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 	private void initComponents() {
 		editor = new JTextField(15);
 		editor.setToolTipText(Strings.getMessage("stadium.tooltip"));
+		editor.setDocument(new JTextFieldLimit(Stadiums.NAME_LEN));
 		editor.addActionListener(this);
 
 		list = new JList<String>();

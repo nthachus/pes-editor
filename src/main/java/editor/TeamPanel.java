@@ -64,8 +64,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 		backChooser = new BackChooserDialog(null);
 
-		backButton = new JButton(new ImageIcon(Emblems.get16(of, -1, false,
-				false)));
+		backButton = new JButton(new ImageIcon(Emblems.get16(of, -1, false, false)));
 		backButton.setBackground(new Color(204, 204, 204));
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -115,8 +114,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			}
 		});
 
-		badgeButton = new JButton(new ImageIcon(Emblems.get16(of, -1, false,
-				false)));
+		badgeButton = new JButton(new ImageIcon(Emblems.get16(of, -1, false, false)));
 		badgeButton.setBackground(new Color(204, 204, 204));
 		badgeButton.addMouseListener(this);
 		badgeButton
@@ -170,7 +168,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		list.setVisibleRowCount(11);
 		list.addListSelectionListener(this);
 		list.addMouseListener(this);
-		editor = new JTextField(14);
+		editor = new JTextField(14);// TODO: maxlength
 		editor.setToolTipText("Enter new name and press return");
 		abvEditor = new JTextField(4);
 		abvEditor.setToolTipText("Enter new short name and press return");
@@ -318,8 +316,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 					if (f == i + Clubs.firstDefEmblem) {
 						badgeButton.setIcon(defaultIcon);
 					} else {
-						badgeButton.setIcon(new ImageIcon(Emblems.get16(of, -1,
-								false, false)));
+						badgeButton.setIcon(new ImageIcon(Emblems.get16(of, -1, false, false)));
 					}
 				}
 
@@ -341,8 +338,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				stadiumBox.setActionCommand("n");
 				stadiumBox.setSelectedIndex(-1);
 				stadiumBox.setActionCommand("y");
-				badgeButton.setIcon(new ImageIcon(Emblems.get16(of, -1, false,
-						false)));
+				badgeButton.setIcon(new ImageIcon(Emblems.get16(of, -1, false, false)));
 				panel3.setVisible(false);
 			}
 		}
@@ -399,11 +395,9 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 					int f = flagChooser.getFlag("Choose Emblem", Emblems.TYPE_INHERIT);
 					if (f != -1) {
 						if (f < Emblems.TOTAL128) {
-							badgeButton.setIcon(new ImageIcon(Emblems.get128(
-									of, f, false, false)));
+							badgeButton.setIcon(new ImageIcon(Emblems.get128( of, f, false, false)));
 						} else {
-							badgeButton.setIcon(new ImageIcon(Emblems.get16(of,
-									f - Emblems.TOTAL128, false, false)));
+							badgeButton.setIcon(new ImageIcon(Emblems.get16(of, f - Emblems.TOTAL128, false, false)));
 						}
 						Clubs.setEmblem(of, t, Emblems.getIndex(of, f));
 						updateBackBut();

@@ -39,7 +39,13 @@ public final class Logos {
 	public static BufferedImage get(OptionFile of, int slot, boolean opaque) {
 		if (null == of) throw new NullPointerException("of");
 
-		int adr = getOffset(slot) + IMG_SIZE;
+		int adr;
+		try {
+			adr = getOffset(slot) + IMG_SIZE;
+		} catch (Exception e) {
+			adr = -1;
+		}
+
 		return (BufferedImage) Images.read(of.getData(), IMG_SIZE, BITS_DEPTH, adr, opaque, 0f);
 	}
 

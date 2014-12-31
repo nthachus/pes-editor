@@ -93,8 +93,7 @@ public class EmblemImportDialog extends JDialog {
 	public void refresh() {
 		if (type == 0 || type == 1) {
 			for (int i = 0; i < Emblems.count16(of2); i++) {
-				emblemButtons[i].setIcon(new ImageIcon(Emblems.get16(of2, i,
-						!trans, true)));
+				emblemButtons[i].setIcon(new ImageIcon(Emblems.get16(of2, i, !trans, true)));
 				emblemButtons[i].setVisible(true);
 			}
 		}

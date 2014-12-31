@@ -66,11 +66,9 @@ public class EmblemPanel extends JPanel implements MouseListener {
 					if (slot >= Emblems.count16(of)) {
 						is128 = true;
 						slot = Emblems.TOTAL16 - 1 - slot;
-						icon = new ImageIcon(Emblems.get128(of, slot, !trans,
-								false));
+						icon = new ImageIcon(Emblems.get128(of, slot, !trans, false));
 					} else {
-						icon = new ImageIcon(Emblems.get16(of, slot, !trans,
-								false));
+						icon = new ImageIcon(Emblems.get16(of, slot, !trans, false));
 					}
 					Object[] options;
 					Object[] options1 = {
@@ -318,18 +316,15 @@ public class EmblemPanel extends JPanel implements MouseListener {
 
 	public void refresh() {
 		for (int i = 0; i < Emblems.count16(of); i++) {
-			flagButton[i].setIcon(new ImageIcon(Emblems.get16(of, i, !trans,
-					true)));
+			flagButton[i].setIcon(new ImageIcon(Emblems.get16(of, i, !trans, true)));
 			flagButton[i].setVisible(true);
 		}
 		for (int i = 0; i < Emblems.count128(of); i++) {
-			flagButton[Emblems.TOTAL16 - 1 - i].setIcon(new ImageIcon(Emblems
-					.get128(of, i, !trans, true)));
+			flagButton[Emblems.TOTAL16 - 1 - i].setIcon(new ImageIcon(Emblems.get128(of, i, !trans, true)));
 			flagButton[Emblems.TOTAL16 - 1 - i].setVisible(true);
 		}
 
-		for (int i = Emblems.count16(of); i < Emblems.TOTAL16
-				- Emblems.count128(of); i++) {
+		for (int i = Emblems.count16(of); i < Emblems.TOTAL16 - Emblems.count128(of); i++) {
 			flagButton[i].setVisible(false);
 		}
 		free16Label.setText("16-colour, can stock: " + Emblems.getFree16(of));

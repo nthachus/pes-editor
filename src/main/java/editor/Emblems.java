@@ -70,7 +70,13 @@ public final class Emblems {
 	public static Image get16(OptionFile of, int slot, boolean opaque, boolean small) {
 		if (null == of) throw new NullPointerException("of");
 
-		int adr = getOffset(false, slot) + IMG_SIZE;
+		int adr;
+		try {
+			adr = getOffset(false, slot) + IMG_SIZE;
+		} catch (Exception e) {
+			adr = -1;
+		}
+
 		return Images.read(of.getData(), IMG_SIZE, BPP16, adr, opaque, small ? 0.5f : 0f);
 	}
 

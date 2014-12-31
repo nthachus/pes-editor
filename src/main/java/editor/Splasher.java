@@ -10,6 +10,9 @@ public class Splasher {
 		try {
 			SplashWindow.splash(Splasher.class.getResource("/META-INF/images/splash.jpg"));
 			editor.ui.Editor.main(args);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			System.exit(-1);
 		} finally {
 			SplashWindow.disposeSplash();
 		}

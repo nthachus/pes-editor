@@ -1,5 +1,6 @@
 package editor.ui;
 
+import editor.JTextFieldLimit;
 import editor.data.OptionFile;
 import editor.data.Stats;
 import editor.util.Strings;
@@ -15,6 +16,7 @@ import java.awt.event.KeyListener;
 
 public class Ability99Panel extends JPanel
 		implements ActionListener, CaretListener, KeyListener {
+	public static final int MAX_VAL = 99;
 
 	private final OptionFile of;
 
@@ -43,6 +45,7 @@ public class Ability99Panel extends JPanel
 			add(lab, grid);
 
 			fields[i] = new JTextField(2);
+			fields[i].setDocument(new JTextFieldLimit(Integer.toString(MAX_VAL).length()));
 			fields[i].setActionCommand(Integer.toString(i));
 			fields[i].addActionListener(this);
 			fields[i].setInputVerifier(verifier99);
@@ -78,7 +81,7 @@ public class Ability99Panel extends JPanel
 			f = Integer.parseInt(evt.getActionCommand());
 			int v = Integer.parseInt(tf.getText());
 
-			if (v > 0 && v < 100) {
+			if (v > 0 && v <= MAX_VAL) {
 				if (f < fields.length - 1) {
 					fields[f + 1].requestFocus();
 					fields[f + 1].selectAll();
@@ -103,7 +106,7 @@ public class Ability99Panel extends JPanel
 
 			try {
 				int v = Integer.parseInt(tf.getText());
-				if (v > 0 && v < 100) {
+				if (v > 0 && v <= MAX_VAL) {
 					return true;
 				}
 			} catch (NumberFormatException nfe) {
@@ -132,7 +135,7 @@ public class Ability99Panel extends JPanel
 					bg = Color.yellow;
 				} else if (v >= 90 && v < 95) {
 					bg = Color.orange;
-				} else if (v >= 80 && v < 100) {
+				} else if (v >= 80 && v <= MAX_VAL) {
 					bg = Color.red;
 				}
 			} catch (NumberFormatException nfe) {

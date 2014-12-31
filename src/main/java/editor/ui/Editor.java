@@ -9,6 +9,7 @@ import editor.util.Strings;
 import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
@@ -541,21 +542,27 @@ public final class Editor extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
+		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
-
 				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					//System.setProperty("swing.metalTheme", "steel");
-				} catch (Exception e) {
-					// Ask for window decorations provided by the look and feel
-					JFrame.setDefaultLookAndFeelDecorated(true);
-				}
+					SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
 
-				Editor form = new Editor();
-				form.setVisible(true);
-				form.openFile();
+					try {
+						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+						//System.setProperty("swing.metalTheme", "steel");
+					} catch (Exception e) {
+						// Ask for window decorations provided by the look and feel
+						JFrame.setDefaultLookAndFeelDecorated(true);
+					}
+
+					Editor form = new Editor();
+					form.setVisible(true);
+					form.openFile();
+
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+					System.exit(-1);
+				}
 			}
 		});
 	}

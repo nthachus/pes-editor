@@ -30,7 +30,7 @@ public class GeneralAbilityPanel extends JPanel {
 		setBorder(BorderFactory.createTitledBorder("General"));
 		// stats = s;
 		nationBox = new JComboBox<String>(Stats.NATION);
-		ageField = new JTextField(2);
+		ageField = new JTextField(2);// TODO: maxlength
 		ageField.setInputVerifier(new VerifierAge());
 		heightField = new JTextField(2);
 		heightField.setInputVerifier(new VerifierHeight());

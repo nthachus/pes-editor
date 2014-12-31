@@ -52,7 +52,7 @@ public class GlobalPanel extends JPanel {
 
 	private void initComponents() {
 		statBox = new JComboBox<String>(statNames);
-		numField = new JTextField(2);
+		numField = new JTextField(2);// TODO: maxlength
 		opBox = new JComboBox<String>(ops);
 		JPanel panel99 = new JPanel();
 		JPanel scopePanel = new JPanel(new GridLayout(2, 3));

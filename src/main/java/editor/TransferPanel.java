@@ -196,7 +196,7 @@ public class TransferPanel extends JPanel
 		public NameEditor() {
 			super(13);
 			addActionListener(this);
-			setToolTipText("Enter new name and press return");
+			setToolTipText("Enter new name and press return");// TODO: maxlength
 		}
 
 		public void valueChanged(ListSelectionEvent e) {
@@ -295,7 +295,7 @@ public class TransferPanel extends JPanel
 		public NumEditor() {
 			super(2);
 			addActionListener(this);
-			setToolTipText("Enter new squad number and press return");
+			setToolTipText("Enter new squad number and press return");// TODO: maxlength
 		}
 
 		public void valueChanged(ListSelectionEvent e) {
@@ -394,7 +394,7 @@ public class TransferPanel extends JPanel
 		public ShirtNameEditor() {
 			super(13);
 			addActionListener(this);
-			setToolTipText("Enter new shirt name and press return");
+			setToolTipText("Enter new shirt name and press return");// TODO: maxlength
 		}
 
 		public void valueChanged(ListSelectionEvent e) {
