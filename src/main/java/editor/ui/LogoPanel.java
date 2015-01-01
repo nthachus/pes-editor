@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class LogoPanel extends JPanel {
@@ -120,7 +121,7 @@ public class LogoPanel extends JPanel {
 		if (of2Loaded || opts.length < 2)
 			return opts;
 
-		java.util.List<String> arr = Arrays.asList(opts);
+		ArrayList<String> arr = new ArrayList<String>(Arrays.asList(opts));
 		arr.remove(arr.size() - 2);
 		return arr.toArray();
 	}

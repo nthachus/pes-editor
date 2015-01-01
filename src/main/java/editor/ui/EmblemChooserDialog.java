@@ -1,6 +1,6 @@
 package editor.ui;
 
-import editor.Emblems;
+import editor.data.Emblems;
 import editor.data.OptionFile;
 import editor.util.Strings;
 

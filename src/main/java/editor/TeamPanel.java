@@ -380,8 +380,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		}
 
 		if (e.getSource() == badgeButton && clicks == 1) {
-			if ((e.getButton() == MouseEvent.BUTTON3 || (e.getButton() == MouseEvent.BUTTON1 && e
-					.isControlDown()))) {
+			if ((e.getButton() == MouseEvent.BUTTON3 || (e.getButton() == MouseEvent.BUTTON1 && e.isControlDown()))) {
 
 				if (ti != -1 && ti < Clubs.TOTAL) {
 					Clubs.setEmblem(of, ti, null);
@@ -395,11 +394,11 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 					int f = flagChooser.getFlag("Choose Emblem", Emblems.TYPE_INHERIT);
 					if (f != -1) {
 						if (f < Emblems.TOTAL128) {
-							badgeButton.setIcon(new ImageIcon(Emblems.get128( of, f, false, false)));
+							badgeButton.setIcon(new ImageIcon(Emblems.get128(of, f, false, false)));
 						} else {
 							badgeButton.setIcon(new ImageIcon(Emblems.get16(of, f - Emblems.TOTAL128, false, false)));
 						}
-						Clubs.setEmblem(of, t, Emblems.getIndex(of, f));
+						Clubs.setEmblem(of, t, Bits.toBytes((short) Emblems.getIndex(of, f)));
 						updateBackBut();
 					}
 				}
@@ -469,41 +468,35 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 		if (t1 < Clubs.TOTAL) {
 			int emblem2 = Clubs.getEmblem(of2, t2) - Clubs.firstFlag;
-			byte[] embIndex = null;
+			int embIndex = 0;
 			if (emblem2 >= 0 && emblem2 < Emblems.TOTAL128 + Emblems.TOTAL16) {
-				embIndex = Emblems.getIndex(of2, emblem2);
+
 				if (emblem2 < Emblems.TOTAL128) {
 					if (Emblems.getFree128(of) > 0) {
-						Emblems.import128(of, Emblems.count128(of), of2,
-								Emblems.getLoc(of2, emblem2));
-						embIndex = Emblems.getIndex(of,
-								Emblems.count128(of) - 1);
+						Emblems.importData128(of2, Emblems.getLocation(of2, emblem2), of, Emblems.count128(of));
+						embIndex = Emblems.getIndex(of, Emblems.count128(of) - 1);
 					} else {
 						int rep = flagChooser.getFlag("Replace Emblem", Emblems.TYPE_128);
 						if (rep != -1) {
-							Emblems.import128(of, rep, of2, Emblems.getLoc(of2,
-									emblem2));
+							Emblems.importData128(of2, Emblems.getLocation(of2, emblem2), of, rep);
 							embIndex = Emblems.getIndex(of, rep);
 						} else {
-							embIndex = null;
+							embIndex = 0;
 						}
 					}
 				} else {
 					if (Emblems.getFree16(of) > 0) {
-						Emblems.import16(of, Emblems.count16(of), of2, Emblems
-								.getLoc(of2, emblem2)
-								- Emblems.TOTAL128);
-						embIndex = Emblems.getIndex(of, Emblems.count16(of)
-								+ Emblems.TOTAL128 - 1);
+						Emblems.importData16(of2, Emblems.getLocation(of2, emblem2) - Emblems.TOTAL128, of,
+								Emblems.count16(of));
+						embIndex = Emblems.getIndex(of, Emblems.count16(of) + Emblems.TOTAL128 - 1);
 					} else {
 						int rep = flagChooser.getFlag("Replace Emblem", Emblems.TYPE_16);
 						if (rep != -1) {
-							Emblems.import16(of, rep - Emblems.TOTAL128, of2,
-									Emblems.getLoc(of2, emblem2)
-											- Emblems.TOTAL128);
+							Emblems.importData16(of2, Emblems.getLocation(of2, emblem2) - Emblems.TOTAL128, of,
+									rep - Emblems.TOTAL128);
 							embIndex = Emblems.getIndex(of, rep);
 						} else {
-							embIndex = null;
+							embIndex = 0;
 						}
 					}
 				}
@@ -511,7 +504,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 			Clubs.importClub(of, t1, of2, t2);
 			if (emblem2 >= 0 && emblem2 < Emblems.TOTAL128 + Emblems.TOTAL16) {
-				Clubs.setEmblem(of, t1, embIndex);
+				Clubs.setEmblem(of, t1, Bits.toBytes((short) embIndex));
 			}
 		}
 

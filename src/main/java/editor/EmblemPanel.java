@@ -1,5 +1,6 @@
 package editor;
 
+import editor.data.Emblems;
 import editor.data.OptionFile;
 import editor.ui.ImageFileFilter;
 import editor.ui.PngFilter;

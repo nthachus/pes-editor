@@ -1,5 +1,6 @@
 package editor;
 
+import editor.data.Emblems;
 import editor.data.OptionFile;
 import editor.ui.CancelButton;
 
@@ -129,11 +130,11 @@ public class EmblemImportDialog extends JDialog {
 	}
 
 	public void import128(OptionFile of, int slot, int replacement) {
-		Emblems.import128(of, slot, of2, replacement);
+		Emblems.importData128(of2, replacement, of, slot);
 	}
 
 	public void import16(OptionFile of, int slot, int replacement) {
-		Emblems.import16(of, slot, of2, replacement);
+		Emblems.importData16(of2, replacement, of, slot);
 	}
 
 }

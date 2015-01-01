@@ -45,7 +45,7 @@ public final class Clubs {
 		setEmblemEdited(of, club, edited);
 	}
 
-	public static void unAssEmblem(OptionFile of, int emblem) {
+	public static void unlinkEmblem(OptionFile of, int emblem) {
 		for (int i = 0; i < TOTAL; i++) {
 			if (emblem == getEmblem(of, i) - firstFlag) {
 				setEmblem(of, i, null);
