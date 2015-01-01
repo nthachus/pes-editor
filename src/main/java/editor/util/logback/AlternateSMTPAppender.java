@@ -1,4 +1,4 @@
-package editor.logback;
+package editor.util.logback;
 
 import ch.qos.logback.classic.net.SMTPAppender;
 import editor.util.Strings;

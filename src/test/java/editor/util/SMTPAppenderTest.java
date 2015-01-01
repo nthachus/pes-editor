@@ -1,6 +1,7 @@
-package editor.logback;
+package editor.util;
 
 import editor.data.BaseTest;
+import editor.util.logback.AlternateSMTPAppender;
 import org.junit.Assert;
 import org.junit.Test;
 

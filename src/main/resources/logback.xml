@@ -15,11 +15,7 @@
 		</encoder>
 	</appender>
 
-	<appender name="EMAIL" class="editor.logback.AlternateSMTPAppender">
-		<!-- deny all events with a level below WARN -->
-		<evaluator class="editor.logback.ThresholdEvaluator">
-			<level>WARN</level>
-		</evaluator>
+	<appender name="EMAIL" class="editor.util.logback.AlternateSMTPAppender">
 		<smtpHost>smtp.sendgrid.net</smtpHost>
 		<smtpPort>587</smtpPort>
 		<STARTTLS>true</STARTTLS>
@@ -32,6 +28,10 @@
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<pattern>%date [%-5level] %logger - %message%n</pattern>
 		</layout>
+		<!-- deny all events with a level below WARN -->
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
 		<!-- send just one log entry per email -->
 		<cyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTracker">
 			<bufferSize>3</bufferSize>
