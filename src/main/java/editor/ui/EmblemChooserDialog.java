@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.Emblems;
 import editor.data.OptionFile;
+import editor.util.Strings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,7 +39,7 @@ public class EmblemChooserDialog extends JDialog {
 			flagPanel.add(emblemButtons[i]);
 		}
 
-		JButton transButton = new JButton("Transparency");
+		JButton transButton = new JButton(Strings.getMessage("Transparency"));
 		transButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				onTransparency(evt);

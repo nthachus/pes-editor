@@ -1,6 +1,9 @@
 package editor.ui;
 
-import editor.*;
+import editor.Clubs;
+import editor.EmblemPanel;
+import editor.TeamPanel;
+import editor.TransferPanel;
 import editor.data.Boots;
 import editor.data.Leagues;
 import editor.data.OptionFile;

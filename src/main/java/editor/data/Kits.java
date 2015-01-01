@@ -75,13 +75,13 @@ public final class Kits {
 		of.getData()[adr + 1] = Logos.TOTAL + 8;
 	}
 
+	private static final byte UNLICENSED_VAL = (byte) 0xFF;
+
 	public static boolean isLicensed(OptionFile of, int team) {
 		if (null == of) throw new NullPointerException("of");
 
 		int adr = getOffset(team) + IS_LICENSED_OFS;
-		final byte unLicensed = (byte) 0xFF;
-
-		return (of.getData()[adr] != unLicensed && of.getData()[adr + 1] != unLicensed);
+		return (of.getData()[adr] != UNLICENSED_VAL && of.getData()[adr + 1] != UNLICENSED_VAL);
 	}
 
 	public static void importData(OptionFile ofSource, int teamSource, OptionFile ofDest, int teamDest) {

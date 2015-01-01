@@ -7,15 +7,19 @@ public final class Images {
 	private Images() {
 	}
 
-	private static int paletteSize(int bitsPerPixel) {
+	public static int paletteSize(int bitsPerPixel) {
 		if (bitsPerPixel < 0 || bitsPerPixel == 3 || (bitsPerPixel > 4 && (bitsPerPixel % 8) != 0))
 			throw new IllegalArgumentException("bitsPerPixel");
 
 		return (1 << bitsPerPixel);
 	}
 
-	private static int rasterDataSize(int bitsPerPixel, int imgSize) {
-		return ((imgSize * bitsPerPixel + 7) / 8) * imgSize;
+	public static int rasterDataSize(int bitsPerPixel, int imgSize) {
+		return rasterDataSize(bitsPerPixel, imgSize, imgSize);
+	}
+
+	public static int rasterDataSize(int bitsPerPixel, int imgWidth, int imgHeight) {
+		return ((imgWidth * bitsPerPixel + 7) / 8) * imgHeight;
 	}
 
 	// NOTE: Image header size is IMG_SIZE bytes ?

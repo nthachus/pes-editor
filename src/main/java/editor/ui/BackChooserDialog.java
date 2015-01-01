@@ -1,5 +1,6 @@
 package editor.ui;
 
+import editor.util.Images;
 import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,7 +98,7 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 
 	private static WritableRaster getBlankFlagData() {
 		if (null == blankFlagData) {
-			int rasterSize = ((IMG_WIDTH * BITS_DEPTH + 7) / 8) * IMG_HEIGHT;
+			int rasterSize = Images.rasterDataSize(BITS_DEPTH, IMG_WIDTH, IMG_HEIGHT);
 			DataBuffer buf = new DataBufferByte(rasterSize);
 			SampleModel sampleModel = new MultiPixelPackedSampleModel(
 					DataBuffer.TYPE_BYTE, IMG_WIDTH, IMG_HEIGHT, BITS_DEPTH);
