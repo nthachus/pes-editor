@@ -10,6 +10,9 @@
 
 package editor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -39,6 +42,8 @@ import java.net.URL;
  * @version 2.2.1 2006-05-27 Abort when splash image can not be loaded.
  */
 public class SplashWindow extends Window {
+	private static final Logger log = LoggerFactory.getLogger(SplashWindow.class);
+
 	/**
 	 * The current instance of the splash window. (Singleton design pattern).
 	 */
@@ -78,13 +83,13 @@ public class SplashWindow extends Window {
 		try {
 			mt.waitForID(0);
 		} catch (InterruptedException ie) {
-			System.err.println(ie);
+			log.warn(ie.toString());
 		}
 
 		// Abort on failure
 		if (mt.isErrorID(0)) {
 			setSize(0, 0);
-			System.err.println("Warning: SplashWindow couldn't load splash image.");
+			log.warn("Couldn't load splash {}: {}", image, mt.getErrorsID(0));
 			synchronized (this) {
 				isPaintCalled = true;
 				notifyAll();
@@ -167,12 +172,12 @@ public class SplashWindow extends Window {
 		// If more than one processor is available, we don't wait,
 		// and maximize CPU throughput instead.
 		if (!EventQueue.isDispatchThread() && Runtime.getRuntime().availableProcessors() == 1) {
-			synchronized (instance) {
+			synchronized (log) {
 				while (!instance.isPaintCalled) {
 					try {
 						instance.wait();
 					} catch (InterruptedException e) {
-						System.err.println(e);
+						log.warn(e.toString());
 					}
 				}
 			}

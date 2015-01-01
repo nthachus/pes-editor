@@ -6,11 +6,14 @@ import editor.Player;
 import editor.Squads;
 import editor.util.Bits;
 import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
 public class CsvMaker implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private static final Logger log = LoggerFactory.getLogger(CsvMaker.class);
 
 	private final char separator;
 
@@ -55,13 +58,13 @@ public class CsvMaker implements Serializable {
 
 			return true;
 		} catch (IOException e) {
-			System.err.println(e);
+			log.error("Failed to make CSV file:", e);
 		} finally {
 			if (null != out) {
 				try {
 					out.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn(e.toString());
 				}
 			}
 		}

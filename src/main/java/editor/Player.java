@@ -65,18 +65,12 @@ public class Player implements Serializable, Comparable<Player> {
 	public static final int END_ADR = START_ADR + TOTAL * SIZE;
 
 	/**
-	 * We don't have the player at index 0.
-	 */
-	public static void validatePlayerId(int player) throws IndexOutOfBoundsException {
-		if (player <= 0 || (player >= TOTAL && player < FIRST_EDIT) || player >= FIRST_EDIT + TOTAL_EDIT)
-			throw new IndexOutOfBoundsException("player");
-	}
-
-	/**
 	 * Entry point address of a player.
+	 * NOTE: We don't have the player at index 0.
 	 */
 	public static int getOffset(int player) {
-		validatePlayerId(player);
+		if (player <= 0 || (player >= TOTAL && player < FIRST_EDIT) || player >= FIRST_EDIT + TOTAL_EDIT)
+			throw new IndexOutOfBoundsException("player");
 
 		if (player >= FIRST_EDIT)
 			return START_EDIT_ADR + (player - FIRST_EDIT) * SIZE;

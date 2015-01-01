@@ -3,6 +3,8 @@ package editor.data;
 import editor.util.Bits;
 import editor.util.Files;
 import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +13,7 @@ import java.io.Serializable;
 
 public class SaveGameInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private static final Logger log = LoggerFactory.getLogger(SaveGameInfo.class);
 
 	private volatile String gameName = "";
 	private volatile String saveName = "";
@@ -60,13 +63,13 @@ public class SaveGameInfo implements Serializable {
 
 			return true;
 		} catch (IOException e) {
-			System.err.println("I/O error: " + e);
+			log.error("I/O error while getting save game info:", e);
 		} finally {
 			if (rf != null) {
 				try {
 					rf.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn(e.toString());
 				}
 			}
 		}

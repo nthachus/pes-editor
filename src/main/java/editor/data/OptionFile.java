@@ -4,12 +4,15 @@ import editor.util.Bits;
 import editor.util.Files;
 import editor.util.LZAri;
 import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.zip.CRC32;
 
 public class OptionFile implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private static final Logger log = LoggerFactory.getLogger(OptionFile.class);
 
 	private static final String SHARK_PORT = "\15\0\0\0SharkPortSave";
 	private static final String MAGIC_MAX = "Ps2PowerSave";
@@ -106,14 +109,14 @@ public class OptionFile implements Serializable {
 				decrypt(data);
 			}
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			log.error("Failed to load save game file:", e);
 			format = null;
 		} finally {
 			if (null != in) {
 				try {
 					in.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn(e.toString());
 				}
 			}
 		}
@@ -133,7 +136,7 @@ public class OptionFile implements Serializable {
 		int ofs = 0;
 		String magic = new String(temp, ofs, MAGIC_MAX.length(), Strings.ANSI);
 		if (!MAGIC_MAX.equals(magic)) {
-			System.err.printf("Invalid ARMax magic: %s%n", magic);
+			log.warn("Invalid ARMax magic: {}", magic);
 			return;
 		}
 
@@ -146,7 +149,7 @@ public class OptionFile implements Serializable {
 		long crc = crc32.getValue();
 
 		if ((int) crc != chk) {
-			System.err.printf("Invalid ARMax CRC32 0x%X, expected: 0x%X%n", chk, crc);
+			log.warn("Invalid ARMax CRC32 0x{}, expected: 0x{}", Integer.toHexString(chk), Long.toHexString(crc));
 			return;
 		}
 
@@ -207,7 +210,7 @@ public class OptionFile implements Serializable {
 
 		String magic = new String(temp, Strings.ANSI);
 		if (!SHARK_PORT.substring(ofs).equals(magic)) {
-			System.err.printf("Invalid XPort magic: %s%n", magic);
+			log.warn("Invalid XPort magic: {}", magic);
 			return;
 		}
 
@@ -277,14 +280,14 @@ public class OptionFile implements Serializable {
 					out.write(Bits.ZERO_INT);// skip the last CRC32 of XPort file
 			}
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			log.error("Failed to save game file:", e);
 			return false;
 		} finally {
 			if (null != out) {
 				try {
 					out.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn(e.toString());
 				}
 			}
 
@@ -351,14 +354,14 @@ public class OptionFile implements Serializable {
 			out = new FileOutputStream(file, false);
 			out.write(data);
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			log.error("Failed to dump raw data:", e);
 			return false;
 		} finally {
 			if (null != out) {
 				try {
 					out.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn(e.toString());
 				}
 			}
 		}

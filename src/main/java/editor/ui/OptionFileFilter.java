@@ -4,6 +4,8 @@ import editor.data.OptionFile;
 import editor.util.Bits;
 import editor.util.Files;
 import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
@@ -11,6 +13,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public class OptionFileFilter extends FileFilter {
+	private static final Logger log = LoggerFactory.getLogger(OptionFileFilter.class);
 
 	public boolean accept(File file) {
 		if (file == null)
@@ -45,13 +48,13 @@ public class OptionFileFilter extends FileFilter {
 			return OptionFile.isValidGameId(identCheck);
 
 		} catch (IOException e) {
-			System.err.println(e);
+			log.warn("{} is not a Memory Linker file: {}", f, e);
 		} finally {
 			if (null != rf) {
 				try {
 					rf.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn(e.toString());
 				}
 			}
 		}
@@ -83,13 +86,13 @@ public class OptionFileFilter extends FileFilter {
 				}
 			}
 		} catch (IOException e) {
-			System.err.println(e);
+			log.warn("{} is not an XPort file: {}", f, e);
 		} finally {
 			if (null != rf) {
 				try {
 					rf.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn(e.toString());
 				}
 			}
 		}
@@ -113,13 +116,13 @@ public class OptionFileFilter extends FileFilter {
 			return OptionFile.isValidGameId(identCheck);
 
 		} catch (IOException e) {
-			System.err.println(e);
+			log.warn("{} is not an ARMax file: {}", f, e);
 		} finally {
 			if (null != rf) {
 				try {
 					rf.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn(e.toString());
 				}
 			}
 		}

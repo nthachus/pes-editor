@@ -4,6 +4,8 @@ import editor.JTextFieldLimit;
 import editor.data.OptionFile;
 import editor.data.Stats;
 import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
@@ -16,6 +18,7 @@ import java.awt.event.KeyListener;
 
 public class Ability99Panel extends JPanel
 		implements ActionListener, CaretListener, KeyListener {
+	private static final Logger log = LoggerFactory.getLogger(Ability99Panel.class);
 	public static final int MAX_VAL = 99;
 
 	private final OptionFile of;
@@ -110,7 +113,7 @@ public class Ability99Panel extends JPanel
 					return true;
 				}
 			} catch (NumberFormatException nfe) {
-				System.err.println(nfe);
+				log.info(nfe.toString());
 			}
 
 			return false;
@@ -139,7 +142,7 @@ public class Ability99Panel extends JPanel
 					bg = Color.red;
 				}
 			} catch (NumberFormatException nfe) {
-				System.err.println(nfe);
+				log.info(nfe.toString());
 			}
 		}
 
@@ -164,7 +167,7 @@ public class Ability99Panel extends JPanel
 				tf.setText(Integer.toString(v - 1));
 			}
 		} catch (NumberFormatException nfe) {
-			System.err.println(nfe);
+			log.info(nfe.toString());
 		}
 	}
 

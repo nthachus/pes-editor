@@ -1,23 +1,26 @@
 package editor.ui;
 
 import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.awt.image.IndexColorModel;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
+import java.awt.image.*;
 import java.io.IOException;
 import java.net.URL;
 
 public class BackChooserDialog extends JDialog implements ActionListener {
+	private static final Logger log = LoggerFactory.getLogger(BackChooserDialog.class);
+	private static final int IMG_WIDTH = 85;
+	private static final int IMG_HEIGHT = 64;
+	private static final int BITS_DEPTH = 1;
 
 	private final JButton[] flagButton = new JButton[12];
-	private final Raster[] rasterData = new Raster[flagButton.length];
+	private final WritableRaster[] rasterData = new WritableRaster[flagButton.length];
 
 	/**
 	 * Picked flag index.
@@ -34,11 +37,13 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 			if (null != backUrl) {
 				try {
 					BufferedImage img = ImageIO.read(backUrl);
-					rasterData[i] = img.getData();
+					rasterData[i] = img.getRaster();
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn("Failed to load back-flag {}: {}", backUrl, e.toString());
 				}
 			}
+			if (null == rasterData[i])
+				rasterData[i] = getBlankFlagData();
 
 			flagButton[i] = new JButton();
 			flagButton[i].setMargin(new Insets(0, 0, 0, 0));
@@ -88,13 +93,26 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 		}
 	}
 
+	private static volatile WritableRaster blankFlagData = null;
+
+	private static WritableRaster getBlankFlagData() {
+		if (null == blankFlagData) {
+			int rasterSize = ((IMG_WIDTH * BITS_DEPTH + 7) / 8) * IMG_HEIGHT;
+			DataBuffer buf = new DataBufferByte(rasterSize);
+			SampleModel sampleModel = new MultiPixelPackedSampleModel(
+					DataBuffer.TYPE_BYTE, IMG_WIDTH, IMG_HEIGHT, BITS_DEPTH);
+			blankFlagData = Raster.createWritableRaster(sampleModel, buf, null);
+		}
+		return blankFlagData;
+	}
+
 	public ImageIcon getFlagBackground(Image image, int bgIndex, byte[] red, byte[] green, byte[] blue) {
 		if (bgIndex < 0 || bgIndex >= rasterData.length) throw new IndexOutOfBoundsException("bgIndex");
 
-		IndexColorModel colorModel = new IndexColorModel(1, 2, red, green, blue);
-		BufferedImage bi = new BufferedImage(colorModel, (WritableRaster) rasterData[bgIndex], false, null);
+		IndexColorModel colorModel = new IndexColorModel(BITS_DEPTH, (1 << BITS_DEPTH), red, green, blue);
+		BufferedImage bi = new BufferedImage(colorModel, rasterData[bgIndex], false, null);
 
-		BufferedImage img = new BufferedImage(85, 64, BufferedImage.TYPE_4BYTE_ABGR);
+		BufferedImage img = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g2 = null;
 		try {
 			g2 = (Graphics2D) img.getGraphics();

@@ -6,6 +6,8 @@ import editor.ui.PngFilter;
 import editor.ui.SquadNumberList;
 import editor.ui.TeamSettingPanel;
 import editor.util.Files;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -24,6 +26,8 @@ import java.io.File;
 
 public class FormPanel extends JPanel
 		implements ListSelectionListener, DropTargetListener, DragSourceListener, DragGestureListener {
+	private static final Logger log = LoggerFactory.getLogger(FormPanel.class);
+
 	private final OptionFile of;
 
 	private int team;
@@ -100,8 +104,7 @@ public class FormPanel extends JPanel
 		try {
 			localPlayerFlavor = new DataFlavor(localPlayerType);
 		} catch (ClassNotFoundException e) {
-			System.out
-					.println("FormTransferHandler: unable to create data flavor");
+			log.warn("Unable to create data flavor:", e);
 		}
 
 		PngFilter pngFilter = new PngFilter();

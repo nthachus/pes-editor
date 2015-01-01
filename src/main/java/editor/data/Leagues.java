@@ -16,13 +16,13 @@ public final class Leagues {
 
 	public static final int START_ADR = Stadiums.END_ADR + (Stadiums.SIZE + 1);
 
-	public static int getOffset(int league) {
+	private static int getOffset(int league) {
+		if (league < 0 || league >= TOTAL) throw new IndexOutOfBoundsException("league");
 		return START_ADR + league * SIZE;
 	}
 
 	public static String get(OptionFile of, int league) {
 		if (null == of) throw new NullPointerException("of");
-		if (league < 0 || league >= TOTAL) throw new IndexOutOfBoundsException("league");
 
 		int ofs = getOffset(league);
 		int adr = ofs + BASE_NAME_LEN + 1;  // the modified league name
@@ -50,8 +50,8 @@ public final class Leagues {
 
 	public static void set(OptionFile of, int league, String name) {
 		if (null == of) throw new NullPointerException("of");
-		if (league < 0 || league >= TOTAL) throw new IndexOutOfBoundsException("league");
 
+		int ofs = getOffset(league) + BASE_NAME_LEN + 1;
 		byte[] temp = new byte[NAME_LEN + 2];
 		Arrays.fill(temp, (byte) 0);
 
@@ -59,8 +59,6 @@ public final class Leagues {
 			byte[] sb = name.getBytes(Strings.UTF8);
 			System.arraycopy(sb, 0, temp, 0, Math.min(sb.length, NAME_LEN));
 		}
-
-		int ofs = getOffset(league) + BASE_NAME_LEN + 1;
 
 		temp[temp.length - 1] = 1;
 		System.arraycopy(temp, 0, of.getData(), ofs, temp.length);

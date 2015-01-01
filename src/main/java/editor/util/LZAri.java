@@ -1,5 +1,8 @@
 package editor.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 /**
@@ -16,6 +19,7 @@ import java.io.*;
  * @version 4/7/1989
  */
 public final class LZAri {
+	private static final Logger log = LoggerFactory.getLogger(LZAri.class);
 
 	//********** Bit I/O **********//
 
@@ -541,8 +545,7 @@ public final class LZAri {
 		encodeEnd();
 
 		// DEBUG
-		System.out.printf("In: %d bytes, Out: %d bytes, Out/In: %f%%%n",
-				textSize, codeSize, (double) codeSize / textSize);
+		log.info("In: {} bytes, Out: {} bytes, Out/In: {}%", textSize, codeSize, (double) codeSize / textSize);
 	}
 
 	public void decode() throws IOException {
@@ -589,7 +592,7 @@ public final class LZAri {
 		}
 
 		// DEBUG
-		System.out.printf("Decoded count: %d%n", count);
+		log.info("Decoded count: {}", count);
 	}
 
 	public void setInput(InputStream file) {

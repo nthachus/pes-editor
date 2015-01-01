@@ -2,11 +2,15 @@ package editor.data;
 
 import editor.util.Bits;
 import editor.util.Images;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 public final class Logos {
+	private static final Logger log = LoggerFactory.getLogger(Logos.class);
+
 	private Logos() {
 	}
 
@@ -58,7 +62,7 @@ public final class Logos {
 			of.getData()[adr] = Bits.toByte(null != image); // is used?
 
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			log.error("Failed to save logo:", e);
 			return false;
 		}
 

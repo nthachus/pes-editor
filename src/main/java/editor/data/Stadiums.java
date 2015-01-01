@@ -17,13 +17,13 @@ public final class Stadiums {
 	public static final int SWITCH_ADR = START_ADR + SIZE * TOTAL;
 	public static final int END_ADR = SWITCH_ADR + TOTAL;
 
-	public static int getOffset(int stadium) {
+	private static int getOffset(int stadium) {
+		if (stadium < 0 || stadium >= TOTAL) throw new IndexOutOfBoundsException("stadium");
 		return START_ADR + stadium * SIZE;
 	}
 
 	public static String get(OptionFile of, int stadium) {
 		if (null == of) throw new NullPointerException("of");
-		if (stadium < 0 || stadium >= TOTAL) throw new IndexOutOfBoundsException("stadium");
 
 		int ofs = getOffset(stadium);
 		String name = new String(of.getData(), ofs, NAME_LEN, Strings.UTF8);
@@ -44,8 +44,8 @@ public final class Stadiums {
 
 	public static void set(OptionFile of, int stadium, String name) {
 		if (null == of) throw new NullPointerException("of");
-		if (stadium < 0 || stadium >= TOTAL) throw new IndexOutOfBoundsException("stadium");
 
+		int ofs = getOffset(stadium);
 		byte[] temp = new byte[SIZE];
 		Arrays.fill(temp, (byte) 0);
 
@@ -54,10 +54,9 @@ public final class Stadiums {
 			System.arraycopy(sb, 0, temp, 0, Math.min(sb.length, NAME_LEN));
 		}
 
-		int ofs = getOffset(stadium);
-		int switchAdr = SWITCH_ADR + stadium;
-
 		System.arraycopy(temp, 0, of.getData(), ofs, temp.length);
+
+		int switchAdr = SWITCH_ADR + stadium;
 		of.getData()[switchAdr] = 1;
 	}
 

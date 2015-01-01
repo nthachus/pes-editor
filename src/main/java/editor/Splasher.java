@@ -1,6 +1,11 @@
 package editor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Splasher {
+	private static final Logger log = LoggerFactory.getLogger(Splasher.class);
+
 	/**
 	 * Shows the splash screen, launches the application and then disposes the splash screen.
 	 *
@@ -11,7 +16,7 @@ public class Splasher {
 			SplashWindow.splash(Splasher.class.getResource("/META-INF/images/splash.jpg"));
 			editor.ui.Editor.main(args);
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			log.error("Failed to launch the application:", e);
 			System.exit(-1);
 		} finally {
 			SplashWindow.disposeSplash();

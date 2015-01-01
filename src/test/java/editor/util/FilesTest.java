@@ -2,10 +2,14 @@ package editor.util;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
 public final class FilesTest {
+	private static final Logger log = LoggerFactory.getLogger(FilesTest.class);
+
 	@Test
 	public void testGetExtension() throws Exception {
 		String ext = Files.getExtension((String) null);
@@ -45,7 +49,7 @@ public final class FilesTest {
 
 		fd = Files.addExtension(fs, Files.GIF);
 		Assert.assertNotEquals(fs, fd);
-		System.out.println("Added extension to filename: " + fd.getName());
+		log.debug("Added extension to filename: {}", fd.getName());
 		Assert.assertEquals(fn + Files.EXT_SEPARATOR + Files.GIF, fd.getName());
 
 		File fd2 = Files.addExtension(fd, Files.GIF.toUpperCase());

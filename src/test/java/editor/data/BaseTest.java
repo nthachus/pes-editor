@@ -3,14 +3,19 @@ package editor.data;
 import editor.util.Files;
 import editor.util.Strings;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Random;
 
 public abstract class BaseTest {
+	protected final Logger log = LoggerFactory.getLogger(getClass());
+
 	protected static final String OF_ORIGINAL = "PES2013_SLES-55666_EN_Top.psu";
 	protected static final String OF_LICENSED = "PES2013_OF_FredPSG_V1.2.max";
 	protected static final String OF_LATEST = "PES2013_VRS_2.0_UK-Dany.xps";
@@ -64,6 +69,22 @@ public abstract class BaseTest {
 
 	protected static OptionFile loadLatestOF() throws Exception {
 		return loadOptionFile(OF_LATEST);
+	}
+
+	protected static final Random rand = new Random();
+
+	protected static String randomString(int length) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < length; i++) {
+			char c = (char) (rand.nextInt(128 - 32) + 32);
+			sb.append(c);
+		}
+		return sb.toString();
+	}
+
+	protected static String randomString(int minLength, int maxLength) {
+		int l = rand.nextInt(maxLength + 1 - minLength) + minLength;
+		return randomString(l);
 	}
 
 }

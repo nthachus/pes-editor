@@ -1,10 +1,15 @@
 package editor.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
 public final class Files {
+	private static final Logger log = LoggerFactory.getLogger(Files.class);
+
 	private Files() {
 	}
 
@@ -60,7 +65,7 @@ public final class Files {
 				try {
 					return new File(file.getCanonicalPath() + EXT_SEPARATOR + extension);
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn(e.toString());
 				}
 			}
 		}
@@ -102,20 +107,20 @@ public final class Files {
 			byte[] buffer = new byte[fs.available()];
 			int res = fs.read(buffer);
 			if (res < 0) {
-				System.err.println("Cannot read entire file: " + file.getPath());
+				log.error("Cannot read entire file: {}", file.getPath());
 				return null;
 			}
 			return buffer;
 
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			log.error("Failed to read entire file:", e);
 			return null;
 		} finally {
 			if (null != fs) {
 				try {
 					fs.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn(e.toString());
 				}
 			}
 		}

@@ -3,8 +3,6 @@ package editor.data;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 public final class StadiumsTest extends BaseTest {
 	private static final String FIRST_STADIUM = "CLUB HOUSE";
 
@@ -21,7 +19,7 @@ public final class StadiumsTest extends BaseTest {
 		String[] list = Stadiums.get(of);
 		Assert.assertNotNull(list);
 		// DEBUG
-		System.out.println(Arrays.toString(list));
+		log.debug("Loaded {}: {}", "stadiums", list);
 
 		for (String s : list)
 			Assert.assertNotNull(s);

@@ -2,6 +2,8 @@ package editor.ui;
 
 import editor.util.Files;
 import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -13,7 +15,9 @@ import java.net.URL;
 import java.util.Locale;
 
 public class HelpDialog extends JDialog {
+	private static final Logger log = LoggerFactory.getLogger(HelpDialog.class);
 	private static final String INDEX_PAGE = "/META-INF/help/index%s.html";
+
 	private final JEditorPane editPanel;
 
 	public HelpDialog(Frame owner) {
@@ -66,7 +70,7 @@ public class HelpDialog extends JDialog {
 			try {
 				editPanel.setPage(url);
 			} catch (Exception e) {
-				System.err.println("Error while loading help page: " + e);
+				log.error("Error while loading help page:", e);
 			}
 		}
 	}

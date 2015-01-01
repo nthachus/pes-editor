@@ -10,13 +10,42 @@
 			<maxHistory>7</maxHistory>
 		</rollingPolicy>
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
 			<charset>UTF-8</charset>
 		</encoder>
 	</appender>
 
+	<appender name="EMAIL" class="editor.logback.AlternateSMTPAppender">
+		<!-- deny all events with a level below WARN -->
+		<evaluator class="editor.logback.ThresholdEvaluator">
+			<level>WARN</level>
+		</evaluator>
+		<smtpHost>smtp.sendgrid.net</smtpHost>
+		<smtpPort>587</smtpPort>
+		<STARTTLS>true</STARTTLS>
+		<username>pes-editor</username>
+		<password>egQJUK0H9/30dGVUkKmUtw==</password>
+
+		<from>pes-editor@sendgrid.me</from>
+		<to>nthachus@gmail.com</to>
+		<subject>%logger - %m</subject>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date [%-5level] %logger - %message%n</pattern>
+		</layout>
+		<!-- send just one log entry per email -->
+		<cyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTracker">
+			<bufferSize>3</bufferSize>
+		</cyclicBufferTracker>
+		<charsetEncoding>UTF-8</charsetEncoding>
+		<asynchronousSending>true</asynchronousSending>
+
+		<connectionTimeout>3000</connectionTimeout>
+		<timeout>2000</timeout>
+	</appender>
+
 	<root level="INFO">
 		<appender-ref ref="FILE"/>
+		<appender-ref ref="EMAIL"/>
 	</root>
 
 	<logger name="editor" level="ALL"/>

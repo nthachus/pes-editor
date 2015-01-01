@@ -6,7 +6,8 @@ import editor.data.OfFormat;
 import editor.data.OptionFile;
 import editor.util.Files;
 import editor.util.Strings;
-import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +17,8 @@ import java.io.*;
 import java.net.URL;
 
 public final class Editor extends JFrame {
+	private static final Logger log = LoggerFactory.getLogger(Editor.class);
+
 	private final OptionFile of;
 	private final OptionFile of2;
 
@@ -474,21 +477,21 @@ public final class Editor extends JFrame {
 
 			sw.writeObject(dir);
 		} catch (IOException e) {
-			System.err.println(e);
+			log.error("Failed to save settings:", e);
 			return false;
 		} finally {
 			if (null != sw) {
 				try {
 					sw.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn(e.toString());
 				}
 			}
 			if (null != out) {
 				try {
 					out.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn(e.toString());
 				}
 			}
 		}
@@ -513,20 +516,20 @@ public final class Editor extends JFrame {
 				dir = null;
 			}
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			log.error("Failed to load settings:", e);
 		} finally {
 			if (null != sr) {
 				try {
 					sr.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn(e.toString());
 				}
 			}
 			if (null != in) {
 				try {
 					in.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					log.warn(e.toString());
 				}
 			}
 		}
@@ -545,7 +548,11 @@ public final class Editor extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
+					Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+						public void uncaughtException(Thread thread, Throwable throwable) {
+							log.error("Unhandled exception occurred:", throwable);
+						}
+					});
 
 					try {
 						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -560,7 +567,7 @@ public final class Editor extends JFrame {
 					form.openFile();
 
 				} catch (Exception e) {
-					e.printStackTrace(System.err);
+					log.error("Failed to initialize Editor form:", e);
 					System.exit(-1);
 				}
 			}

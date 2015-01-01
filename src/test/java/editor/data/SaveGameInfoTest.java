@@ -16,7 +16,7 @@ public final class SaveGameInfoTest extends BaseTest {
 			boolean res = saveInfo.getInfo(fs);
 			Assert.assertTrue(res);
 			// DEBUG
-			System.out.println("SaveGame info: " + saveInfo);
+			log.debug("SaveGame info: {}", saveInfo);
 
 			res = OptionFile.isValidGameId(saveInfo.getGame());
 			Assert.assertTrue(res);

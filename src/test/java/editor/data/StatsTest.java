@@ -40,7 +40,7 @@ public final class StatsTest extends BaseTest {
 					&& Modifier.isFinal(f.getModifiers()) && f.getType() == Stat.class) {
 
 				st = (Stat) f.get(null);
-				//System.out.println("Process Stat: " + st);
+				//log.debug("Process Stat: {}", st);
 
 				int old = Stats.getValue(of, FOR_PLAYER, st);
 				int val = (old > 0) ? old - 1 : old + 1;

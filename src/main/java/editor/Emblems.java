@@ -3,11 +3,15 @@ package editor;
 import editor.data.OptionFile;
 import editor.util.Bits;
 import editor.util.Images;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public final class Emblems {
+	private static final Logger log = LoggerFactory.getLogger(Emblems.class);
+
 	private Emblems() {
 	}
 
@@ -104,7 +108,7 @@ public final class Emblems {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			log.error("Failed to save emblem 128:", e);
 			return false;
 		}
 
@@ -134,7 +138,7 @@ public final class Emblems {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			log.error("Failed to save emblem 16:", e);
 			return false;
 		}
 

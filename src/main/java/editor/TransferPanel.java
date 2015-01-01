@@ -4,6 +4,8 @@ import editor.data.OptionFile;
 import editor.data.Stats;
 import editor.ui.SelectByTeam;
 import editor.util.Bits;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -20,6 +22,7 @@ import java.awt.event.MouseListener;
 
 public class TransferPanel extends JPanel
 		implements MouseListener, DropTargetListener, DragSourceListener, DragGestureListener {
+	private static final Logger log = LoggerFactory.getLogger(TransferPanel.class);
 
 	private final OptionFile of;
 	private final PlayerDialog playerDia;
@@ -108,7 +111,7 @@ public class TransferPanel extends JPanel
 		try {
 			localPlayerFlavor = new DataFlavor(localPlayerType);
 		} catch (ClassNotFoundException e) {
-			System.out.println("FormTransferHandler: unable to create data flavor");
+			log.warn("Unable to create data flavor:", e);
 		}
 
 		new DropTarget(freeList.getFreeList(), this);
