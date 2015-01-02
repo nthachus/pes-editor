@@ -17,10 +17,10 @@ public class SelectByTeam extends JPanel {
 	private final OptionFile of;
 	private final boolean isNormal;
 
-	private final SquadList squadList;
-	private final JComboBox<String> teamBox;
-	private final SquadNumberList numList;
-	private final PositionList posList;
+	private/* final*/ SquadList squadList;
+	private/* final*/ JComboBox<String> teamBox;
+	private/* final*/ SquadNumberList numList;
+	private/* final*/ PositionList posList;
 
 	public SelectByTeam(OptionFile of, boolean isNormal) {
 		super(new BorderLayout());
@@ -28,6 +28,10 @@ public class SelectByTeam extends JPanel {
 		this.of = of;
 		this.isNormal = isNormal;
 
+		initComponents();
+	}
+
+	private void initComponents() {
 		teamBox = new JComboBox<String>();
 		teamBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -46,9 +50,6 @@ public class SelectByTeam extends JPanel {
 			add(squadList, BorderLayout.CENTER);
 			add(numList, BorderLayout.EAST);
 		} else {
-			numList = null;
-			posList = null;
-
 			JScrollPane scroll = new JScrollPane(
 					JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 					JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

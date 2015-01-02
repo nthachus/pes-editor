@@ -4,6 +4,7 @@ import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.data.Squads;
 import editor.data.Stats;
+import editor.ui.SelectByNation;
 import editor.ui.SelectByTeam;
 import editor.util.Bits;
 import org.slf4j.Logger;
