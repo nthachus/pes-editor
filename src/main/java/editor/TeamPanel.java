@@ -445,12 +445,12 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			if (Kits.isLogoUsed(of, t1, l)) {
 				logos[l] = Kits.getLogo(of, t1, l);
 			} else {
-				logos[l] = 88;
+				logos[l] = -1;
 			}
 		}
 		for (int t = 0; t < Clubs.TOTAL + Squads.NATION_COUNT + Squads.CLASSIC_COUNT; t++) {
 			for (int l = 0; t != t1 && l < 4; l++) {
-				if (logos[l] != 88) {
+				if (logos[l] >= 0) {
 					for (int k = 0; k < 4; k++) {
 						if (Kits.getLogo(of, t, k) == logos[l]) {
 							if (Kits.isLogoUsed(of, t, k)) {
@@ -523,21 +523,18 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 					}
 				}
 				if (!dupe) {
-					byte targ = logoChooser.getFlag("Choose logo to replace",
+					int targetLogo = logoChooser.getFlag("Choose logo to replace",
 							Logos.get(of2, Kits.getLogo(of2, t2, l), false));
-					if (targ != 88) {
-						Logos.importData(of2, Kits.getLogo(of2, t2, l), of,
-								targ);
+					if (targetLogo >= 0) {
+						Logos.importData(of2, Kits.getLogo(of2, t2, l), of, targetLogo);
 						for (int k = l; k < 4; k++) {
-							if (Kits.getLogo(of2, t2, l) == Kits.getLogo(of2,
-									t2, k)) {
-								Kits.setLogo(of, t1, k, targ);
+							if (Kits.getLogo(of2, t2, l) == Kits.getLogo(of2, t2, k)) {
+								Kits.setLogo(of, t1, k, targetLogo);
 							}
 						}
 					} else {
 						for (int k = l; k < 4; k++) {
-							if (Kits.getLogo(of2, t2, l) == Kits.getLogo(of2,
-									t2, k)) {
+							if (Kits.getLogo(of2, t2, l) == Kits.getLogo(of2, t2, k)) {
 								Kits.setLogoUnused(of, t1, k);
 							}
 						}

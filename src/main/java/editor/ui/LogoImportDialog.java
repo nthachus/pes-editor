@@ -14,11 +14,11 @@ public class LogoImportDialog extends JDialog {
 	private final OptionFile of;
 	private final OptionFile of2;
 
-	private volatile boolean trans = true;
+	private volatile boolean isTrans = true;
 	private volatile int slot = 0;
 	private volatile int replacement = 0;
 
-	private final JButton[] flagButton = new JButton[Logos.TOTAL];
+	private final JButton[] flagButtons = new JButton[Logos.TOTAL];
 	private/* final*/ JLabel fileLabel;
 
 	public LogoImportDialog(Frame owner, OptionFile of, OptionFile of2) {
@@ -37,19 +37,19 @@ public class LogoImportDialog extends JDialog {
 
 		UIUtil.javaLookAndFeel();// fix button background color
 		Image icon;
-		for (int l = 0; l < flagButton.length; l++) {
+		for (int l = 0; l < flagButtons.length; l++) {
 
 			icon = Logos.get(of, -1, false);
-			flagButton[l] = new JButton(new ImageIcon(icon));
-			flagButton[l].setMargin(new Insets(0, 0, 0, 0));
-			flagButton[l].setActionCommand(Integer.toString(l));
-			flagButton[l].addActionListener(new ActionListener() {
+			flagButtons[l] = new JButton(new ImageIcon(icon));
+			flagButtons[l].setMargin(new Insets(0, 0, 0, 0));
+			flagButtons[l].setActionCommand(Integer.toString(l));
+			flagButtons[l].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					importFlag(evt);
 				}
 			});
 
-			flagPanel.add(flagButton[l]);
+			flagPanel.add(flagButtons[l]);
 		}
 		UIUtil.systemLookAndFeel();
 
@@ -82,12 +82,12 @@ public class LogoImportDialog extends JDialog {
 
 	private void updateFlags(ActionEvent evt) {
 		if (null != evt)// toggle transparency
-			trans = !trans;
+			isTrans = !isTrans;
 
 		Image logo;
 		for (int f = 0; f < Logos.TOTAL; f++) {
-			logo = Logos.get(of2, f, !trans);
-			flagButton[f].setIcon(new ImageIcon(logo));
+			logo = Logos.get(of2, f, !isTrans);
+			flagButtons[f].setIcon(new ImageIcon(logo));
 		}
 	}
 
