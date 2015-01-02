@@ -1,6 +1,5 @@
 package editor.data;
 
-import editor.Clubs;
 import editor.util.Bits;
 import editor.util.Images;
 import org.slf4j.Logger;
@@ -110,7 +109,7 @@ public final class Emblems {
 					if (of.getData()[idxAdr] == UNUSED_IDX_VALUE) {
 						of.getData()[idxAdr] = Bits.toByte(slot);
 
-						int id = Clubs.firstFlag + i;
+						int id = Clubs.FIRST_EMBLEM + i;
 						Bits.toBytes(Bits.toInt16(id), of.getData(), adr + 4);
 						break;
 					}
@@ -140,7 +139,7 @@ public final class Emblems {
 					if (of.getData()[idxAdr] == UNUSED_IDX_VALUE) {
 						of.getData()[idxAdr] = Bits.toByte(TOTAL128 + slot);
 
-						int id = Clubs.firstFlag + TOTAL128 + i;
+						int id = Clubs.FIRST_EMBLEM + TOTAL128 + i;
 						Bits.toBytes(Bits.toInt16(id), of.getData(), adr + 4);
 						break;
 					}
@@ -220,7 +219,7 @@ public final class Emblems {
 
 	public static void delete16(OptionFile of, int slot) {
 		int index = getIndex(of, slot + TOTAL128);
-		int sourceIdx = index - (Clubs.firstFlag + TOTAL128);
+		int sourceIdx = index - (Clubs.FIRST_EMBLEM + TOTAL128);
 
 		int adr = getIndexOffset(false, sourceIdx);
 		of.getData()[adr] = UNUSED_IDX_VALUE;
@@ -234,7 +233,7 @@ public final class Emblems {
 			System.arraycopy(of.getData(), source, of.getData(), dest, SIZE16);
 
 			index = getIndex(of, slot + TOTAL128);
-			sourceIdx = index - (Clubs.firstFlag + TOTAL128);
+			sourceIdx = index - (Clubs.FIRST_EMBLEM + TOTAL128);
 			adr = getIndexOffset(false, sourceIdx);
 			of.getData()[adr] = Bits.toByte(slot + TOTAL128);
 		}
@@ -245,7 +244,7 @@ public final class Emblems {
 
 	public static void delete128(OptionFile of, int slot) {
 		int index = getIndex(of, slot);
-		int sourceIdx = index - Clubs.firstFlag;
+		int sourceIdx = index - Clubs.FIRST_EMBLEM;
 
 		int adr = getIndexOffset(true, sourceIdx);
 		of.getData()[adr] = UNUSED_IDX_VALUE;
@@ -259,7 +258,7 @@ public final class Emblems {
 			System.arraycopy(of.getData(), source, of.getData(), dest, SIZE128);
 
 			index = getIndex(of, slot);
-			sourceIdx = index - Clubs.firstFlag;
+			sourceIdx = index - Clubs.FIRST_EMBLEM;
 			adr = getIndexOffset(true, sourceIdx);
 			of.getData()[adr] = Bits.toByte(slot);
 		}
@@ -287,7 +286,7 @@ public final class Emblems {
 				if (ofDest.getData()[adr] == UNUSED_IDX_VALUE) {
 
 					ofDest.getData()[adr] = Bits.toByte(TOTAL128 + slotDest);
-					int id = (Clubs.firstFlag + TOTAL128) + i;
+					int id = (Clubs.FIRST_EMBLEM + TOTAL128) + i;
 					Bits.toBytes(Bits.toInt16(id), ofDest.getData(), adrDest + 4);
 					break;
 				}
@@ -314,7 +313,7 @@ public final class Emblems {
 				if (ofDest.getData()[adr] == UNUSED_IDX_VALUE) {
 
 					ofDest.getData()[adr] = Bits.toByte(slotDest);
-					int id = Clubs.firstFlag + i;
+					int id = Clubs.FIRST_EMBLEM + i;
 					Bits.toBytes(Bits.toInt16(id), ofDest.getData(), adrDest + 4);
 					break;
 				}

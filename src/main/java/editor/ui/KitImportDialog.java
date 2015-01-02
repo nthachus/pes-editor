@@ -1,10 +1,6 @@
 package editor.ui;
 
-import editor.Clubs;
-import editor.data.Kits;
-import editor.data.OptionFile;
-import editor.data.Squads;
-import editor.data.Stats;
+import editor.data.*;
 import editor.util.Strings;
 
 import javax.swing.*;

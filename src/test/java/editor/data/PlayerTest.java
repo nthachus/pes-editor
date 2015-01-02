@@ -24,4 +24,5 @@ public final class PlayerTest extends BaseTest {
 		Assert.assertEquals(4941, Player.TOTAL);
 	}
 
+	// TODO: More tests here!
 }

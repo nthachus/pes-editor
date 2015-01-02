@@ -1,13 +1,9 @@
 package editor.ui;
 
-import editor.Clubs;
 import editor.EmblemPanel;
 import editor.TeamPanel;
 import editor.TransferPanel;
-import editor.data.Boots;
-import editor.data.Leagues;
-import editor.data.OptionFile;
-import editor.data.Stadiums;
+import editor.data.*;
 import editor.util.Strings;
 
 import javax.swing.*;
@@ -128,7 +124,7 @@ public class ImportPanel extends JPanel {
 	}
 
 	private void importKits() {
-		Clubs.importData(of, of2);
+		Clubs.importData(of2, of);
 
 		for (int i = 7; i <= 8; i++) {
 			int adr = OptionFile.blockAddress(i);
@@ -144,7 +140,7 @@ public class ImportPanel extends JPanel {
 	}
 
 	private void importClubs() {
-		Clubs.importNames(of, of2);
+		Clubs.importNames(of2, of);
 
 		teamPan.refresh();
 		transferPan.refresh();

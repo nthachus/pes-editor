@@ -1,6 +1,6 @@
 package editor.ui;
 
-import editor.Clubs;
+import editor.data.Clubs;
 import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.data.Squads;

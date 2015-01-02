@@ -1,6 +1,5 @@
 package editor.data;
 
-import editor.Clubs;
 import editor.Player;
 import editor.util.Bits;
 

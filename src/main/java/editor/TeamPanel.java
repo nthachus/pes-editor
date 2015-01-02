@@ -76,7 +76,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 					int f = backChooser.getBack(getEmblemImage(),
 							Clubs.getRed(of, t), Clubs.getGreen(of, t), Clubs.getBlue(of, t));
 					if (f >= 0) {
-						Clubs.setBack(of, t, f);
+						Clubs.setBackFlag(of, t, f);
 						backButton.setIcon(backChooser.getFlagButton(f).getIcon());
 					}
 				}
@@ -252,7 +252,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		badgeButton.setIcon(new ImageIcon(Emblems.get16(of, -1, false, false)));
 		team = Clubs.getNames(of);
 		for (int t = 0; t < Clubs.TOTAL; t++) {
-			listText[t] = Clubs.getAbv(of, t) + "     " + team[t];
+			listText[t] = Clubs.getAbbrName(of, t) + "     " + team[t];
 		}
 		globalPanel.updateTeamBox(team);
 		for (int n = 0; n < 60; n++) {
@@ -289,7 +289,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			if (text.length() == 3) {
 				text = text.toUpperCase();
 				int t = list.getSelectedIndex();
-				Clubs.setAbv(of, t, text);
+				Clubs.setAbbrName(of, t, text);
 				refresh();
 				tran.refresh();
 				if (t < list.getModel().getSize() - 1) {
@@ -312,12 +312,12 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				}
 
 				int f = Clubs.getEmblem(of, i);
-				if (f >= Clubs.firstFlag
-						&& f < Clubs.firstFlag + Emblems.TOTAL128 + Emblems.TOTAL16) {
-					f = f - Clubs.firstFlag;
+				if (f >= Clubs.FIRST_EMBLEM
+						&& f < Clubs.FIRST_EMBLEM + Emblems.TOTAL128 + Emblems.TOTAL16) {
+					f = f - Clubs.FIRST_EMBLEM;
 					badgeButton.setIcon(new ImageIcon(Emblems.getImage(of, f)));
 				} else {
-					if (f == i + Clubs.firstDefEmblem) {
+					if (f == i + Clubs.FIRST_DEF_EMBLEM) {
 						badgeButton.setIcon(defaultIcon);
 					} else {
 						badgeButton.setIcon(new ImageIcon(Emblems.get16(of, -1, false, false)));
@@ -334,7 +334,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				stadiumBox.setActionCommand("y");
 				editor.setText(team[i]);
 
-				abvEditor.setText(Clubs.getAbv(of, i));
+				abvEditor.setText(Clubs.getAbbrName(of, i));
 
 			} else {
 				editor.setText("");
@@ -387,7 +387,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			if ((e.getButton() == MouseEvent.BUTTON3 || (e.getButton() == MouseEvent.BUTTON1 && e.isControlDown()))) {
 
 				if (ti != -1 && ti < Clubs.TOTAL) {
-					Clubs.setEmblem(of, ti, null);
+					Clubs.setEmblem(of, ti, -1);
 					badgeButton.setIcon(defaultIcon);
 					updateBackBut();
 				}
@@ -402,7 +402,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 						} else {
 							badgeButton.setIcon(new ImageIcon(Emblems.get16(of, f - Emblems.TOTAL128, false, false)));
 						}
-						Clubs.setEmblem(of, t, Bits.toBytes((short) Emblems.getIndex(of, f)));
+						Clubs.setEmblem(of, t, Emblems.getIndex(of, f));
 						updateBackBut();
 					}
 				}
@@ -413,7 +413,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 	private void updateBackBut() {
 		int i = list.getSelectedIndex();
 		backButton.setIcon(backChooser.getFlagBackground(getEmblemImage(), Clubs
-				.getBack(of, i), Clubs.getRed(of, i), Clubs.getGreen(of, i),
+				.getBackFlag(of, i), Clubs.getRed(of, i), Clubs.getGreen(of, i),
 				Clubs.getBlue(of, i)));
 	}
 
@@ -421,8 +421,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		Image image = null;
 		int id = list.getSelectedIndex();
 		int f = Clubs.getEmblem(of, id);
-		if (f >= Clubs.firstFlag
-				&& f < Clubs.firstFlag + Emblems.TOTAL128 + Emblems.TOTAL16) {
+		if (f >= Clubs.FIRST_EMBLEM
+				&& f < Clubs.FIRST_EMBLEM + Emblems.TOTAL128 + Emblems.TOTAL16) {
 			ImageIcon icon = (ImageIcon) badgeButton.getIcon();
 			image = icon.getImage();
 		}
@@ -432,7 +432,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 	private void importKit(int t1, int t2) {
 		int emblem1 = 0;
 		if (t1 < Clubs.TOTAL) {
-			emblem1 = Clubs.getEmblem(of, t1) - Clubs.firstFlag;
+			emblem1 = Clubs.getEmblem(of, t1) - Clubs.FIRST_EMBLEM;
 			if (emblem1 >= 0 && emblem1 < Emblems.TOTAL128 + Emblems.TOTAL16) {
 				Emblems.deleteImage(of, emblem1);
 			}
@@ -471,7 +471,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		}
 
 		if (t1 < Clubs.TOTAL) {
-			int emblem2 = Clubs.getEmblem(of2, t2) - Clubs.firstFlag;
+			int emblem2 = Clubs.getEmblem(of2, t2) - Clubs.FIRST_EMBLEM;
 			int embIndex = 0;
 			if (emblem2 >= 0 && emblem2 < Emblems.TOTAL128 + Emblems.TOTAL16) {
 
@@ -508,7 +508,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 			Clubs.importClub(of, t1, of2, t2);
 			if (emblem2 >= 0 && emblem2 < Emblems.TOTAL128 + Emblems.TOTAL16) {
-				Clubs.setEmblem(of, t1, Bits.toBytes((short) embIndex));
+				Clubs.setEmblem(of, t1, embIndex);
 			}
 		}
 
