@@ -22,9 +22,7 @@
 
 package editor;
 
-import editor.data.OptionFile;
-import editor.data.Stat;
-import editor.data.Stats;
+import editor.data.*;
 import editor.ui.SelectByTeam;
 import editor.util.Bits;
 

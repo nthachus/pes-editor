@@ -4,6 +4,7 @@ import editor.data.*;
 import editor.ui.*;
 import editor.util.Bits;
 import editor.util.Strings;
+import editor.util.UIUtil;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -41,8 +42,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 	private final GlobalPanel globalPanel;
 	private final BackChooserDialog backChooser;
 
-	private final JButton colour1But;
-	private final JButton colour2But;
+	private final JButton color1Btn;
+	private final JButton color2Btn;
 
 	private final KitImportDialog kitImpDia;
 
@@ -64,8 +65,10 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 		backChooser = new BackChooserDialog(null);
 
+		UIUtil.javaLookAndFeel();// fix button background color
+
 		backButton = new JButton(new ImageIcon(Emblems.get16(of, -1, false, false)));
-		backButton.setBackground(new Color(204, 204, 204));
+		backButton.setBackground(new Color(0xCC, 0xCC, 0xCC));
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int t = list.getSelectedIndex();
@@ -80,9 +83,9 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			}
 		});
 
-		colour1But = new JButton();
-		colour1But.setPreferredSize(new Dimension(20, 20));
-		colour1But.addActionListener(new ActionListener() {
+		color1Btn = new JButton();
+		color1Btn.setPreferredSize(new Dimension(20, 20));
+		color1Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int t = list.getSelectedIndex();
 				if (t != -1) {
@@ -90,16 +93,16 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 							"BG Colour 1", Clubs.getColor(of, t, false));
 					if (newColor != null) {
 						Clubs.setColor(of, t, false, newColor);
-						colour1But.setBackground(newColor);
+						color1Btn.setBackground(newColor);
 						updateBackBut();
 					}
 				}
 			}
 		});
 
-		colour2But = new JButton();
-		colour2But.setPreferredSize(new Dimension(20, 20));
-		colour2But.addActionListener(new ActionListener() {
+		color2Btn = new JButton();
+		color2Btn.setPreferredSize(new Dimension(20, 20));
+		color2Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int t = list.getSelectedIndex();
 				if (t != -1) {
@@ -107,7 +110,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 							"BG Colour 2", Clubs.getColor(of, t, true));
 					if (newColor != null) {
 						Clubs.setColor(of, t, true, newColor);
-						colour2But.setBackground(newColor);
+						color2Btn.setBackground(newColor);
 						updateBackBut();
 					}
 				}
@@ -115,11 +118,12 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		});
 
 		badgeButton = new JButton(new ImageIcon(Emblems.get16(of, -1, false, false)));
-		badgeButton.setBackground(new Color(204, 204, 204));
+		badgeButton.setBackground(new Color(0xCC, 0xCC, 0xCC));
 		badgeButton.addMouseListener(this);
-		badgeButton
-				.setToolTipText("Left click to change, right click to default");
+		badgeButton.setToolTipText("Left click to change, right click to default");
 		badgeButton.setAlignmentX(CENTER_ALIGNMENT);
+
+		UIUtil.systemLookAndFeel();
 
 		JButton copyBut = new JButton(new CopySwapIcon(false));
 		copyBut.addActionListener(new ActionListener() {
@@ -127,7 +131,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				int t = list.getSelectedIndex();
 				if (t != -1) {
 					Clubs.setColor(of, t, true, Clubs.getColor(of, t, false));
-					colour2But.setBackground(colour1But.getBackground());
+					color2Btn.setBackground(color1Btn.getBackground());
 					updateBackBut();
 				}
 			}
@@ -141,8 +145,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 					Color col = Clubs.getColor(of, t, false);
 					Clubs.setColor(of, t, false, Clubs.getColor(of, t, true));
 					Clubs.setColor(of, t, true, col);
-					colour1But.setBackground(Clubs.getColor(of, t, false));
-					colour2But.setBackground(Clubs.getColor(of, t, true));
+					color1Btn.setBackground(Clubs.getColor(of, t, false));
+					color2Btn.setBackground(Clubs.getColor(of, t, true));
 
 					updateBackBut();
 				}
@@ -194,8 +198,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 		JPanel bgColPan = new JPanel(new BorderLayout());
 		JPanel colPan = new JPanel(new GridLayout(0, 1));
-		colPan.add(colour1But);
-		colPan.add(colour2But);
+		colPan.add(color1Btn);
+		colPan.add(color2Btn);
 		bgColPan.add(copyBut, BorderLayout.WEST);
 		bgColPan.add(colPan, BorderLayout.CENTER);
 		bgColPan.add(swapBut, BorderLayout.EAST);
@@ -320,8 +324,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 					}
 				}
 
-				colour1But.setBackground(Clubs.getColor(of, i, false));
-				colour2But.setBackground(Clubs.getColor(of, i, true));
+				color1Btn.setBackground(Clubs.getColor(of, i, false));
+				color2Btn.setBackground(Clubs.getColor(of, i, true));
 
 				updateBackBut();
 
@@ -391,7 +395,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			} else if (e.getButton() == MouseEvent.BUTTON1) {
 				int t = list.getSelectedIndex();
 				if (t != -1) {
-					int f = flagChooser.getFlag("Choose Emblem", Emblems.TYPE_INHERIT);
+					int f = flagChooser.getEmblem("Choose Emblem", Emblems.TYPE_INHERIT);
 					if (f != -1) {
 						if (f < Emblems.TOTAL128) {
 							badgeButton.setIcon(new ImageIcon(Emblems.get128(of, f, false, false)));
@@ -476,7 +480,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 						Emblems.importData128(of2, Emblems.getLocation(of2, emblem2), of, Emblems.count128(of));
 						embIndex = Emblems.getIndex(of, Emblems.count128(of) - 1);
 					} else {
-						int rep = flagChooser.getFlag("Replace Emblem", Emblems.TYPE_128);
+						int rep = flagChooser.getEmblem("Replace Emblem", Emblems.TYPE_128);
 						if (rep != -1) {
 							Emblems.importData128(of2, Emblems.getLocation(of2, emblem2), of, rep);
 							embIndex = Emblems.getIndex(of, rep);
@@ -490,7 +494,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 								Emblems.count16(of));
 						embIndex = Emblems.getIndex(of, Emblems.count16(of) + Emblems.TOTAL128 - 1);
 					} else {
-						int rep = flagChooser.getFlag("Replace Emblem", Emblems.TYPE_16);
+						int rep = flagChooser.getEmblem("Replace Emblem", Emblems.TYPE_16);
 						if (rep != -1) {
 							Emblems.importData16(of2, Emblems.getLocation(of2, emblem2) - Emblems.TOTAL128, of,
 									rep - Emblems.TOTAL128);

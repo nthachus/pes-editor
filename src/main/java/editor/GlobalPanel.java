@@ -1,6 +1,7 @@
 package editor;
 
 import editor.data.OptionFile;
+import editor.data.Squads;
 import editor.data.Stats;
 import editor.util.Bits;
 

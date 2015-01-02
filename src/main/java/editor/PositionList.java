@@ -1,5 +1,6 @@
 package editor;
 
+import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.data.Stat;
 import editor.data.Stats;
@@ -43,7 +44,7 @@ public class PositionList extends JList<String> {
 			pos[0] = "GK   ";
 			posNum[0] = 0;
 			for (int i = 0; i < 10; i++) {
-				p = Formations.getPos(of, t, alt, i + 1);
+				p = Formations.getPosition(of, t, alt, i + 1);
 				posNum[i + 1] = p;
 				if (p == 0) {
 					pos[i + 1] = "GK";

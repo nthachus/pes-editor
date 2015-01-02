@@ -2,9 +2,11 @@ package editor;
 
 import editor.data.Emblems;
 import editor.data.OptionFile;
+import editor.ui.EmblemImportDialog;
 import editor.ui.ImageFileFilter;
 import editor.ui.PngFilter;
 import editor.util.Files;
+import editor.util.UIUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -35,13 +37,14 @@ public class EmblemPanel extends JPanel implements MouseListener {
 	private JLabel free128Label;
 	private JLabel largeFlag;
 
-	private volatile boolean trans = true;
+	private volatile boolean isTrans = true;
 
 	public EmblemPanel(OptionFile opt, EmblemImportDialog fid, TeamPanel tp) {
 		super();
 		of = opt;
 		flagImpDia = fid;
 		teamPanel = tp;
+
 		ImageFileFilter filter128 = new ImageFileFilter();
 		chooser.addChoosableFileFilter(filter128);
 		chooser.setAcceptAllFileFilterUsed(false);
@@ -53,9 +56,10 @@ public class EmblemPanel extends JPanel implements MouseListener {
 		flagButton = new JButton[Emblems.TOTAL16];
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
 
+		UIUtil.javaLookAndFeel();// fix button background color
 		for (int l = 0; l < Emblems.TOTAL16; l++) {
 			flagButton[l] = new JButton();
-			flagButton[l].setBackground(new Color(204, 204, 204));
+			flagButton[l].setBackground(new Color(0xCC, 0xCC, 0xCC));
 			flagButton[l].setMargin(new Insets(0, 0, 0, 0));
 			flagButton[l].setActionCommand(Integer.toString(l));
 			flagButton[l].addMouseListener(this);
@@ -67,9 +71,9 @@ public class EmblemPanel extends JPanel implements MouseListener {
 					if (slot >= Emblems.count16(of)) {
 						is128 = true;
 						slot = Emblems.TOTAL16 - 1 - slot;
-						icon = new ImageIcon(Emblems.get128(of, slot, !trans, false));
+						icon = new ImageIcon(Emblems.get128(of, slot, !isTrans, false));
 					} else {
-						icon = new ImageIcon(Emblems.get16(of, slot, !trans, false));
+						icon = new ImageIcon(Emblems.get16(of, slot, !isTrans, false));
 					}
 					Object[] options;
 					Object[] options1 = {
@@ -139,13 +143,13 @@ public class EmblemPanel extends JPanel implements MouseListener {
 					if (flagImpDia.isOf2Loaded() && n == 3) {
 						int replacement;
 						if (is128) {
-							replacement = flagImpDia.getFlag("Import Emblem", 2);
+							replacement = flagImpDia.getEmblem("Import Emblem", 2);
 							if (replacement != -1) {
 								flagImpDia.import128(of, slot, replacement);
 							}
 						} else {
 							replacement = flagImpDia
-									.getFlag("Import Emblem", 1);
+									.getEmblem("Import Emblem", 1);
 							if (replacement != -1) {
 								replacement = replacement - Emblems.TOTAL128;
 								flagImpDia.import16(of, slot, replacement);
@@ -159,11 +163,12 @@ public class EmblemPanel extends JPanel implements MouseListener {
 			});
 			flagPanel.add(flagButton[l]);
 		}
+		UIUtil.systemLookAndFeel();
 
 		JButton transButton = new JButton("Transparency");
 		transButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent t) {
-				trans = !trans;
+				isTrans = !isTrans;
 				refresh();
 			}
 		});
@@ -212,9 +217,9 @@ public class EmblemPanel extends JPanel implements MouseListener {
 			public void actionPerformed(ActionEvent t) {
 				int emblem = -1;
 				if (Emblems.getFree128(of) > 0) {
-					emblem = flagImpDia.getFlag("Import Emblem", 0);
+					emblem = flagImpDia.getEmblem("Import Emblem", 0);
 				} else if (Emblems.getFree16(of) > 0) {
-					emblem = flagImpDia.getFlag("Import Emblem", 1);
+					emblem = flagImpDia.getEmblem("Import Emblem", 1);
 				}
 				if (emblem != -1) {
 					if (emblem > Emblems.TOTAL128 - 1) {
@@ -317,11 +322,11 @@ public class EmblemPanel extends JPanel implements MouseListener {
 
 	public void refresh() {
 		for (int i = 0; i < Emblems.count16(of); i++) {
-			flagButton[i].setIcon(new ImageIcon(Emblems.get16(of, i, !trans, true)));
+			flagButton[i].setIcon(new ImageIcon(Emblems.get16(of, i, !isTrans, true)));
 			flagButton[i].setVisible(true);
 		}
 		for (int i = 0; i < Emblems.count128(of); i++) {
-			flagButton[Emblems.TOTAL16 - 1 - i].setIcon(new ImageIcon(Emblems.get128(of, i, !trans, true)));
+			flagButton[Emblems.TOTAL16 - 1 - i].setIcon(new ImageIcon(Emblems.get128(of, i, !isTrans, true)));
 			flagButton[Emblems.TOTAL16 - 1 - i].setVisible(true);
 		}
 
@@ -356,9 +361,9 @@ public class EmblemPanel extends JPanel implements MouseListener {
 		int slot = Integer.parseInt(but.getActionCommand());
 		if (slot >= Emblems.count16(of)) {
 			slot = Emblems.TOTAL16 - 1 - slot;
-			largeFlag.setIcon(new ImageIcon(Emblems.get128(of, slot, !trans, false)));
+			largeFlag.setIcon(new ImageIcon(Emblems.get128(of, slot, !isTrans, false)));
 		} else {
-			largeFlag.setIcon(new ImageIcon(Emblems.get16(of, slot, !trans, false)));
+			largeFlag.setIcon(new ImageIcon(Emblems.get16(of, slot, !isTrans, false)));
 		}
 	}
 

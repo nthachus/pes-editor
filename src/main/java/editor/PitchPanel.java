@@ -1,5 +1,6 @@
 package editor;
 
+import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.ui.SquadNumberList;
 
@@ -90,7 +91,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 		// g2.setPaint(Color.yellow);
 		// g2.fill(new Ellipse2D.Double(0 + adj, 90 + adj, 14, 14));
 		for (int p = 0; p < 11; p++) {
-			pos = Formations.getPos(of, squad, altBox.getSelectedIndex(), p);
+			pos = Formations.getPosition(of, squad, altBox.getSelectedIndex(), p);
 			// System.out.println(pos);
 			if (p == 0) {
 				x = 0 + adj;
@@ -126,9 +127,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 				if (pos == 30 || pos == 16 || pos == 4) {
 					adjx = -1;
 				}
-				boolean up = Formations.getAtk(of, squad, altBox
+				boolean up = Formations.getAttack(of, squad, altBox
 						.getSelectedIndex(), p, 2);
-				boolean down = Formations.getAtk(of, squad, altBox
+				boolean down = Formations.getAttack(of, squad, altBox
 						.getSelectedIndex(), p, 6);
 				if (up && down) {
 					g2.drawString(getPosLabel(pos).substring(0, 1), x + 15,
@@ -156,7 +157,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 				int x2 = x1;
 				int y2 = y1;
 				for (int i = 0; i < 8; i++) {
-					if (Formations.getAtk(of, squad, altBox.getSelectedIndex(),
+					if (Formations.getAttack(of, squad, altBox.getSelectedIndex(),
 							p, i)) {
 						switch (i) {
 						case 0:
@@ -222,9 +223,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 				int y1 = (y + 7) - 5 - (size / 2);
 				int x2 = (x + 7) - 13 - (size / 2);
 				int y2 = (y + 7) + 5 - (size / 2);
-				if (Formations.getDef(of, squad, altBox.getSelectedIndex(), p) == 1) {
+				if (Formations.getDefence(of, squad, altBox.getSelectedIndex(), p) == 1) {
 					g2.fill(new Ellipse2D.Double(x2, y2, size, size));
-				} else if (Formations.getDef(of, squad, altBox
+				} else if (Formations.getDefence(of, squad, altBox
 						.getSelectedIndex(), p) == 0) {
 					g2.fill(new Ellipse2D.Double(x1, y1, size, size));
 					g2.fill(new Ellipse2D.Double(x2, y2, size, size));
@@ -292,7 +293,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 		if (selected > 0) {
 			int x = e.getX() - xadj;
 			int y = e.getY() - yadj;
-			int pos = Formations.getPos(of, squad, altBox.getSelectedIndex(),
+			int pos = Formations.getPosition(of, squad, altBox.getSelectedIndex(),
 					selected);
 			if (x < 0 + adj) {
 				x = 0 + adj;

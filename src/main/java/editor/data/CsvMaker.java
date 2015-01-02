@@ -1,9 +1,7 @@
 package editor.data;
 
 import editor.Clubs;
-import editor.Formations;
 import editor.Player;
-import editor.Squads;
 import editor.util.Bits;
 import editor.util.Strings;
 import org.slf4j.Logger;

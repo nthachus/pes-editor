@@ -6,6 +6,7 @@ import editor.data.OptionFile;
 import editor.util.Files;
 import editor.util.Images;
 import editor.util.Strings;
+import editor.util.UIUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -23,7 +24,7 @@ public class LogoPanel extends JPanel {
 	private final OptionFile of;
 	private final LogoImportDialog logoImportDia;
 
-	private volatile boolean trans = true;
+	private volatile boolean isTrans = true;
 
 	public LogoPanel(OptionFile of, LogoImportDialog lid) {
 		super();
@@ -54,6 +55,7 @@ public class LogoPanel extends JPanel {
 		chooserPNG.setDialogTitle(Strings.getMessage("logo.export"));
 
 		JPanel flagPanel = new JPanel(new GridLayout(8, 10));
+		UIUtil.javaLookAndFeel();// fix button background color
 		for (int l = 0; l < flagButtons.length; l++) {
 			flagButtons[l] = new JButton();
 			flagButtons[l].setBackground(new Color(0xCC, 0xCC, 0xCC));
@@ -67,6 +69,7 @@ public class LogoPanel extends JPanel {
 
 			flagPanel.add(flagButtons[l]);
 		}
+		UIUtil.systemLookAndFeel();
 
 		JButton transButton = new JButton(Strings.getMessage("Transparency"));
 		transButton.addActionListener(new ActionListener() {
@@ -83,7 +86,7 @@ public class LogoPanel extends JPanel {
 	}
 
 	private void onTransparency(ActionEvent evt) {
-		trans = !trans;
+		isTrans = !isTrans;
 		refresh();
 	}
 
@@ -93,7 +96,7 @@ public class LogoPanel extends JPanel {
 		if (null == btn) throw new IllegalArgumentException("evt");
 
 		int slot = Integer.parseInt(btn.getActionCommand());
-		ImageIcon icon = new ImageIcon(Logos.get(of, slot, !trans));
+		ImageIcon icon = new ImageIcon(Logos.get(of, slot, !isTrans));
 
 		Object[] opts = getOptions(logoImportDia.isOf2Loaded());
 		int returnVal = JOptionPane.showOptionDialog(null,
@@ -187,7 +190,7 @@ public class LogoPanel extends JPanel {
 	}
 
 	private void refresh(int slot) {
-		Image icon = Logos.get(of, slot, !trans);
+		Image icon = Logos.get(of, slot, !isTrans);
 		flagButtons[slot].setIcon(new ImageIcon(icon));
 	}
 

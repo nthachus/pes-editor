@@ -64,7 +64,13 @@ public final class Emblems {
 	public static Image get128(OptionFile of, int slot, boolean opaque, boolean small) {
 		if (null == of) throw new NullPointerException("of");
 
-		int adr = getOffset(true, slot) + IMG_SIZE;
+		int adr;
+		try {
+			adr = getOffset(true, slot) + IMG_SIZE;
+		} catch (Exception e) {
+			adr = -1;
+		}
+
 		return Images.read(of.getData(), IMG_SIZE, BPP128, adr, opaque, small ? 0.5f : 0f);
 	}
 
@@ -190,11 +196,12 @@ public final class Emblems {
 		if (emblem < 0 || emblem >= TOTAL128 + TOTAL16) throw new IndexOutOfBoundsException("emblem");
 
 		int adr = getIndexOffset(true, emblem);
-		return Bits.toInt(of.getData()[adr]);
+		return (of.getData()[adr] == UNUSED_IDX_VALUE) ? -1 : Bits.toInt(of.getData()[adr]);
 	}
 
 	public static void deleteImage(OptionFile of, int emblem) {
 		int slot = getLocation(of, emblem);
+		if (slot < 0) return;
 
 		if (emblem < TOTAL128) {
 			delete128(of, slot);

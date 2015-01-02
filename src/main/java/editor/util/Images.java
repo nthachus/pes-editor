@@ -163,4 +163,23 @@ public final class Images {
 		}
 	}
 
+	public static boolean isBlank(BufferedImage image) {
+		if (null == image) return true;
+
+		ColorModel colorModel = image.getColorModel();
+		if (null == colorModel) return true;
+		if (!(colorModel instanceof IndexColorModel)) return false;
+
+		// colors palette
+		IndexColorModel palette = (IndexColorModel) colorModel;
+		int pSize = palette.getMapSize();
+		if (pSize <= 0) return true;
+
+		for (int i = 0, n = Math.min(pSize, 2); i < n; i++) {
+			if (palette.getRGB(i) != 0) return false;
+		}
+
+		return true;
+	}
+
 }

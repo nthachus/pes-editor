@@ -1,7 +1,6 @@
 package editor.data;
 
 import editor.Clubs;
-import editor.Formations;
 import editor.util.Bits;
 
 public final class Kits {

@@ -1,6 +1,8 @@
 package editor;
 
+import editor.data.Formations;
 import editor.data.OptionFile;
+import editor.data.Squads;
 import editor.data.Stats;
 
 import java.io.Serializable;

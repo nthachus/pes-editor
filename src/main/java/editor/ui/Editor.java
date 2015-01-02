@@ -4,8 +4,10 @@ import editor.*;
 import editor.data.CsvMaker;
 import editor.data.OfFormat;
 import editor.data.OptionFile;
+import editor.data.Squads;
 import editor.util.Files;
 import editor.util.Strings;
+import editor.util.UIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -553,14 +555,7 @@ public final class Editor extends JFrame {
 							log.error("Unhandled exception occurred:", throwable);
 						}
 					});
-
-					try {
-						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-						//System.setProperty("swing.metalTheme", "steel");
-					} catch (Exception e) {
-						// Ask for window decorations provided by the look and feel
-						JFrame.setDefaultLookAndFeelDecorated(true);
-					}
+					UIUtil.systemLookAndFeel();
 
 					Editor form = new Editor();
 					form.setVisible(true);

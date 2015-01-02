@@ -3,20 +3,12 @@ package editor;
 import editor.data.Logos;
 import editor.data.OptionFile;
 import editor.ui.CancelButton;
+import editor.util.UIUtil;
 
-import java.awt.BorderLayout;
-import java.awt.Frame;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Insets;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 public class LogoChooserDialog extends JDialog {
 	private JButton[] flagButton;
@@ -36,6 +28,7 @@ public class LogoChooserDialog extends JDialog {
 		flagPanel = new JPanel(new GridLayout(8, 10));
 		flagButton = new JButton[Logos.TOTAL];
 
+		UIUtil.javaLookAndFeel();// fix button background color
 		for (int l = 0; l < Logos.TOTAL; l++) {
 			flagButton[l] = new JButton(new ImageIcon(Logos.get(of, -1, false)));
 			// flagButton[l].setIcon();
@@ -49,6 +42,7 @@ public class LogoChooserDialog extends JDialog {
 			});
 			flagPanel.add(flagButton[l]);
 		}
+		UIUtil.systemLookAndFeel();
 
 		JButton transButton = new JButton("Transparency");
 		transButton.addActionListener(new ActionListener() {

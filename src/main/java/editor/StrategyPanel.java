@@ -1,6 +1,7 @@
 package editor;
 
 import editor.data.ControlButton;
+import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.ui.Ps2ButtonIcon;
 
@@ -35,14 +36,12 @@ public class StrategyPanel extends JPanel {
 					Formations.setStrategy(of, squad, b, strat);
 					// of.data[670608 + b + (628 * squad) + 6232] = strat;
 					// && of.data[670612 + (628 * squad) + 6232] == 0
-					if (strat == 6 && Formations.getStrategyOlCB(of, squad) == 0) {
-						for (int i = 1; Formations.getStrategyOlCB(of, squad) == 0
-								&& i < 11; i++) {
-							byte pos = Formations.getPos(of, squad, 0, i);
+					if (strat == 6 && Formations.getCBOverlap(of, squad) == 0) {
+						for (int i = 1; Formations.getCBOverlap(of, squad) == 0 && i < 11; i++) {
+							int pos = Formations.getPosition(of, squad, 0, i);
 							if (pos > 0 && pos < 8) {
-								Formations.setStrategyOlCB(of, squad, i);
-								// of.data[670612 + (628 * squad) + 6232] =
-								// (byte) i;
+								Formations.setCBOverlap(of, squad, i);
+								// of.data[670612 + (628 * squad) + 6232] = (byte) i;
 							}
 						}
 					}
@@ -84,7 +83,7 @@ public class StrategyPanel extends JPanel {
 				if (ok) {
 					SweItem item = (SweItem) overBox.getSelectedItem();
 					if (item != null) {
-						Formations.setStrategyOlCB(of, squad, item.index);
+						Formations.setCBOverlap(of, squad, item.index);
 						// of.data[670612 + (628 * squad) + 6232] = item.index;
 					}
 				}
@@ -157,9 +156,9 @@ public class StrategyPanel extends JPanel {
 		byte count = 0;
 		byte sel = -1;
 		for (byte i = 1; i < 11; i++) {
-			byte pos = Formations.getPos(of, squad, 0, i);
+			int pos = Formations.getPosition(of, squad, 0, i);
 			if (pos > 0 && pos < 8) {
-				if (i == Formations.getStrategyOlCB(of, squad)) {
+				if (i == Formations.getCBOverlap(of, squad)) {
 					sel = count;
 				}
 				overBox.addItem(new SweItem(i));

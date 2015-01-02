@@ -1,6 +1,6 @@
 package editor.ui;
 
-import editor.Formations;
+import editor.data.Formations;
 import editor.data.OptionFile;
 
 import javax.swing.*;

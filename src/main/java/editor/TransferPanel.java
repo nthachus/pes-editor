@@ -1,6 +1,8 @@
 package editor;
 
+import editor.data.Formations;
 import editor.data.OptionFile;
+import editor.data.Squads;
 import editor.data.Stats;
 import editor.ui.SelectByTeam;
 import editor.util.Bits;
@@ -467,12 +469,12 @@ public class TransferPanel extends JPanel
 				int t = list.getTeam();
 				if (t >= 0 && t < 66) {
 					teamDia.show(t, selectorL.getTeamBox().getItemAt(t));
-					Squads.fixForm(of, t, false);
+					Squads.fixFormation(of, t, false);
 					refreshLists();
 				}
 				if (t >= 75 && t < 205) {
 					teamDia.show(t - 8, selectorL.getTeamBox().getItemAt(t));
-					Squads.fixForm(of, t, false);
+					Squads.fixFormation(of, t, false);
 					refreshLists();
 				}
 			}
@@ -513,12 +515,12 @@ public class TransferPanel extends JPanel
 				int t = list.getTeam();
 				if (t >= 0 && t < 67) {
 					teamDia.show(t, selectorL.getTeamBox().getItemAt(t));
-					Squads.fixForm(of, t, false);
+					Squads.fixFormation(of, t, false);
 					refreshLists();
 				}
 				if (t >= 75 && t < 205) {
 					teamDia.show(t - 8, selectorL.getTeamBox().getItemAt(t));
-					Squads.fixForm(of, t, false);
+					Squads.fixFormation(of, t, false);
 					refreshLists();
 				}
 			}
@@ -558,7 +560,7 @@ public class TransferPanel extends JPanel
 							if (t > 74) {
 								t = t - 8;
 							}
-							Squads.tidy11(of, sqi, sp / 2, Formations.getPos(
+							Squads.tidy11(of, sqi, sp / 2, Formations.getPosition(
 									of, t, 0, sp / 2));
 						}
 					}

@@ -22,6 +22,7 @@
 
 package editor;
 
+import editor.data.Formations;
 import editor.data.OptionFile;
 
 import java.awt.BorderLayout;

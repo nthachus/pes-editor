@@ -1,5 +1,6 @@
 package editor;
 
+import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.ui.JobList;
 import editor.ui.PngFilter;
@@ -162,7 +163,7 @@ public class FormPanel extends JPanel
 					Role role = (Role) roleBox.getSelectedItem();
 					if (si >= 0 && si < 11 && role.index != -1) {
 						// int a = 670641 + (628 * team) + 6232 + si;
-						int oldRole = Formations.getPos(of, team, altBox
+						int oldRole = Formations.getPosition(of, team, altBox
 								.getSelectedIndex(), si);
 						if (oldRole != role.index) {
 							// System.out.println(oldRole);
@@ -220,7 +221,7 @@ public class FormPanel extends JPanel
 								}
 							}
 						}
-						Formations.setPos(of, team, altBox.getSelectedIndex(),
+						Formations.setPosition(of, team, altBox.getSelectedIndex(),
 								si, role.index);
 						// of.data[a + (altBox.getSelectedIndex() * 171)] = of
 						// .toByte(role.index);
@@ -252,9 +253,9 @@ public class FormPanel extends JPanel
 
 							// swe = of.data[670612 + (628 * team) + 6232];
 							if (altBox.getSelectedIndex() == 0
-									&& si == Formations.getStrategyOlCB(of, team)) {
+									&& si == Formations.getCBOverlap(of, team)) {
 								// of.data[670612 + (628 * team) + 6232] = 0;
-								Formations.setStrategyOlCB(of, team, 0);
+								Formations.setCBOverlap(of, team, 0);
 								/*
 								 * for (int s = 0; s < 4; s++) { int strat =
 								 * of.data[670608 + s + (628 team) + 6232]; if
@@ -332,7 +333,7 @@ public class FormPanel extends JPanel
 
 					// byte swe = of.data[670785 + (628 * team) + 6232 +
 					// (altBox.getSelectedIndex() * 171)];
-					// byte pos = Formations.getPos(of, team,
+					// byte pos = Formations.getPosition(of, team,
 					// altBox.getSelectedIndex(), swe);
 					/*
 					 * if (pos < 1 || pos > 7) { of.data[670785 + (628 team) +
@@ -352,11 +353,10 @@ public class FormPanel extends JPanel
 					 */
 
 					// swe = of.data[670612 + (628 * team) + 6232];
-					byte pos = Formations.getPos(of, team, 0, Formations
-							.getStrategyOlCB(of, team));
+					int pos = Formations.getPosition(of, team, 0, Formations.getCBOverlap(of, team));
 					if (altBox.getSelectedIndex() == 0 && (pos < 1 || pos > 7)) {
 						// of.data[670612 + (628 * team) + 6232] = 0;
-						Formations.setStrategyOlCB(of, team, 0);
+						Formations.setCBOverlap(of, team, 0);
 						/*
 						 * for (int s = 0; s < 4; s++) { int strat =
 						 * of.data[670608 + s + (628 team) + 6232]; if (strat ==
@@ -514,7 +514,7 @@ public class FormPanel extends JPanel
 		roleBox.setActionCommand("n");
 		roleBox.removeAllItems();
 		int si = squadList.getSelectedIndex();
-		int selPos = Formations.getPos(of, team, altBox.getSelectedIndex(), si);
+		int selPos = Formations.getPosition(of, team, altBox.getSelectedIndex(), si);
 		roleBox.setEnabled(true);
 		if (si > 0 && si < 11) {
 			int count = 0;
@@ -535,7 +535,7 @@ public class FormPanel extends JPanel
 
 					if (r == 15) {
 						for (int p = 0; free && p < 11; p++) {
-							pos = Formations.getPos(of, team, altBox
+							pos = Formations.getPosition(of, team, altBox
 									.getSelectedIndex(), p);
 							if (pos != selPos) {
 								if (pos == 8 || pos == 22) {
@@ -547,7 +547,7 @@ public class FormPanel extends JPanel
 
 					if (r == 16) {
 						for (int p = 0; free && p < 11; p++) {
-							pos = Formations.getPos(of, team, altBox
+							pos = Formations.getPosition(of, team, altBox
 									.getSelectedIndex(), p);
 							if (pos != selPos) {
 								if (pos == 9 || pos == 23) {
@@ -559,7 +559,7 @@ public class FormPanel extends JPanel
 
 					if (selPos != 15 && (r == 8 || r == 22)) {
 						for (int p = 0; free && p < 11; p++) {
-							pos = Formations.getPos(of, team, altBox
+							pos = Formations.getPosition(of, team, altBox
 									.getSelectedIndex(), p);
 							if (pos == 15) {
 								free = false;
@@ -569,7 +569,7 @@ public class FormPanel extends JPanel
 
 					if (selPos != 16 && (r == 9 || r == 23)) {
 						for (int p = 0; free && p < 11; p++) {
-							pos = Formations.getPos(of, team, altBox
+							pos = Formations.getPosition(of, team, altBox
 									.getSelectedIndex(), p);
 							if (pos == 16) {
 								free = false;
@@ -617,7 +617,7 @@ public class FormPanel extends JPanel
 
 				for (int p = 0; free && p < 11; p++) {
 					// System.out.println(r + ", " + p);
-					pos = Formations.getPos(of, team,
+					pos = Formations.getPosition(of, team,
 							altBox.getSelectedIndex(), p);
 					// System.out.println(a + "=" + of.data[a]);
 					if (pos == r) {
@@ -737,7 +737,7 @@ public class FormPanel extends JPanel
 		att = 0;
 		int pos;
 		for (int i = 1; i < 11; i++) {
-			pos = Formations.getPos(of, team, altBox.getSelectedIndex(), i);
+			pos = Formations.getPosition(of, team, altBox.getSelectedIndex(), i);
 			if (isDef(pos)) {
 				def++;
 			} else if (isMid(pos)) {
@@ -862,9 +862,8 @@ public class FormPanel extends JPanel
 		if (transferable.isDataFlavorSupported(localPlayerFlavor)) {
 			event.acceptDrop(DnDConstants.ACTION_MOVE);
 
-			byte tb = Formations.getSlot(of, team, sourceIndex);
-			Formations.setSlot(of, team, sourceIndex, Formations.getSlot(of,
-					team, ti));
+			int tb = Formations.getSlot(of, team, sourceIndex);
+			Formations.setSlot(of, team, sourceIndex, Formations.getSlot(of, team, ti));
 			Formations.setSlot(of, team, ti, tb);
 			if (sourceIndex < 11 && ti < 11) {
 				for (int j = 0; j < 6; j++) {

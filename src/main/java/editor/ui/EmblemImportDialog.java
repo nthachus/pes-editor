@@ -10,25 +10,29 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class EmblemChooserDialog extends JDialog {
-	private final JButton[] emblemButtons = new JButton[Emblems.TOTAL16];
+public class EmblemImportDialog extends JDialog {
+	private final OptionFile of2;
 
-	private final OptionFile of;
 	private volatile boolean isTrans = true;
 	private volatile int slot = -1;
-	private volatile int type = Emblems.TYPE_INHERIT;
+	private volatile int type;
 
-	public EmblemChooserDialog(Frame owner, OptionFile of) {
+	public EmblemImportDialog(Frame owner, OptionFile of2) {
 		super(owner, true);
-		if (null == of) throw new NullPointerException("of");
-		this.of = of;
+		if (null == of2) throw new NullPointerException("of2");
+		this.of2 = of2;
 
+		initComponents();
+	}
+
+	private final JButton[] emblemButtons = new JButton[Emblems.TOTAL16];
+	private/* final*/ JLabel fileLabel;
+
+	private void initComponents() {
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
-		Image icon;
 		UIUtil.javaLookAndFeel();// fix button background color
 		for (int i = 0; i < emblemButtons.length; i++) {
-
-			icon = Emblems.get16(of, -1, false, true);
+			Image icon = Emblems.get16(of2, -1, false, true);
 			emblemButtons[i] = new JButton(new ImageIcon(icon));
 			emblemButtons[i].setMargin(new Insets(0, 0, 0, 0));
 			emblemButtons[i].setActionCommand(Integer.toString(i));
@@ -50,12 +54,24 @@ public class EmblemChooserDialog extends JDialog {
 		});
 
 		CancelButton cancelButton = new CancelButton(this);
-		getContentPane().add(transButton, BorderLayout.NORTH);
-		getContentPane().add(cancelButton, BorderLayout.SOUTH);
-		getContentPane().add(flagPanel, BorderLayout.CENTER);
+
+		JPanel contentPane = new JPanel(new BorderLayout());
+		contentPane.add(transButton, BorderLayout.NORTH);
+		contentPane.add(cancelButton, BorderLayout.SOUTH);
+		contentPane.add(flagPanel, BorderLayout.CENTER);
+
+		fileLabel = new JLabel(Strings.getMessage("kitImport.label", ""));
+
+		getContentPane().add(fileLabel, BorderLayout.NORTH);
+		getContentPane().add(contentPane, BorderLayout.CENTER);
 
 		setResizable(false);
 		pack();
+	}
+
+	private void onTransparency(ActionEvent evt) {
+		isTrans = !isTrans;
+		refresh();
 	}
 
 	private void onSelectEmblem(ActionEvent evt) {
@@ -64,31 +80,33 @@ public class EmblemChooserDialog extends JDialog {
 		if (null == btn) throw new IllegalArgumentException("evt");
 
 		slot = Integer.parseInt(btn.getActionCommand());
-		if (slot >= Emblems.count16(of)) {
+		if (slot >= Emblems.count16(of2)) {
 			slot = Emblems.TOTAL16 - slot - 1;
 		} else {
-			slot += Emblems.TOTAL128;
+			slot = slot + Emblems.TOTAL128;
 		}
 
 		setVisible(false);
 	}
 
-	private void onTransparency(ActionEvent evt) {
-		isTrans = !isTrans;
-		refresh();
+	public boolean isOf2Loaded() {
+		return of2.isLoaded();
 	}
 
+	/**
+	 * @see EmblemChooserDialog#refresh()
+	 */
 	public void refresh() {
 		Image icon;
 		if (type == Emblems.TYPE_INHERIT || type == Emblems.TYPE_16) {
-			for (int i = 0, n = Emblems.count16(of); i < n; i++) {
-				icon = Emblems.get16(of, i, !isTrans, true);
+			for (int i = 0, n = Emblems.count16(of2); i < n; i++) {
+				icon = Emblems.get16(of2, i, !isTrans, true);
 				emblemButtons[i].setIcon(new ImageIcon(icon));
 				emblemButtons[i].setVisible(true);
 			}
 		} else if (type == Emblems.TYPE_INHERIT || type == Emblems.TYPE_128) {
-			for (int i = 0, n = Emblems.count128(of); i < n; i++) {
-				icon = Emblems.get128(of, i, !isTrans, true);
+			for (int i = 0, n = Emblems.count128(of2); i < n; i++) {
+				icon = Emblems.get128(of2, i, !isTrans, true);
 				emblemButtons[Emblems.TOTAL16 - i - 1].setIcon(new ImageIcon(icon));
 				emblemButtons[Emblems.TOTAL16 - i - 1].setVisible(true);
 			}
@@ -96,11 +114,11 @@ public class EmblemChooserDialog extends JDialog {
 
 		int start = 0, end = 0;
 		if (type == Emblems.TYPE_16) {
-			start = Emblems.count16(of);
+			start = Emblems.count16(of2);
 			end = Emblems.TOTAL16;
 		} else if (type == Emblems.TYPE_128) {
 			start = 0;
-			end = Emblems.TOTAL16 - Emblems.count128(of);
+			end = Emblems.TOTAL16 - Emblems.count128(of2);
 		}
 
 		for (int i = start; i < end; i++) {
@@ -114,10 +132,21 @@ public class EmblemChooserDialog extends JDialog {
 	public int getEmblem(String title, int type) {
 		this.type = type;
 		slot = -1;
+
 		setTitle(title);
+		fileLabel.setText(Strings.getMessage("kitImport.label", of2.getFilename()));
 		refresh();
 		setVisible(true);
+
 		return slot;
+	}
+
+	public void import128(OptionFile of, int slot, int replacement) {
+		Emblems.importData128(of2, replacement, of, slot);
+	}
+
+	public void import16(OptionFile of, int slot, int replacement) {
+		Emblems.importData16(of2, replacement, of, slot);
 	}
 
 }

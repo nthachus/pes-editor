@@ -1,10 +1,9 @@
 package editor.ui;
 
 import editor.Clubs;
-import editor.Formations;
-import editor.Player;
-import editor.Squads;
+import editor.data.Formations;
 import editor.data.OptionFile;
+import editor.data.Squads;
 import editor.util.Bits;
 
 import javax.swing.*;
@@ -26,28 +25,21 @@ public class SquadNumberList extends JList<String> {
 		setPreferredSize(new Dimension(16, 576));
 	}
 
-	private static final int LAST_NATION_TEAM = Squads.NATION_COUNT + Squads.CLASSIC_COUNT
-			+ (Player.TOTAL_EDIT - Formations.CLUB_TEAM_SIZE) / Formations.NATION_TEAM_SIZE;
-
-	// Last editable national players slot (23 - 9)
-	private static final int LAST_EDIT_TEAM_SIZE
-			= (Player.TOTAL_EDIT - Formations.CLUB_TEAM_SIZE) % Formations.NATION_TEAM_SIZE;
-
 	public void refresh(int team) {
-		if (team < 0 || team >= LAST_NATION_TEAM + 2 + Clubs.TOTAL)
+		if (team < 0 || team >= Squads.TOTAL)
 			throw new IndexOutOfBoundsException("team");
 
 		int size, firstAdr, ft = team;
-		if (team < LAST_NATION_TEAM) {
+		if (team < Squads.LAST_EDIT_NATION) {
 			size = Formations.NATION_TEAM_SIZE;
 			firstAdr = Squads.NATION_NUM_ADR + team * size;
-		} else if (team == LAST_NATION_TEAM) {
-			size = LAST_EDIT_TEAM_SIZE;
+		} else if (team == Squads.LAST_EDIT_NATION) {
+			size = Squads.LAST_EDIT_NATION_SIZE;
 			firstAdr = Squads.NATION_NUM_ADR + team * Formations.NATION_TEAM_SIZE;
 		} else {
 			size = Formations.CLUB_TEAM_SIZE;
-			firstAdr = Squads.CLUB_NUM_ADR + (team - (LAST_NATION_TEAM + 2)) * size;
-			ft -= 8;
+			firstAdr = Squads.CLUB_NUM_ADR + (team - Squads.FIRST_CLUB) * size;
+			ft -= Squads.EDIT_TEAM_COUNT;//8
 		}
 
 		String[] numList = buildNumberList(team, size, firstAdr, ft);
@@ -59,7 +51,8 @@ public class SquadNumberList extends JList<String> {
 		for (int p = 0; p < size; p++) {
 
 			int adr;
-			if (team < Squads.NATION_COUNT + Squads.CLASSIC_COUNT || team >= LAST_NATION_TEAM + 2) {
+			if (team < Squads.NATION_COUNT + Squads.CLASSIC_COUNT
+					|| (team >= Squads.FIRST_CLUB && team < Squads.FIRST_CLUB + Clubs.TOTAL)) {
 				adr = firstAdr + Formations.getSlot(of, ft, p);
 			} else {
 				adr = firstAdr + p;

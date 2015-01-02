@@ -3,6 +3,7 @@ package editor;
 import editor.data.Logos;
 import editor.data.OptionFile;
 import editor.ui.CancelButton;
+import editor.util.UIUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,6 +38,7 @@ public class LogoImportDialog extends JDialog {
 		 */
 		flagButton = new JButton[max];
 
+		UIUtil.javaLookAndFeel();// fix button background color
 		for (int l = 0; l < max; l++) {
 			flagButton[l] = new JButton(new ImageIcon(Logos.get(of, -1, false)));
 			flagButton[l].setMargin(new Insets(0, 0, 0, 0));
@@ -50,6 +52,7 @@ public class LogoImportDialog extends JDialog {
 			});
 			flagPanel.add(flagButton[l]);
 		}
+		UIUtil.systemLookAndFeel();
 
 		JButton transButton = new JButton("Transparency");
 		transButton.addActionListener(new ActionListener() {
