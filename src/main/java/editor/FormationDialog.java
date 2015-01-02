@@ -39,7 +39,7 @@ import javax.swing.JPanel;
 public class FormationDialog extends JDialog implements WindowListener {
 	OptionFile of;
 
-	FormPanel formPan;
+	FormationPanel formPan;
 
 	byte[] original = new byte[Formations.SIZE];
 
@@ -50,7 +50,7 @@ public class FormationDialog extends JDialog implements WindowListener {
 		// setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(this);
 		of = opf;
-		formPan = new FormPanel(of);
+		formPan = new FormationPanel(of);
 		JButton acceptButton = new JButton("Accept");
 		acceptButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent a) {

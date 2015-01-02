@@ -24,7 +24,7 @@
 
 		<from>pes-editor@sendgrid.me</from>
 		<to>nthachus@gmail.com</to>
-		<subject>%logger - %m</subject>
+		<subject>[PE2013] %logger - %m</subject>
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<pattern>%date [%-5level] %logger - %message%n</pattern>
 		</layout>

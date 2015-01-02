@@ -2,10 +2,7 @@ package editor;
 
 import editor.data.Formations;
 import editor.data.OptionFile;
-import editor.ui.JobList;
-import editor.ui.PngFilter;
-import editor.ui.SquadNumberList;
-import editor.ui.TeamSettingPanel;
+import editor.ui.*;
 import editor.util.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +22,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 
-public class FormPanel extends JPanel
+public class FormationPanel extends JPanel
 		implements ListSelectionListener, DropTargetListener, DragSourceListener, DragGestureListener {
-	private static final Logger log = LoggerFactory.getLogger(FormPanel.class);
+	private static final Logger log = LoggerFactory.getLogger(FormationPanel.class);
 
 	private final OptionFile of;
 
@@ -79,7 +76,7 @@ public class FormPanel extends JPanel
 
 	static boolean fromPitch = false;
 
-	private AttDefPanel adPanel;
+	private AtkDefPanel adPanel;
 	private JComboBox<Role> roleBox;
 	private JComboBox<String> altBox;
 	private SquadNumberList numList;
@@ -97,7 +94,7 @@ public class FormPanel extends JPanel
 	private DataFlavor localPlayerFlavor;
 	private int sourceIndex = -1;
 
-	public FormPanel(OptionFile opf) {
+	public FormationPanel(OptionFile opf) {
 		super();
 		of = opf;
 
@@ -302,9 +299,9 @@ public class FormPanel extends JPanel
 		teamSetPan = new TeamSettingPanel(of);
 		stratPan = new StrategyPanel(of, squadList, posList);
 
-		adPanel = new AttDefPanel(of, altBox);
+		adPanel = new AtkDefPanel(of, altBox);
 		pitchPanel = new PitchPanel(of, squadList, adPanel, altBox, numList);
-		adPanel.pitch = pitchPanel;
+		adPanel.setPitch(pitchPanel);
 
 		lFK = new JobList(of, 0, " F-L ", Color.yellow);
 		lFK.setToolTipText("Long free kick");
@@ -457,8 +454,8 @@ public class FormPanel extends JPanel
 		pitchPanel.selected = -1;
 		pitchPanel.squad = t;
 		pitchPanel.repaint();
-		adPanel.selected = -1;
-		adPanel.squad = t;
+		adPanel.setSelectedIndex(-1);
+		adPanel.setSquad(t);
 		adPanel.repaint();
 	}
 
@@ -472,10 +469,10 @@ public class FormPanel extends JPanel
 				updateRoleBox();
 				if (i >= 0 && i < 11) {
 					pitchPanel.selected = i;
-					adPanel.selected = i;
+					adPanel.setSelectedIndex(i);
 				} else {
 					pitchPanel.selected = -1;
-					adPanel.selected = -1;
+					adPanel.setSelectedIndex(-1);
 				}
 				pitchPanel.repaint();
 				adPanel.repaint();
@@ -912,7 +909,7 @@ public class FormPanel extends JPanel
 			roleBox.setEnabled(false);
 			roleBox.setActionCommand("y");
 			pitchPanel.selected = -1;
-			adPanel.selected = -1;
+			adPanel.setSelectedIndex(-1);
 			pitchPanel.repaint();
 			adPanel.repaint();
 			PlayerTransferable playerTran = new PlayerTransferable(p);

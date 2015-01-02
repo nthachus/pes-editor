@@ -2,13 +2,11 @@ package editor;
 
 import editor.data.Formations;
 import editor.data.OptionFile;
+import editor.ui.AtkDefPanel;
 import editor.ui.SquadNumberList;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -17,15 +15,12 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-
 public class PitchPanel extends JPanel implements MouseListener, MouseMotionListener {
 	private final OptionFile of;
 
 	SquadList list;
 
-	AttDefPanel adPanel;
+	AtkDefPanel adPanel;
 
 	int squad = 0;
 
@@ -41,10 +36,12 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 
 	int adj = 14;
 
-	Color[] colour = { new Color(0, 0, 0), new Color(255, 255, 255),
+	Color[] colour = {
+			new Color(0, 0, 0), new Color(255, 255, 255),
 			new Color(255, 255, 0), new Color(0, 255, 255),
 			new Color(0, 255, 0), new Color(255, 0, 0), new Color(0, 0, 255),
-			Color.gray };
+			Color.gray
+	};
 
 	JComboBox altBox;
 
@@ -54,7 +51,8 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 
 	int yadj = 0;
 
-	public PitchPanel(OptionFile opf, SquadList fsl, AttDefPanel adp,
+	public PitchPanel(
+			OptionFile opf, SquadList fsl, AtkDefPanel adp,
 			JComboBox ab, SquadNumberList nl) {
 		super();
 		of = opf;
@@ -160,38 +158,38 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 					if (Formations.getAttack(of, squad, altBox.getSelectedIndex(),
 							p, i)) {
 						switch (i) {
-						case 0:
-							x2 = x1 - 21;
-							y2 = y1;
-							break;
-						case 1:
-							x2 = x1 - 15;
-							y2 = y1 - 15;
-							break;
-						case 2:
-							x2 = x1;
-							y2 = y1 - 21;
-							break;
-						case 3:
-							x2 = x1 + 15;
-							y2 = y1 - 15;
-							break;
-						case 4:
-							x2 = x1 + 21;
-							y2 = y1;
-							break;
-						case 5:
-							x2 = x1 + 15;
-							y2 = y1 + 15;
-							break;
-						case 6:
-							x2 = x1;
-							y2 = y1 + 21;
-							break;
-						case 7:
-							x2 = x1 - 15;
-							y2 = y1 + 15;
-							break;
+							case 0:
+								x2 = x1 - 21;
+								y2 = y1;
+								break;
+							case 1:
+								x2 = x1 - 15;
+								y2 = y1 - 15;
+								break;
+							case 2:
+								x2 = x1;
+								y2 = y1 - 21;
+								break;
+							case 3:
+								x2 = x1 + 15;
+								y2 = y1 - 15;
+								break;
+							case 4:
+								x2 = x1 + 21;
+								y2 = y1;
+								break;
+							case 5:
+								x2 = x1 + 15;
+								y2 = y1 + 15;
+								break;
+							case 6:
+								x2 = x1;
+								y2 = y1 + 21;
+								break;
+							case 7:
+								x2 = x1 - 15;
+								y2 = y1 + 15;
+								break;
 						}
 						g2.draw(new Line2D.Double(x1, y1, x2, y2));
 					}
@@ -201,7 +199,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 			if (numbers) {
 				g2.setFont(new Font("Dialog", Font.BOLD, 10));
 				g2.setPaint(Color.black);
-				String numText = (String) numList.getModel().getElementAt(p);
+				String numText = numList.getModel().getElementAt(p);
 				int ta = 0;
 				if (numText.length() == 1) {
 					ta = 3;
@@ -258,19 +256,19 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 				// selected + (altBox.getSelectedIndex() * 171)]);
 			}
 		}
-		FormPanel.fromPitch = true;
+		FormationPanel.fromPitch = true;
 		if (selected != -1) {
 			list.setSelectedIndex(selected);
-			adPanel.selected = selected;
+			adPanel.setSelectedIndex(selected);
 		} else {
 			circle = new Ellipse2D.Double(0 + adj, 90 + adj, 14, 14);
 			if (circle.contains(e.getX(), e.getY())) {
 				selected = 0;
 				list.setSelectedIndex(selected);
-				adPanel.selected = selected;
+				adPanel.setSelectedIndex(selected);
 			} else {
 				list.clearSelection();
-				adPanel.selected = -1;
+				adPanel.setSelectedIndex(-1);
 			}
 		}
 		repaint();
@@ -278,7 +276,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	public void mouseReleased(MouseEvent e) {
-	};
+	}
 
 	public void mouseClicked(MouseEvent e) {
 	}
