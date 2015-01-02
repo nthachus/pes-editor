@@ -1,6 +1,5 @@
 package editor.ui;
 
-import editor.LogoImportDialog;
 import editor.data.Logos;
 import editor.data.OptionFile;
 import editor.util.Files;

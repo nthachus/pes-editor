@@ -60,7 +60,7 @@ public class EmblemImportDialog extends JDialog {
 		contentPane.add(cancelButton, BorderLayout.SOUTH);
 		contentPane.add(flagPanel, BorderLayout.CENTER);
 
-		fileLabel = new JLabel(Strings.getMessage("kitImport.label", ""));
+		fileLabel = new JLabel(Strings.getMessage("import.label2", ""));
 
 		getContentPane().add(fileLabel, BorderLayout.NORTH);
 		getContentPane().add(contentPane, BorderLayout.CENTER);
@@ -134,7 +134,7 @@ public class EmblemImportDialog extends JDialog {
 		slot = -1;
 
 		setTitle(title);
-		fileLabel.setText(Strings.getMessage("kitImport.label", of2.getFilename()));
+		fileLabel.setText(Strings.getMessage("import.label2", of2.getFilename()));
 		refresh();
 		setVisible(true);
 
