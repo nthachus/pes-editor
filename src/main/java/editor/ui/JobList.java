@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.Formations;
 import editor.data.OptionFile;
+import editor.util.Strings;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -20,6 +21,7 @@ public class JobList extends JList<String> implements ListSelectionListener {
 	public JobList(OptionFile of, int offset, String job, Color colour) {
 		super();
 		if (null == of) throw new NullPointerException("of");
+		if (Strings.isEmpty(job)) throw new NullPointerException("job");
 		this.of = of;
 		this.offset = offset;
 		this.job = job;

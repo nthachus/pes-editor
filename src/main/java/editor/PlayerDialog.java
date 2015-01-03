@@ -5,6 +5,8 @@ import editor.data.Player;
 import editor.data.Stats;
 import editor.ui.Ability99Panel;
 import editor.ui.CancelButton;
+import editor.ui.SpecialAbilityPanel;
+import editor.util.Bits;
 
 import javax.swing.*;
 import java.awt.*;
@@ -176,8 +178,7 @@ public class PlayerDialog extends JDialog {// implements ListSelectionListener, 
 		Stats.setValue(of, index, Stats.CONDITION, (String) (genPanel.getConditionBox().getSelectedItem()));
 
 		for (int i = 0; i < Stats.ABILITY_SPECIAL.length; i++) {
-			Stats.setValue(of, index, Stats.ABILITY_SPECIAL[i],
-					boToInt(spePanel.checkBox[i].isSelected()));
+			Stats.setValue(of, index, Stats.ABILITY_SPECIAL[i], Bits.toByte(spePanel.getAbilityCheck(i).isSelected()));
 		}
 
 		Stats.setValue(of, index, Stats.INJURY, (String) (genPanel.getInjuryBox().getSelectedItem()));
