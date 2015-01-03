@@ -4,7 +4,7 @@ import editor.data.*;
 import editor.ui.*;
 import editor.util.Bits;
 import editor.util.Strings;
-import editor.util.UIUtil;
+import editor.util.Systems;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -65,7 +65,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 		backChooser = new BackChooserDialog(null);
 
-		UIUtil.javaLookAndFeel();// fix button background color
+		Systems.javaUI();// fix button background color
 
 		backButton = new JButton(new ImageIcon(Emblems.get16(of, -1, false, false)));
 		backButton.setBackground(new Color(0xCC, 0xCC, 0xCC));
@@ -123,7 +123,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		badgeButton.setToolTipText("Left click to change, right click to default");
 		badgeButton.setAlignmentX(CENTER_ALIGNMENT);
 
-		UIUtil.systemLookAndFeel();
+		Systems.systemUI();
 
 		JButton copyBut = new JButton(new CopySwapIcon(false));
 		copyBut.addActionListener(new ActionListener() {

@@ -5,8 +5,6 @@ import editor.util.logback.AlternateSMTPAppender;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.lang.reflect.Method;
-
 public final class SMTPAppenderTest extends BaseTest {
 	@Test
 	public void testSetPassword() throws Exception {
@@ -15,9 +13,8 @@ public final class SMTPAppenderTest extends BaseTest {
 			String pwd = randomString(6, 14);
 			String username = randomString(8, 32);
 
-			Method m = AlternateSMTPAppender.class.getDeclaredMethod("encryptPassword", String.class, String.class);
-			m.setAccessible(true);
-			String encPwd = (String) m.invoke(null, pwd, username);
+			String encPwd = (String) Systems.invokeStaticMethod(AlternateSMTPAppender.class,
+					"encryptPassword", new Class[]{String.class, String.class}, true, pwd, username);
 
 			Assert.assertNotNull(encPwd);
 			//log.debug("Encrypted password '{}' / '{}': {}", pwd, username, encPwd);

@@ -3,7 +3,7 @@ package editor.ui;
 import editor.data.Emblems;
 import editor.data.OptionFile;
 import editor.util.Strings;
-import editor.util.UIUtil;
+import editor.util.Systems;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +25,7 @@ public class EmblemChooserDialog extends JDialog {
 
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
 		Image icon;
-		UIUtil.javaLookAndFeel();// fix button background color
+		Systems.javaUI();// fix button background color
 		for (int i = 0; i < emblemButtons.length; i++) {
 
 			icon = Emblems.get16(of, -1, false, true);
@@ -40,7 +40,7 @@ public class EmblemChooserDialog extends JDialog {
 
 			flagPanel.add(emblemButtons[i]);
 		}
-		UIUtil.systemLookAndFeel();
+		Systems.systemUI();
 
 		JButton transButton = new JButton(Strings.getMessage("Transparency"));
 		transButton.addActionListener(new ActionListener() {

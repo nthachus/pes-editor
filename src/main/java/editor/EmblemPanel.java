@@ -6,7 +6,7 @@ import editor.ui.EmblemImportDialog;
 import editor.ui.ImageFileFilter;
 import editor.ui.PngFilter;
 import editor.util.Files;
-import editor.util.UIUtil;
+import editor.util.Systems;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -56,7 +56,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 		flagButton = new JButton[Emblems.TOTAL16];
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
 
-		UIUtil.javaLookAndFeel();// fix button background color
+		Systems.javaUI();// fix button background color
 		for (int l = 0; l < Emblems.TOTAL16; l++) {
 			flagButton[l] = new JButton();
 			flagButton[l].setBackground(new Color(0xCC, 0xCC, 0xCC));
@@ -163,7 +163,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 			});
 			flagPanel.add(flagButton[l]);
 		}
-		UIUtil.systemLookAndFeel();
+		Systems.systemUI();
 
 		JButton transButton = new JButton("Transparency");
 		transButton.addActionListener(new ActionListener() {

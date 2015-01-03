@@ -3,7 +3,7 @@ package editor.ui;
 import editor.data.Logos;
 import editor.data.OptionFile;
 import editor.util.Strings;
-import editor.util.UIUtil;
+import editor.util.Systems;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +35,7 @@ public class LogoImportDialog extends JDialog {
 	private void initComponents() {
 		JPanel flagPanel = new JPanel(new GridLayout(8, 10));
 
-		UIUtil.javaLookAndFeel();// fix button background color
+		Systems.javaUI();// fix button background color
 		Image icon;
 		for (int l = 0; l < flagButtons.length; l++) {
 
@@ -51,7 +51,7 @@ public class LogoImportDialog extends JDialog {
 
 			flagPanel.add(flagButtons[l]);
 		}
-		UIUtil.systemLookAndFeel();
+		Systems.systemUI();
 
 		fileLabel = new JLabel(Strings.getMessage("import.label2", ""));
 

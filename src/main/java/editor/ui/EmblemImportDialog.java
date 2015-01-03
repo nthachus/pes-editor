@@ -3,7 +3,7 @@ package editor.ui;
 import editor.data.Emblems;
 import editor.data.OptionFile;
 import editor.util.Strings;
-import editor.util.UIUtil;
+import editor.util.Systems;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +30,7 @@ public class EmblemImportDialog extends JDialog {
 
 	private void initComponents() {
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
-		UIUtil.javaLookAndFeel();// fix button background color
+		Systems.javaUI();// fix button background color
 		for (int i = 0; i < emblemButtons.length; i++) {
 			Image icon = Emblems.get16(of2, -1, false, true);
 			emblemButtons[i] = new JButton(new ImageIcon(icon));
@@ -44,7 +44,7 @@ public class EmblemImportDialog extends JDialog {
 
 			flagPanel.add(emblemButtons[i]);
 		}
-		UIUtil.systemLookAndFeel();
+		Systems.systemUI();
 
 		JButton transButton = new JButton(Strings.getMessage("Transparency"));
 		transButton.addActionListener(new ActionListener() {

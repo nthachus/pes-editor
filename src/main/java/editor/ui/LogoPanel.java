@@ -5,7 +5,7 @@ import editor.data.OptionFile;
 import editor.util.Files;
 import editor.util.Images;
 import editor.util.Strings;
-import editor.util.UIUtil;
+import editor.util.Systems;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -54,7 +54,7 @@ public class LogoPanel extends JPanel {
 		chooserPNG.setDialogTitle(Strings.getMessage("logo.export"));
 
 		JPanel flagPanel = new JPanel(new GridLayout(8, 10));
-		UIUtil.javaLookAndFeel();// fix button background color
+		Systems.javaUI();// fix button background color
 		for (int l = 0; l < flagButtons.length; l++) {
 			flagButtons[l] = new JButton();
 			flagButtons[l].setBackground(new Color(0xCC, 0xCC, 0xCC));
@@ -68,7 +68,7 @@ public class LogoPanel extends JPanel {
 
 			flagPanel.add(flagButtons[l]);
 		}
-		UIUtil.systemLookAndFeel();
+		Systems.systemUI();
 
 		JButton transButton = new JButton(Strings.getMessage("Transparency"));
 		transButton.addActionListener(new ActionListener() {

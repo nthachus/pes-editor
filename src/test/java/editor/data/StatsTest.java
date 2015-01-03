@@ -1,10 +1,10 @@
 package editor.data;
 
+import editor.util.Systems;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.util.List;
 
 public final class StatsTest extends BaseTest {
 	private static final int FOR_PLAYER = 1;
@@ -33,23 +33,17 @@ public final class StatsTest extends BaseTest {
 	public void testGetAndSetValue() throws Exception {
 		OptionFile of = loadLatestOF();
 
-		Field[] fields = Stats.class.getDeclaredFields();
-		Stat st;
-		for (Field f : fields) {
-			if (Modifier.isStatic(f.getModifiers())
-					&& Modifier.isFinal(f.getModifiers()) && f.getType() == Stat.class) {
+		List<Stat> fields = Systems.readStaticFields(Stats.class, Stat.class, true, false);
+		for (Stat st : fields) {
+			//log.debug("Process Stat: {}", st);
 
-				st = (Stat) f.get(null);
-				//log.debug("Process Stat: {}", st);
+			int old = Stats.getValue(of, FOR_PLAYER, st);
+			int val = (old > 0) ? old - 1 : old + 1;
 
-				int old = Stats.getValue(of, FOR_PLAYER, st);
-				int val = (old > 0) ? old - 1 : old + 1;
-
-				Stats.setValue(of, FOR_PLAYER, st, val);
-				int v = Stats.getValue(of, FOR_PLAYER, st);
-				Assert.assertNotEquals(old, v);
-				Assert.assertEquals(val, v);
-			}
+			Stats.setValue(of, FOR_PLAYER, st, val);
+			int v = Stats.getValue(of, FOR_PLAYER, st);
+			Assert.assertNotEquals(old, v);
+			Assert.assertEquals(val, v);
 		}
 	}
 
