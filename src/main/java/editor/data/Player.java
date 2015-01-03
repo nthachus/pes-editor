@@ -51,6 +51,7 @@ public class Player implements Serializable, Comparable<Player> {
 	 */
 	public static final int FIRST_EDIT = 0x8000;
 	public static final int TOTAL_EDIT = 184;
+	public static final int END_EDIT = FIRST_EDIT + TOTAL_EDIT;
 
 	//endregion
 
@@ -72,7 +73,7 @@ public class Player implements Serializable, Comparable<Player> {
 	 * NOTE: We don't have the player at index 0.
 	 */
 	public static int getOffset(int player) {
-		if (player <= 0 || (player >= TOTAL && player < FIRST_EDIT) || player >= FIRST_EDIT + TOTAL_EDIT)
+		if (player <= 0 || (player >= TOTAL && player < FIRST_EDIT) || player >= END_EDIT)
 			throw new IndexOutOfBoundsException("player");
 
 		if (player >= FIRST_EDIT)
@@ -95,14 +96,15 @@ public class Player implements Serializable, Comparable<Player> {
 
 	public Player(OptionFile of, int index, int squadNumAdr) {
 		if (of == null) throw new NullPointerException();
-		if (index < 0 || (index >= TOTAL && index < FIRST_EDIT) || index >= FIRST_EDIT + TOTAL_EDIT)
+		if (index < 0 || (index >= TOTAL && index < FIRST_EDIT) || index >= END_EDIT)
 			throw new IndexOutOfBoundsException("index");
 
 		this.of = of;
 		this.index = index;// NOTE: index out of range: <ERROR>
 		numberAdr = squadNumAdr;
 
-		if (index == 0) name = "<Empty>";
+		if (index == 0)
+			name = Strings.getMessage("player.empty");
 	}
 
 	public Player(OptionFile of, int index) {
@@ -137,6 +139,10 @@ public class Player implements Serializable, Comparable<Player> {
 		return cmp;
 	}
 
+	public boolean isEmpty() {
+		return getName().startsWith("<");
+	}
+
 	public String getName() {
 		if (null == name) {
 			int adr = getOffset(index);
@@ -146,11 +152,11 @@ public class Player implements Serializable, Comparable<Player> {
 
 			if (Strings.isEmpty(name)) {
 				if (index >= FIRST_EDIT) {
-					name = "<Edited " + (index - FIRST_EDIT) + ">";
+					name = Strings.getMessage("player.edited", index - FIRST_EDIT);
 				} else if (index >= FIRST_UNUSED) {
-					name = "<Unused " + index + ">";
+					name = Strings.getMessage("player.unused", index);
 				} else {
-					name = "<L " + index + ">";
+					name = Strings.getMessage("player.blank", index);
 				}
 			}
 		}

@@ -1,6 +1,5 @@
 package editor.ui;
 
-import editor.NationalityList;
 import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.data.Stats;
@@ -61,9 +60,13 @@ public class SelectByNation extends JPanel {
 		setPreferredSize(new Dimension(164, 601));
 	}
 
-	private static String[] getAllNations() {
+	static String[] getExtraNations() {
 		String s = Strings.getMessage("nation.extras");
-		String[] arr = s.split("\\s*,\\s*");
+		return s.split("\\s*,\\s*");
+	}
+
+	private static String[] getAllNations() {
+		String[] arr = getExtraNations();
 
 		ArrayList<String> list = new ArrayList<String>(Arrays.asList(Stats.NATION));
 		list.addAll(Arrays.asList(arr));
