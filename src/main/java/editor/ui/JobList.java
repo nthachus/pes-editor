@@ -28,7 +28,7 @@ public class JobList extends JList<String> implements ListSelectionListener {
 
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setLayoutOrientation(JList.VERTICAL);
-		setVisibleRowCount(32);
+		setVisibleRowCount(Formations.CLUB_TEAM_SIZE);
 		setSelectionBackground(colour);
 		setSelectionForeground(Color.BLACK);
 		//setBackground(new Color(255, 255, 224));

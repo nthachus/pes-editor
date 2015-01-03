@@ -3,6 +3,7 @@ package editor;
 import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.ui.AtkDefPanel;
+import editor.ui.SquadList;
 import editor.ui.SquadNumberList;
 
 import javax.swing.*;

@@ -3,6 +3,7 @@ package editor;
 import editor.data.*;
 import editor.ui.SelectByNation;
 import editor.ui.SelectByTeam;
+import editor.ui.SquadList;
 import editor.util.Bits;
 
 import javax.swing.*;

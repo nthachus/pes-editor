@@ -14,6 +14,9 @@ public class SquadsTest extends BaseTest {
 
 		Assert.assertEquals(212, Squads.TOTAL);
 		Assert.assertEquals(15, Squads.EXTRA_COUNT);
+		Assert.assertEquals(8, Squads.EDIT_TEAM_COUNT);
+		Assert.assertEquals(73, Squads.LAST_EDIT_NATION);
+		Assert.assertEquals(75, Squads.FIRST_CLUB);
 	}
 
 	// TODO: Other test-cases

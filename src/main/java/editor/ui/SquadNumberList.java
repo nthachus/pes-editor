@@ -25,6 +25,9 @@ public class SquadNumberList extends JList<String> {
 		setPreferredSize(new Dimension(16, 576));
 	}
 
+	/**
+	 * @see SquadList#fetchPlayers(int)
+	 */
 	public void refresh(int team) {
 		if (team < 0 || team >= Squads.TOTAL)
 			throw new IndexOutOfBoundsException("team");
@@ -39,7 +42,7 @@ public class SquadNumberList extends JList<String> {
 		} else {
 			size = Formations.CLUB_TEAM_SIZE;
 			firstAdr = Squads.CLUB_NUM_ADR + (team - Squads.FIRST_CLUB) * size;
-			ft -= Squads.EDIT_TEAM_COUNT;//8
+			ft -= Squads.EDIT_TEAM_COUNT;
 		}
 
 		String[] numList = buildNumberList(team, size, firstAdr, ft);
