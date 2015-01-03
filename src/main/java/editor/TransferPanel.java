@@ -4,8 +4,6 @@ import editor.data.*;
 import editor.ui.SelectByNation;
 import editor.ui.SelectByTeam;
 import editor.util.Bits;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -22,7 +20,6 @@ import java.awt.event.MouseListener;
 
 public class TransferPanel extends JPanel
 		implements MouseListener, DropTargetListener, DragSourceListener, DragGestureListener {
-	private static final Logger log = LoggerFactory.getLogger(TransferPanel.class);
 
 	private final OptionFile of;
 	private final PlayerDialog playerDia;
@@ -42,7 +39,7 @@ public class TransferPanel extends JPanel
 	private int releasedIndex = 0;
 	private Component sourceComp = null;
 	private int sourceIndex = -1;
-	private DataFlavor localPlayerFlavor;
+	private final DataFlavor localPlayerFlavor = Player.getDataFlavor();
 	private int compIndex = 0;
 	private int lastIndex = 0;
 
@@ -102,17 +99,10 @@ public class TransferPanel extends JPanel
 		JPanel lPanel = new JPanel(new BorderLayout());
 		JPanel rPanel = new JPanel(new BorderLayout());
 		selectorR = new SelectByTeam(of, true);
-		addListen();
+		addListeners();
 		freeList.getFreeList().addMouseListener(this);
 		selectorL.getSquadList().addMouseListener(this);
 		selectorR.getSquadList().addMouseListener(this);
-
-		String localPlayerType = DataFlavor.javaJVMLocalObjectMimeType + ";class=editor.Player";
-		try {
-			localPlayerFlavor = new DataFlavor(localPlayerType);
-		} catch (ClassNotFoundException e) {
-			log.warn("Unable to create data flavor:", e);
-		}
 
 		new DropTarget(freeList.getFreeList(), this);
 		new DropTarget(selectorL.getSquadList(), this);
@@ -209,10 +199,10 @@ public class TransferPanel extends JPanel
 						setText("");
 						lastIndex = 0;
 					} else {
-						setText(freeList.getFreeList().getSelectedValue().name);
+						setText(freeList.getFreeList().getSelectedValue().getName());
 						source = 1;
 						selectAll();
-						lastIndex = freeList.getFreeList().getSelectedValue().index;
+						lastIndex = freeList.getFreeList().getSelectedValue().getIndex();
 					}
 				}
 				if (e.getSource() == selectorL.getSquadList()) {
@@ -220,14 +210,14 @@ public class TransferPanel extends JPanel
 						setText("");
 						lastIndex = 0;
 					} else {
-						if (selectorL.getSquadList().getSelectedValue().index != 0) {
-							setText(selectorL.getSquadList().getSelectedValue().name);
+						if (selectorL.getSquadList().getSelectedValue().getIndex() != 0) {
+							setText(selectorL.getSquadList().getSelectedValue().getName());
 						} else {
 							setText("");
 						}
 						source = 2;
 						selectAll();
-						lastIndex = selectorL.getSquadList().getSelectedValue().index;
+						lastIndex = selectorL.getSquadList().getSelectedValue().getIndex();
 					}
 				}
 				if (e.getSource() == selectorR.getSquadList()) {
@@ -235,14 +225,14 @@ public class TransferPanel extends JPanel
 						setText("");
 						lastIndex = 0;
 					} else {
-						if (selectorR.getSquadList().getSelectedValue().index != 0) {
-							setText(selectorR.getSquadList().getSelectedValue().name);
+						if (selectorR.getSquadList().getSelectedValue().getIndex() != 0) {
+							setText(selectorR.getSquadList().getSelectedValue().getName());
 						} else {
 							setText("");
 						}
 						source = 3;
 						selectAll();
-						lastIndex = selectorR.getSquadList().getSelectedValue().index;
+						lastIndex = selectorR.getSquadList().getSelectedValue().getIndex();
 					}
 				}
 				infoPanel.refresh(lastIndex, compIndex);
@@ -253,9 +243,9 @@ public class TransferPanel extends JPanel
 			if (source == 1 && !freeList.getFreeList().isSelectionEmpty()
 					&& getText().length() < 16 && getText().length() != 0) {
 				int i = freeList.getFreeList().getSelectedIndex();
-				if (!freeList.getFreeList().getSelectedValue().name.equals(getText())) {
+				if (!freeList.getFreeList().getSelectedValue().getName().equals(getText())) {
 					freeList.getFreeList().getSelectedValue().setName(getText());
-					freeList.getFreeList().getSelectedValue().makeShirt(getText());
+					freeList.getFreeList().getSelectedValue().setShirtName(Player.buildShirtName(getText()));
 					refreshLists();
 				}
 				if (!freeList.isAlphaOrder() && i < freeList.getFreeList().getModel().getSize() - 1) {
@@ -266,9 +256,9 @@ public class TransferPanel extends JPanel
 			if (source == 2 && !selectorL.getSquadList().isSelectionEmpty()
 					&& getText().length() < 16 && getText().length() != 0) {
 				int i = selectorL.getSquadList().getSelectedIndex();
-				if (!selectorL.getSquadList().getSelectedValue().name.equals(getText())) {
+				if (!selectorL.getSquadList().getSelectedValue().getName().equals(getText())) {
 					selectorL.getSquadList().getSelectedValue().setName(getText());
-					selectorL.getSquadList().getSelectedValue().makeShirt(getText());
+					selectorL.getSquadList().getSelectedValue().setShirtName(Player.buildShirtName(getText()));
 					refreshLists();
 				}
 				if (i < selectorL.getSquadList().getModel().getSize() - 1) {
@@ -278,9 +268,9 @@ public class TransferPanel extends JPanel
 			if (source == 3 && !selectorR.getSquadList().isSelectionEmpty()
 					&& getText().length() < 16 && getText().length() != 0) {
 				int i = selectorR.getSquadList().getSelectedIndex();
-				if (!selectorR.getSquadList().getSelectedValue().name.equals(getText())) {
+				if (!selectorR.getSquadList().getSelectedValue().getName().equals(getText())) {
 					selectorR.getSquadList().getSelectedValue().setName(getText());
-					selectorR.getSquadList().getSelectedValue().makeShirt(getText());
+					selectorR.getSquadList().getSelectedValue().setShirtName(Player.buildShirtName(getText()));
 					refreshLists();
 				}
 				if (i < selectorR.getSquadList().getModel().getSize() - 1) {
@@ -365,9 +355,9 @@ public class TransferPanel extends JPanel
 	public int getShirt(int s, int i) {
 		int a;
 		if (s == 2) {
-			a = selectorL.getSquadList().getModel().getElementAt(i).adr;
+			a = selectorL.getSquadList().getModel().getElementAt(i).getNumberAdr();
 		} else {
-			a = selectorR.getSquadList().getModel().getElementAt(i).adr;
+			a = selectorR.getSquadList().getModel().getElementAt(i).getNumberAdr();
 		}
 		a = getNumAdr(a);
 		int shirt = Bits.toInt(of.getData()[a]) + 1;
@@ -380,9 +370,9 @@ public class TransferPanel extends JPanel
 	public void setShirt(int s, int i, int newShirt) {
 		int a;
 		if (s == 2) {
-			a = selectorL.getSquadList().getModel().getElementAt(i).adr;
+			a = selectorL.getSquadList().getModel().getElementAt(i).getNumberAdr();
 		} else {
-			a = selectorR.getSquadList().getModel().getElementAt(i).adr;
+			a = selectorR.getSquadList().getModel().getElementAt(i).getNumberAdr();
 		}
 		a = getNumAdr(a);
 		int shirt = Bits.toInt(of.getData()[a]) + 1;
@@ -493,7 +483,7 @@ public class TransferPanel extends JPanel
 		if (e.getButton() == MouseEvent.BUTTON1 && clicks == 2) {
 			JList list = (JList) (e.getSource());
 			Player p = ((Player) list.getSelectedValue());
-			int pi = p.index;
+			int pi = p.getIndex();
 			if (pi != 0) {
 				if (safeMode.isSelected()) {
 					if (inNatSquad(pi)) {
@@ -672,7 +662,7 @@ public class TransferPanel extends JPanel
 		if (i != -1) {
 			p = (Player) (targetList.getModel().getElementAt(i));
 		} else {
-			p = new Player(of, 0, 0);
+			p = new Player(of, 0);
 		}
 		boolean chk = checkSafeDrag(safeMode.isSelected(), targetList, p);
 		targetList.setSelectedIndex(i);
@@ -687,18 +677,16 @@ public class TransferPanel extends JPanel
 		Transferable transferable = event.getTransferable();
 		if (transferable.isDataFlavorSupported(localPlayerFlavor)) {
 			JList sourceList = (JList) sourceComp;
-			JList targetList = (JList) (event.getDropTargetContext()
-					.getComponent());
-			Player sourcePlayer = (Player) (sourceList.getModel()
-					.getElementAt(sourceIndex));
-			int indexS = sourcePlayer.index;
+			JList targetList = (JList) (event.getDropTargetContext().getComponent());
+			Player sourcePlayer = (Player) (sourceList.getModel().getElementAt(sourceIndex));
+			int indexS = sourcePlayer.getIndex();
 			Player targetPlayer;
 			int indexT;
 			if (targetList.getSelectedIndex() != -1) {
 				targetPlayer = (Player) (targetList.getSelectedValue());
-				indexT = targetPlayer.index;
+				indexT = targetPlayer.getIndex();
 			} else {
-				targetPlayer = new Player(of, 0, 0);
+				targetPlayer = new Player(of, 0);
 				indexT = 0;
 			}
 
@@ -712,8 +700,7 @@ public class TransferPanel extends JPanel
 					if (squadS < 67 || (squadS > 74 && squadS < 213)) {
 						if (indexS != indexT) {
 							event.acceptDrop(DnDConstants.ACTION_MOVE);
-							transferS(sourcePlayer, targetPlayer, squadS,
-									squadT, sourceList, targetList);
+							transferS(sourcePlayer, targetPlayer, squadS, squadT, sourceList, targetList);
 						}
 					}
 				} else if (sourceList == selectorL.getSquadList()
@@ -760,8 +747,8 @@ public class TransferPanel extends JPanel
 			JList list = (JList) sourceComp;
 			sourceIndex = list.getSelectedIndex();
 			Player p = (Player) list.getSelectedValue();
-			if (sourceIndex != -1 && p.index != 0) {
-				removeListen();
+			if (sourceIndex != -1 && p.getIndex() != 0) {
+				removeListeners();
 				lastIndex = 0;
 				compIndex = 0;
 				infoPanel.refresh(lastIndex, compIndex);
@@ -792,7 +779,7 @@ public class TransferPanel extends JPanel
 		if (!event.getDropSuccess()) {
 			refreshLists();
 		}
-		addListen();
+		addListeners();
 	}
 
 	public void dragEnter(DragSourceDragEvent event) {
@@ -850,8 +837,8 @@ public class TransferPanel extends JPanel
 		int squadR = -1;
 
 		JList sourceList = (JList) sourceComp;
-		int indexS = ((Player) (sourceList.getModel().getElementAt(sourceIndex))).index;
-		int indexT = targetPlayer.index;
+		int indexS = ((Player) (sourceList.getModel().getElementAt(sourceIndex))).getIndex();
+		int indexT = targetPlayer.getIndex();
 		int squadS = -1;
 
 		int indexF = 0;
@@ -1146,7 +1133,7 @@ public class TransferPanel extends JPanel
 	}
 
 	private void transferFL(int index) {
-		int adr = selectorL.getSquadList().getSelectedValue().adr;
+		int adr = selectorL.getSquadList().getSelectedValue().getNumberAdr();
 		int ti = selectorL.getTeamBox().getSelectedIndex();
 		int n = -1;
 		if (ti >= 75 && ti < 213 && autoRel.isSelected()) {
@@ -1169,7 +1156,7 @@ public class TransferPanel extends JPanel
 	}
 
 	private void transferFR(int index) {
-		int adr = selectorR.getSquadList().getSelectedValue().adr;
+		int adr = selectorR.getSquadList().getSelectedValue().getNumberAdr();
 		int ti = selectorR.getTeamBox().getSelectedIndex();
 		int n = -1;
 		if (ti >= 75 && ti < 213 && autoRel.isSelected()) {
@@ -1192,8 +1179,8 @@ public class TransferPanel extends JPanel
 	}
 
 	private void transferLR(Player player) {
-		int adrR = selectorR.getSquadList().getSelectedValue().adr;
-		int index = player.index;
+		int adrR = selectorR.getSquadList().getSelectedValue().getNumberAdr();
+		int index = player.getIndex();
 		if (index != 0) {
 			int tiR = selectorR.getTeamBox().getSelectedIndex();
 			int tiL = selectorL.getTeamBox().getSelectedIndex();
@@ -1221,8 +1208,8 @@ public class TransferPanel extends JPanel
 	}
 
 	private void transferRL(Player player) {
-		int adrL = selectorL.getSquadList().getSelectedValue().adr;
-		int index = player.index;
+		int adrL = selectorL.getSquadList().getSelectedValue().getNumberAdr();
+		int index = player.getIndex();
 		if (index != 0) {
 			int tiL = selectorL.getTeamBox().getSelectedIndex();
 			int tiR = selectorR.getTeamBox().getSelectedIndex();
@@ -1252,10 +1239,10 @@ public class TransferPanel extends JPanel
 	private void transferS(
 			Player playerS, Player playerT, int tiS, int tiT,
 			JList sourceList, JList targetList) {
-		int adrS = playerS.adr;
-		int indexS = playerS.index;
-		int adrT = playerT.adr;
-		int indexT = playerT.index;
+		int adrS = playerS.getNumberAdr();
+		int indexS = playerS.getIndex();
+		int adrT = playerT.getNumberAdr();
+		int indexT = playerT.getIndex();
 
 		of.getData()[adrS] = Bits.toByte(indexT);
 		of.getData()[adrS + 1] = Bits.toByte(indexT >>> 8);
@@ -1297,7 +1284,7 @@ public class TransferPanel extends JPanel
 	}
 
 	private void tranRelL(Player player, int si) {
-		int adr = player.adr;
+		int adr = player.getNumberAdr();
 		of.getData()[adr] = 0;
 		of.getData()[adr + 1] = 0;
 		of.getData()[getNumAdr(adr)] = -1;
@@ -1312,7 +1299,7 @@ public class TransferPanel extends JPanel
 	}
 
 	private void tranRelR(Player player, int si) {
-		int adr = player.adr;
+		int adr = player.getNumberAdr();
 		of.getData()[adr] = 0;
 		of.getData()[adr + 1] = 0;
 		of.getData()[getNumAdr(adr)] = -1;
@@ -1326,7 +1313,7 @@ public class TransferPanel extends JPanel
 		refreshLists();
 	}
 
-	private void addListen() {
+	private void addListeners() {
 		selectorL.getSquadList().addListSelectionListener(nameEditor);
 		selectorR.getSquadList().addListSelectionListener(nameEditor);
 		freeList.getFreeList().addListSelectionListener(nameEditor);
@@ -1337,7 +1324,7 @@ public class TransferPanel extends JPanel
 		selectorR.getNumList().addListSelectionListener(numEditor);
 	}
 
-	private void removeListen() {
+	private void removeListeners() {
 		selectorL.getSquadList().removeListSelectionListener(nameEditor);
 		selectorR.getSquadList().removeListSelectionListener(nameEditor);
 		freeList.getFreeList().removeListSelectionListener(nameEditor);

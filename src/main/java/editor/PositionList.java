@@ -1,9 +1,6 @@
 package editor;
 
-import editor.data.Formations;
-import editor.data.OptionFile;
-import editor.data.Stat;
-import editor.data.Stats;
+import editor.data.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -118,7 +115,7 @@ public class PositionList extends JList<String> {
 			int selPos = posNum[li];
 			int pli;
 			int[] temp = new int[32];
-			int c = 0;
+			int c;
 			Stat stat = Stats.GK;
 			if ((selPos > 0 && selPos < 4) || (selPos > 5 && selPos < 8)) {
 				stat = Stats.CBT;
@@ -173,7 +170,7 @@ public class PositionList extends JList<String> {
 
 			c = 0;
 			for (int i = 0; i < size; i++) {
-				pli = ((Player) (sl.getModel().getElementAt(i))).index;
+				pli = ((Player) (sl.getModel().getElementAt(i))).getIndex();
 				if (pli != 0 && Stats.getValue(of, pli, stat) == 1) {
 					// System.out.println(i);
 					temp[c] = i;

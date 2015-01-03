@@ -1,6 +1,5 @@
 package editor.data;
 
-import editor.Player;
 import editor.util.Bits;
 
 import java.util.*;

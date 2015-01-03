@@ -2,6 +2,7 @@ package editor;
 
 import editor.data.Formations;
 import editor.data.OptionFile;
+import editor.data.Player;
 import editor.data.Squads;
 import editor.util.Bits;
 
@@ -45,10 +46,10 @@ public class SquadList extends JList<Player> {
 		if (this.team == 212) {
 			Vector<Player> model = new Vector<Player>();
 			for (int p = 1; p < Player.TOTAL; p++) {
-				model.addElement(new Player(of, p, 0));
+				model.addElement(new Player(of, p));
 			}
 			for (int p = 0; p < Player.TOTAL_EDIT; p++) {
-				model.addElement(new Player(of, Player.FIRST_EDIT + p, 0));
+				model.addElement(new Player(of, Player.FIRST_EDIT + p));
 			}
 
 			Collections.sort(model);
@@ -76,12 +77,12 @@ public class SquadList extends JList<Player> {
 
 			players = new Player[size];
 			for (int p = 0; p < size; p++) {
-				a = firstAdr + (p * 2);
+				a = firstAdr + p * 2;
 				if ((this.team >= 0 && this.team < 67) || (this.team >= 75 && this.team < 205)) {
 					// a = 670512 + (628 * ft) + 6232 + p;
-					a = firstAdr + (Formations.getSlot(of, ft, p) * 2);
+					a = firstAdr + Formations.getSlot(of, ft, p) * 2;
 				}
-				players[p] = new Player(of, (Bits.toInt(of.getData()[a + 1]) << 8) | Bits.toInt(of.getData()[a]), a);
+				players[p] = new Player(of, Bits.toInt16(of.getData(), a), a);
 			}
 			setListData(players);
 		}

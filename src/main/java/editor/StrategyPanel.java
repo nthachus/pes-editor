@@ -177,19 +177,18 @@ public class StrategyPanel extends JPanel {
 	}
 
 	private class SweItem {
-		String name;
+		private final byte index;
+		private final String name;
 
-		byte index;
-
-		public SweItem(byte i) {
-			index = i;
-			name = list.getModel().getElementAt(index).name;
+		public SweItem(byte index) {
+			this.index = index;
+			name = list.getModel().getElementAt(index).getName();
 		}
 
+		@Override
 		public String toString() {
 			return name;
 		}
-
 	}
 
 }

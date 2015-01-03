@@ -1,6 +1,7 @@
 package editor;
 
 import editor.data.OptionFile;
+import editor.data.Player;
 import editor.data.Stats;
 import editor.ui.Ability99Panel;
 import editor.ui.CancelButton;
@@ -88,9 +89,9 @@ public class PlayerDialog extends JDialog {// implements ListSelectionListener, 
 	}
 
 	public void show(Player p) {
-		index = p.index;
+		index = p.getIndex();
 		player = p;
-		setTitle("Edit Player - " + Integer.toString(index) + " - " + p.name);
+		setTitle("Edit Player - " + Integer.toString(index) + " - " + p.getName());
 		if (plImpDia.isOf2Loaded()) {
 			importButton.setVisible(true);
 		} else {

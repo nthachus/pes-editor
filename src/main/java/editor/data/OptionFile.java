@@ -195,7 +195,7 @@ public class OptionFile implements Serializable {
 		headerData = new byte[(int) in.length() - data.length];
 		in.read(headerData);
 
-		gameId = new String(headerData, 64, GAME_LEN);
+		gameId = new String(headerData, 64, GAME_LEN, Strings.ANSI);
 
 		format = OfFormat.ems;
 	}
@@ -241,7 +241,7 @@ public class OptionFile implements Serializable {
 		headerData = new byte[(int) endOfs - ofs];
 		in.read(headerData);
 
-		gameId = new String(headerData, 6, GAME_LEN);
+		gameId = new String(headerData, 6, GAME_LEN, Strings.ANSI);
 
 		format = OfFormat.xPort;
 	}

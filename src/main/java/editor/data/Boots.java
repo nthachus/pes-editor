@@ -1,7 +1,5 @@
 package editor.data;
 
-import editor.Player;
-
 public final class Boots {
 	private Boots() {
 	}

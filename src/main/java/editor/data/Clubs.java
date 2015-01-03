@@ -88,9 +88,7 @@ public final class Clubs {
 		String name = new String(of.getData(), adr, NAME_LEN, Strings.UTF8);
 		name = Strings.fixCString(name);
 
-		if (Strings.isEmpty(name))
-			name = "<" + club + ">";
-
+		//if (Strings.isEmpty(name)) name = "<" + club + ">";
 		return name;
 	}
 

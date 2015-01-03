@@ -2,10 +2,9 @@ package editor;
 
 import editor.data.Formations;
 import editor.data.OptionFile;
+import editor.data.Player;
 import editor.ui.*;
 import editor.util.Files;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -24,7 +23,6 @@ import java.io.File;
 
 public class FormationPanel extends JPanel
 		implements ListSelectionListener, DropTargetListener, DragSourceListener, DragGestureListener {
-	private static final Logger log = LoggerFactory.getLogger(FormationPanel.class);
 
 	private final OptionFile of;
 
@@ -91,19 +89,12 @@ public class FormationPanel extends JPanel
 	private TeamSettingPanel teamSetPan;
 	private StrategyPanel stratPan;
 
-	private DataFlavor localPlayerFlavor;
+	private final DataFlavor localPlayerFlavor = Player.getDataFlavor();
 	private int sourceIndex = -1;
 
 	public FormationPanel(OptionFile opf) {
 		super();
 		of = opf;
-
-		String localPlayerType = DataFlavor.javaJVMLocalObjectMimeType + ";class=editor.Player";
-		try {
-			localPlayerFlavor = new DataFlavor(localPlayerType);
-		} catch (ClassNotFoundException e) {
-			log.warn("Unable to create data flavor:", e);
-		}
 
 		PngFilter pngFilter = new PngFilter();
 		chooserPNG.addChoosableFileFilter(pngFilter);
@@ -846,7 +837,7 @@ public class FormationPanel extends JPanel
 		int i = squadList.locationToIndex(event.getLocation());
 		Player p = squadList.getModel().getElementAt(i);
 		squadList.setSelectedIndex(i);
-		if (i != -1 && i != sourceIndex && p.index != 0) {
+		if (i != -1 && i != sourceIndex && p.getIndex() != 0) {
 			event.acceptDrag(DnDConstants.ACTION_MOVE);
 		} else {
 			event.rejectDrag();
@@ -901,7 +892,7 @@ public class FormationPanel extends JPanel
 	public void dragGestureRecognized(DragGestureEvent event) {
 		sourceIndex = squadList.getSelectedIndex();
 		Player p = squadList.getSelectedValue();
-		if (sourceIndex != -1 && p.index != 0) {
+		if (sourceIndex != -1 && p.getIndex() != 0) {
 			posList.selectPos(squadList, sourceIndex);
 
 			roleBox.setActionCommand("n");

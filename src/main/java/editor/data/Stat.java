@@ -1,7 +1,5 @@
 package editor.data;
 
-import editor.Player;
-
 import java.io.Serializable;
 
 public class Stat implements Serializable {

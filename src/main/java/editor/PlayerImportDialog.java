@@ -1,6 +1,7 @@
 package editor;
 
 import editor.data.OptionFile;
+import editor.data.Player;
 import editor.data.Stats;
 import editor.ui.CancelButton;
 import editor.ui.SelectByTeam;
@@ -84,7 +85,7 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 	public void valueChanged(ListSelectionEvent e) {
 		if (!e.getValueIsAdjusting()) {
 			if (!plList.getSquadList().isSelectionEmpty()) {
-				infoPanel.refresh(plList.getSquadList().getSelectedValue().index, 0);
+				infoPanel.refresh(plList.getSquadList().getSelectedValue().getIndex(), 0);
 			}
 		}
 	}
@@ -105,7 +106,7 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 	public void mouseClicked(MouseEvent e) {
 		int clicks = e.getClickCount();
 		JList list = (JList) (e.getSource());
-		int pi = ((Player) list.getSelectedValue()).index;
+		int pi = ((Player) list.getSelectedValue()).getIndex();
 		if (clicks == 2 && pi != 0) {
 			replacement = pi;
 			importPlayer();

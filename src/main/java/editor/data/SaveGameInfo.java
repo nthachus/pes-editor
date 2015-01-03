@@ -82,41 +82,41 @@ public class SaveGameInfo implements Serializable {
 		int size = Bits.swabInt(rf.readInt());
 		byte[] temp = new byte[size];
 		rf.read(temp);
-		gameName = new String(temp);
+		gameName = new String(temp, Strings.ANSI);
 
 		size = Bits.swabInt(rf.readInt());
 		temp = new byte[size];
 		rf.read(temp);
-		saveName = new String(temp);
+		saveName = new String(temp, Strings.ANSI);
 
 		size = Bits.swabInt(rf.readInt());
 		temp = new byte[size];
 		rf.read(temp);
-		notes = new String(temp);
+		notes = new String(temp, Strings.ANSI);
 
 		rf.skipBytes(6);
 		temp = new byte[OptionFile.GAME_LEN];
 		rf.read(temp);
-		game = new String(temp);
+		game = new String(temp, Strings.ANSI);
 	}
 
 	private void readARMaxFile(RandomAccessFile rf) throws IOException {
 		rf.seek(16);
 		byte[] temp = new byte[OptionFile.GAME_LEN];
 		rf.read(temp);
-		game = new String(temp);
+		game = new String(temp, Strings.ANSI);
 
 		rf.seek(48);
 		temp = new byte[32];
 		rf.read(temp);
-		gameName = Strings.fixCString(new String(temp));
+		gameName = Strings.fixCString(new String(temp, Strings.ANSI));
 	}
 
 	private void readEmsFile(RandomAccessFile rf) throws IOException {
 		rf.seek(64);
 		byte[] temp = new byte[OptionFile.GAME_LEN];
 		rf.read(temp);
-		game = new String(temp);
+		game = new String(temp, Strings.ANSI);
 	}
 
 	@Override

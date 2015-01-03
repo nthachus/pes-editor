@@ -1,6 +1,5 @@
 package editor.data;
 
-import editor.Player;
 import editor.util.Bits;
 import editor.util.Strings;
 import org.slf4j.Logger;
@@ -233,8 +232,8 @@ public class CsvMaker implements Serializable {
 	}
 
 	private void writeName(OptionFile of, DataOutput out, int player) throws IOException {
-		Player p = new Player(of, player, 0);
-		String name = p.name.replace(separator, ' ');
+		Player p = new Player(of, player);
+		String name = p.getName().replace(separator, ' ');
 		out.write(name.getBytes(Strings.UTF8));
 	}
 

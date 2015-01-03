@@ -1,9 +1,6 @@
 package editor;
 
-import editor.data.Clubs;
-import editor.data.OptionFile;
-import editor.data.Squads;
-import editor.data.Stats;
+import editor.data.*;
 import editor.util.Bits;
 
 import javax.swing.*;
@@ -27,10 +24,10 @@ public class NationalityList extends JList<Player> {
 		Vector<Player> model = new Vector<Player>();
 		if (nation == Stats.NATION.length + 4) {
 			for (int p = 1; p < Player.TOTAL; p++) {
-				model.addElement(new Player(of, p, 0));
+				model.addElement(new Player(of, p));
 			}
 			for (int p = Player.FIRST_EDIT; p < 32768; p++) {
-				model.addElement(new Player(of, p, 0));
+				model.addElement(new Player(of, p));
 			}
 		} else if (nation == Stats.NATION.length + 3) {
 			boolean free;
@@ -47,7 +44,7 @@ public class NationalityList extends JList<Player> {
 				} while (a < Squads.CLUB_ADR + (Clubs.TOTAL * 64) - 2 + 1
 						&& index != p);
 				if (free) {
-					model.addElement(new Player(of, p, 0));
+					model.addElement(new Player(of, p));
 				}
 			}
 
@@ -63,34 +60,34 @@ public class NationalityList extends JList<Player> {
 				} while (a < Squads.CLUB_ADR + (Clubs.TOTAL * 64) - 2
 						&& index != p);
 				if (free) {
-					model.addElement(new Player(of, p, 0));
+					model.addElement(new Player(of, p));
 				}
 			}
 		} else if (nation == Stats.NATION.length + 2) {
 			for (int p = Player.FIRST_CLUB; p < Player.FIRST_JAPAN; p++) {
 				int dupe = getDupe(p);
 				if (dupe != -1) {
-					model.addElement(new Player(of, p, 0));
-					model.addElement(new Player(of, dupe, 0));
+					model.addElement(new Player(of, p));
+					model.addElement(new Player(of, dupe));
 				}
 			}
 		} else if (nation == Stats.NATION.length + 1) {
 			for (int p = Player.FIRST_YOUNG; p < Player.FIRST_OLD; p++) {
-				model.addElement(new Player(of, p, 0));
+				model.addElement(new Player(of, p));
 			}
 		} else if (nation == Stats.NATION.length) {
 			for (int p = Player.FIRST_OLD; p < Player.FIRST_UNUSED; p++) {
-				model.addElement(new Player(of, p, 0));
+				model.addElement(new Player(of, p));
 			}
 		} else {
 			for (int p = 1; p < Player.TOTAL; p++) {
 				if (Stats.getValue(of, p, Stats.NATIONALITY) == nation) {
-					model.addElement(new Player(of, p, 0));
+					model.addElement(new Player(of, p));
 				}
 			}
 			for (int p = Player.FIRST_EDIT; p < 32952; p++) {
 				if (Stats.getValue(of, p, Stats.NATIONALITY) == nation) {
-					model.addElement(new Player(of, p, 0));
+					model.addElement(new Player(of, p));
 				}
 			}
 		}

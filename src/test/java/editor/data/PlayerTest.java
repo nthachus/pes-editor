@@ -1,6 +1,5 @@
 package editor.data;
 
-import editor.Player;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,6 +21,11 @@ public final class PlayerTest extends BaseTest {
 		Assert.assertEquals(0x8000, Player.FIRST_EDIT);
 		Assert.assertEquals(184, Player.TOTAL_EDIT);
 		Assert.assertEquals(4941, Player.TOTAL);
+	}
+
+	@Test
+	public void testDataFlavor() throws Exception {
+		Assert.assertNotNull(Player.getDataFlavor());
 	}
 
 	// TODO: More tests here!

@@ -26,16 +26,9 @@ import editor.data.*;
 import editor.ui.SelectByTeam;
 import editor.util.Bits;
 
-import java.awt.Color;
-import java.awt.Dimension;
-
-import javax.swing.JEditorPane;
-import javax.swing.JScrollPane;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledEditorKit;
+import javax.swing.*;
+import javax.swing.text.*;
+import java.awt.*;
 
 public class InfoPanel extends JScrollPane {
 	OptionFile of;
@@ -285,26 +278,23 @@ public class InfoPanel extends JScrollPane {
 					doc
 							.insertString(doc.getLength(), "\n"
 									+ selector.getTeamBox().getModel().getElementAt(
-											t), attr);
+									t), attr);
 				}
-			} while (a < Formations.START_ADR -128 -2); // && i != p);
+			} while (a < Formations.START_ADR - 128 - 2); // && i != p);
 		}
 	}
 
 	private void insertName(int index1, int index2) throws BadLocationException {
 		StyleConstants.setForeground(attr, Color.white);
 		if (index1 > 0) {
-			doc.insertString(doc.getLength(), new Player(of, index1, 0).name,
-					attr);
+			doc.insertString(doc.getLength(), new Player(of, index1).getName(), attr);
 		}
 		if (index2 > 0) {
-			doc.insertString(doc.getLength(), "\t"
-					+ new Player(of, index2, 0).name, attr);
+			doc.insertString(doc.getLength(), "\t" + new Player(of, index2).getName(), attr);
 		}
 	}
 
-	private void insertAgeNat(int index1, int index2)
-			throws BadLocationException {
+	private void insertAgeNat(int index1, int index2) throws BadLocationException {
 		StyleConstants.setForeground(attr, Color.white);
 		if (index1 > 0) {
 			doc.insertString(doc.getLength(), Stats.getString(of, index1,
@@ -330,28 +320,28 @@ public class InfoPanel extends JScrollPane {
 			String footSide = "LF/";
 			if (Stats.getValue(of, index1, Stats.FOOT) == 1) {
 				switch (Stats.getValue(of, index1, Stats.FAVORITE_SIDE)) {
-				case 0:
-					footSide = footSide + "LS";
-					break;
-				case 1:
-					footSide = footSide + "RS";
-					break;
-				case 2:
-					footSide = footSide + "BS";
-					break;
+					case 0:
+						footSide = footSide + "LS";
+						break;
+					case 1:
+						footSide = footSide + "RS";
+						break;
+					case 2:
+						footSide = footSide + "BS";
+						break;
 				}
 			} else {
 				footSide = "RF/";
 				switch (Stats.getValue(of, index1, Stats.FAVORITE_SIDE)) {
-				case 0:
-					footSide = footSide + "RS";
-					break;
-				case 1:
-					footSide = footSide + "LS";
-					break;
-				case 2:
-					footSide = footSide + "BS";
-					break;
+					case 0:
+						footSide = footSide + "RS";
+						break;
+					case 1:
+						footSide = footSide + "LS";
+						break;
+					case 2:
+						footSide = footSide + "BS";
+						break;
 				}
 			}
 			footSide = footSide + ", ";
@@ -368,28 +358,28 @@ public class InfoPanel extends JScrollPane {
 			String footSide = "LF/";
 			if (Stats.getValue(of, index2, Stats.FOOT) == 1) {
 				switch (Stats.getValue(of, index2, Stats.FAVORITE_SIDE)) {
-				case 0:
-					footSide = footSide + "LS";
-					break;
-				case 1:
-					footSide = footSide + "RS";
-					break;
-				case 2:
-					footSide = footSide + "BS";
-					break;
+					case 0:
+						footSide = footSide + "LS";
+						break;
+					case 1:
+						footSide = footSide + "RS";
+						break;
+					case 2:
+						footSide = footSide + "BS";
+						break;
 				}
 			} else {
 				footSide = "RF/";
 				switch (Stats.getValue(of, index2, Stats.FAVORITE_SIDE)) {
-				case 0:
-					footSide = footSide + "RS";
-					break;
-				case 1:
-					footSide = footSide + "LS";
-					break;
-				case 2:
-					footSide = footSide + "BS";
-					break;
+					case 0:
+						footSide = footSide + "RS";
+						break;
+					case 1:
+						footSide = footSide + "LS";
+						break;
+					case 2:
+						footSide = footSide + "BS";
+						break;
 				}
 			}
 			footSide = footSide + ", ";

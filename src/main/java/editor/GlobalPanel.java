@@ -1,9 +1,6 @@
 package editor;
 
-import editor.data.Clubs;
-import editor.data.OptionFile;
-import editor.data.Squads;
-import editor.data.Stats;
+import editor.data.*;
 import editor.util.Bits;
 
 import javax.swing.*;
