@@ -1,6 +1,7 @@
 package editor;
 
 import editor.data.*;
+import editor.ui.FormationDialog;
 import editor.ui.SelectByNation;
 import editor.ui.SelectByTeam;
 import editor.ui.SquadList;
@@ -1265,7 +1266,7 @@ public class TransferPanel extends JPanel
 							of,
 							tiS,
 							sourceIndex,
-							((SelectByTeam) (sourceList.getParent())).getPosList().posNum[sourceIndex]);
+							((SelectByTeam) (sourceList.getParent())).getPosList().getPosNum(sourceIndex));
 				}
 			}
 			if (targetList.getSelectedIndex() > 10) {
@@ -1276,7 +1277,8 @@ public class TransferPanel extends JPanel
 							of,
 							tiT,
 							targetList.getSelectedIndex(),
-							((SelectByTeam) (targetList.getParent())).getPosList().posNum[targetList.getSelectedIndex()]);
+							((SelectByTeam) (targetList.getParent())).getPosList().getPosNum(
+									targetList.getSelectedIndex()));
 				}
 			}
 		}
@@ -1293,7 +1295,7 @@ public class TransferPanel extends JPanel
 			Squads.tidy(of, selectorL.getTeamBox().getSelectedIndex());
 		} else {
 			if (autoRep.isSelected()) {
-				Squads.tidy11(of, selectorL.getTeamBox().getSelectedIndex(), si, selectorL.getPosList().posNum[si]);
+				Squads.tidy11(of, selectorL.getTeamBox().getSelectedIndex(), si, selectorL.getPosList().getPosNum(si));
 			}
 		}
 		refreshLists();
@@ -1308,7 +1310,7 @@ public class TransferPanel extends JPanel
 			Squads.tidy(of, selectorR.getTeamBox().getSelectedIndex());
 		} else {
 			if (autoRep.isSelected()) {
-				Squads.tidy11(of, selectorR.getTeamBox().getSelectedIndex(), si, selectorR.getPosList().posNum[si]);
+				Squads.tidy11(of, selectorR.getTeamBox().getSelectedIndex(), si, selectorR.getPosList().getPosNum(si));
 			}
 		}
 		refreshLists();

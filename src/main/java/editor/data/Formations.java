@@ -20,7 +20,7 @@ public final class Formations {
 
 	public static final int JOBS_COUNT = 6;
 
-	private static int getOffset(int squad) {
+	public static int getOffset(int squad) {
 		if (squad < 0 || squad >= TOTAL) throw new IndexOutOfBoundsException("squad");
 		return START_ADR + SIZE * squad;
 	}

@@ -235,7 +235,7 @@ public final class Editor extends JFrame {
 	private void refreshTitle(String filename) {
 		String s = Strings.getMessage("editor.title");
 		if (!Strings.isEmpty(filename))
-			s += " - " + filename;
+			s = Strings.getMessage("title.format", s, filename);
 
 		setTitle(s);
 	}

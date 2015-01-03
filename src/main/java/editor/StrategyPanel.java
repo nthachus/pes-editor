@@ -3,6 +3,7 @@ package editor;
 import editor.data.ControlButton;
 import editor.data.Formations;
 import editor.data.OptionFile;
+import editor.ui.PositionList;
 import editor.ui.Ps2ButtonIcon;
 import editor.ui.SquadList;
 

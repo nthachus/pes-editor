@@ -114,7 +114,7 @@ public class FormationPanel extends JPanel
 			public void actionPerformed(ActionEvent e) {
 				if (e.getActionCommand() == "y") {
 					// countForm();
-					posList.alt = altBox.getSelectedIndex();
+					posList.setAlt(altBox.getSelectedIndex());
 					posList.refresh(team);
 					// squadList.refresh(team);
 					updateRoleBox();
@@ -430,7 +430,7 @@ public class FormationPanel extends JPanel
 			tt = t + 8;
 		}
 		numList.refresh(tt);
-		posList.alt = altBox.getSelectedIndex();
+		posList.setAlt(altBox.getSelectedIndex());
 		posList.refresh(t);
 		updateRoleBox();
 		sFK.refresh(t);
