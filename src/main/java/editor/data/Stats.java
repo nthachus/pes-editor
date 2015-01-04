@@ -44,7 +44,6 @@ public final class Stats {
 	public static final Stat REG_POS = new Stat(StatType.integer, 6, 4, 0xF, "Registered Position");
 
 	public static final Stat GK = new Stat(StatType.integer, 7, 7, 1, "GK");
-	public static final Stat SW = new Stat(StatType.integer, 7, 15, 1, "SW");
 	public static final Stat CWP = new Stat(StatType.integer, 7, 15, 1, "SW");
 	public static final Stat CBT = new Stat(StatType.integer, 9, 7, 1, "CB");
 	public static final Stat SB = new Stat(StatType.integer, 9, 15, 1, "SB");
@@ -58,19 +57,18 @@ public final class Stats {
 	public static final Stat CF = new Stat(StatType.integer, 17, 15, 1, "CF");
 
 	public static final Stat[] ROLES = {
-			GK,
-			SW,
-			CWP,
-			CBT,
-			SB,
-			DM,
-			WB,
-			CM,
-			SM,
-			AM,
-			WG,
-			SS,
-			CF
+			GK,// goalkeeper
+			CWP,// sweeper
+			CBT,// centreBack
+			SB,// sideBack
+			DM,// defensiveMidfielder
+			WB,// wingBack
+			CM,// centralMidfielder
+			SM,// sideMidfielder
+			AM,// attackingMidfielder
+			WG,// wingStriker
+			SS,// secondStriker
+			CF// centreForward
 	};
 
 	public static final Stat ATTACK = new Stat(StatType.integer, 7, 0, 0x7F, "Attack");

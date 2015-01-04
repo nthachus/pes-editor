@@ -20,7 +20,7 @@ public class SquadNumberList extends JList<String> {
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setLayoutOrientation(JList.VERTICAL);
 		setVisibleRowCount(1);
-		//setFont(new Font("Dialog", Font.BOLD, 12));
+		//setFont(new Font(Font.DIALOG, Font.BOLD, 12));
 
 		setPreferredSize(new Dimension(16, 576));
 	}

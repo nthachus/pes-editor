@@ -64,7 +64,7 @@ public class InfoPanel extends JScrollPane {
 		ta.setEditable(false);
 		setViewportView(ta);
 		// add(scroll);
-		// ta.setFont(new Font("SansSerif", Font.PLAIN, 10));
+		// ta.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
 		StyledEditorKit sek = new StyledEditorKit();
 		ta.setEditorKit(sek);
 		ta.setBackground(Color.black);

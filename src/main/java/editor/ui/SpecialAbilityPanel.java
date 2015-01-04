@@ -19,11 +19,9 @@ public class SpecialAbilityPanel extends JPanel {
 
 		setBorder(BorderFactory.createTitledBorder(Strings.getMessage("specAbility.title")));
 
-		String label;
 		for (int i = 0; i < abilityCheck.length; i++) {
-			label = Stats.ABILITY_SPECIAL[i].toString();
-			abilityCheck[i] = new JCheckBox(label);
-			abilityCheck[i].setToolTipText(Strings.getMessage(label));
+			abilityCheck[i] = new JCheckBox(Stats.ABILITY_SPECIAL[i].getName());
+			abilityCheck[i].setToolTipText(Strings.getMessage(abilityCheck[i].getText()));
 
 			add(abilityCheck[i]);
 		}

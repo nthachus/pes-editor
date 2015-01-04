@@ -26,7 +26,7 @@ public class PositionList extends JList<String> {
 		setVisibleRowCount(Formations.CLUB_TEAM_SIZE);
 		setBackground(new Color(0xFF, 0xFF, 0xE0));
 		setPreferredSize(new Dimension(30, 576));
-		//setFont(new Font("Dialog", Font.BOLD, 12));
+		//setFont(new Font(Font.DIALOG, Font.BOLD, 12));
 	}
 
 	public int getPosNum(int index) {

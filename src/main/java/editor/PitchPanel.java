@@ -37,10 +37,14 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 
 	int adj = 14;
 
-	Color[] colour = {
-			new Color(0, 0, 0), new Color(255, 255, 255),
-			new Color(255, 255, 0), new Color(0, 255, 255),
-			new Color(0, 255, 0), new Color(255, 0, 0), new Color(0, 0, 255),
+	public static final Color[] COLORS = {
+			new Color(0, 0, 0),
+			new Color(0xFF, 0xFF, 0xFF),
+			new Color(0xFF, 0xFF, 0),
+			new Color(0, 0xFF, 0xFF),
+			new Color(0, 0xFF, 0),
+			new Color(0xFF, 0, 0),
+			new Color(0, 0, 0xFF),
 			Color.gray
 	};
 
@@ -121,7 +125,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 
 			// draw position label
 			if (roleOn) {
-				g2.setFont(new Font("Dialog", Font.BOLD, 10));
+				g2.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
 				int adjx = 0;
 				if (pos == 30 || pos == 16 || pos == 4) {
 					adjx = -1;
@@ -198,7 +202,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 			}
 
 			if (numbers) {
-				g2.setFont(new Font("Dialog", Font.BOLD, 10));
+				g2.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
 				g2.setPaint(Color.black);
 				String numText = numList.getModel().getElementAt(p);
 				int ta = 0;
@@ -210,7 +214,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 				}
 				g2.drawString(numText, x + 2 + ta, y + 11);
 			} /*
-			 * else if (roleOn) { g2.setFont(new Font("Dialog", Font.PLAIN,
+			 * else if (roleOn) { g2.setFont(new Font(Font.DIALOG, Font.PLAIN,
 			 * 12)); g2.setPaint(Color.black);
 			 * g2.drawString(getPosLabel(pos).substring(0, 1), x + 3, y + 12); }
 			 */

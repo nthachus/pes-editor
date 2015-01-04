@@ -22,7 +22,7 @@ public class SquadList extends JList<Player> {
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setLayoutOrientation(JList.VERTICAL);
 		setVisibleRowCount(Formations.CLUB_TEAM_SIZE);
-		//setFont(new Font("Dialog", Font.BOLD, 12));
+		//setFont(new Font(Font.DIALOG, Font.BOLD, 12));
 
 		if (setSize) {
 			setPreferredSize(new Dimension(118, 576));

@@ -25,7 +25,7 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 		filter = fc.getFileFilter();
 
 		previewText = new JTextArea(20, 19);//30
-		previewText.setFont(new Font("SansSerif", Font.PLAIN, 12));
+		previewText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 		previewText.setEditable(false);
 		previewText.setLineWrap(true);
 		previewText.setWrapStyleWord(true);

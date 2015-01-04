@@ -23,7 +23,7 @@ public class DefaultIcon implements Icon {
 
 		g2.translate(x, y);
 
-		g2.setFont(new Font("Dialog", Font.BOLD, 18));
+		g2.setFont(new Font(Font.DIALOG, Font.BOLD, 18));
 		g2.setPaint(Color.black);
 		g2.drawString(Strings.getMessage("Default"), 0, 38);
 

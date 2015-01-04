@@ -5,6 +5,7 @@ import editor.data.Player;
 import editor.data.Stats;
 import editor.ui.Ability99Panel;
 import editor.ui.CancelButton;
+import editor.ui.PositionPanel;
 import editor.ui.SpecialAbilityPanel;
 import editor.util.Bits;
 
@@ -149,7 +150,7 @@ public class PlayerDialog extends JDialog {// implements ListSelectionListener, 
 	private void updateStats() {
 		for (int i = 0; i < Stats.ROLES.length; i++) {
 			if (i != 1) {
-				Stats.setValue(of, index, Stats.ROLES[i], boToInt(posPanel.getRegCheck(i).isSelected()));
+				Stats.setValue(of, index, Stats.ROLES[i], boToInt(posPanel.getRoleCheck(i).isSelected()));
 			}
 		}
 		int v = 0;

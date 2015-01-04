@@ -479,9 +479,9 @@ public class FormationPanel extends JPanel
 		byte[] green = new byte[8];
 		byte[] blue = new byte[8];
 		for (int i = 0; i < 8; i++) {
-			red[i] = (byte) (pitchPanel.colour[i].getRed());
-			green[i] = (byte) (pitchPanel.colour[i].getGreen());
-			blue[i] = (byte) (pitchPanel.colour[i].getBlue());
+			red[i] = (byte) PitchPanel.COLORS[i].getRed();
+			green[i] = (byte) PitchPanel.COLORS[i].getGreen();
+			blue[i] = (byte) PitchPanel.COLORS[i].getBlue();
 		}
 		IndexColorModel colMod = new IndexColorModel(8, 8, red, green, blue);
 		BufferedImage image = new BufferedImage(size.width, size.height,
