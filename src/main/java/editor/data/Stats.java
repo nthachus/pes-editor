@@ -28,14 +28,14 @@ public final class Stats {
 	/**
 	 * The favorite side/foot of a player (0: Same side with stronger-foot, 1: Difference stronger-foot, 2: L&R).
 	 */
-	public static final Stat FAVORITE_SIDE = new Stat(StatType.integer, 33, 14, 0x03, "Fav side");
-	public static final Stat WEAK_FOOT_ACC = new Stat(StatType.positiveInt, 33, 11, 0x07, "W Foot Acc");
-	public static final Stat WEAK_FOOT_FREQ = new Stat(StatType.positiveInt, 33, 3, 0x07, "W Foot Freq");
-	public static final Stat INJURY = new Stat(StatType.injuryId, 33, 6, 0x03, "Injury T");
+	public static final Stat FAVORITE_SIDE = new Stat(StatType.integer, 33, 14, 0x03, "Favorite Side");
+	public static final Stat WEAK_FOOT_ACC = new Stat(StatType.positiveInt, 33, 11, 0x07, "W-Foot Accuracy");
+	public static final Stat WEAK_FOOT_FREQ = new Stat(StatType.positiveInt, 33, 3, 0x07, "W-Foot Frequency");
+	public static final Stat INJURY = new Stat(StatType.injuryId, 33, 6, 0x03, "Injury Tolerance");
 	public static final Stat DRIBBLE_STYLE = new Stat(StatType.positiveInt, 6, 0, 0x03, "Dribbling Style");
-	public static final Stat FREE_KICK = new Stat(StatType.positiveInt, 5, 1, 0x0f, "Free Kick");
+	public static final Stat FREE_KICK = new Stat(StatType.positiveInt, 5, 1, 0x0F, "Free Kick");
 	public static final Stat PK_STYLE = new Stat(StatType.positiveInt, 5, 5, 0x07, "Penalty Kick");
-	public static final Stat DK_STYLE = new Stat(StatType.positiveInt, 6, 2, 0x03, "DK Style");
+	public static final Stat DK_STYLE = new Stat(StatType.positiveInt, 6, 2, 0x03, "Dropkick Style");
 	public static final Stat AGE = new Stat(StatType.age15, 65, 9, 0x1F, "Age");
 	public static final Stat WEIGHT = new Stat(StatType.integer, 41, 8, 0x7F, "Weight");
 	public static final Stat NATIONALITY = new Stat(StatType.nationId, 65, 0, 0xFF, "Nationality");
@@ -310,8 +310,14 @@ public final class Stats {
 
 	public static final String[] MOD_FOOT = {"R", "L"};
 	public static final String[] MOD_INJURY = {"C", "B", "A"};
-	//public static final String[] MOD_FK = {"A", "B", "C", "D", "E", "F", "G", "H"};
 	public static final String[] MOD_1_8 = {"1", "2", "3", "4", "5", "6", "7", "8"};
+	public static final String[] MOD_FOOT_SIDE = {
+			"R foot / R side", "R foot / L side", "R foot / B side",
+			"L foot / L side", "L foot / R side", "L foot / B side"
+	};
+	public static final String[] MOD_FK = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+	public static final String[] MOD_PK = {"1", "2", "3", "4", "5"};
+	public static final String[] MOD_1_4 = {"1", "2", "3", "4"};
 
 	//endregion
 

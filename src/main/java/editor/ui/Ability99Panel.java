@@ -103,13 +103,14 @@ public class Ability99Panel extends JPanel
 	}
 
 	public static class Verifier99 extends InputVerifier {
+		@Override
 		public boolean verify(JComponent input) {
 			JTextField tf = (JTextField) input;
 			if (null == tf) throw new NullPointerException("input");
 
 			try {
 				int v = Integer.parseInt(tf.getText());
-				if (v > 0 && v <= MAX_VAL) {
+				if (v >= 1 && v <= MAX_VAL) {
 					return true;
 				}
 			} catch (NumberFormatException nfe) {

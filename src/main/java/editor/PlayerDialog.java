@@ -3,10 +3,7 @@ package editor;
 import editor.data.OptionFile;
 import editor.data.Player;
 import editor.data.Stats;
-import editor.ui.Ability99Panel;
-import editor.ui.CancelButton;
-import editor.ui.PositionPanel;
-import editor.ui.SpecialAbilityPanel;
+import editor.ui.*;
 import editor.util.Bits;
 
 import javax.swing.*;

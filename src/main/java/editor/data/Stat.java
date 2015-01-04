@@ -56,4 +56,18 @@ public class Stat implements Serializable {
 		return name;
 	}
 
+	public int minValue() {
+		if (type == StatType.positiveInt)
+			return 1;
+		if (type == StatType.age15)
+			return 15;
+		if (type == StatType.height148)
+			return 148;
+		return 0;
+	}
+
+	public int maxValue() {
+		return minValue() + getMask();
+	}
+
 }
