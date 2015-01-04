@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.Serializable;
 
 public class KitImportDialog extends JDialog implements MouseListener {
 	private final OptionFile of2;
@@ -121,7 +122,9 @@ public class KitImportDialog extends JDialog implements MouseListener {
 		}
 	}
 
-	private static class KitItem {
+	private static class KitItem implements Serializable {
+		private static final long serialVersionUID = 1L;
+
 		private final String team;
 		private final int teamId;
 

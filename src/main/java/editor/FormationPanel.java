@@ -288,7 +288,7 @@ public class FormationPanel extends JPanel
 
 		posList = new PositionList(of, false);
 		teamSetPan = new TeamSettingPanel(of);
-		stratPan = new StrategyPanel(of, squadList, posList);
+		stratPan = new StrategyPanel(of, squadList);
 
 		adPanel = new AtkDefPanel(of, altBox);
 		pitchPanel = new PitchPanel(of, squadList, adPanel, altBox, numList);

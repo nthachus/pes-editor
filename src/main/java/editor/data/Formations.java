@@ -18,7 +18,11 @@ public final class Formations {
 	public static final int SIZE = 364;
 	public static final int ALT_SIZE = 82;
 
+	//region Constants
+
 	public static final int JOBS_COUNT = 6;
+
+	//endregion
 
 	public static int getOffset(int squad) {
 		if (squad < 0 || squad >= TOTAL) throw new IndexOutOfBoundsException("squad");

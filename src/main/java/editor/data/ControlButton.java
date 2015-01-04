@@ -23,9 +23,13 @@ public enum ControlButton {
 
 	private static volatile ControlButton[] values = null;
 
-	public static ControlButton valueOf(int ordinal) {
+	public static int size() {
 		if (values == null) values = values();
-		if (ordinal < 0 || ordinal >= values.length) throw new ArrayIndexOutOfBoundsException("ordinal");
+		return values.length;
+	}
+
+	public static ControlButton valueOf(int ordinal) {
+		if (ordinal < 0 || ordinal >= size()) throw new ArrayIndexOutOfBoundsException("ordinal");
 		return values[ordinal];
 	}
 
