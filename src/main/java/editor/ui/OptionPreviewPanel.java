@@ -2,7 +2,7 @@ package editor.ui;
 
 import editor.data.SaveGameInfo;
 import editor.util.Files;
-import editor.util.Strings;
+import editor.util.Resources;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -30,7 +30,7 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 		previewText.setLineWrap(true);
 		previewText.setWrapStyleWord(true);
 
-		setBorder(BorderFactory.createTitledBorder(Strings.getMessage("preview.title")));
+		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("preview.title")));
 
 		fc.addPropertyChangeListener(this);
 		add(previewText);
@@ -43,12 +43,12 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 				String extension = Files.getExtension(file);
 
 				if (Files.isXPortFile(extension)) {
-					text = Strings.getMessage("preview.xPort",
+					text = Resources.getMessage("preview.xPort",
 							saveInfo.getGame(), saveInfo.getGameName(), saveInfo.getSaveName(), saveInfo.getNotes());
 				} else if (Files.isARMaxFile(extension)) {
-					text = Strings.getMessage("preview.arMax", saveInfo.getGame(), saveInfo.getGameName());
+					text = Resources.getMessage("preview.arMax", saveInfo.getGame(), saveInfo.getGameName());
 				} else if (Files.isEmsFile(extension)) {
-					text = Strings.getMessage("preview.ems", saveInfo.getGame());
+					text = Resources.getMessage("preview.ems", saveInfo.getGame());
 				}
 			}
 		}

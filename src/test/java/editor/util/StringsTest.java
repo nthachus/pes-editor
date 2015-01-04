@@ -86,18 +86,18 @@ public final class StringsTest {
 
 	@Test
 	public void testMessageResource() throws Exception {
-		Assert.assertNotNull(Strings.getMessages());
+		Assert.assertNotNull(Resources.getMessages());
 
 		String notFoundKey = getClass().getName();
-		String msg = Strings.getMessage(notFoundKey);
+		String msg = Resources.getMessage(notFoundKey);
 		Assert.assertEquals(notFoundKey, msg);
 
 		String existsKey = "Error";
-		msg = Strings.getMessage(existsKey);
+		msg = Resources.getMessage(existsKey);
 		Assert.assertEquals(existsKey, msg);
 
 		String existsMsg = "Current:  -10 (5)";
-		msg = Strings.getMessage("wen.label", -10, 5);
+		msg = Resources.getMessage("wen.label", -10, 5);
 		Assert.assertEquals(existsMsg, msg);
 	}
 

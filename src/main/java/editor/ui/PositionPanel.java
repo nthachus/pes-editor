@@ -2,7 +2,9 @@ package editor.ui;
 
 import editor.data.OptionFile;
 import editor.data.Stats;
+import editor.util.Resources;
 import editor.util.Strings;
+import editor.util.swing.JComboBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,12 +27,12 @@ public class PositionPanel extends JPanel implements ActionListener {
 	}
 
 	private void initComponents() {
-		setBorder(BorderFactory.createTitledBorder(Strings.getMessage("pos.title")));
+		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("pos.title")));
 
 		JPanel chkPanel = new JPanel(new GridLayout(4, 4));
 		for (int i = 0; i < roleCheck.length; i++) {
 			roleCheck[i] = new JCheckBox(Stats.ROLES[i].getName());
-			roleCheck[i].setToolTipText(Strings.getMessage(roleCheck[i].getText()));
+			roleCheck[i].setToolTipText(Resources.getMessage(roleCheck[i].getText()));
 			roleCheck[i].setActionCommand(Integer.toString(i));
 			roleCheck[i].addActionListener(this);
 
@@ -49,7 +51,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 			}
 		});
 
-		JLabel regLabel = new JLabel(Strings.getMessage("pos.registered"));
+		JLabel regLabel = new JLabel(Resources.getMessage("pos.registered"));
 		JPanel regPanel = new JPanel();
 		regPanel.add(regLabel);
 		regPanel.add(regBox);
@@ -117,7 +119,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
 			return;
 
-		String roleName = (String) regBox.getSelectedItem();
+		String roleName = regBox.getSelectedItem();
 		int r = 0;
 		if (!Strings.isEmpty(roleName)) {
 			for (int i = 0; i < Stats.ROLES.length; i++) {

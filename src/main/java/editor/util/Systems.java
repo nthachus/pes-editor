@@ -33,8 +33,7 @@ public final class Systems {
 	}
 
 	public static <T> List<T> readFields(
-			Class<?> clazz, Object target, Class<T> ofType, Boolean isFinal, boolean forceAccess)
-			throws ReflectiveOperationException {
+			Class<?> clazz, Object target, Class<T> ofType, Boolean isFinal, boolean forceAccess) throws Exception {
 		if (null == clazz) throw new NullPointerException("clazz");
 		if (null == ofType) throw new NullPointerException("ofType");
 
@@ -58,12 +57,12 @@ public final class Systems {
 	}
 
 	public static <T> List<T> readStaticFields(
-			Class<?> clazz, Class<T> ofType, Boolean isFinal, boolean forceAccess) throws ReflectiveOperationException {
+			Class<?> clazz, Class<T> ofType, Boolean isFinal, boolean forceAccess) throws Exception {
 		return readFields(clazz, null, ofType, isFinal, forceAccess);
 	}
 
 	public static Object readField(Class<?> clazz, Object target, String name, Boolean isFinal, boolean forceAccess)
-			throws ReflectiveOperationException {
+			throws Exception {
 		if (null == clazz) throw new NullPointerException("clazz");
 		if (Strings.isBlank(name)) throw new NullPointerException("name");
 
@@ -80,12 +79,12 @@ public final class Systems {
 	}
 
 	public static Object readStaticField(Class<?> clazz, String name, Boolean isFinal, boolean forceAccess)
-			throws ReflectiveOperationException {
+			throws Exception {
 		return readField(clazz, null, name, isFinal, forceAccess);
 	}
 
 	public static void writeField(Class<?> clazz, Object target, String name, boolean forceAccess, Object value)
-			throws ReflectiveOperationException {
+			throws Exception {
 		if (null == clazz) throw new NullPointerException("clazz");
 		if (Strings.isBlank(name)) throw new NullPointerException("name");
 
@@ -100,13 +99,13 @@ public final class Systems {
 	}
 
 	public static void writeStaticField(Class<?> clazz, String name, boolean forceAccess, Object value)
-			throws ReflectiveOperationException {
+			throws Exception {
 		writeField(clazz, null, name, forceAccess, value);
 	}
 
 	public static Object invokeMethod(
 			Class<?> clazz, Object target, String name, Class<?>[] argTypes, boolean forceAccess, Object... args)
-			throws ReflectiveOperationException {
+			throws Exception {
 		if (null == clazz) throw new NullPointerException("clazz");
 		if (Strings.isBlank(name)) throw new NullPointerException("name");
 
@@ -121,8 +120,7 @@ public final class Systems {
 	}
 
 	public static Object invokeStaticMethod(
-			Class<?> clazz, String name, Class<?>[] argTypes, boolean forceAccess, Object... args)
-			throws ReflectiveOperationException {
+			Class<?> clazz, String name, Class<?>[] argTypes, boolean forceAccess, Object... args) throws Exception {
 		return invokeMethod(clazz, null, name, argTypes, forceAccess, args);
 	}
 

@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.*;
 import editor.util.Bits;
+import editor.util.swing.JList;
 
 import javax.swing.*;
 import java.util.Collections;

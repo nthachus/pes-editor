@@ -2,7 +2,7 @@ package editor.ui;
 
 import editor.data.OptionFile;
 import editor.data.Stats;
-import editor.util.Strings;
+import editor.util.Resources;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,11 +17,11 @@ public class SpecialAbilityPanel extends JPanel {
 		if (null == of) throw new NullPointerException("of");
 		this.of = of;
 
-		setBorder(BorderFactory.createTitledBorder(Strings.getMessage("specAbility.title")));
+		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("specAbility.title")));
 
 		for (int i = 0; i < abilityCheck.length; i++) {
 			abilityCheck[i] = new JCheckBox(Stats.ABILITY_SPECIAL[i].getName());
-			abilityCheck[i].setToolTipText(Strings.getMessage(abilityCheck[i].getText()));
+			abilityCheck[i].setToolTipText(Resources.getMessage(abilityCheck[i].getText()));
 
 			add(abilityCheck[i]);
 		}

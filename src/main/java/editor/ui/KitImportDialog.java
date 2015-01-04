@@ -1,7 +1,9 @@
 package editor.ui;
 
 import editor.data.*;
-import editor.util.Strings;
+import editor.util.Resources;
+import editor.util.swing.DefaultListModel;
+import editor.util.swing.JList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +19,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 	private JList<KitItem> list;
 
 	public KitImportDialog(Frame owner, OptionFile of2) {
-		super(owner, Strings.getMessage("kitImport.title"), true);
+		super(owner, Resources.getMessage("kitImport.title"), true);
 		if (null == of2) throw new NullPointerException("of2");
 		this.of2 = of2;
 
@@ -25,7 +27,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 	}
 
 	private void initComponents() {
-		fileLabel = new JLabel(Strings.getMessage("import.label", ""));
+		fileLabel = new JLabel(Resources.getMessage("import.label", ""));
 
 		list = new JList<KitItem>();
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -81,7 +83,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 
 		model.trimToSize();
 		list.setModel(model);
-		fileLabel.setText(Strings.getMessage("import.label", of2.getFilename()));
+		fileLabel.setText(Resources.getMessage("import.label", of2.getFilename()));
 
 		pack();
 	}

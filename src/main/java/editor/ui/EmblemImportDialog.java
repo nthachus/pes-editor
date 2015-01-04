@@ -2,7 +2,7 @@ package editor.ui;
 
 import editor.data.Emblems;
 import editor.data.OptionFile;
-import editor.util.Strings;
+import editor.util.Resources;
 import editor.util.Systems;
 
 import javax.swing.*;
@@ -46,7 +46,7 @@ public class EmblemImportDialog extends JDialog {
 		}
 		Systems.systemUI();
 
-		JButton transButton = new JButton(Strings.getMessage("Transparency"));
+		JButton transButton = new JButton(Resources.getMessage("Transparency"));
 		transButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				onTransparency(evt);
@@ -60,7 +60,7 @@ public class EmblemImportDialog extends JDialog {
 		contentPane.add(cancelButton, BorderLayout.SOUTH);
 		contentPane.add(flagPanel, BorderLayout.CENTER);
 
-		fileLabel = new JLabel(Strings.getMessage("import.label", ""));
+		fileLabel = new JLabel(Resources.getMessage("import.label", ""));
 
 		getContentPane().add(fileLabel, BorderLayout.NORTH);
 		getContentPane().add(contentPane, BorderLayout.CENTER);
@@ -134,7 +134,7 @@ public class EmblemImportDialog extends JDialog {
 		slot = -1;
 
 		setTitle(title);
-		fileLabel.setText(Strings.getMessage("import.label", of2.getFilename()));
+		fileLabel.setText(Resources.getMessage("import.label", of2.getFilename()));
 		refresh();
 		setVisible(true);
 

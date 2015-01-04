@@ -4,7 +4,7 @@ import editor.data.OptionFile;
 import editor.data.Player;
 import editor.data.Stats;
 import editor.util.Bits;
-import editor.util.Strings;
+import editor.util.Resources;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +24,7 @@ public class PlayerDialog extends JDialog {
 	private JButton importButton;
 
 	public PlayerDialog(Frame owner, OptionFile of, PlayerImportDialog pid) {
-		super(owner, Strings.getMessage("player.title"), true);
+		super(owner, Resources.getMessage("player.title"), true);
 		if (null == of) throw new NullPointerException("of");
 		if (null == pid) throw new NullPointerException("pid");
 		this.of = of;
@@ -34,7 +34,7 @@ public class PlayerDialog extends JDialog {
 	}
 
 	private void initComponents() {
-		JButton acceptButton = new JButton(Strings.getMessage("player.accept"));
+		JButton acceptButton = new JButton(Resources.getMessage("player.accept"));
 		acceptButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				if (isFormValid()) {
@@ -46,7 +46,7 @@ public class PlayerDialog extends JDialog {
 
 		CancelButton cancelButton = new CancelButton(this);
 
-		importButton = new JButton(Strings.getMessage("player.import"));
+		importButton = new JButton(Resources.getMessage("player.import"));
 		importButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				playerImportDia.show(index);
@@ -88,7 +88,7 @@ public class PlayerDialog extends JDialog {
 		index = player.getIndex();
 
 		String tit = String.format("[%d] %s", index, player.getName());
-		tit = Strings.getMessage("title.format", Strings.getMessage("player.title"), tit);
+		tit = Resources.getMessage("title.format", Resources.getMessage("player.title"), tit);
 		setTitle(tit);
 
 		importButton.setVisible(playerImportDia.isOf2Loaded());

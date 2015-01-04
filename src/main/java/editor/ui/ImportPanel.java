@@ -4,6 +4,7 @@ import editor.EmblemPanel;
 import editor.TeamPanel;
 import editor.TransferPanel;
 import editor.data.*;
+import editor.util.Resources;
 import editor.util.Strings;
 
 import javax.swing.*;
@@ -55,49 +56,49 @@ public class ImportPanel extends JPanel {
 	}
 
 	private void initComponents() {
-		optionsButton = new JButton(Strings.getMessage("import.options"));
+		optionsButton = new JButton(Resources.getMessage("import.options"));
 		optionsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importOptions();
 			}
 		});
 
-		stadiumButton = new JButton(Strings.getMessage("import.stadiums"));
+		stadiumButton = new JButton(Resources.getMessage("import.stadiums"));
 		stadiumButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importStadiums();
 			}
 		});
 
-		leagueButton = new JButton(Strings.getMessage("import.leagues"));
+		leagueButton = new JButton(Resources.getMessage("import.leagues"));
 		leagueButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importLeagues();
 			}
 		});
 
-		bootsButton = new JButton(Strings.getMessage("import.boots"));
+		bootsButton = new JButton(Resources.getMessage("import.boots"));
 		bootsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importBoots();
 			}
 		});
 
-		playerButton = new JButton(Strings.getMessage("import.players"));
+		playerButton = new JButton(Resources.getMessage("import.players"));
 		playerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importPlayers();
 			}
 		});
 
-		clubNameButton = new JButton(Strings.getMessage("import.clubs"));
+		clubNameButton = new JButton(Resources.getMessage("import.clubs"));
 		clubNameButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importClubs();
 			}
 		});
 
-		allKitButton = new JButton(Strings.getMessage("import.kits"));
+		allKitButton = new JButton(Resources.getMessage("import.kits"));
 		allKitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importKits();
@@ -117,7 +118,7 @@ public class ImportPanel extends JPanel {
 		contentPane.add(buttonsPan);
 		contentPane.setEnabled(false);
 
-		msgLabel = new JLabel(Strings.getMessage("import.todo"));
+		msgLabel = new JLabel(Resources.getMessage("import.todo"));
 
 		add(msgLabel, BorderLayout.NORTH);
 		add(contentPane, BorderLayout.CENTER);
@@ -199,9 +200,9 @@ public class ImportPanel extends JPanel {
 	public void refresh() {
 		if (!of2.isLoaded()) {
 			contentPane.setVisible(false);
-			msgLabel.setText(Strings.getMessage("import.todo"));
+			msgLabel.setText(Resources.getMessage("import.todo"));
 		} else {
-			msgLabel.setText(Strings.getMessage("import.label", of2.getFilename()));
+			msgLabel.setText(Resources.getMessage("import.label", of2.getFilename()));
 			contentPane.setVisible(true);
 
 			optionsButton.setEnabled(Strings.equalsIgnoreCase(of.getGameId(), of2.getGameId()));

@@ -1,9 +1,10 @@
 package editor.ui;
 
-import editor.JTextFieldLimit;
 import editor.data.OptionFile;
 import editor.data.Stats;
+import editor.util.Resources;
 import editor.util.Strings;
+import editor.util.swing.JTextFieldLimit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,7 @@ public class Ability99Panel extends JPanel
 		if (null == of) throw new NullPointerException("of");
 		this.of = of;
 
-		setBorder(BorderFactory.createTitledBorder(Strings.getMessage("ability.title")));
+		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("ability.title")));
 
 		GridBagConstraints grid = new GridBagConstraints();
 		grid.ipadx = 2;
@@ -39,7 +40,7 @@ public class Ability99Panel extends JPanel
 		Verifier99 verifier99 = new Verifier99();
 		for (int i = 0; i < fields.length; i++) {
 			JLabel lab = new JLabel(Stats.ABILITY99[i].getName());
-			lab.setToolTipText(Strings.getMessage(lab.getText()));
+			lab.setToolTipText(Resources.getMessage(lab.getText()));
 			//lab.setHorizontalAlignment(SwingConstants.TRAILING);
 
 			grid.anchor = GridBagConstraints.EAST;

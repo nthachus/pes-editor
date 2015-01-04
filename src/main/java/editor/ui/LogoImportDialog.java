@@ -2,7 +2,7 @@ package editor.ui;
 
 import editor.data.Logos;
 import editor.data.OptionFile;
-import editor.util.Strings;
+import editor.util.Resources;
 import editor.util.Systems;
 
 import javax.swing.*;
@@ -53,9 +53,9 @@ public class LogoImportDialog extends JDialog {
 		}
 		Systems.systemUI();
 
-		fileLabel = new JLabel(Strings.getMessage("import.label", ""));
+		fileLabel = new JLabel(Resources.getMessage("import.label", ""));
 
-		JButton transButton = new JButton(Strings.getMessage("Transparency"));
+		JButton transButton = new JButton(Resources.getMessage("Transparency"));
 		transButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				updateFlags(evt);
@@ -97,7 +97,7 @@ public class LogoImportDialog extends JDialog {
 		slot = 0;
 		replacement = 0;
 
-		fileLabel.setText(Strings.getMessage("import.label", of2.getFilename()));
+		fileLabel.setText(Resources.getMessage("import.label", of2.getFilename()));
 	}
 
 	public void show(int slot, String title) {

@@ -1,9 +1,10 @@
 package editor.ui;
 
-import editor.JTextFieldLimit;
 import editor.data.Leagues;
 import editor.data.OptionFile;
-import editor.util.Strings;
+import editor.util.Resources;
+import editor.util.swing.JList;
+import editor.util.swing.JTextFieldLimit;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -28,7 +29,7 @@ public class LeaguePanel extends JPanel implements ActionListener, ListSelection
 
 	private void initComponents() {
 		editor = new JTextField(15);
-		editor.setToolTipText(Strings.getMessage("league.tooltip"));
+		editor.setToolTipText(Resources.getMessage("league.tooltip"));
 		editor.setDocument(new JTextFieldLimit(Leagues.NAME_LEN));
 		editor.addActionListener(this);
 
@@ -37,7 +38,7 @@ public class LeaguePanel extends JPanel implements ActionListener, ListSelection
 		list.addListSelectionListener(this);
 
 		JPanel contentPane = new JPanel();
-		contentPane.setBorder(BorderFactory.createTitledBorder(Strings.getMessage("league.title")));
+		contentPane.setBorder(BorderFactory.createTitledBorder(Resources.getMessage("league.title")));
 		contentPane.add(list);
 		contentPane.add(editor);
 

@@ -3,7 +3,8 @@ package editor.ui;
 import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.data.Stats;
-import editor.util.Strings;
+import editor.util.Resources;
+import editor.util.swing.JComboBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,7 +29,7 @@ public class SelectByNation extends JPanel {
 	}
 
 	private void initComponents() {
-		sortButton = new JButton(Strings.getMessage("nation.sortAlpha"));
+		sortButton = new JButton(Resources.getMessage("nation.sortAlpha"));
 		sortButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				onSort(evt);
@@ -61,7 +62,7 @@ public class SelectByNation extends JPanel {
 	}
 
 	static String[] getExtraNations() {
-		String s = Strings.getMessage("nation.extras");
+		String s = Resources.getMessage("nation.extras");
 		return s.split("\\s*,\\s*");
 	}
 
@@ -76,10 +77,10 @@ public class SelectByNation extends JPanel {
 
 	private void onSort(ActionEvent evt) {
 		if (isAlphaOrder) {
-			sortButton.setText(Strings.getMessage("nation.sortIndex"));
+			sortButton.setText(Resources.getMessage("nation.sortIndex"));
 			isAlphaOrder = false;
 		} else {
-			sortButton.setText(Strings.getMessage("nation.sortAlpha"));
+			sortButton.setText(Resources.getMessage("nation.sortAlpha"));
 			isAlphaOrder = true;
 		}
 

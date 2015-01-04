@@ -9,6 +9,7 @@ import editor.data.OfFormat;
 import editor.data.OptionFile;
 import editor.data.Squads;
 import editor.util.Files;
+import editor.util.Resources;
 import editor.util.Strings;
 import editor.util.Systems;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public final class Editor extends JFrame {
 	private final JFileChooser csvChooser;
 
 	public Editor() {
-		super(Strings.getMessage("editor.title"));
+		super(Resources.getMessage("editor.title"));
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		initIcon();
@@ -96,15 +97,15 @@ public final class Editor extends JFrame {
 		helpDia = new HelpDialog(this);
 
 		tabbedPane = new JTabbedPane();
-		tabbedPane.addTab(Strings.getMessage("editor.tab1"), null, transferPan, null);
-		tabbedPane.addTab(Strings.getMessage("editor.tab2"), null, teamPan, null);
-		tabbedPane.addTab(Strings.getMessage("editor.tab3"), null, flagPanel, null);
-		tabbedPane.addTab(Strings.getMessage("editor.tab4"), null, imagePanel, null);
-		tabbedPane.addTab(Strings.getMessage("editor.tab5"), null, stadiumPan, null);
-		tabbedPane.addTab(Strings.getMessage("editor.tab6"), null, leaguePan, null);
-		tabbedPane.addTab(Strings.getMessage("editor.tab7"), null, wenShop, null);
-		tabbedPane.addTab(Strings.getMessage("editor.tab8"), null, globalPan, null);
-		tabbedPane.addTab(Strings.getMessage("editor.tab9"), null, importPanel, null);
+		tabbedPane.addTab(Resources.getMessage("editor.tab1"), null, transferPan, null);
+		tabbedPane.addTab(Resources.getMessage("editor.tab2"), null, teamPan, null);
+		tabbedPane.addTab(Resources.getMessage("editor.tab3"), null, flagPanel, null);
+		tabbedPane.addTab(Resources.getMessage("editor.tab4"), null, imagePanel, null);
+		tabbedPane.addTab(Resources.getMessage("editor.tab5"), null, stadiumPan, null);
+		tabbedPane.addTab(Resources.getMessage("editor.tab6"), null, leaguePan, null);
+		tabbedPane.addTab(Resources.getMessage("editor.tab7"), null, wenShop, null);
+		tabbedPane.addTab(Resources.getMessage("editor.tab8"), null, globalPan, null);
+		tabbedPane.addTab(Resources.getMessage("editor.tab9"), null, importPanel, null);
 
 		opFileFilter = new OptionFileFilter();
 		//
@@ -141,81 +142,81 @@ public final class Editor extends JFrame {
 	private JMenuItem convertItem;
 
 	private void buildMenu() {
-		JMenuItem openItem = new JMenuItem(Strings.getMessage("menu.open"));
+		JMenuItem openItem = new JMenuItem(Resources.getMessage("menu.open"));
 		openItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				openFile();
 			}
 		});
 
-		open2Item = new JMenuItem(Strings.getMessage("menu.open2"));
+		open2Item = new JMenuItem(Resources.getMessage("menu.open2"));
 		open2Item.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				openOF2();
 			}
 		});
 
-		saveItem = new JMenuItem(Strings.getMessage("menu.save"));
+		saveItem = new JMenuItem(Resources.getMessage("menu.save"));
 		saveItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				saveFile();
 			}
 		});
 
-		saveAsItem = new JMenuItem(Strings.getMessage("menu.saveAs"));
+		saveAsItem = new JMenuItem(Resources.getMessage("menu.saveAs"));
 		saveAsItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				saveFileAs();
 			}
 		});
 
-		JMenuItem exitItem = new JMenuItem(Strings.getMessage("menu.exit"));
+		JMenuItem exitItem = new JMenuItem(Resources.getMessage("menu.exit"));
 		exitItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				System.exit(0);
 			}
 		});
 
-		JMenu file = new JMenu(Strings.getMessage("menu.file"));
+		JMenu file = new JMenu(Resources.getMessage("menu.file"));
 		file.add(openItem);
 		file.add(open2Item);
 		file.add(saveItem);
 		file.add(saveAsItem);
 		file.add(exitItem);
 
-		csvItem = new JMenuItem(Strings.getMessage("menu.makeCsv"));
+		csvItem = new JMenuItem(Resources.getMessage("menu.makeCsv"));
 		csvItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				exportCsv();
 			}
 		});
 
-		convertItem = new JMenuItem(Strings.getMessage("menu.convert"));
+		convertItem = new JMenuItem(Resources.getMessage("menu.convert"));
 		convertItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				importFromOF2();
 			}
 		});
 
-		JMenu tool = new JMenu(Strings.getMessage("menu.tool"));
+		JMenu tool = new JMenu(Resources.getMessage("menu.tool"));
 		tool.add(csvItem);
 		tool.add(convertItem);
 
-		JMenuItem helpItem = new JMenuItem(Strings.getMessage("menu.helpPage"));
+		JMenuItem helpItem = new JMenuItem(Resources.getMessage("menu.helpPage"));
 		helpItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				helpDia.setVisible(true);
 			}
 		});
 
-		JMenuItem aboutItem = new JMenuItem(Strings.getMessage("menu.about"));
+		JMenuItem aboutItem = new JMenuItem(Resources.getMessage("menu.about"));
 		aboutItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				about();
 			}
 		});
 
-		JMenu help = new JMenu(Strings.getMessage("menu.help"));
+		JMenu help = new JMenu(Resources.getMessage("menu.help"));
 		help.add(helpItem);
 		help.add(aboutItem);
 
@@ -236,9 +237,9 @@ public final class Editor extends JFrame {
 	//endregion
 
 	private void refreshTitle(String filename) {
-		String s = Strings.getMessage("editor.title");
+		String s = Resources.getMessage("editor.title");
 		if (!Strings.isEmpty(filename))
-			s = Strings.getMessage("title.format", s, filename);
+			s = Resources.getMessage("title.format", s, filename);
 
 		setTitle(s);
 	}
@@ -422,7 +423,7 @@ public final class Editor extends JFrame {
 			logoImportDia.refresh();
 			importPanel.refresh();
 			flagPanel.refresh();
-			teamPan.getList().setToolTipText(Strings.getMessage("teamPane.tooltip"));
+			teamPan.getList().setToolTipText(Resources.getMessage("teamPane.tooltip"));
 			convertItem.setEnabled(of.isLoaded());
 
 		} else {
@@ -439,30 +440,30 @@ public final class Editor extends JFrame {
 
 	private int showOverwriteConfirm(File dest) {
 		return JOptionPane.showConfirmDialog(getContentPane(),
-				Strings.getMessage("msg.overwrite", dest.getName(), dest.getParent()),
-				Strings.getMessage("msg.overwrite.title"),
+				Resources.getMessage("msg.overwrite", dest.getName(), dest.getParent()),
+				Resources.getMessage("msg.overwrite.title"),
 				JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null);
 	}
 
 	private void showSaveFailMsg() {
 		JOptionPane.showMessageDialog(getContentPane(),
-				Strings.getMessage("msg.saveFailed"), Strings.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
+				Resources.getMessage("msg.saveFailed"), Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
 	}
 
 	private void showOpenFailMsg() {
 		JOptionPane.showMessageDialog(getContentPane(),
-				Strings.getMessage("msg.openFailed"), Strings.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
+				Resources.getMessage("msg.openFailed"), Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
 	}
 
 	private void showSaveOkMsg(File dest) {
 		JOptionPane.showMessageDialog(getContentPane(),
-				Strings.getMessage("msg.saveSuccess", dest.getName(), dest.getParent()),
-				Strings.getMessage("msg.saveSuccess.title"), JOptionPane.INFORMATION_MESSAGE);
+				Resources.getMessage("msg.saveSuccess", dest.getName(), dest.getParent()),
+				Resources.getMessage("msg.saveSuccess.title"), JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	private void showIllegalNameMsg() {
 		JOptionPane.showMessageDialog(getContentPane(),
-				Strings.getMessage("msg.illegalName"), Strings.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
+				Resources.getMessage("msg.illegalName"), Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
 	}
 
 	//region Application Settings
@@ -545,7 +546,7 @@ public final class Editor extends JFrame {
 
 	private void about() {
 		JOptionPane.showMessageDialog(getContentPane(),
-				Strings.getMessage("about.content"), Strings.getMessage("about.title"),
+				Resources.getMessage("about.content"), Resources.getMessage("about.title"),
 				JOptionPane.PLAIN_MESSAGE, new ImageIcon(getIconImage()));
 	}
 

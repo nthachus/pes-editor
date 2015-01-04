@@ -1,10 +1,11 @@
 package editor.ui;
 
-import editor.JTextFieldLimit;
 import editor.data.OptionFile;
 import editor.data.Stat;
 import editor.data.Stats;
-import editor.util.Strings;
+import editor.util.Resources;
+import editor.util.swing.JComboBox;
+import editor.util.swing.JTextFieldLimit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public class GeneralAbilityPanel extends JPanel {
 	private/* final*/ JComboBox<String> dkBox;
 
 	private void initComponents() {
-		setBorder(BorderFactory.createTitledBorder(Strings.getMessage("genAbility.title")));
+		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("genAbility.title")));
 
 		nationBox = new JComboBox<String>(Stats.NATION);
 
@@ -71,33 +72,33 @@ public class GeneralAbilityPanel extends JPanel {
 		fkBox = new JComboBox<String>(Stats.MOD_FK);
 		pkBox = new JComboBox<String>(Stats.MOD_PK);
 
-		add(new JLabel(Strings.getMessage("genAbility.nation")));
+		add(new JLabel(Resources.getMessage("genAbility.nation")));
 		add(nationBox);
-		add(new JLabel(Strings.getMessage("genAbility.age")));
+		add(new JLabel(Resources.getMessage("genAbility.age")));
 		add(ageField);
-		add(new JLabel(Strings.getMessage("genAbility.height")));
+		add(new JLabel(Resources.getMessage("genAbility.height")));
 		add(heightField);
-		add(new JLabel(Strings.getMessage("genAbility.weight")));
+		add(new JLabel(Resources.getMessage("genAbility.weight")));
 		add(weightField);
-		add(new JLabel(Strings.getMessage("genAbility.footSide")));
+		add(new JLabel(Resources.getMessage("genAbility.footSide")));
 		add(footBox);
-		add(new JLabel(Strings.getMessage("genAbility.wfAcc")));
+		add(new JLabel(Resources.getMessage("genAbility.wfAcc")));
 		add(weakFootAccBox);
-		add(new JLabel(Strings.getMessage("genAbility.wfFreq")));
+		add(new JLabel(Resources.getMessage("genAbility.wfFreq")));
 		add(weakFootFreqBox);
-		add(new JLabel(Strings.getMessage("genAbility.cons")));
+		add(new JLabel(Resources.getMessage("genAbility.cons")));
 		add(consistencyBox);
-		add(new JLabel(Strings.getMessage("genAbility.cond")));
+		add(new JLabel(Resources.getMessage("genAbility.cond")));
 		add(conditionBox);
-		add(new JLabel(Strings.getMessage("genAbility.injuryT")));
+		add(new JLabel(Resources.getMessage("genAbility.injuryT")));
 		add(injuryBox);
-		add(new JLabel(Strings.getMessage("genAbility.dribble")));
+		add(new JLabel(Resources.getMessage("genAbility.dribble")));
 		add(dribbleBox);
-		add(new JLabel(Strings.getMessage("genAbility.fk")));
+		add(new JLabel(Resources.getMessage("genAbility.fk")));
 		add(fkBox);
-		add(new JLabel(Strings.getMessage("genAbility.pk")));
+		add(new JLabel(Resources.getMessage("genAbility.pk")));
 		add(pkBox);
-		add(new JLabel(Strings.getMessage("genAbility.dk")));
+		add(new JLabel(Resources.getMessage("genAbility.dk")));
 		add(dkBox);
 	}
 

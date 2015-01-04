@@ -5,6 +5,8 @@ import editor.data.OptionFile;
 import editor.data.Player;
 import editor.ui.*;
 import editor.util.Files;
+import editor.util.swing.DefaultComboBoxModel;
+import editor.util.swing.JComboBox;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -79,7 +81,7 @@ public class FormationPanel extends JPanel
 	private JComboBox<String> altBox;
 	private SquadNumberList numList;
 
-	private JFileChooser chooserPNG = new JFileChooser();
+	private JFileChooser pngChooser = new JFileChooser();
 
 	private int def = 0;
 	private int mid = 0;
@@ -97,9 +99,9 @@ public class FormationPanel extends JPanel
 		of = opf;
 
 		PngFilter pngFilter = new PngFilter();
-		chooserPNG.addChoosableFileFilter(pngFilter);
-		chooserPNG.setAcceptAllFileFilterUsed(false);
-		chooserPNG.setDialogTitle("Save Snapshot");
+		pngChooser.addChoosableFileFilter(pngFilter);
+		pngChooser.setAcceptAllFileFilterUsed(false);
+		pngChooser.setDialogTitle("Save Snapshot");
 
 		JPanel panel = new JPanel(new GridLayout(0, 6));
 		JPanel panel2 = new JPanel(new BorderLayout());
@@ -148,7 +150,7 @@ public class FormationPanel extends JPanel
 			public void actionPerformed(ActionEvent e) {
 				if (e.getActionCommand() == "y") {
 					int si = squadList.getSelectedIndex();
-					Role role = (Role) roleBox.getSelectedItem();
+					Role role = roleBox.getSelectedItem();
 					if (si >= 0 && si < 11 && role.index != -1) {
 						// int a = 670641 + (628 * team) + 6232 + si;
 						int oldRole = Formations.getPosition(of, team, altBox
@@ -760,9 +762,9 @@ public class FormationPanel extends JPanel
 
 	private void savePNG() {
 		boolean error = false;
-		int returnVal = chooserPNG.showSaveDialog(null);
+		int returnVal = pngChooser.showSaveDialog(null);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File dest = chooserPNG.getSelectedFile();
+			File dest = pngChooser.getSelectedFile();
 			dest = Files.addExtension(dest, Files.PNG);
 
 			if (dest.exists()) {

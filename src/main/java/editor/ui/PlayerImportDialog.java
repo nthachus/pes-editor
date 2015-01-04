@@ -5,7 +5,7 @@ import editor.data.OptionFile;
 import editor.data.Player;
 import editor.data.Stat;
 import editor.data.Stats;
-import editor.util.Strings;
+import editor.util.Resources;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -28,7 +28,7 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 	private JRadioButton statsButton;
 
 	public PlayerImportDialog(Frame owner, OptionFile of, OptionFile of2) {
-		super(owner, Strings.getMessage("imPlayer.title"), true);
+		super(owner, Resources.getMessage("imPlayer.title"), true);
 		if (null == of) throw new NullPointerException("of");
 		if (null == of2) throw new NullPointerException("of2");
 		this.of = of;
@@ -38,7 +38,7 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 	}
 
 	private void initComponents() {
-		fileLabel = new JLabel(Strings.getMessage("import.label", ""));
+		fileLabel = new JLabel(Resources.getMessage("import.label", ""));
 
 		playerList = new SelectByTeam(of2, false);
 		playerList.getSquadList().addListSelectionListener(this);
@@ -47,9 +47,9 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 		infoPanel = new InfoPanel(of2);
 		CancelButton cancelButton = new CancelButton(this);
 
-		allButton = new JRadioButton(Strings.getMessage("imPlayer.all"));
-		statsButton = new JRadioButton(Strings.getMessage("imPlayer.stats"));
-		JRadioButton exceptStatsBtn = new JRadioButton(Strings.getMessage("imPlayer.exceptS"));
+		allButton = new JRadioButton(Resources.getMessage("imPlayer.all"));
+		statsButton = new JRadioButton(Resources.getMessage("imPlayer.stats"));
+		JRadioButton exceptStatsBtn = new JRadioButton(Resources.getMessage("imPlayer.exceptS"));
 
 		ButtonGroup importRadio = new ButtonGroup();
 		importRadio.add(allButton);
@@ -84,7 +84,7 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 
 	public void refresh() {
 		playerList.refresh();
-		fileLabel.setText(Strings.getMessage("import.label", of2.getFilename()));
+		fileLabel.setText(Resources.getMessage("import.label", of2.getFilename()));
 		index = 0;
 		replacement = 0;
 	}

@@ -20,21 +20,14 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	private final OptionFile of;
 
 	SquadList list;
-
 	AtkDefPanel adPanel;
 
 	int squad = 0;
-
 	int selected = -1;
-
 	boolean attack = true;
-
 	boolean defence = true;
-
 	boolean numbers = true;
-
 	boolean roleOn = true;
-
 	int adj = 14;
 
 	public static final Color[] COLORS = {
@@ -49,11 +42,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	};
 
 	JComboBox altBox;
-
 	SquadNumberList numList;
 
 	int xadj = 0;
-
 	int yadj = 0;
 
 	public PitchPanel(

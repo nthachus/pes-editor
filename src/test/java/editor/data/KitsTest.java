@@ -1,5 +1,6 @@
 package editor.data;
 
+import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,13 +33,13 @@ public final class KitsTest extends BaseTest {
 		Assert.assertThat(list, Matchers.hasItems(true, false));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testHasLogo() throws Exception {
 		OptionFile of = loadLatestOF();
 
 		List<Boolean> list = new ArrayList<Boolean>();
 		List<Integer> logoList = new ArrayList<Integer>();
+
 		for (int t = 0; t < Kits.TOTAL; t++) {
 			for (int l = 0; l < Kits.TOTAL_LOGO_SLOT; l++) {
 				list.add(Kits.isLogoUsed(of, t, l));
@@ -47,7 +48,10 @@ public final class KitsTest extends BaseTest {
 		}
 
 		Assert.assertThat(list, Matchers.hasItems(true, false));
-		Assert.assertThat(logoList, Matchers.hasItems(Matchers.is(0), Matchers.greaterThan(0)));
+
+		Assert.assertThat(logoList, Matchers.hasItem(0));
+		Matcher<Iterable<? super Integer>> m = Matchers.hasItem(Matchers.greaterThan(0));
+		Assert.assertThat(logoList, m);
 	}
 
 }

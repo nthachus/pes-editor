@@ -1,9 +1,9 @@
 package editor.ui;
 
-import editor.JTextFieldLimit;
 import editor.data.OptionFile;
 import editor.util.Bits;
-import editor.util.Strings;
+import editor.util.Resources;
+import editor.util.swing.JTextFieldLimit;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,12 +29,12 @@ public class WenPanel extends JPanel implements ActionListener {
 		current = new JLabel();
 
 		field = new JTextField(8);
-		field.setToolTipText(Strings.getMessage("wen.tooltip", MAX_WEN));
+		field.setToolTipText(Resources.getMessage("wen.tooltip", MAX_WEN));
 		field.setDocument(new JTextFieldLimit(Integer.toString(MAX_WEN).length()));
 		field.addActionListener(this);
 
 		JPanel contentPane = new JPanel(new GridLayout(0, 1));
-		contentPane.setBorder(BorderFactory.createTitledBorder(Strings.getMessage("wen.title")));
+		contentPane.setBorder(BorderFactory.createTitledBorder(Resources.getMessage("wen.title")));
 		contentPane.add(field);
 		contentPane.add(current);
 
@@ -46,7 +46,7 @@ public class WenPanel extends JPanel implements ActionListener {
 		long wen = Bits.toInt(of.getData(), ALT_ADR, 3);
 		long wen2 = Bits.toInt(of.getData(), START_ADR, 3);
 
-		current.setText(Strings.getMessage("wen.label", wen2, wen));
+		current.setText(Resources.getMessage("wen.label", wen2, wen));
 		field.setText("");
 	}
 
@@ -60,7 +60,8 @@ public class WenPanel extends JPanel implements ActionListener {
 		} else {
 			field.setText("");
 			JOptionPane.showMessageDialog(null,
-					Strings.getMessage("wen.invalid", MAX_WEN), Strings.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
+					Resources.getMessage("wen.invalid", MAX_WEN), Resources.getMessage("Error"),
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -69,7 +70,7 @@ public class WenPanel extends JPanel implements ActionListener {
 			setWen(Integer.parseInt(field.getText()));
 		} catch (NumberFormatException nfe) {
 			JOptionPane.showMessageDialog(null,
-					nfe.getLocalizedMessage(), Strings.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
+					nfe.getLocalizedMessage(), Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

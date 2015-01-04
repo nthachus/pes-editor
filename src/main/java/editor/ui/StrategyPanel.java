@@ -4,7 +4,8 @@ import editor.data.ControlButton;
 import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.data.Player;
-import editor.util.Strings;
+import editor.util.Resources;
+import editor.util.swing.JComboBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,12 +39,12 @@ public class StrategyPanel extends JPanel implements ActionListener {
 	}
 
 	private static String[] getItems() {
-		String s = Strings.getMessage("strategy.items");
+		String s = Resources.getMessage("strategy.items");
 		return s.split("\\s*,\\s*");
 	}
 
 	private void initComponents() {
-		setBorder(BorderFactory.createTitledBorder(Strings.getMessage("strategy.title")));
+		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("strategy.title")));
 
 		String[] items = getItems();
 		for (int i = 0; i < buttonBoxes.length; i++) {
@@ -57,7 +58,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 			buttonBoxes[i].addActionListener(this);
 		}
 
-		autoButton = new JButton(Strings.getMessage("strategy.manual"));
+		autoButton = new JButton(Resources.getMessage("strategy.manual"));
 		autoButton.setPreferredSize(new Dimension(93, 26));
 		autoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -100,7 +101,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 
 		c.gridx = 0;
 		c.gridy = 4;
-		add(new JLabel(Strings.getMessage("strategy.olCB")), c);
+		add(new JLabel(Resources.getMessage("strategy.olCB")), c);
 
 		c.gridwidth = 2;// 1
 		c.gridx = 1;
@@ -114,9 +115,9 @@ public class StrategyPanel extends JPanel implements ActionListener {
 
 		isAuto = !isAuto;
 		if (isAuto) {
-			autoButton.setText(Strings.getMessage("strategy.auto"));
+			autoButton.setText(Resources.getMessage("strategy.auto"));
 		} else {
-			autoButton.setText(Strings.getMessage("strategy.manual"));
+			autoButton.setText(Resources.getMessage("strategy.manual"));
 		}
 		Formations.setStrategyAuto(of, squad, isAuto);
 
@@ -126,7 +127,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 	private void onOverlapCB(ActionEvent evt) {
 		if (!isOk) return;
 
-		SweepItem item = (SweepItem) overlapBox.getSelectedItem();
+		SweepItem item = overlapBox.getSelectedItem();
 		if (null != item) {
 			Formations.setCBOverlap(of, squad, item.index);
 		}
@@ -177,7 +178,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 	private void refreshAutoButton() {
 		if (Formations.getStrategyAuto(of, squad)) {
 			isAuto = true;
-			autoButton.setText(Strings.getMessage("strategy.auto"));
+			autoButton.setText(Resources.getMessage("strategy.auto"));
 
 			for (int i = 0; i < labels.length; i++) {
 				if (i == 0) {
@@ -189,7 +190,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 			}
 		} else {
 			isAuto = false;
-			autoButton.setText(Strings.getMessage("strategy.manual"));
+			autoButton.setText(Resources.getMessage("strategy.manual"));
 
 			for (int i = 0; i < labels.length; i++) {
 				labels[i].setText(null);

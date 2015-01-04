@@ -1,6 +1,6 @@
 package editor.ui;
 
-import editor.util.Strings;
+import editor.util.Resources;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +25,7 @@ public class DefaultIcon implements Icon {
 
 		g2.setFont(new Font(Font.DIALOG, Font.BOLD, 18));
 		g2.setPaint(Color.black);
-		g2.drawString(Strings.getMessage("Default"), 0, 38);
+		g2.drawString(Resources.getMessage("Default"), 0, 38);
 
 		g2.translate(-x, -y);   // restore graphics object
 	}

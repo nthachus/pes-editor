@@ -3,7 +3,7 @@ package editor.ui;
 import editor.FormationPanel;
 import editor.data.Formations;
 import editor.data.OptionFile;
-import editor.util.Strings;
+import editor.util.Resources;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +20,7 @@ public class FormationDialog extends JDialog implements WindowListener {
 	private/* final*/ FormationPanel formationPan;
 
 	public FormationDialog(Frame owner, OptionFile of) {
-		super(owner, Strings.getMessage("formation.title"), true);
+		super(owner, Resources.getMessage("formation.title"), true);
 		if (null == of) throw new NullPointerException("of");
 		this.of = of;
 
@@ -30,14 +30,14 @@ public class FormationDialog extends JDialog implements WindowListener {
 	private void initComponents() {
 		formationPan = new FormationPanel(of);
 
-		JButton acceptButton = new JButton(Strings.getMessage("Accept"));
+		JButton acceptButton = new JButton(Resources.getMessage("Accept"));
 		acceptButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				setVisible(false);
 			}
 		});
 
-		JButton cancelButton = new JButton(Strings.getMessage("Cancel"));
+		JButton cancelButton = new JButton(Resources.getMessage("Cancel"));
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				onCancel(evt);
@@ -61,7 +61,7 @@ public class FormationDialog extends JDialog implements WindowListener {
 
 	public void show(int team, String title) {
 		int adr = Formations.getOffset(team);
-		setTitle(Strings.getMessage("title.format", Strings.getMessage("formation.title"), title));
+		setTitle(Resources.getMessage("title.format", Resources.getMessage("formation.title"), title));
 
 		squadIndex = team;
 		System.arraycopy(of.getData(), adr, original, 0, original.length);

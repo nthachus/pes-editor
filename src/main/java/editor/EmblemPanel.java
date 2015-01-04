@@ -24,46 +24,57 @@ import java.io.IOException;
 
 public class EmblemPanel extends JPanel implements MouseListener {
 	private final OptionFile of;
-	private final EmblemImportDialog flagImpDia;
+	private final EmblemImportDialog flagImportDia;
 	private final TeamPanel teamPanel;
 
-	private JFileChooser chooser = new JFileChooser();
-	private JFileChooser chooserPNG = new JFileChooser();
+	private volatile boolean isTrans = true;
 
-	private JButton[] flagButton;
+	public EmblemPanel(OptionFile of, EmblemImportDialog fid, TeamPanel tp) {
+		super();
+
+		if (null == of) throw new NullPointerException("of");
+		if (null == fid) throw new NullPointerException("fid");
+		if (null == tp) throw new NullPointerException("tp");
+		this.of = of;
+		flagImportDia = fid;
+		teamPanel = tp;
+
+		initComponents();
+
+		refresh();
+	}
+
+	private JFileChooser chooser;
+	private JFileChooser pngChooser;
+	private final JButton[] flagButtons = new JButton[Emblems.TOTAL16];
 	private JButton addButton;
 	private JButton add2Button;
 	private JLabel free16Label;
 	private JLabel free128Label;
 	private JLabel largeFlag;
 
-	private volatile boolean isTrans = true;
-
-	public EmblemPanel(OptionFile opt, EmblemImportDialog fid, TeamPanel tp) {
-		super();
-		of = opt;
-		flagImpDia = fid;
-		teamPanel = tp;
-
+	private void initComponents() {
 		ImageFileFilter filter128 = new ImageFileFilter();
+		chooser = new JFileChooser();
 		chooser.addChoosableFileFilter(filter128);
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setDialogTitle("Import Emblem");
-		PngFilter pngFilter = new PngFilter();
-		chooserPNG.addChoosableFileFilter(pngFilter);
-		chooserPNG.setAcceptAllFileFilterUsed(false);
-		chooserPNG.setDialogTitle("Export Emblem");
-		flagButton = new JButton[Emblems.TOTAL16];
-		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
 
+		PngFilter pngFilter = new PngFilter();
+		pngChooser = new JFileChooser();
+		pngChooser.addChoosableFileFilter(pngFilter);
+		pngChooser.setAcceptAllFileFilterUsed(false);
+		pngChooser.setDialogTitle("Export Emblem");
+
+		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
 		Systems.javaUI();// fix button background color
 		for (int l = 0; l < Emblems.TOTAL16; l++) {
-			flagButton[l] = new JButton();
-			flagButton[l].setBackground(new Color(0xCC, 0xCC, 0xCC));
-			flagButton[l].setMargin(new Insets(0, 0, 0, 0));
-			flagButton[l].setActionCommand(Integer.toString(l));
-			flagButton[l].addMouseListener(this);
-			flagButton[l].addActionListener(new ActionListener() {
+			flagButtons[l] = new JButton();
+			flagButtons[l].setBackground(new Color(0xCC, 0xCC, 0xCC));
+			flagButtons[l].setMargin(new Insets(0, 0, 0, 0));
+			flagButtons[l].setActionCommand(Integer.toString(l));
+			flagButtons[l].addMouseListener(this);
+			flagButtons[l].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent b) {
 					int slot = Integer.parseInt(((JButton) b.getSource()).getActionCommand());
 					ImageIcon icon;
@@ -84,7 +95,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 							"Delete", "Import PNG / GIF",
 							"Export as PNG", "Cancel"
 					};
-					if (flagImpDia.isOf2Loaded()) {
+					if (flagImportDia.isOf2Loaded()) {
 						options = options1;
 					} else {
 						options = options2;
@@ -140,19 +151,19 @@ public class EmblemPanel extends JPanel implements MouseListener {
 					if (n == 2) {
 						savePNG(is128, slot);
 					}
-					if (flagImpDia.isOf2Loaded() && n == 3) {
+					if (flagImportDia.isOf2Loaded() && n == 3) {
 						int replacement;
 						if (is128) {
-							replacement = flagImpDia.getEmblem("Import Emblem", 2);
+							replacement = flagImportDia.getEmblem("Import Emblem", 2);
 							if (replacement != -1) {
-								flagImpDia.import128(of, slot, replacement);
+								flagImportDia.import128(of, slot, replacement);
 							}
 						} else {
-							replacement = flagImpDia
+							replacement = flagImportDia
 									.getEmblem("Import Emblem", 1);
 							if (replacement != -1) {
 								replacement = replacement - Emblems.TOTAL128;
-								flagImpDia.import16(of, slot, replacement);
+								flagImportDia.import16(of, slot, replacement);
 							}
 						}
 
@@ -161,7 +172,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 					}
 				}
 			});
-			flagPanel.add(flagButton[l]);
+			flagPanel.add(flagButtons[l]);
 		}
 		Systems.systemUI();
 
@@ -217,16 +228,16 @@ public class EmblemPanel extends JPanel implements MouseListener {
 			public void actionPerformed(ActionEvent t) {
 				int emblem = -1;
 				if (Emblems.getFree128(of) > 0) {
-					emblem = flagImpDia.getEmblem("Import Emblem", 0);
+					emblem = flagImportDia.getEmblem("Import Emblem", 0);
 				} else if (Emblems.getFree16(of) > 0) {
-					emblem = flagImpDia.getEmblem("Import Emblem", 1);
+					emblem = flagImportDia.getEmblem("Import Emblem", 1);
 				}
 				if (emblem != -1) {
 					if (emblem > Emblems.TOTAL128 - 1) {
 						emblem = emblem - Emblems.TOTAL128;
-						flagImpDia.import16(of, Emblems.count16(of), emblem);
+						flagImportDia.import16(of, Emblems.count16(of), emblem);
 					} else {
-						flagImpDia.import128(of, Emblems.count128(of), emblem);
+						flagImportDia.import128(of, Emblems.count128(of), emblem);
 					}
 					teamPanel.refresh();
 					refresh();
@@ -257,14 +268,13 @@ public class EmblemPanel extends JPanel implements MouseListener {
 		add(pan2);
 		add(largeFlag);
 		add(freePanel);
-		refresh();
 	}
 
 	private void savePNG(boolean is128, int slot) {
 		boolean error = false;
-		int returnVal = chooserPNG.showSaveDialog(null);
+		int returnVal = pngChooser.showSaveDialog(null);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File dest = chooserPNG.getSelectedFile();
+			File dest = pngChooser.getSelectedFile();
 			dest = Files.addExtension(dest, Files.PNG);
 
 			if (dest.exists()) {
@@ -322,21 +332,21 @@ public class EmblemPanel extends JPanel implements MouseListener {
 
 	public void refresh() {
 		for (int i = 0; i < Emblems.count16(of); i++) {
-			flagButton[i].setIcon(new ImageIcon(Emblems.get16(of, i, !isTrans, true)));
-			flagButton[i].setVisible(true);
+			flagButtons[i].setIcon(new ImageIcon(Emblems.get16(of, i, !isTrans, true)));
+			flagButtons[i].setVisible(true);
 		}
 		for (int i = 0; i < Emblems.count128(of); i++) {
-			flagButton[Emblems.TOTAL16 - 1 - i].setIcon(new ImageIcon(Emblems.get128(of, i, !isTrans, true)));
-			flagButton[Emblems.TOTAL16 - 1 - i].setVisible(true);
+			flagButtons[Emblems.TOTAL16 - 1 - i].setIcon(new ImageIcon(Emblems.get128(of, i, !isTrans, true)));
+			flagButtons[Emblems.TOTAL16 - 1 - i].setVisible(true);
 		}
 
 		for (int i = Emblems.count16(of); i < Emblems.TOTAL16 - Emblems.count128(of); i++) {
-			flagButton[i].setVisible(false);
+			flagButtons[i].setVisible(false);
 		}
 		free16Label.setText("16-colour, can stock: " + Emblems.getFree16(of));
 		free128Label
 				.setText("128-colour, can stock: " + Emblems.getFree128(of));
-		if (flagImpDia.isOf2Loaded()) {
+		if (flagImportDia.isOf2Loaded()) {
 			add2Button.setVisible(true);
 		} else {
 			add2Button.setVisible(false);

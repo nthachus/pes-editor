@@ -1,7 +1,7 @@
 package editor.ui;
 
 import editor.util.Images;
-import editor.util.Strings;
+import editor.util.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	private volatile int slot = -1;
 
 	public BackChooserDialog(Frame owner) {
-		super(owner, Strings.getMessage("backFlag.title"), true);
+		super(owner, Resources.getMessage("backFlag.title"), true);
 
 		JPanel flagPanel = new JPanel(new GridLayout(3, 4));
 		for (int i = 0; i < flagButtons.length; i++) {

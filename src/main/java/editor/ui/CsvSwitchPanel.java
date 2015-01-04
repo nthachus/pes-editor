@@ -1,6 +1,6 @@
 package editor.ui;
 
-import editor.util.Strings;
+import editor.util.Resources;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,9 +13,9 @@ public class CsvSwitchPanel extends JPanel {
 	public CsvSwitchPanel() {
 		super(new GridLayout(0, 1));
 
-		head = new JCheckBox(Strings.getMessage("csv.headings"));
-		extra = new JCheckBox(Strings.getMessage("csv.extra"));
-		create = new JCheckBox(Strings.getMessage("csv.create"));
+		head = new JCheckBox(Resources.getMessage("csv.headings"));
+		extra = new JCheckBox(Resources.getMessage("csv.extra"));
+		create = new JCheckBox(Resources.getMessage("csv.create"));
 
 		add(head);
 		add(extra);

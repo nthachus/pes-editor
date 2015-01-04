@@ -2,10 +2,7 @@ package editor.ui;
 
 import editor.data.Logos;
 import editor.data.OptionFile;
-import editor.util.Files;
-import editor.util.Images;
-import editor.util.Strings;
-import editor.util.Systems;
+import editor.util.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -37,7 +34,7 @@ public class LogoPanel extends JPanel {
 	}
 
 	private JFileChooser chooser;
-	private JFileChooser chooserPNG;
+	private JFileChooser pngChooser;
 	private final JButton[] flagButtons = new JButton[Logos.TOTAL];
 
 	private void initComponents() {
@@ -45,13 +42,13 @@ public class LogoPanel extends JPanel {
 		chooser = new JFileChooser();
 		chooser.addChoosableFileFilter(filter);
 		chooser.setAcceptAllFileFilterUsed(false);
-		chooser.setDialogTitle(Strings.getMessage("logo.import"));
+		chooser.setDialogTitle(Resources.getMessage("logo.import"));
 
 		PngFilter pngFilter = new PngFilter();
-		chooserPNG = new JFileChooser();
-		chooserPNG.addChoosableFileFilter(pngFilter);
-		chooserPNG.setAcceptAllFileFilterUsed(false);
-		chooserPNG.setDialogTitle(Strings.getMessage("logo.export"));
+		pngChooser = new JFileChooser();
+		pngChooser.addChoosableFileFilter(pngFilter);
+		pngChooser.setAcceptAllFileFilterUsed(false);
+		pngChooser.setDialogTitle(Resources.getMessage("logo.export"));
 
 		JPanel flagPanel = new JPanel(new GridLayout(8, 10));
 		Systems.javaUI();// fix button background color
@@ -70,7 +67,7 @@ public class LogoPanel extends JPanel {
 		}
 		Systems.systemUI();
 
-		JButton transButton = new JButton(Strings.getMessage("Transparency"));
+		JButton transButton = new JButton(Resources.getMessage("Transparency"));
 		transButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				onTransparency(evt);
@@ -99,7 +96,7 @@ public class LogoPanel extends JPanel {
 
 		Object[] opts = getOptions(logoImportDia.isOf2Loaded());
 		int returnVal = JOptionPane.showOptionDialog(null,
-				Strings.getMessage("logo.title"), Strings.getMessage("logo.label"),
+				Resources.getMessage("logo.title"), Resources.getMessage("logo.label"),
 				JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, icon, opts, opts[0]);
 
 		switch (returnVal) {
@@ -118,7 +115,7 @@ public class LogoPanel extends JPanel {
 	}
 
 	private static Object[] getOptions(boolean of2Loaded) {
-		String s = Strings.getMessage("logo.options");
+		String s = Resources.getMessage("logo.options");
 		String[] opts = s.split("\\s*,\\s*");
 		if (of2Loaded || opts.length < 2)
 			return opts;
@@ -129,7 +126,7 @@ public class LogoPanel extends JPanel {
 	}
 
 	private void importFromOF2(int slot) {
-		logoImportDia.show(slot, Strings.getMessage("logo.import"));
+		logoImportDia.show(slot, Resources.getMessage("logo.import"));
 		refresh(slot);
 	}
 
@@ -151,17 +148,17 @@ public class LogoPanel extends JPanel {
 	}
 
 	private void exportLogo(int slot) {
-		int returnVal = chooserPNG.showSaveDialog(null);
+		int returnVal = pngChooser.showSaveDialog(null);
 		if (returnVal != JFileChooser.APPROVE_OPTION)
 			return;
 
-		File dest = chooserPNG.getSelectedFile();
+		File dest = pngChooser.getSelectedFile();
 		dest = Files.addExtension(dest, Files.PNG);
 
 		if (dest.exists()) {
 			returnVal = JOptionPane.showConfirmDialog(null,
-					Strings.getMessage("msg.overwrite", dest.getName(), dest.getParent()),
-					Strings.getMessage("msg.overwrite.title", dest.getName()),
+					Resources.getMessage("msg.overwrite", dest.getName(), dest.getParent()),
+					Resources.getMessage("msg.overwrite.title", dest.getName()),
 					JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null);
 
 			if (returnVal != JOptionPane.YES_OPTION) {
@@ -181,8 +178,8 @@ public class LogoPanel extends JPanel {
 			ImageIO.write(image, Files.PNG, dest);
 
 			JOptionPane.showMessageDialog(null,
-					Strings.getMessage("msg.saveSuccess", dest.getName(), dest.getParent()),
-					Strings.getMessage("msg.saveSuccess.title"), JOptionPane.INFORMATION_MESSAGE);
+					Resources.getMessage("msg.saveSuccess", dest.getName(), dest.getParent()),
+					Resources.getMessage("msg.saveSuccess.title"), JOptionPane.INFORMATION_MESSAGE);
 		} catch (Exception e) {
 			showAccessFailedMsg(e.getLocalizedMessage());
 		}
@@ -203,20 +200,20 @@ public class LogoPanel extends JPanel {
 		if (null == image) throw new NullPointerException("image");
 
 		if (image.getWidth() != Logos.IMG_SIZE || image.getHeight() != Logos.IMG_SIZE)
-			throw new IllegalArgumentException(Strings.getMessage("msg.invalidSize", Logos.IMG_SIZE, Logos.IMG_SIZE));
+			throw new IllegalArgumentException(Resources.getMessage("msg.invalidSize", Logos.IMG_SIZE, Logos.IMG_SIZE));
 
 		ColorModel colorMod = image.getColorModel();
 		if (null == colorMod || !(colorMod instanceof IndexColorModel))
-			throw new IllegalArgumentException(Strings.getMessage("msg.notIndexed"));
+			throw new IllegalArgumentException(Resources.getMessage("msg.notIndexed"));
 
 		int paletteSize = Images.paletteSize(Logos.BITS_DEPTH);
 		if (((IndexColorModel) colorMod).getMapSize() > paletteSize)
-			throw new IllegalArgumentException(Strings.getMessage("msg.manyColors", paletteSize));
+			throw new IllegalArgumentException(Resources.getMessage("msg.manyColors", paletteSize));
 	}
 
 	private static void showAccessFailedMsg(String msg) {
-		if (Strings.isBlank(msg)) msg = Strings.getMessage("msg.accessFailed");
-		JOptionPane.showMessageDialog(null, msg, Strings.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
+		if (Strings.isBlank(msg)) msg = Resources.getMessage("msg.accessFailed");
+		JOptionPane.showMessageDialog(null, msg, Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
 	}
 
 }

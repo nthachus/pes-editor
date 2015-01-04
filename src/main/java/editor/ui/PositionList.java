@@ -1,6 +1,7 @@
 package editor.ui;
 
 import editor.data.*;
+import editor.util.swing.JList;
 
 import javax.swing.*;
 import java.awt.*;

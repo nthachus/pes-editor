@@ -5,6 +5,7 @@ import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.data.Squads;
 import editor.util.Bits;
+import editor.util.swing.JList;
 
 import javax.swing.*;
 import java.awt.*;

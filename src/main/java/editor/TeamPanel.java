@@ -2,9 +2,10 @@ package editor;
 
 import editor.data.*;
 import editor.ui.*;
-import editor.util.Bits;
 import editor.util.Strings;
 import editor.util.Systems;
+import editor.util.swing.JComboBox;
+import editor.util.swing.JList;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -346,14 +347,6 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				panel3.setVisible(false);
 			}
 		}
-	}
-
-	public int getInt(byte[] b) {
-		int i = 0;
-		if (b.length == 2) {
-			i = (Bits.toInt(b[1]) << 8) | (Bits.toInt(b[0]) & 0xFF);
-		}
-		return i;
 	}
 
 	public void mousePressed(MouseEvent e) {

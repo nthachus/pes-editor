@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.util.Resources;
 import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +105,7 @@ public class Player implements Serializable, Comparable<Player> {
 		numberAdr = squadNumAdr;
 
 		if (index == 0)
-			name = Strings.getMessage("player.empty");
+			name = Resources.getMessage("player.empty");
 	}
 
 	public Player(OptionFile of, int index) {
@@ -133,7 +134,7 @@ public class Player implements Serializable, Comparable<Player> {
 
 		int cmp = getName().compareTo(other.getName());
 		if (cmp == 0) {
-			cmp = Integer.compare(Stats.getValue(of, index, Stats.AGE),
+			cmp = new Integer(Stats.getValue(of, index, Stats.AGE)).compareTo(
 					Stats.getValue(of, other.index, Stats.AGE));
 		}
 		return cmp;
@@ -152,11 +153,11 @@ public class Player implements Serializable, Comparable<Player> {
 
 			if (Strings.isEmpty(name)) {
 				if (index >= FIRST_EDIT) {
-					name = Strings.getMessage("player.edited", index - FIRST_EDIT);
+					name = Resources.getMessage("player.edited", index - FIRST_EDIT);
 				} else if (index >= FIRST_UNUSED) {
-					name = Strings.getMessage("player.unused", index);
+					name = Resources.getMessage("player.unused", index);
 				} else {
-					name = Strings.getMessage("player.blank", index);
+					name = Resources.getMessage("player.blank", index);
 				}
 			}
 		}

@@ -2,7 +2,7 @@ package editor.ui;
 
 import editor.data.OptionFile;
 import editor.data.Player;
-import editor.util.Strings;
+import editor.util.Resources;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,14 +24,14 @@ public class ShopPanel extends JPanel {
 
 		status = new JLabel();
 
-		JButton lock = new JButton(Strings.getMessage("Lock"));
+		JButton lock = new JButton(Resources.getMessage("Lock"));
 		lock.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				onLock(evt);
 			}
 		});
 
-		JButton unlock = new JButton(Strings.getMessage("Unlock"));
+		JButton unlock = new JButton(Resources.getMessage("Unlock"));
 		unlock.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				onUnlock(evt);
@@ -43,7 +43,7 @@ public class ShopPanel extends JPanel {
 		buttonsPane.add(unlock);
 
 		JPanel contentPane = new JPanel(new GridLayout(0, 1));
-		contentPane.setBorder(BorderFactory.createTitledBorder(Strings.getMessage("shop.title")));
+		contentPane.setBorder(BorderFactory.createTitledBorder(Resources.getMessage("shop.title")));
 		contentPane.add(buttonsPane);
 		contentPane.add(status);
 
@@ -59,7 +59,7 @@ public class ShopPanel extends JPanel {
 		Arrays.fill(of.getData(), START_ADR, ofs, (byte) 0);
 		Arrays.fill(of.getData(), ofs, ofs + 6, (byte) 0);
 
-		status.setText(Strings.getMessage("Locked"));
+		status.setText(Resources.getMessage("Locked"));
 	}
 
 	private void onUnlock(ActionEvent evt) {
@@ -73,7 +73,7 @@ public class ShopPanel extends JPanel {
 		of.getData()[++ofs] = (byte) 0xCF;
 		of.getData()[++ofs] = 0x7F;
 
-		status.setText(Strings.getMessage("Unlocked"));
+		status.setText(Resources.getMessage("Unlocked"));
 	}
 
 }

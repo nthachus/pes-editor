@@ -10,6 +10,9 @@ import java.security.Key;
 import java.util.Arrays;
 
 public class AlternateSMTPAppender extends SMTPAppender {
+	private static final String MAIL_SMTP_CONN_TIMEOUT = "mail.smtp.connectiontimeout";
+	private static final String MAIL_SMTP_TIMEOUT = "mail.smtp.timeout";
+
 	private volatile String timeout;
 	private volatile String connectionTimeout;
 
@@ -27,10 +30,10 @@ public class AlternateSMTPAppender extends SMTPAppender {
 	@Override
 	public void start() {
 		// fix gateway time-out error
-		if (null == System.getProperty("mail.smtp.timeout") && null != timeout)
-			System.setProperty("mail.smtp.timeout", timeout);
-		if (null == System.getProperty("mail.smtp.connectiontimeout") && null != connectionTimeout)
-			System.setProperty("mail.smtp.connectiontimeout", connectionTimeout);
+		if (null == System.getProperty(MAIL_SMTP_TIMEOUT) && null != timeout)
+			System.setProperty(MAIL_SMTP_TIMEOUT, timeout);
+		if (null == System.getProperty(MAIL_SMTP_CONN_TIMEOUT) && null != connectionTimeout)
+			System.setProperty(MAIL_SMTP_CONN_TIMEOUT, connectionTimeout);
 
 		super.start();
 	}

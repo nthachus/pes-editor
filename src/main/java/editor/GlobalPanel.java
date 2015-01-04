@@ -2,6 +2,8 @@ package editor;
 
 import editor.data.*;
 import editor.util.Bits;
+import editor.util.swing.DefaultComboBoxModel;
+import editor.util.swing.JComboBox;
 
 import javax.swing.*;
 import java.awt.*;

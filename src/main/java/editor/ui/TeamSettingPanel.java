@@ -2,7 +2,8 @@ package editor.ui;
 
 import editor.data.Formations;
 import editor.data.OptionFile;
-import editor.util.Strings;
+import editor.util.Resources;
+import editor.util.swing.JComboBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +25,7 @@ public class TeamSettingPanel extends JPanel {
 		if (null == of) throw new NullPointerException("of");
 		this.of = of;
 
-		setBorder(BorderFactory.createTitledBorder(Strings.getMessage("setting.title")));
+		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("setting.title")));
 
 		ActionListener listener = new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -44,19 +45,19 @@ public class TeamSettingPanel extends JPanel {
 
 		grid.gridx = 0;
 		grid.gridy = 0;
-		add(new JLabel(Strings.getMessage("Back line")), grid);
+		add(new JLabel(Resources.getMessage("Back line")), grid);
 
 		grid.gridx = 0;
 		grid.gridy = 1;
-		add(new JLabel(Strings.getMessage("Pressure")), grid);
+		add(new JLabel(Resources.getMessage("Pressure")), grid);
 
 		grid.gridx = 2;
 		grid.gridy = 0;
-		add(new JLabel(Strings.getMessage("Offside Trap")), grid);
+		add(new JLabel(Resources.getMessage("Offside Trap")), grid);
 
 		grid.gridx = 2;
 		grid.gridy = 1;
-		add(new JLabel(Strings.getMessage("Counter Attack")), grid);
+		add(new JLabel(Resources.getMessage("Counter Attack")), grid);
 
 		grid.insets = new Insets(0, 1, 0, 10);
 

@@ -4,7 +4,9 @@ import editor.data.Clubs;
 import editor.data.OptionFile;
 import editor.data.Squads;
 import editor.data.Stats;
-import editor.util.Strings;
+import editor.util.Resources;
+import editor.util.swing.DefaultComboBoxModel;
+import editor.util.swing.JComboBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -108,7 +110,7 @@ public class SelectByTeam extends JPanel {
 		System.arraycopy(Squads.EXTRAS, Squads.EXTRA_COUNT, squads, ofs, Squads.EXTRAS.length - Squads.EXTRA_COUNT);
 
 		if (!isNormal) {
-			squads[squads.length - 1] = Strings.getMessage("All Players");
+			squads[squads.length - 1] = Resources.getMessage("All Players");
 		}
 
 		return squads;

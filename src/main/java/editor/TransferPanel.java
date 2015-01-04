@@ -3,6 +3,7 @@ package editor;
 import editor.data.*;
 import editor.ui.*;
 import editor.util.Bits;
+import editor.util.swing.JList;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

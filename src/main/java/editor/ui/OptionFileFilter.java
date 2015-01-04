@@ -3,6 +3,7 @@ package editor.ui;
 import editor.data.OptionFile;
 import editor.util.Bits;
 import editor.util.Files;
+import editor.util.Resources;
 import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public class OptionFileFilter extends FileFilter {
 	}
 
 	public String getDescription() {
-		return Strings.getMessage("of.title");
+		return Resources.getMessage("of.title");
 	}
 
 	private static boolean isEmsOptionFile(File f) {

@@ -2,7 +2,7 @@ package editor.ui;
 
 import editor.data.Logos;
 import editor.data.OptionFile;
-import editor.util.Strings;
+import editor.util.Resources;
 import editor.util.Systems;
 
 import javax.swing.*;
@@ -47,7 +47,7 @@ public class LogoChooserDialog extends JDialog {
 		}
 		Systems.systemUI();
 
-		JButton transButton = new JButton(Strings.getMessage("Transparency"));
+		JButton transButton = new JButton(Resources.getMessage("Transparency"));
 		transButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				onTransparency(evt);

@@ -1,7 +1,7 @@
 package editor.ui;
 
 import editor.util.Files;
-import editor.util.Strings;
+import editor.util.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,7 @@ public class HelpDialog extends JDialog {
 	private final JEditorPane editPanel;
 
 	public HelpDialog(Frame owner) {
-		super(owner, Strings.getMessage("help.title"), false);
+		super(owner, Resources.getMessage("help.title"), false);
 
 		editPanel = new JEditorPane();
 		editPanel.setEditable(false);
@@ -36,7 +36,7 @@ public class HelpDialog extends JDialog {
 		URL helpUrl = getIndexPage();
 		showPage(helpUrl);
 
-		JButton exitButton = new JButton(Strings.getMessage("help.close"));
+		JButton exitButton = new JButton(Resources.getMessage("help.close"));
 		exitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				setVisible(false);
