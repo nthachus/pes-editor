@@ -1,10 +1,7 @@
 package editor;
 
 import editor.data.*;
-import editor.ui.FormationDialog;
-import editor.ui.SelectByNation;
-import editor.ui.SelectByTeam;
-import editor.ui.SquadList;
+import editor.ui.*;
 import editor.util.Bits;
 
 import javax.swing.*;
@@ -489,12 +486,12 @@ public class TransferPanel extends JPanel
 			if (pi != 0) {
 				if (safeMode.isSelected()) {
 					if (inNatSquad(pi)) {
-						playerDia.genPanel.getNationBox().setEnabled(false);
+						playerDia.getGeneralPan().getNationBox().setEnabled(false);
 					} else {
-						playerDia.genPanel.getNationBox().setEnabled(true);
+						playerDia.getGeneralPan().getNationBox().setEnabled(true);
 					}
 				} else {
-					playerDia.genPanel.getNationBox().setEnabled(true);
+					playerDia.getGeneralPan().getNationBox().setEnabled(true);
 				}
 				playerDia.show(p);
 				refreshLists();

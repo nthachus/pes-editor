@@ -53,7 +53,7 @@ public class LogoImportDialog extends JDialog {
 		}
 		Systems.systemUI();
 
-		fileLabel = new JLabel(Strings.getMessage("import.label2", ""));
+		fileLabel = new JLabel(Strings.getMessage("import.label", ""));
 
 		JButton transButton = new JButton(Strings.getMessage("Transparency"));
 		transButton.addActionListener(new ActionListener() {
@@ -97,7 +97,7 @@ public class LogoImportDialog extends JDialog {
 		slot = 0;
 		replacement = 0;
 
-		fileLabel.setText(Strings.getMessage("import.label2", of2.getFilename()));
+		fileLabel.setText(Strings.getMessage("import.label", of2.getFilename()));
 	}
 
 	public void show(int slot, String title) {

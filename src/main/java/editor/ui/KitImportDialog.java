@@ -25,7 +25,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 	}
 
 	private void initComponents() {
-		fileLabel = new JLabel(Strings.getMessage("import.label2", ""));
+		fileLabel = new JLabel(Strings.getMessage("import.label", ""));
 
 		list = new JList<KitItem>();
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -81,7 +81,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 
 		model.trimToSize();
 		list.setModel(model);
-		fileLabel.setText(Strings.getMessage("import.label2", of2.getFilename()));
+		fileLabel.setText(Strings.getMessage("import.label", of2.getFilename()));
 
 		pack();
 	}
