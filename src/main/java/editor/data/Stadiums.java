@@ -14,7 +14,7 @@ public final class Stadiums {
 	public static final int SIZE = NAME_LEN + 1;
 
 	public static final int START_ADR = OptionFile.blockAddress(2);
-	public static final int SWITCH_ADR = START_ADR + SIZE * TOTAL;
+	private static final int SWITCH_ADR = START_ADR + SIZE * TOTAL;
 	public static final int END_ADR = SWITCH_ADR + TOTAL;
 
 	private static int getOffset(int stadium) {

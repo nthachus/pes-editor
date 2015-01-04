@@ -305,7 +305,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 	}
 
 	public void valueChanged(ListSelectionEvent e) {
-		if (ok && e.getValueIsAdjusting() == false) {
+		if (ok && !e.getValueIsAdjusting()) {
 			int i = list.getSelectedIndex();
 			if (i >= 0 && i < Clubs.TOTAL) {
 				if (!panel3.isVisible()) {

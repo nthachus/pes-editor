@@ -12,9 +12,9 @@ public final class Squads {
 	public static final int CLASSIC_COUNT = 7;
 
 	public static final int NATION_NUM_ADR = OptionFile.blockAddress(5);
-	public static final int FIRST_CLUB_SLOT = (NATION_COUNT + CLASSIC_COUNT) * Formations.NATION_TEAM_SIZE
+	private static final int FIRST_CLUB_SLOT = (NATION_COUNT + CLASSIC_COUNT) * Formations.NATION_TEAM_SIZE
 			+ Player.TOTAL_EDIT;
-	public static final int TOTAL_SLOTS = FIRST_CLUB_SLOT + (Clubs.TOTAL + 1) * Formations.CLUB_TEAM_SIZE
+	private static final int TOTAL_SLOTS = FIRST_CLUB_SLOT + (Clubs.TOTAL + 1) * Formations.CLUB_TEAM_SIZE
 			+ Player.TOTAL_SHOP;
 	public static final int NATION_ADR = NATION_NUM_ADR + TOTAL_SLOTS + 97;
 

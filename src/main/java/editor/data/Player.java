@@ -15,7 +15,7 @@ public class Player implements Serializable, Comparable<Player> {
 
 	//region Constants
 
-	public static final int TOTAL_CLUB_PLAYERS = 3042;
+	private static final int TOTAL_CLUB_PLAYERS = 3042;
 
 	/**
 	 * The first ID of Classic players.
@@ -128,6 +128,7 @@ public class Player implements Serializable, Comparable<Player> {
 		return getName();
 	}
 
+	@SuppressWarnings("NullableProblems")
 	public int compareTo(Player other) {
 		if (null == other)
 			return 1;

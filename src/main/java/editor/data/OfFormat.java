@@ -16,7 +16,7 @@ public enum OfFormat {
 	 */
 	arMax;
 
-	public static String[] EXTENSIONS = {Files.XPS, Files.PSU, Files.MAX};
+	private static final String[] EXTENSIONS = {Files.XPS, Files.PSU, Files.MAX};
 
 	@Override
 	public String toString() {

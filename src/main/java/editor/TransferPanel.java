@@ -615,13 +615,11 @@ public class TransferPanel extends JPanel
 	}
 
 	private boolean inNatSquad(int pi) {
-		boolean in = false;
-		for (int i = 0; in == false && i < 67; i++) {
-			if (inSquad(i, pi)) {
-				in = true;
-			}
+		for (int i = 0; i < 67; i++) {
+			if (inSquad(i, pi))
+				return true;
 		}
-		return in;
+		return false;
 	}
 
 	private boolean inSquad(int squad, int pi) {
@@ -814,16 +812,11 @@ public class TransferPanel extends JPanel
 		}
 
 		public boolean isDataFlavorSupported(DataFlavor flavor) {
-			if (localPlayerFlavor.equals(flavor)) {
-				return true;
-			}
-			return false;
+			return localPlayerFlavor.equals(flavor);
 		}
 	}
 
-	private boolean checkSafeDrag(
-			boolean safe, JList targetList,
-			Player targetPlayer) {
+	private boolean checkSafeDrag(boolean safe, JList targetList, Player targetPlayer) {
 		boolean tranFL = true;
 		boolean tranFR = true;
 		boolean tranLR = true;

@@ -129,7 +129,7 @@ public class PlayerDialog extends JDialog {
 
 		int regRole = 0;
 		for (int i = 0; i < Stats.ROLES.length; i++) {
-			if (Stats.ROLES[i].getName().equalsIgnoreCase((String) positionPan.getRegBox().getSelectedItem())) {
+			if (Stats.ROLES[i].getName().equalsIgnoreCase(positionPan.getRegBox().getSelectedItem())) {
 				regRole = i;
 				break;
 			}
@@ -144,29 +144,29 @@ public class PlayerDialog extends JDialog {
 		Stats.setValue(of, index, Stats.FOOT, foot);
 		Stats.setValue(of, index, Stats.FAVORITE_SIDE, side);
 
-		Stats.setValue(of, index, Stats.WEAK_FOOT_ACC, (String) generalPan.getWeakFootAccBox().getSelectedItem());
-		Stats.setValue(of, index, Stats.WEAK_FOOT_FREQ, (String) generalPan.getWeakFootFreqBox().getSelectedItem());
+		Stats.setValue(of, index, Stats.WEAK_FOOT_ACC, generalPan.getWeakFootAccBox().getSelectedItem());
+		Stats.setValue(of, index, Stats.WEAK_FOOT_FREQ, generalPan.getWeakFootFreqBox().getSelectedItem());
 
 		for (int i = 0; i < Stats.ABILITY99.length; i++) {
 			Stats.setValue(of, index, Stats.ABILITY99[i], abilityPan.getField(i).getText());
 		}
 
-		Stats.setValue(of, index, Stats.CONSISTENCY, (String) generalPan.getConsistencyBox().getSelectedItem());
-		Stats.setValue(of, index, Stats.CONDITION, (String) generalPan.getConditionBox().getSelectedItem());
+		Stats.setValue(of, index, Stats.CONSISTENCY, generalPan.getConsistencyBox().getSelectedItem());
+		Stats.setValue(of, index, Stats.CONDITION, generalPan.getConditionBox().getSelectedItem());
 
 		for (int i = 0; i < Stats.ABILITY_SPECIAL.length; i++) {
 			Stats.setValue(of, index, Stats.ABILITY_SPECIAL[i],
 					Bits.toByte(specialPan.getAbilityCheck(i).isSelected()));
 		}
 
-		Stats.setValue(of, index, Stats.INJURY, (String) generalPan.getInjuryBox().getSelectedItem());
-		Stats.setValue(of, index, Stats.FREE_KICK, (String) generalPan.getFreeKickBox().getSelectedItem());
-		Stats.setValue(of, index, Stats.PK_STYLE, (String) generalPan.getPenaltyBox().getSelectedItem());
+		Stats.setValue(of, index, Stats.INJURY, generalPan.getInjuryBox().getSelectedItem());
+		Stats.setValue(of, index, Stats.FREE_KICK, generalPan.getFreeKickBox().getSelectedItem());
+		Stats.setValue(of, index, Stats.PK_STYLE, generalPan.getPenaltyBox().getSelectedItem());
 		Stats.setValue(of, index, Stats.AGE, generalPan.getAgeField().getText());
 		Stats.setValue(of, index, Stats.WEIGHT, generalPan.getWeightField().getText());
-		Stats.setValue(of, index, Stats.NATIONALITY, (String) generalPan.getNationBox().getSelectedItem());
-		Stats.setValue(of, index, Stats.DRIBBLE_STYLE, (String) generalPan.getDribbleBox().getSelectedItem());
-		Stats.setValue(of, index, Stats.DK_STYLE, (String) generalPan.getDropKickBox().getSelectedItem());
+		Stats.setValue(of, index, Stats.NATIONALITY, generalPan.getNationBox().getSelectedItem());
+		Stats.setValue(of, index, Stats.DRIBBLE_STYLE, generalPan.getDribbleBox().getSelectedItem());
+		Stats.setValue(of, index, Stats.DK_STYLE, generalPan.getDropKickBox().getSelectedItem());
 
 		Stats.setValue(of, index, Stats.ABILITY_EDITED, 1);
 	}

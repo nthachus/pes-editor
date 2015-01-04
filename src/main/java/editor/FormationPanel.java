@@ -957,10 +957,7 @@ public class FormationPanel extends JPanel
 		}
 
 		public boolean isDataFlavorSupported(DataFlavor flavor) {
-			if (localPlayerFlavor.equals(flavor)) {
-				return true;
-			}
-			return false;
+			return localPlayerFlavor.equals(flavor);
 		}
 	}
 
