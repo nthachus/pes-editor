@@ -32,7 +32,7 @@ public class CopySwapIcon implements Icon {
 
 		g2.translate(x, y);
 
-		g2.setPaint(Color.black);
+		g2.setPaint(Color.BLACK);
 		g2.draw(new Line2D.Double(5, 0, 5, 20));
 
 		g2.draw(new Line2D.Double(5, 20, 0, 15));

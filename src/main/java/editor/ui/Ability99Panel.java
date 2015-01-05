@@ -128,7 +128,7 @@ public class Ability99Panel extends JPanel
 		if (null == tf) throw new IllegalArgumentException("evt");
 
 		String text = tf.getText();
-		Color bg = Color.white;
+		Color bg = Color.WHITE;
 
 		if (!Strings.isEmpty(text)) {
 			try {
@@ -137,11 +137,11 @@ public class Ability99Panel extends JPanel
 				if (v >= 75 && v < 80) {
 					bg = new Color(183, 255, 0);
 				} else if (v >= 80 && v < 90) {
-					bg = Color.yellow;
+					bg = Color.YELLOW;
 				} else if (v >= 90 && v < 95) {
-					bg = Color.orange;
+					bg = Color.ORANGE;
 				} else if (v >= 80 && v <= MAX_VAL) {
-					bg = Color.red;
+					bg = Color.RED;
 				}
 			} catch (NumberFormatException nfe) {
 				log.info(nfe.toString());

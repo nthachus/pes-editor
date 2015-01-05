@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 
 public class TeamSettingPanel extends JPanel {
 	private static final String[] ITEMS3 = {"A", "B", "C"};
-	private final JComboBox[] boxes = new JComboBox[4];
 
 	private final OptionFile of;
 
@@ -20,11 +19,17 @@ public class TeamSettingPanel extends JPanel {
 	private volatile int squad = 0;
 	private volatile boolean isOk = false;
 
+	private final JComboBox[] boxes = new JComboBox[Formations.SETTING_COUNT];
+
 	public TeamSettingPanel(OptionFile of) {
 		super(new GridBagLayout());
 		if (null == of) throw new NullPointerException("of");
 		this.of = of;
 
+		initComponents();
+	}
+
+	private void initComponents() {
 		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("setting.title")));
 
 		ActionListener listener = new ActionListener() {
@@ -39,7 +44,6 @@ public class TeamSettingPanel extends JPanel {
 		}
 
 		GridBagConstraints grid = new GridBagConstraints();
-
 		grid.anchor = GridBagConstraints.EAST;
 		grid.insets = new Insets(0, 10, 0, 1);
 
@@ -83,7 +87,7 @@ public class TeamSettingPanel extends JPanel {
 
 		if (isOk) {
 			int i = Integer.parseInt(evt.getActionCommand());
-			Formations.setTeam(of, squad, alt, i, boxes[i].getSelectedIndex());
+			Formations.setTeamSetting(of, squad, alt, i, boxes[i].getSelectedIndex());
 		}
 	}
 
@@ -96,7 +100,7 @@ public class TeamSettingPanel extends JPanel {
 		isOk = false;
 
 		for (int i = 0; i < boxes.length; i++) {
-			boxes[i].setSelectedIndex(Formations.getTeam(of, squad, alt, i));
+			boxes[i].setSelectedIndex(Formations.getTeamSetting(of, squad, alt, i));
 		}
 
 		isOk = true;

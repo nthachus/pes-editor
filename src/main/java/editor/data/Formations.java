@@ -21,6 +21,28 @@ public final class Formations {
 	//region Constants
 
 	public static final int JOBS_COUNT = 6;
+	public static final int SETTING_COUNT = 4;
+
+	public static final String[] ALT_ITEMS = {
+			"Normal",
+			"Strategy Plan A",
+			"Strategy Plan B"
+	};
+
+	public static final String[] FORM_NAMES = {
+			"4-4-2",
+			"4-3-1-2",
+			"4-4-1-1",
+			"4-2-1-3",
+			"4-5-1",
+			"4-1-2-3",
+			"4-3-3",
+			"4-3-2-1",
+			"3-4-1-2",
+			"3-3-2-2",
+			"3-4-3",
+			"5-4-1"
+	};
 
 	//endregion
 
@@ -30,7 +52,7 @@ public final class Formations {
 	}
 
 	private static int getAltOffset(int squad, int alt) {
-		// TODO: validate alt
+		if (alt < 0 || alt >= ALT_ITEMS.length) throw new IndexOutOfBoundsException("alt");
 		return getOffset(squad) + alt * ALT_SIZE;
 	}
 
@@ -54,7 +76,7 @@ public final class Formations {
 	}
 
 	private static int getSlotOffset(int squad, int index) {
-		// TODO: validate index
+		if (index < 0 || index >= CLUB_TEAM_SIZE) throw new IndexOutOfBoundsException("index");
 		return getOffset(squad) + 6 + index;
 	}
 
@@ -92,12 +114,12 @@ public final class Formations {
 	}
 
 	private static int getXOffset(int squad, int alt, int index) {
-		// TODO: validate index
+		if (index <= 0 || index >= 11) throw new IndexOutOfBoundsException("index");
 		return getAltOffset(squad, alt) + 118 + (index - 1) * 2;
 	}
 
 	private static int getYOffset(int squad, int alt, int index) {
-		// TODO: validate index
+		if (index <= 0 || index >= 11) throw new IndexOutOfBoundsException("index");
 		return getAltOffset(squad, alt) + 119 + (index - 1) * 2;
 	}
 
@@ -130,7 +152,7 @@ public final class Formations {
 	}
 
 	private static int getAtkOffset(int squad, int alt, int index) {
-		// TODO: validate index
+		if (index < 0 || index >= 11) throw new IndexOutOfBoundsException("index");
 		return getAltOffset(squad, alt) + 149 + index;
 	}
 
@@ -157,7 +179,7 @@ public final class Formations {
 	}
 
 	private static int getDefOffset(int squad, int alt, int index) {
-		// TODO: validate index
+		if (index < 0 || index >= 11) throw new IndexOutOfBoundsException("index");
 		return getAltOffset(squad, alt) + 160 + index;
 	}
 
@@ -176,7 +198,7 @@ public final class Formations {
 	}
 
 	private static int getStrategyOffset(int squad, int button) {
-		// TODO: validate button
+		if (button < 0 || button >= ControlButton.size()) throw new IndexOutOfBoundsException("button");
 		return getOffset(squad) + 102 + button;
 	}
 
@@ -233,23 +255,89 @@ public final class Formations {
 		of.getData()[adr] = Bits.toByte(auto);
 	}
 
-	private static int getTeamOffset(int squad, int alt, int set) {
-		// TODO: validate set
-		return getAltOffset(squad, alt) + 194 + set;
+	private static int getTeamSetOffset(int squad, int alt, int setting) {
+		if (setting < 0 || setting >= SETTING_COUNT) throw new IndexOutOfBoundsException("setting");
+		return getAltOffset(squad, alt) + 194 + setting;
 	}
 
-	public static int getTeam(OptionFile of, int squad, int alt, int set) {
+	public static int getTeamSetting(OptionFile of, int squad, int alt, int setting) {
 		if (null == of) throw new NullPointerException("of");
 
-		int adr = getTeamOffset(squad, alt, set);
+		int adr = getTeamSetOffset(squad, alt, setting);
 		return Bits.toInt(of.getData()[adr]);
 	}
 
-	public static void setTeam(OptionFile of, int squad, int alt, int set, int value) {
+	public static void setTeamSetting(OptionFile of, int squad, int alt, int setting, int value) {
 		if (null == of) throw new NullPointerException("of");
 
-		int adr = getTeamOffset(squad, alt, set);
+		int adr = getTeamSetOffset(squad, alt, setting);
 		of.getData()[adr] = Bits.toByte(value);
+	}
+
+	public static Stat positionToStat(int pos) {
+		if (pos <= 0) {
+			return Stats.GK;
+		} else if (pos < 4 || (pos > 5 && pos < 8)) {
+			return Stats.CBT;
+		} else if (pos == 4 || pos == 5) {
+			return Stats.CWP;
+		} else if (pos == 8 || pos == 9) {
+			return Stats.SB;
+		} else if (pos < 15) {
+			return Stats.DM;
+		} else if (pos == 15 || pos == 16) {
+			return Stats.WB;
+		} else if (pos < 22) {
+			return Stats.CM;
+		} else if (pos == 22 || pos == 23) {
+			return Stats.SM;
+		} else if (pos < 29) {
+			return Stats.AM;
+		} else if (pos == 29 || pos == 30) {
+			return Stats.WG;
+		} else if (pos < 36) {
+			return Stats.SS;
+		} else if (pos < 41) {
+			return Stats.CF;
+		}
+		return Stats.GK;
+	}
+
+	public static String positionToString(int pos) {
+		if (pos <= 0) {
+			return "GK";
+		} else if (pos < 4 || (pos > 5 && pos < 8)) {
+			return "CB";
+		} else if (pos == 4 || pos == 5) {
+			return "SW";
+		} else if (pos == 8) {
+			return "LB";
+		} else if (pos == 9) {
+			return "RB";
+		} else if (pos < 15) {
+			return "DMF";
+		} else if (pos == 15) {
+			return "LWB";
+		} else if (pos == 16) {
+			return "RWB";
+		} else if (pos < 22) {
+			return "CMF";
+		} else if (pos == 22) {
+			return "LMF";
+		} else if (pos == 23) {
+			return "RMF";
+		} else if (pos < 29) {
+			return "AMF";
+		} else if (pos == 29) {
+			return "LWF";
+		} else if (pos == 30) {
+			return "RWF";
+		} else if (pos < 36) {
+			return "SS";
+		} else if (pos < 41) {
+			return "CF";
+		}
+		return Integer.toString(pos);
 	}
 
 }

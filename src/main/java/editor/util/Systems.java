@@ -1,9 +1,15 @@
 package editor.util;
 
+import editor.util.swing.IndexColorComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -30,6 +36,47 @@ public final class Systems {
 		} catch (Exception e) {
 			log.warn(e.toString());
 		}
+	}
+
+	public static boolean saveComponentAsImage(Component comp, File out) {
+		if (null == comp) throw new NullPointerException("comp");
+		if (null == out) throw new NullPointerException("out");
+		if (!(comp instanceof IndexColorComponent)) throw new IllegalArgumentException("comp");
+
+		Graphics2D g2 = null;
+		try {
+			Color[] palette = ((IndexColorComponent) comp).getPalette();
+			int bpp = (int) Math.ceil(Math.log(palette.length) / Math.log(2));
+			int palSize = (1 << bpp);
+
+			byte[] red = new byte[palSize];
+			byte[] green = new byte[palSize];
+			byte[] blue = new byte[palSize];
+			byte[] alpha = new byte[palSize];
+
+			for (int i = 0; i < palette.length; i++) {
+				red[i] = (byte) palette[i].getRed();
+				green[i] = (byte) palette[i].getGreen();
+				blue[i] = (byte) palette[i].getBlue();
+				alpha[i] = (byte) palette[i].getAlpha();
+			}
+
+			Dimension size = comp.getSize();
+			IndexColorModel colMod = new IndexColorModel(bpp, palSize, red, green, blue, alpha);
+			BufferedImage image = new BufferedImage(size.width, size.height, BufferedImage.TYPE_BYTE_INDEXED, colMod);
+
+			g2 = image.createGraphics();
+			comp.paint(g2);
+
+			return ImageIO.write(image, Files.getExtension(out).toLowerCase(), out);
+
+		} catch (Exception e) {
+			log.error("", e);
+		} finally {
+			if (null != g2) g2.dispose();
+		}
+
+		return false;
 	}
 
 	public static <T> List<T> readFields(

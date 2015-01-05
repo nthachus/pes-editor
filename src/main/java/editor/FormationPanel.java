@@ -5,10 +5,10 @@ import editor.data.OptionFile;
 import editor.data.Player;
 import editor.ui.*;
 import editor.util.Files;
+import editor.util.Systems;
 import editor.util.swing.DefaultComboBoxModel;
 import editor.util.swing.JComboBox;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -19,27 +19,10 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.awt.image.IndexColorModel;
 import java.io.File;
 
 public class FormationPanel extends JPanel
 		implements ListSelectionListener, DropTargetListener, DragSourceListener, DragGestureListener {
-
-	private final OptionFile of;
-
-	private int team;
-
-	private SquadList squadList;
-	private PositionList posList;
-
-	private JobList sFK;
-	private JobList lFK;
-	private JobList rCR;
-	private JobList lCR;
-	private JobList pk;
-	private JobList cap;
-
 	private static final byte[] formData = {
 			9, 63, 9, 41, 12, 87, 12, 17, 26,
 			77, 26, 61, 26, 43, 26, 27, 43, 66, 43, 38, 0, 7, 1, 9, 8, 20, 21,
@@ -69,35 +52,46 @@ public class FormationPanel extends JPanel
 			"3-4-3", "5-4-1"
 	};
 
+	private final OptionFile of;
+	private final DataFlavor localPlayerFlavor = Player.getDataFlavor();
+
+	private volatile int def = 0;
+	private volatile int mid = 0;
+	private volatile int mid2 = 0;
+	private volatile int att = 0;
+
+	private volatile int team;
+	private volatile int sourceIndex = -1;
+	private volatile boolean isOk = false;
+	private volatile boolean isFromPitch = false;
+
+	public FormationPanel(OptionFile of) {
+		super();
+		if (null == of) throw new NullPointerException("of");
+		this.of = of;
+
+		initComponents();
+	}
+
+	private SquadList squadList;
+	private PositionList posList;
+	private JobList sFK;
+	private JobList lFK;
+	private JobList rCR;
+	private JobList lCR;
+	private JobList pk;
+	private JobList cap;
 	private JComboBox<String> formBox;
-
-	private boolean ok = false;
 	private PitchPanel pitchPanel;
-
-	static boolean fromPitch = false;
-
 	private AtkDefPanel adPanel;
 	private JComboBox<Role> roleBox;
 	private JComboBox<String> altBox;
 	private SquadNumberList numList;
-
 	private JFileChooser pngChooser = new JFileChooser();
+	private TeamSettingPanel teamSettingPan;
+	private StrategyPanel strategyPan;
 
-	private int def = 0;
-	private int mid = 0;
-	private int mid2 = 0;
-	private int att = 0;
-
-	private TeamSettingPanel teamSetPan;
-	private StrategyPanel stratPan;
-
-	private final DataFlavor localPlayerFlavor = Player.getDataFlavor();
-	private int sourceIndex = -1;
-
-	public FormationPanel(OptionFile opf) {
-		super();
-		of = opf;
-
+	private void initComponents() {
 		PngFilter pngFilter = new PngFilter();
 		pngChooser.addChoosableFileFilter(pngFilter);
 		pngChooser.setAcceptAllFileFilterUsed(false);
@@ -110,8 +104,7 @@ public class FormationPanel extends JPanel
 
 		numList = new SquadNumberList(of);
 
-		String[] items = {"Normal", "Strategy Plan A", "Strategy Plan B"};
-		altBox = new JComboBox<String>(items);
+		altBox = new JComboBox<String>(Formations.ALT_ITEMS);
 		altBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (e.getActionCommand() == "y") {
@@ -120,8 +113,8 @@ public class FormationPanel extends JPanel
 					posList.refresh(team);
 					// squadList.refresh(team);
 					updateRoleBox();
-					teamSetPan.setAlt(altBox.getSelectedIndex());
-					teamSetPan.refresh(team);
+					teamSettingPan.setAlt(altBox.getSelectedIndex());
+					teamSettingPan.refresh(team);
 					pitchPanel.repaint();
 					adPanel.repaint();
 				}
@@ -266,8 +259,8 @@ public class FormationPanel extends JPanel
 						updateRoleBox();
 
 						posList.refresh(team);
-						teamSetPan.refresh(team);
-						stratPan.refresh(team);
+						teamSettingPan.refresh(team);
+						strategyPan.refresh(team);
 						pitchPanel.repaint();
 						adPanel.repaint();
 					}
@@ -289,24 +282,24 @@ public class FormationPanel extends JPanel
 				DnDConstants.ACTION_MOVE, this);
 
 		posList = new PositionList(of, false);
-		teamSetPan = new TeamSettingPanel(of);
-		stratPan = new StrategyPanel(of, squadList);
+		teamSettingPan = new TeamSettingPanel(of);
+		strategyPan = new StrategyPanel(of, squadList);
 
 		adPanel = new AtkDefPanel(of, altBox);
-		pitchPanel = new PitchPanel(of, squadList, adPanel, altBox, numList);
+		pitchPanel = new PitchPanel(of, this, squadList, adPanel, altBox, numList);
 		adPanel.setPitch(pitchPanel);
 
-		lFK = new JobList(of, 0, " F-L ", Color.yellow);
+		lFK = new JobList(of, 0, " F-L ", Color.YELLOW);
 		lFK.setToolTipText("Long free kick");
-		sFK = new JobList(of, 1, " F-S ", Color.yellow);
+		sFK = new JobList(of, 1, " F-S ", Color.YELLOW);
 		sFK.setToolTipText("Short free kick");
-		lCR = new JobList(of, 2, " C-L ", Color.cyan);
+		lCR = new JobList(of, 2, " C-L ", Color.CYAN);
 		lCR.setToolTipText("Left corner");
-		rCR = new JobList(of, 3, " C-R", Color.cyan);
+		rCR = new JobList(of, 3, " C-R", Color.CYAN);
 		rCR.setToolTipText("Right corner");
-		pk = new JobList(of, 4, " PK ", Color.green);
+		pk = new JobList(of, 4, " PK ", Color.GREEN);
 		pk.setToolTipText("Penalty");
-		cap = new JobList(of, 5, " C ", Color.red);
+		cap = new JobList(of, 5, " C ", Color.RED);
 		cap.setToolTipText("Captain");
 		formBox = new JComboBox<String>();
 		formBox.addActionListener(new ActionListener() {
@@ -361,8 +354,8 @@ public class FormationPanel extends JPanel
 					}
 					// countForm();
 					posList.refresh(team);
-					stratPan.refresh(team);
-					teamSetPan.refresh(team);
+					strategyPan.refresh(team);
+					teamSettingPan.refresh(team);
 					pitchPanel.repaint();
 					adPanel.repaint();
 					updateRoleBox();
@@ -407,15 +400,19 @@ public class FormationPanel extends JPanel
 		topPanel.add(snapButton);
 
 		JPanel botPan = new JPanel(new BorderLayout());
-		botPan.add(teamSetPan, BorderLayout.NORTH);
+		botPan.add(teamSettingPan, BorderLayout.NORTH);
 		botPan.add(pitchPanel, BorderLayout.CENTER);
 		botPan.add(setPanel, BorderLayout.SOUTH);
 
 		panelR.add(topPanel, BorderLayout.NORTH);
 		panelR.add(botPan, BorderLayout.CENTER);
-		panelR.add(stratPan, BorderLayout.SOUTH);
+		panelR.add(strategyPan, BorderLayout.SOUTH);
 		add(panel3);
 		add(panelR);
+	}
+
+	public void setFromPitch(boolean isFromPitch) {
+		this.isFromPitch = isFromPitch;
 	}
 
 	public void refresh(int t) {
@@ -424,9 +421,9 @@ public class FormationPanel extends JPanel
 		altBox.setSelectedIndex(0);
 		altBox.setActionCommand("y");
 		// countForm();
-		ok = false;
+		isOk = false;
 		squadList.refresh(t, false);
-		ok = true;
+		isOk = true;
 		int tt = t;
 		if (t > 66) {
 			tt = t + 8;
@@ -441,11 +438,11 @@ public class FormationPanel extends JPanel
 		lCR.refresh(t);
 		pk.refresh(t);
 		cap.refresh(t);
-		teamSetPan.setAlt(altBox.getSelectedIndex());
-		teamSetPan.refresh(t);
-		stratPan.refresh(t);
-		pitchPanel.selected = -1;
-		pitchPanel.squad = t;
+		teamSettingPan.setAlt(altBox.getSelectedIndex());
+		teamSettingPan.refresh(t);
+		strategyPan.refresh(t);
+		pitchPanel.setSelectedIndex(-1);
+		pitchPanel.setSquad(t);
 		pitchPanel.repaint();
 		adPanel.setSelectedIndex(-1);
 		adPanel.setSquad(t);
@@ -453,18 +450,18 @@ public class FormationPanel extends JPanel
 	}
 
 	public void valueChanged(ListSelectionEvent e) {
-		if (fromPitch) {
-			fromPitch = false;
+		if (isFromPitch) {
+			isFromPitch = false;
 			updateRoleBox();
 		} else {
-			if (!e.getValueIsAdjusting() && ok) {
+			if (!e.getValueIsAdjusting() && isOk) {
 				int i = squadList.getSelectedIndex();
 				updateRoleBox();
 				if (i >= 0 && i < 11) {
-					pitchPanel.selected = i;
+					pitchPanel.setSelectedIndex(i);
 					adPanel.setSelectedIndex(i);
 				} else {
-					pitchPanel.selected = -1;
+					pitchPanel.setSelectedIndex(-1);
 					adPanel.setSelectedIndex(-1);
 				}
 				pitchPanel.repaint();
@@ -472,31 +469,6 @@ public class FormationPanel extends JPanel
 				// posList.selectPos(squadList, i);
 			}
 		}
-	}
-
-	public boolean saveComponentAsPNG(Component comp, File dest) {
-		boolean done = false;
-		Dimension size = comp.getSize();
-		byte[] red = new byte[8];
-		byte[] green = new byte[8];
-		byte[] blue = new byte[8];
-		for (int i = 0; i < 8; i++) {
-			red[i] = (byte) PitchPanel.COLORS[i].getRed();
-			green[i] = (byte) PitchPanel.COLORS[i].getGreen();
-			blue[i] = (byte) PitchPanel.COLORS[i].getBlue();
-		}
-		IndexColorModel colMod = new IndexColorModel(8, 8, red, green, blue);
-		BufferedImage image = new BufferedImage(size.width, size.height,
-				BufferedImage.TYPE_BYTE_INDEXED, colMod);
-		Graphics2D g2 = image.createGraphics();
-		comp.paint(g2);
-		try {
-			ImageIO.write(image, "png", dest);
-			done = true;
-		} catch (Exception e) {
-			// System.out.println(e);
-		}
-		return done;
 	}
 
 	private void updateRoleBox() {
@@ -789,7 +761,7 @@ public class FormationPanel extends JPanel
 
 			// System.out.println(dest);
 			// System.out.println(slotChooser.slot);
-			if (saveComponentAsPNG(pitchPanel, dest)) {
+			if (Systems.saveComponentAsImage(pitchPanel, dest)) {
 				JOptionPane.showMessageDialog(null, dest.getName()
 						+ "\nSaved in:\n" + dest.getParent(),
 						"File Successfully Saved",
@@ -870,18 +842,18 @@ public class FormationPanel extends JPanel
 				pk.refresh(team);
 				cap.refresh(team);
 			}
-			ok = false;
+			isOk = false;
 			int tt = team;
 			if (team > 66) {
 				tt = team + 8;
 			}
 			numList.refresh(tt);
 			squadList.refresh(team, false);
-			teamSetPan.refresh(team);
-			stratPan.refresh(team);
+			teamSettingPan.refresh(team);
+			strategyPan.refresh(team);
 			pitchPanel.repaint();
 			// ti = -1;
-			ok = true;
+			isOk = true;
 			event.getDropTargetContext().dropComplete(true);
 		} else {
 			event.rejectDrop();
@@ -901,7 +873,7 @@ public class FormationPanel extends JPanel
 			roleBox.removeAllItems();
 			roleBox.setEnabled(false);
 			roleBox.setActionCommand("y");
-			pitchPanel.selected = -1;
+			pitchPanel.setSelectedIndex(-1);
 			adPanel.setSelectedIndex(-1);
 			pitchPanel.repaint();
 			adPanel.repaint();

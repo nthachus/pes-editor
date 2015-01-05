@@ -55,7 +55,7 @@ public final class Editor extends JFrame {
 	public Editor() {
 		super(Resources.getMessage("editor.title"));
 
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		initIcon();
 
 		of = new OptionFile();

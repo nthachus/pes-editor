@@ -13,9 +13,9 @@ import java.awt.geom.Rectangle2D;
 
 public class AtkDefPanel extends JPanel implements MouseListener {
 	private static final int BOX_SIZE = 98;
-	private static final int SQR_WIDTH = 84;
+	private static final int SQR_LEN = 84;
 	private static final int SQR_SIZE = 14;
-	private static final int SQR_MID = SQR_WIDTH / 2;
+	private static final int SQR_MID = SQR_LEN / 2;
 	private static final int SQR_QRT = SQR_MID / 2;
 
 	private final OptionFile of;
@@ -25,7 +25,7 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 	private volatile int selectedIndex = -1;
 	private volatile PitchPanel pitch;
 
-	private final Rectangle2D[] atkSquares = new Rectangle2D[8];
+	private final Rectangle2D[] atkSquares = new Rectangle2D[8];// 8 directions
 
 	public AtkDefPanel(OptionFile of, JComboBox altBox) {
 		super();
@@ -34,18 +34,22 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 		this.of = of;
 		this.altBox = altBox;
 
+		initComponents();
+	}
+
+	private void initComponents() {
 		atkSquares[0] = new Rectangle2D.Double(0, SQR_MID, SQR_SIZE, SQR_SIZE);
 		atkSquares[1] = new Rectangle2D.Double(0, 0, SQR_SIZE, SQR_SIZE);
 		atkSquares[2] = new Rectangle2D.Double(SQR_MID, 0, SQR_SIZE, SQR_SIZE);
-		atkSquares[3] = new Rectangle2D.Double(SQR_WIDTH, 0, SQR_SIZE, SQR_SIZE);
-		atkSquares[4] = new Rectangle2D.Double(SQR_WIDTH, SQR_MID, SQR_SIZE, SQR_SIZE);
-		atkSquares[5] = new Rectangle2D.Double(SQR_WIDTH, SQR_WIDTH, SQR_SIZE, SQR_SIZE);
-		atkSquares[6] = new Rectangle2D.Double(SQR_MID, SQR_WIDTH, SQR_SIZE, SQR_SIZE);
-		atkSquares[7] = new Rectangle2D.Double(0, SQR_WIDTH, SQR_SIZE, SQR_SIZE);
+		atkSquares[3] = new Rectangle2D.Double(SQR_LEN, 0, SQR_SIZE, SQR_SIZE);
+		atkSquares[4] = new Rectangle2D.Double(SQR_LEN, SQR_MID, SQR_SIZE, SQR_SIZE);
+		atkSquares[5] = new Rectangle2D.Double(SQR_LEN, SQR_LEN, SQR_SIZE, SQR_SIZE);
+		atkSquares[6] = new Rectangle2D.Double(SQR_MID, SQR_LEN, SQR_SIZE, SQR_SIZE);
+		atkSquares[7] = new Rectangle2D.Double(0, SQR_LEN, SQR_SIZE, SQR_SIZE);
 
 		setOpaque(true);
 		setPreferredSize(new Dimension(BOX_SIZE, BOX_SIZE));
-		setBackground(Color.black);
+		setBackground(Color.BLACK);
 		addMouseListener(this);
 	}
 
@@ -68,10 +72,10 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 
 		Rectangle2D bound = new Rectangle2D.Double(0, 0, BOX_SIZE, BOX_SIZE);
 		if (selectedIndex < 0) {
-			g2.setPaint(Color.gray);
+			g2.setPaint(Color.GRAY);
 			g2.fill(bound);
 		} else {
-			g2.setPaint(Color.black);
+			g2.setPaint(Color.BLACK);
 			g2.fill(bound);
 
 			drawAtkSquares(g2);
@@ -82,15 +86,15 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 
 	private static Color getPositionColor(int pos) {
 		if (pos <= 0) {
-			return Color.yellow;
+			return Color.YELLOW;
 		} else if (pos < 10) {
-			return Color.cyan;
+			return Color.CYAN;
 		} else if (pos < 29) {
-			return Color.green;
+			return Color.GREEN;
 		} else if (pos < 41) {
-			return Color.red;
+			return Color.RED;
 		}
-		return Color.black;
+		return Color.BLACK;
 	}
 
 	private void drawAtkSquares(Graphics2D g2) {
@@ -105,7 +109,7 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 				g2.setPaint(posColor);
 				g2.fill(atkSquares[i]);
 			} else if (selectedIndex != 0 || (i == 0 || i == 4)) {
-				g2.setPaint(Color.gray);
+				g2.setPaint(Color.GRAY);
 				g2.draw(atkSquares[i]);
 			}
 		}
@@ -115,16 +119,16 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 		int def = Formations.getDefence(of, squad, altBox.getSelectedIndex(), selectedIndex);
 
 		if (def == 1) {
-			g2.setPaint(Color.gray);
+			g2.setPaint(Color.GRAY);
 			g2.draw(new Ellipse2D.Double(SQR_QRT, SQR_QRT, SQR_SIZE, SQR_SIZE));
-			g2.setPaint(Color.blue);
+			g2.setPaint(Color.BLUE);
 			g2.fill(new Ellipse2D.Double(SQR_QRT, SQR_MID * 3 / 2, SQR_SIZE, SQR_SIZE));
 		} else if (def == 0) {
-			g2.setPaint(Color.blue);
+			g2.setPaint(Color.BLUE);
 			g2.fill(new Ellipse2D.Double(SQR_QRT, SQR_QRT, SQR_SIZE, SQR_SIZE));
 			g2.fill(new Ellipse2D.Double(SQR_QRT, SQR_MID * 3 / 2, SQR_SIZE, SQR_SIZE));
 		} else {
-			g2.setPaint(Color.gray);
+			g2.setPaint(Color.GRAY);
 			g2.draw(new Ellipse2D.Double(SQR_QRT, SQR_QRT, SQR_SIZE, SQR_SIZE));
 			g2.draw(new Ellipse2D.Double(SQR_QRT, SQR_MID * 3 / 2, SQR_SIZE, SQR_SIZE));
 		}

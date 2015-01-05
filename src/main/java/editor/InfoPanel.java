@@ -45,7 +45,7 @@ public class InfoPanel extends JScrollPane {
 		// ta.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
 		StyledEditorKit sek = new StyledEditorKit();
 		ta.setEditorKit(sek);
-		ta.setBackground(Color.black);
+		ta.setBackground(Color.BLACK);
 		attr = new SimpleAttributeSet(sek.getInputAttributes());
 		doc = ta.getDocument();
 		if (listSquads) {
@@ -97,7 +97,7 @@ public class InfoPanel extends JScrollPane {
 
 	private void insertStats(int index1, int index2)
 			throws BadLocationException {
-		StyleConstants.setForeground(attr, Color.white);
+		StyleConstants.setForeground(attr, Color.WHITE);
 		insertStat(Stats.WEAK_FOOT_ACC, index1, index2);
 		insertStat(Stats.WEAK_FOOT_FREQ, index1, index2);
 		// insertStat(stats.statX, index1, index2);
@@ -218,20 +218,18 @@ public class InfoPanel extends JScrollPane {
 			throws BadLocationException {
 		for (int i = 0; i < Stats.ABILITY_SPECIAL.length; i++) {
 			if ((i & 1) == 1) {
-				insertAbility(Stats.ABILITY_SPECIAL[i], index1, index2,
-						Color.red);
+				insertAbility(Stats.ABILITY_SPECIAL[i], index1, index2, Color.RED);
 			} else {
-				insertAbility(Stats.ABILITY_SPECIAL[i], index1, index2,
-						Color.green);
+				insertAbility(Stats.ABILITY_SPECIAL[i], index1, index2, Color.GREEN);
 			}
 		}
-		// StyleConstants.setForeground(attr, Color.yellow);
-		StyleConstants.setForeground(attr, Color.white);
+		//StyleConstants.setForeground(attr, Color.YELLOW);
+		StyleConstants.setForeground(attr, Color.WHITE);
 	}
 
 	private void insertSquads(int index1) throws BadLocationException {
 		if (listSquads) {
-			StyleConstants.setForeground(attr, Color.white);
+			StyleConstants.setForeground(attr, Color.WHITE);
 			int i;
 			int t;
 			int a;
@@ -263,7 +261,7 @@ public class InfoPanel extends JScrollPane {
 	}
 
 	private void insertName(int index1, int index2) throws BadLocationException {
-		StyleConstants.setForeground(attr, Color.white);
+		StyleConstants.setForeground(attr, Color.WHITE);
 		if (index1 > 0) {
 			doc.insertString(doc.getLength(), new Player(of, index1).getName(), attr);
 		}
@@ -273,7 +271,7 @@ public class InfoPanel extends JScrollPane {
 	}
 
 	private void insertAgeNat(int index1, int index2) throws BadLocationException {
-		StyleConstants.setForeground(attr, Color.white);
+		StyleConstants.setForeground(attr, Color.WHITE);
 		if (index1 > 0) {
 			doc.insertString(doc.getLength(), Stats.getString(of, index1,
 					Stats.NATIONALITY), attr);
@@ -293,7 +291,7 @@ public class InfoPanel extends JScrollPane {
 	}
 
 	private void insertPhys(int index1, int index2) throws BadLocationException {
-		StyleConstants.setForeground(attr, Color.white);
+		StyleConstants.setForeground(attr, Color.WHITE);
 		if (index1 > 0) {
 			String footSide = "LF/";
 			if (Stats.getValue(of, index1, Stats.FOOT) == 1) {
@@ -394,7 +392,7 @@ public class InfoPanel extends JScrollPane {
 					for (int i = 0; i < dif && i < 10; i++) {
 						comp = comp + "*";
 					}
-					StyleConstants.setForeground(attr, Color.green);
+					StyleConstants.setForeground(attr, Color.GREEN);
 					doc.insertString(doc.getLength(), comp, attr);
 				}
 				if (dif < 0) {
@@ -402,15 +400,15 @@ public class InfoPanel extends JScrollPane {
 					for (int i = 0; i < dif && i < 10; i++) {
 						comp = comp + "*";
 					}
-					StyleConstants.setForeground(attr, Color.red);
+					StyleConstants.setForeground(attr, Color.RED);
 					doc.insertString(doc.getLength(), comp, attr);
 				}
 			}
-			StyleConstants.setForeground(attr, Color.white);
+			StyleConstants.setForeground(attr, Color.WHITE);
 			setStatColour(stat, v2);
 			doc.insertString(doc.getLength(), "\t" + s2, attr);
 		}
-		StyleConstants.setForeground(attr, Color.white);
+		StyleConstants.setForeground(attr, Color.WHITE);
 	}
 
 	private void insertAbility(Stat stat, int index1, int index2, Color colour)
@@ -429,19 +427,19 @@ public class InfoPanel extends JScrollPane {
 		if (stat == Stats.WEAK_FOOT_ACC || stat == Stats.WEAK_FOOT_FREQ || stat == Stats.CONSISTENCY
 				|| stat == Stats.CONDITION) {
 			if (v == 7) {
-				StyleConstants.setForeground(attr, Color.red);
+				StyleConstants.setForeground(attr, Color.RED);
 			} else if (v == 6) {
-				StyleConstants.setForeground(attr, Color.orange);
+				StyleConstants.setForeground(attr, Color.ORANGE);
 			}
 		} else {
 			if (v > 94) {
-				StyleConstants.setForeground(attr, Color.red);
+				StyleConstants.setForeground(attr, Color.RED);
 			} else if (v > 89) {
-				StyleConstants.setForeground(attr, Color.orange);
+				StyleConstants.setForeground(attr, Color.ORANGE);
 			} else if (v > 79) {
-				StyleConstants.setForeground(attr, Color.yellow);
+				StyleConstants.setForeground(attr, Color.YELLOW);
 			} else if (v > 74) {
-				StyleConstants.setForeground(attr, new Color(0xB7, 0xFF, 0));
+				StyleConstants.setForeground(attr, new Color(183, 255, 0));
 			}
 		}
 	}

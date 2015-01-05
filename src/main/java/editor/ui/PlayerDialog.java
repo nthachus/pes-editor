@@ -100,6 +100,7 @@ public class PlayerDialog extends JDialog {
 		setVisible(true);
 	}
 
+	@SuppressWarnings("RedundantIfStatement")
 	private boolean isFormValid() {
 		InputVerifier verifier = new Ability99Panel.Verifier99();
 		for (int i = 0; i < Stats.ABILITY99.length; i++) {

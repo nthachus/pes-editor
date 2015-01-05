@@ -257,7 +257,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 		largeFlag.setIcon(new ImageIcon(Emblems.get16(of, -1, false, false)));
 
 		JPanel pan1 = new JPanel(new BorderLayout());
-		pan1.setBorder(BorderFactory.createLineBorder(Color.gray));
+		pan1.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		pan1.add(new JLabel("16 Colour Format"), BorderLayout.NORTH);
 		pan1.add(flagPanel, BorderLayout.CENTER);
 		pan1.add(new JLabel("128 Colour Format", SwingConstants.RIGHT),

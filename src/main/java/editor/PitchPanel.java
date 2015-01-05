@@ -5,6 +5,7 @@ import editor.data.OptionFile;
 import editor.ui.AtkDefPanel;
 import editor.ui.SquadList;
 import editor.ui.SquadNumberList;
+import editor.util.swing.IndexColorComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,59 +17,78 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
-public class PitchPanel extends JPanel implements MouseListener, MouseMotionListener {
+public class PitchPanel extends JPanel implements IndexColorComponent, MouseListener, MouseMotionListener {
+	private static final boolean SHOW_ATTACK = true;
+	private static final boolean SHOW_DEFENCE = true;
+	private static final boolean SHOW_NUMBER = true;
+	private static final boolean SHOW_ROLE = true;
+
+	private static final int ADJ = 14;
+	private static final int DIA = 14;
+
 	private final OptionFile of;
+	private final FormationPanel parent;
+	private final SquadList squadList;
+	private final AtkDefPanel atkDefPan;
+	private final JComboBox altBox;
+	private final SquadNumberList numList;
 
-	SquadList list;
-	AtkDefPanel adPanel;
+	private volatile int squad = 0;
+	private volatile int selectedIdx = -1;
 
-	int squad = 0;
-	int selected = -1;
-	boolean attack = true;
-	boolean defence = true;
-	boolean numbers = true;
-	boolean roleOn = true;
-	int adj = 14;
-
-	public static final Color[] COLORS = {
-			new Color(0, 0, 0),
-			new Color(0xFF, 0xFF, 0xFF),
-			new Color(0xFF, 0xFF, 0),
-			new Color(0, 0xFF, 0xFF),
-			new Color(0, 0xFF, 0),
-			new Color(0xFF, 0, 0),
-			new Color(0, 0, 0xFF),
-			Color.gray
-	};
-
-	JComboBox altBox;
-	SquadNumberList numList;
-
-	int xadj = 0;
-	int yadj = 0;
+	private volatile int xAdj = 0;
+	private volatile int yAdj = 0;
 
 	public PitchPanel(
-			OptionFile opf, SquadList fsl, AtkDefPanel adp,
-			JComboBox ab, SquadNumberList nl) {
+			OptionFile of, FormationPanel parent,
+			SquadList squadList, AtkDefPanel adp, JComboBox altBox, SquadNumberList numList) {
 		super();
-		of = opf;
-		list = fsl;
-		adPanel = adp;
-		altBox = ab;
-		numList = nl;
+
+		if (null == of) throw new NullPointerException("of");
+		if (null == parent) throw new NullPointerException("parent");
+		if (null == squadList) throw new NullPointerException("squadList");
+		if (null == adp) throw new NullPointerException("adp");
+		if (null == altBox) throw new NullPointerException("altBox");
+		if (null == numList) throw new NullPointerException("numList");
+		this.of = of;
+		this.parent = parent;
+		this.squadList = squadList;
+		this.atkDefPan = adp;
+		this.altBox = altBox;
+		this.numList = numList;
+
 		setOpaque(true);
-		setPreferredSize(new Dimension(329 + (adj * 2), 200 + (adj * 2)));
-		setBackground(Color.black);
+		setPreferredSize(new Dimension(329 + ADJ * 2, 200 + ADJ * 2));
+		setBackground(COLORS[0]);
 		addMouseListener(this);
 		addMouseMotionListener(this);
 	}
 
+	public void setSquad(int squad) {
+		this.squad = squad;
+	}
+
+	public void setSelectedIndex(int selected) {
+		this.selectedIdx = selected;
+	}
+
+	private static final Color[] COLORS = {
+			Color.BLACK, Color.WHITE, Color.YELLOW, Color.CYAN, Color.GREEN, Color.RED, Color.BLUE, Color.GRAY
+	};
+
+	public Color[] getPalette() {
+		return COLORS;
+	}
+
+	@Override
 	public void paintComponent(Graphics g) {
-		// super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setPaint(Color.black);
-		g2.fill(new Rectangle2D.Double(0, 0, 329 + (adj * 2), 200 + (adj * 2)));
-		g2.setPaint(Color.gray);
+		if (null == g2) throw new NullPointerException("g");
+
+		// TODO: !!!
+		g2.setPaint(COLORS[0]);
+		g2.fill(new Rectangle2D.Double(0, 0, 329 + (ADJ * 2), 200 + (ADJ * 2)));
+		g2.setPaint(COLORS[7]);
 		// g2.setStroke(stroke);
 		g2.draw(new Rectangle2D.Double(13, 13, 329 + 2, 200 + 2));
 		g2.draw(new Line2D.Double(178, 13, 178, 215));
@@ -82,70 +102,64 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 		int x;
 		int y;
 		int pos;
-		// g2.setPaint(Color.yellow);
-		// g2.fill(new Ellipse2D.Double(0 + adj, 90 + adj, 14, 14));
+		// g2.setPaint(COLORS[2]);
+		// g2.fill(new Ellipse2D.Double(0 + ADJ, 90 + ADJ, DIA, DIA));
 		for (int p = 0; p < 11; p++) {
 			pos = Formations.getPosition(of, squad, altBox.getSelectedIndex(), p);
 			// System.out.println(pos);
 			if (p == 0) {
-				x = 0 + adj;
-				y = 90 + adj;
-				// g2.setPaint(Color.yellow);
+				x = ADJ;
+				y = 90 + ADJ;
+				// g2.setPaint(COLORS[2]);
 			} else {
-				x = ((Formations.getX(of, squad, altBox.getSelectedIndex(), p) - 2) * 7)
-						+ adj;
-				y = ((Formations.getY(of, squad, altBox.getSelectedIndex(), p) - 6) * 2)
-						+ adj;
+				x = ((Formations.getX(of, squad, altBox.getSelectedIndex(), p) - 2) * 7) + ADJ;
+				y = ((Formations.getY(of, squad, altBox.getSelectedIndex(), p) - 6) * 2) + ADJ;
 				// pos = of.data[670642 + (628 * squad) + 6232 + p];
 			}
-			if (p == selected) {
-				g2.setPaint(Color.white);
+			if (p == selectedIdx) {
+				g2.setPaint(COLORS[1]);
 			} else {
 				if (pos == 0) {
-					g2.setPaint(Color.yellow);
+					g2.setPaint(COLORS[2]);
 				} else if (pos > 0 && pos < 10) {
-					g2.setPaint(Color.cyan);
+					g2.setPaint(COLORS[3]);
 				} else if (pos > 9 && pos < 29) {
-					g2.setPaint(Color.green);
+					g2.setPaint(COLORS[4]);
 				} else if (pos > 28 && pos < 41) {
-					g2.setPaint(Color.red);
+					g2.setPaint(COLORS[5]);
 				}
 			}
-			g2.fill(new Ellipse2D.Double(x, y, 14, 14));
-			// g2.draw(new Ellipse2D.Double(x, y, 14, 14));
+			g2.fill(new Ellipse2D.Double(x, y, DIA, DIA));
+			// g2.draw(new Ellipse2D.Double(x, y, DIA, DIA));
 
 			// draw position label
-			if (roleOn) {
+			if (SHOW_ROLE) {
 				g2.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
 				int adjx = 0;
 				if (pos == 30 || pos == 16 || pos == 4) {
 					adjx = -1;
 				}
-				boolean up = Formations.getAttack(of, squad, altBox
-						.getSelectedIndex(), p, 2);
-				boolean down = Formations.getAttack(of, squad, altBox
-						.getSelectedIndex(), p, 6);
+				boolean up = Formations.getAttack(of, squad, altBox.getSelectedIndex(), p, 2);
+				boolean down = Formations.getAttack(of, squad, altBox.getSelectedIndex(), p, 6);
 				if (up && down) {
-					g2.drawString(getPosLabel(pos).substring(0, 1), x + 15,
-							y + 6);
-					g2.drawString(getPosLabel(pos).substring(1, 2), x + 15,
-							y + 16);
+					g2.drawString(Formations.positionToString(pos).substring(0, 1), x + 15, y + 6);
+					g2.drawString(Formations.positionToString(pos).substring(1, 2), x + 15, y + 16);
 				} else if (pos == 9 || pos == 16 || pos == 23 || pos == 30) {
 					if (!down) {
-						g2.drawString(getPosLabel(pos), x + adjx, y + 24);
+						g2.drawString(Formations.positionToString(pos), x + adjx, y + 24);
 					} else {
-						g2.drawString(getPosLabel(pos), x + adjx, y - 2);
+						g2.drawString(Formations.positionToString(pos), x + adjx, y - 2);
 					}
 				} else {
 					if (up) {
-						g2.drawString(getPosLabel(pos), x + adjx, y + 24);
+						g2.drawString(Formations.positionToString(pos), x + adjx, y + 24);
 					} else {
-						g2.drawString(getPosLabel(pos), x + adjx, y - 2);
+						g2.drawString(Formations.positionToString(pos), x + adjx, y - 2);
 					}
 				}
 			}
 
-			if (attack) {
+			if (SHOW_ATTACK) {
 				int x1 = x + 7;
 				int y1 = y + 7;
 				int x2 = x1;
@@ -192,9 +206,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 				}
 			}
 
-			if (numbers) {
+			if (SHOW_NUMBER) {
 				g2.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
-				g2.setPaint(Color.black);
+				g2.setPaint(COLORS[0]);
 				String numText = numList.getModel().getElementAt(p);
 				int ta = 0;
 				if (numText.length() == 1) {
@@ -205,13 +219,13 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 				}
 				g2.drawString(numText, x + 2 + ta, y + 11);
 			} /*
-			 * else if (roleOn) { g2.setFont(new Font(Font.DIALOG, Font.PLAIN,
-			 * 12)); g2.setPaint(Color.black);
+			 * else if (SHOW_ROLE) { g2.setFont(new Font(Font.DIALOG, Font.PLAIN,
+			 * 12)); g2.setPaint(COLORS[0]);
 			 * g2.drawString(getPosLabel(pos).substring(0, 1), x + 3, y + 12); }
 			 */
 
-			if (defence) {
-				g2.setPaint(Color.blue);
+			if (SHOW_DEFENCE) {
+				g2.setPaint(COLORS[6]);
 				int size = 6;
 				int x1 = (x + 7) - 13 - (size / 2);
 				int y1 = (y + 7) - 5 - (size / 2);
@@ -230,45 +244,49 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	public void mousePressed(MouseEvent e) {
-		int x;
-		int y;
-		Ellipse2D.Double circle;
-		// last_x = rect.x - e.getX();
-		// last_y = rect.y - e.getY();
-		selected = -1;
-		// Checks whether or not the cursor is inside of the rectangle
-		// while the user is pressing the mouse.
-		for (int i = 1; selected == -1 && i < 11; i++) {
-			x = ((Formations.getX(of, squad, altBox.getSelectedIndex(), i) - 2) * 7)
-					+ adj;
-			y = ((Formations.getY(of, squad, altBox.getSelectedIndex(), i) - 6) * 2)
-					+ adj;
-			circle = new Ellipse2D.Double(x, y, 14, 14);
+		if (null == e) throw new NullPointerException("e");
+
+		selectedIdx = -1;
+		findPressedIndex(e);
+
+		parent.setFromPitch(true);
+		if (selectedIdx < 0) {
+			Ellipse2D circle = new Ellipse2D.Double(ADJ, 90 + ADJ, DIA, DIA);
 			if (circle.contains(e.getX(), e.getY())) {
-				selected = i;
-				xadj = e.getX() - x;
-				yadj = e.getY() - y;
-				// System.out.println(of.data[670641 + (628 * squad) + 6232 +
-				// selected + (altBox.getSelectedIndex() * 171)]);
-			}
-		}
-		FormationPanel.fromPitch = true;
-		if (selected != -1) {
-			list.setSelectedIndex(selected);
-			adPanel.setSelectedIndex(selected);
-		} else {
-			circle = new Ellipse2D.Double(0 + adj, 90 + adj, 14, 14);
-			if (circle.contains(e.getX(), e.getY())) {
-				selected = 0;
-				list.setSelectedIndex(selected);
-				adPanel.setSelectedIndex(selected);
+				selectedIdx = 0;
+				squadList.setSelectedIndex(selectedIdx);
+				atkDefPan.setSelectedIndex(selectedIdx);
 			} else {
-				list.clearSelection();
-				adPanel.setSelectedIndex(-1);
+				squadList.clearSelection();
+				atkDefPan.setSelectedIndex(selectedIdx);
+			}
+		} else {
+			squadList.setSelectedIndex(selectedIdx);
+			atkDefPan.setSelectedIndex(selectedIdx);
+		}
+
+		repaint();
+		atkDefPan.repaint();
+	}
+
+	private void findPressedIndex(MouseEvent e) {
+		// Checks whether or not the cursor is inside of the rectangle while the user is pressing the mouse
+		Ellipse2D circle;
+		for (int i = 1; i < 11; i++) {
+			int x = Formations.getX(of, squad, altBox.getSelectedIndex(), i);
+			int y = Formations.getY(of, squad, altBox.getSelectedIndex(), i);
+			x = (x - 2) * 7 + ADJ;
+			y = (y - 6) * 2 + ADJ;
+
+			circle = new Ellipse2D.Double(x, y, DIA, DIA);
+			if (circle.contains(e.getX(), e.getY())) {
+				selectedIdx = i;
+				xAdj = e.getX() - x;
+				yAdj = e.getY() - y;
+
+				break;
 			}
 		}
-		repaint();
-		adPanel.repaint();
 	}
 
 	public void mouseReleased(MouseEvent e) {
@@ -284,120 +302,52 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	public void mouseDragged(MouseEvent e) {
-		if (selected > 0) {
-			int x = e.getX() - xadj;
-			int y = e.getY() - yadj;
-			int pos = Formations.getPosition(of, squad, altBox.getSelectedIndex(),
-					selected);
-			if (x < 0 + adj) {
-				x = 0 + adj;
-			}
-			if (y < 0 + adj) {
-				y = 0 + adj;
-			}
-			if (x > 315 + adj) {
-				x = 315 + adj;
-			}
-			if (y > 186 + adj) {
-				y = 186 + adj;
-			}
-			x = ((x - adj) / 7) + 2;
-			y = ((y - adj) / 2) + 6;
+		if (null == e) throw new NullPointerException("e");
+		if (selectedIdx <= 0) return;
 
-			if (pos > 0 && pos < 10) {
-				if (x > 15) {
-					x = 15;
-				}
-			} else if (pos > 9 && pos < 29) {
-				if (x < 16) {
-					x = 16;
-				} else if (x > 34) {
-					x = 34;
-				}
-			} else if (pos > 28 && pos < 41) {
-				if (x < 35) {
-					x = 35;
-				}
-			}
+		int pos = Formations.getPosition(of, squad, altBox.getSelectedIndex(), selectedIdx);
 
-			if (pos == 8 || pos == 15 || pos == 22 || pos == 29) {
-				if (y > 50) {
-					y = 50;
-				}
-			}
+		int x = adjustDraggedX(e.getX(), pos);
+		int y = adjustDraggedY(e.getY(), pos);
+		//log.debug("{}, {}", x, y);
 
-			if (pos == 9 || pos == 16 || pos == 23 || pos == 30) {
-				if (y < 54) {
-					y = 54;
-				}
-			}
+		Formations.setX(of, squad, altBox.getSelectedIndex(), selectedIdx, x);
+		Formations.setY(of, squad, altBox.getSelectedIndex(), selectedIdx, y);
 
-			// System.out.println(x + ", " + y);
-			Formations.setX(of, squad, altBox.getSelectedIndex(), selected, x);
-			Formations.setY(of, squad, altBox.getSelectedIndex(), selected, y);
-			repaint();
+		repaint();
+	}
+
+	private int adjustDraggedX(int x, int pos) {
+		x -= xAdj;
+		x = Math.min(Math.max(x, ADJ), 315 + ADJ);
+		x = (x - ADJ) / 7 + 2;
+
+		if (pos > 0 && pos < 10) {
+			x = Math.min(x, 15);
+		} else if (pos >= 10 && pos < 29) {
+			x = Math.min(Math.max(x, 16), 34);
+		} else if (pos >= 29 && pos < 41) {
+			x = Math.max(x, 35);
 		}
+
+		return x;
+	}
+
+	private int adjustDraggedY(int y, int pos) {
+		y -= yAdj;
+		y = Math.min(Math.max(y, ADJ), 186 + ADJ);
+		y = (y - ADJ) / 2 + 6;
+
+		if (pos == 8 || pos == 15 || pos == 22 || pos == 29) {
+			y = Math.min(y, 50);
+		} else if (pos == 9 || pos == 16 || pos == 23 || pos == 30) {
+			y = Math.max(y, 54);
+		}
+
+		return y;
 	}
 
 	public void mouseMoved(MouseEvent e) {
-	}
-
-	private String getPosLabel(int p) {
-		String label = "";
-		if (p == 0) {
-			label = "GK";
-		}
-		if ((p > 0 && p < 4) || (p > 4 && p < 8)) {
-			label = "CB";
-		}
-		if (p == 4) {
-			label = "SW";
-		}
-		if (p == 8) {
-			label = "LB";
-		}
-		if (p == 9) {
-			label = "RB";
-		}
-		if (p > 9 && p < 15) {
-			label = "DMF";
-		}
-		if (p == 15) {
-			label = "LWB";
-		}
-		if (p == 16) {
-			label = "RWB";
-		}
-
-		if (p > 16 && p < 22) {
-			label = "CMF";
-		}
-		if (p == 22) {
-			label = "LMF";
-		}
-		if (p == 23) {
-			label = "RMF";
-		}
-		if (p > 23 && p < 29) {
-			label = "AMF";
-		}
-		if (p == 29) {
-			label = "LWF";
-		}
-		if (p == 30) {
-			label = "RWF";
-		}
-		if (p > 30 && p < 36) {
-			label = "SS";
-		}
-		if (p > 35 && p < 41) {
-			label = "CF";
-		}
-
-		if (p > 40) {
-			label = Integer.toString(p);
-		}
-		return label;
 	}
 
 }
