@@ -1,6 +1,5 @@
 package editor.ui;
 
-import editor.PitchPanel;
 import editor.data.Formations;
 import editor.data.OptionFile;
 

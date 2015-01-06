@@ -22,6 +22,7 @@ public final class Formations {
 
 	public static final int JOBS_COUNT = 6;
 	public static final int SETTING_COUNT = 4;
+	public static final int PLAYER_COUNT = 11;
 
 	public static final String[] ALT_ITEMS = {
 			"Normal",
@@ -57,7 +58,7 @@ public final class Formations {
 	}
 
 	private static int getPosOffset(int squad, int alt, int index) {
-		if (index <= 0 || index >= 11) throw new IndexOutOfBoundsException("index");
+		if (index <= 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index");
 		return getAltOffset(squad, alt) + 138 + index;
 	}
 
@@ -114,12 +115,12 @@ public final class Formations {
 	}
 
 	private static int getXOffset(int squad, int alt, int index) {
-		if (index <= 0 || index >= 11) throw new IndexOutOfBoundsException("index");
+		if (index <= 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index");
 		return getAltOffset(squad, alt) + 118 + (index - 1) * 2;
 	}
 
 	private static int getYOffset(int squad, int alt, int index) {
-		if (index <= 0 || index >= 11) throw new IndexOutOfBoundsException("index");
+		if (index <= 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index");
 		return getAltOffset(squad, alt) + 119 + (index - 1) * 2;
 	}
 
@@ -152,7 +153,7 @@ public final class Formations {
 	}
 
 	private static int getAtkOffset(int squad, int alt, int index) {
-		if (index < 0 || index >= 11) throw new IndexOutOfBoundsException("index");
+		if (index < 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index");
 		return getAltOffset(squad, alt) + 149 + index;
 	}
 
@@ -179,7 +180,7 @@ public final class Formations {
 	}
 
 	private static int getDefOffset(int squad, int alt, int index) {
-		if (index < 0 || index >= 11) throw new IndexOutOfBoundsException("index");
+		if (index < 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index");
 		return getAltOffset(squad, alt) + 160 + index;
 	}
 

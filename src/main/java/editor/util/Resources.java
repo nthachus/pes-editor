@@ -14,8 +14,8 @@ public final class Resources {
 
 	private static volatile ResourceBundle messages = null;
 
-	public static ResourceBundle getMessages() {
-		if (null == messages) {
+	public static ResourceBundle getMessages(boolean reload) {
+		if (null == messages || reload) {
 			messages = ResourceBundle.getBundle("META-INF/i18n/messages");
 			if (null == messages) throw new NullPointerException("messages");
 		}
@@ -26,7 +26,7 @@ public final class Resources {
 		if (null == key) throw new NullPointerException("key");
 
 		String msg;
-		if (getMessages().containsKey(key))
+		if (getMessages(false).containsKey(key))
 			msg = messages.getString(key);
 		else {
 			msg = key;

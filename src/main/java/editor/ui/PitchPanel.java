@@ -1,10 +1,8 @@
-package editor;
+package editor.ui;
 
+import editor.FormationPanel;
 import editor.data.Formations;
 import editor.data.OptionFile;
-import editor.ui.AtkDefPanel;
-import editor.ui.SquadList;
-import editor.ui.SquadNumberList;
 import editor.util.swing.IndexColorComponent;
 
 import javax.swing.*;
@@ -17,11 +15,8 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
-public class PitchPanel extends JPanel implements IndexColorComponent, MouseListener, MouseMotionListener {
-	private static final boolean SHOW_ATTACK = true;
-	private static final boolean SHOW_DEFENCE = true;
-	private static final boolean SHOW_NUMBER = true;
-	private static final boolean SHOW_ROLE = true;
+public class PitchPanel extends JPanel
+		implements IndexColorComponent, MouseListener, MouseMotionListener {
 
 	private static final int ADJ = 14;
 	private static final int DIA = 14;
@@ -36,6 +31,10 @@ public class PitchPanel extends JPanel implements IndexColorComponent, MouseList
 	private volatile int squad = 0;
 	private volatile int selectedIdx = -1;
 
+	private volatile boolean showAttack = true;
+	private volatile boolean showDefence = true;
+	private volatile boolean showNumber = true;
+	private volatile boolean roleOn = true;
 	private volatile int xAdj = 0;
 	private volatile int yAdj = 0;
 
@@ -72,6 +71,22 @@ public class PitchPanel extends JPanel implements IndexColorComponent, MouseList
 		this.selectedIdx = selected;
 	}
 
+	public void setShowAttack(boolean isShowAttack) {
+		showAttack = isShowAttack;
+	}
+
+	public void setShowDefence(boolean isShowDefence) {
+		showDefence = isShowDefence;
+	}
+
+	public void setShowNumber(boolean isShowNumber) {
+		showNumber = isShowNumber;
+	}
+
+	public void setRoleOn(boolean isRoleOn) {
+		roleOn = isRoleOn;
+	}
+
 	private static final Color[] COLORS = {
 			Color.BLACK, Color.WHITE, Color.YELLOW, Color.CYAN, Color.GREEN, Color.RED, Color.BLUE, Color.GRAY
 	};
@@ -85,11 +100,51 @@ public class PitchPanel extends JPanel implements IndexColorComponent, MouseList
 		Graphics2D g2 = (Graphics2D) g;
 		if (null == g2) throw new NullPointerException("g");
 
-		// TODO: !!!
+		drawStadiumLayout(g2);
+
+		Color c;
+		for (int p = 0; p < Formations.PLAYER_COUNT; p++) {
+			int pos = Formations.getPosition(of, squad, altBox.getSelectedIndex(), p);
+			int x = getXForPlayer(p);
+			int y = getYForPlayer(p);
+			//log.debug("x: {}, y: {}", x, y);
+
+			c = getPositionColor(p, pos);
+			if (null != c) g2.setPaint(c);
+			g2.fill(new Ellipse2D.Double(x, y, DIA, DIA));
+			//g2.draw(new Ellipse2D.Double(x, y, DIA, DIA));
+
+			drawPositionLabel(g2, p, pos, x, y);
+			drawAtkDirections(g2, p, x, y);
+			drawNumbers(g2, p, x, y);
+			drawDefDirections(g2, p, x, y);
+		}
+	}
+
+	private void drawDefDirections(Graphics2D g2, int player, int x, int y) {
+		if (!showDefence)
+			return;
+
+		g2.setPaint(COLORS[6]);
+		int size = 6;
+		int x1 = (x + 7) - 13 - (size / 2);
+		int y1 = (y + 7) - 5 - (size / 2);
+		int x2 = (x + 7) - 13 - (size / 2);
+		int y2 = (y + 7) + 5 - (size / 2);
+		if (Formations.getDefence(of, squad, altBox.getSelectedIndex(), player) == 1) {
+			g2.fill(new Ellipse2D.Double(x2, y2, size, size));
+		} else if (Formations.getDefence(of, squad, altBox
+				.getSelectedIndex(), player) == 0) {
+			g2.fill(new Ellipse2D.Double(x1, y1, size, size));
+			g2.fill(new Ellipse2D.Double(x2, y2, size, size));
+		}
+	}
+
+	private void drawStadiumLayout(Graphics2D g2) {
 		g2.setPaint(COLORS[0]);
-		g2.fill(new Rectangle2D.Double(0, 0, 329 + (ADJ * 2), 200 + (ADJ * 2)));
+		g2.fill(new Rectangle2D.Double(0, 0, 329 + ADJ * 2, 200 + ADJ * 2));
 		g2.setPaint(COLORS[7]);
-		// g2.setStroke(stroke);
+		//g2.setStroke(stroke);
 		g2.draw(new Rectangle2D.Double(13, 13, 329 + 2, 200 + 2));
 		g2.draw(new Line2D.Double(178, 13, 178, 215));
 		g2.draw(new Ellipse2D.Double(178 - 33, 114 - 33, 66, 66));
@@ -99,148 +154,120 @@ public class PitchPanel extends JPanel implements IndexColorComponent, MouseList
 		g2.draw(new Rectangle2D.Double(327, 85, 17, 58));
 		g2.draw(new Arc2D.Double(40, 89, 38, 49, 270, 180, Arc2D.OPEN));
 		g2.draw(new Arc2D.Double(279, 89, 38, 49, 90, 180, Arc2D.OPEN));
-		int x;
-		int y;
-		int pos;
-		// g2.setPaint(COLORS[2]);
-		// g2.fill(new Ellipse2D.Double(0 + ADJ, 90 + ADJ, DIA, DIA));
-		for (int p = 0; p < 11; p++) {
-			pos = Formations.getPosition(of, squad, altBox.getSelectedIndex(), p);
-			// System.out.println(pos);
-			if (p == 0) {
-				x = ADJ;
-				y = 90 + ADJ;
-				// g2.setPaint(COLORS[2]);
-			} else {
-				x = ((Formations.getX(of, squad, altBox.getSelectedIndex(), p) - 2) * 7) + ADJ;
-				y = ((Formations.getY(of, squad, altBox.getSelectedIndex(), p) - 6) * 2) + ADJ;
-				// pos = of.data[670642 + (628 * squad) + 6232 + p];
-			}
-			if (p == selectedIdx) {
-				g2.setPaint(COLORS[1]);
-			} else {
-				if (pos == 0) {
-					g2.setPaint(COLORS[2]);
-				} else if (pos > 0 && pos < 10) {
-					g2.setPaint(COLORS[3]);
-				} else if (pos > 9 && pos < 29) {
-					g2.setPaint(COLORS[4]);
-				} else if (pos > 28 && pos < 41) {
-					g2.setPaint(COLORS[5]);
-				}
-			}
-			g2.fill(new Ellipse2D.Double(x, y, DIA, DIA));
-			// g2.draw(new Ellipse2D.Double(x, y, DIA, DIA));
+	}
 
-			// draw position label
-			if (SHOW_ROLE) {
-				g2.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
-				int adjx = 0;
-				if (pos == 30 || pos == 16 || pos == 4) {
-					adjx = -1;
-				}
-				boolean up = Formations.getAttack(of, squad, altBox.getSelectedIndex(), p, 2);
-				boolean down = Formations.getAttack(of, squad, altBox.getSelectedIndex(), p, 6);
-				if (up && down) {
-					g2.drawString(Formations.positionToString(pos).substring(0, 1), x + 15, y + 6);
-					g2.drawString(Formations.positionToString(pos).substring(1, 2), x + 15, y + 16);
-				} else if (pos == 9 || pos == 16 || pos == 23 || pos == 30) {
-					if (!down) {
-						g2.drawString(Formations.positionToString(pos), x + adjx, y + 24);
-					} else {
-						g2.drawString(Formations.positionToString(pos), x + adjx, y - 2);
-					}
-				} else {
-					if (up) {
-						g2.drawString(Formations.positionToString(pos), x + adjx, y + 24);
-					} else {
-						g2.drawString(Formations.positionToString(pos), x + adjx, y - 2);
-					}
-				}
+	private Color getPositionColor(int player, int pos) {
+		if (player == selectedIdx) {
+			return COLORS[1];
+		} else {
+			if (pos <= 0) {
+				return COLORS[2];
+			} else if (pos < 10) {
+				return COLORS[3];
+			} else if (pos < 29) {
+				return COLORS[4];
+			} else if (pos < 41) {
+				return COLORS[5];
 			}
-
-			if (SHOW_ATTACK) {
-				int x1 = x + 7;
-				int y1 = y + 7;
-				int x2 = x1;
-				int y2 = y1;
-				for (int i = 0; i < 8; i++) {
-					if (Formations.getAttack(of, squad, altBox.getSelectedIndex(),
-							p, i)) {
-						switch (i) {
-							case 0:
-								x2 = x1 - 21;
-								y2 = y1;
-								break;
-							case 1:
-								x2 = x1 - 15;
-								y2 = y1 - 15;
-								break;
-							case 2:
-								x2 = x1;
-								y2 = y1 - 21;
-								break;
-							case 3:
-								x2 = x1 + 15;
-								y2 = y1 - 15;
-								break;
-							case 4:
-								x2 = x1 + 21;
-								y2 = y1;
-								break;
-							case 5:
-								x2 = x1 + 15;
-								y2 = y1 + 15;
-								break;
-							case 6:
-								x2 = x1;
-								y2 = y1 + 21;
-								break;
-							case 7:
-								x2 = x1 - 15;
-								y2 = y1 + 15;
-								break;
-						}
-						g2.draw(new Line2D.Double(x1, y1, x2, y2));
-					}
-				}
-			}
-
-			if (SHOW_NUMBER) {
-				g2.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
-				g2.setPaint(COLORS[0]);
-				String numText = numList.getModel().getElementAt(p);
-				int ta = 0;
-				if (numText.length() == 1) {
-					ta = 3;
-				}
-				if (numText.startsWith("1")) {
-					ta = ta - 1;
-				}
-				g2.drawString(numText, x + 2 + ta, y + 11);
-			} /*
-			 * else if (SHOW_ROLE) { g2.setFont(new Font(Font.DIALOG, Font.PLAIN,
-			 * 12)); g2.setPaint(COLORS[0]);
-			 * g2.drawString(getPosLabel(pos).substring(0, 1), x + 3, y + 12); }
-			 */
-
-			if (SHOW_DEFENCE) {
-				g2.setPaint(COLORS[6]);
-				int size = 6;
-				int x1 = (x + 7) - 13 - (size / 2);
-				int y1 = (y + 7) - 5 - (size / 2);
-				int x2 = (x + 7) - 13 - (size / 2);
-				int y2 = (y + 7) + 5 - (size / 2);
-				if (Formations.getDefence(of, squad, altBox.getSelectedIndex(), p) == 1) {
-					g2.fill(new Ellipse2D.Double(x2, y2, size, size));
-				} else if (Formations.getDefence(of, squad, altBox
-						.getSelectedIndex(), p) == 0) {
-					g2.fill(new Ellipse2D.Double(x1, y1, size, size));
-					g2.fill(new Ellipse2D.Double(x2, y2, size, size));
-				}
-			}
-			// System.out.println(x + ", " + y);
 		}
+		return null;
+	}
+
+	private void drawPositionLabel(Graphics2D g2, int player, int pos, int x, int y) {
+		if (!roleOn)
+			return;
+
+		g2.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
+		int adjX = 0;
+		if (pos == 30 || pos == 16 || pos == 4) adjX = -1;
+
+		boolean up = Formations.getAttack(of, squad, altBox.getSelectedIndex(), player, 2);
+		boolean down = Formations.getAttack(of, squad, altBox.getSelectedIndex(), player, 6);
+
+		if (up && down) {
+			g2.drawString(Formations.positionToString(pos).substring(0, 1), x + 15, y + 6);
+			g2.drawString(Formations.positionToString(pos).substring(1), x + 15, y + 16);
+
+		} else if (pos == 9 || pos == 16 || pos == 23 || pos == 30) {
+			if (!down) {
+				g2.drawString(Formations.positionToString(pos), x + adjX, y + 24);
+			} else {
+				g2.drawString(Formations.positionToString(pos), x + adjX, y - 2);
+			}
+		} else {
+			if (up) {
+				g2.drawString(Formations.positionToString(pos), x + adjX, y + 24);
+			} else {
+				g2.drawString(Formations.positionToString(pos), x + adjX, y - 2);
+			}
+		}
+	}
+
+	private void drawAtkDirections(Graphics2D g2, int player, int x, int y) {
+		if (!showAttack)
+			return;
+
+		int x1 = x + ADJ / 2;
+		int y1 = y + ADJ / 2;
+		for (int i = 0; i < 8; i++) {
+			if (!Formations.getAttack(of, squad, altBox.getSelectedIndex(), player, i))
+				continue;
+
+			int x2 = x1;
+			int y2 = y1;
+			switch (i) {
+				case 0:
+					x2 = x1 - 21;
+					y2 = y1;
+					break;
+				case 1:
+					x2 = x1 - 15;
+					y2 = y1 - 15;
+					break;
+				case 2:
+					x2 = x1;
+					y2 = y1 - 21;
+					break;
+				case 3:
+					x2 = x1 + 15;
+					y2 = y1 - 15;
+					break;
+				case 4:
+					x2 = x1 + 21;
+					y2 = y1;
+					break;
+				case 5:
+					x2 = x1 + 15;
+					y2 = y1 + 15;
+					break;
+				case 6:
+					x2 = x1;
+					y2 = y1 + 21;
+					break;
+				case 7:
+					x2 = x1 - 15;
+					y2 = y1 + 15;
+					break;
+			}
+
+			g2.draw(new Line2D.Double(x1, y1, x2, y2));
+		}
+	}
+
+	private void drawNumbers(Graphics2D g2, int player, int x, int y) {
+		if (!showNumber)
+			return;
+
+		String numText = numList.getModel().getElementAt(player);
+		int textAdj = 0;
+		if (numText.length() == 1)
+			textAdj = 3;
+		if (numText.startsWith("1"))
+			textAdj--;
+
+		g2.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
+		g2.setPaint(COLORS[0]);
+		g2.drawString(numText, x + 2 + textAdj, y + 11);
 	}
 
 	public void mousePressed(MouseEvent e) {
@@ -269,14 +296,26 @@ public class PitchPanel extends JPanel implements IndexColorComponent, MouseList
 		atkDefPan.repaint();
 	}
 
+	private int getXForPlayer(int index) {
+		if (index <= 0) return ADJ;
+		int x = Formations.getX(of, squad, altBox.getSelectedIndex(), index);
+		x = (x - 2) * 7 + ADJ;
+		return x;
+	}
+
+	private int getYForPlayer(int index) {
+		if (index <= 0) return 90 + ADJ;
+		int y = Formations.getY(of, squad, altBox.getSelectedIndex(), index);
+		y = (y - 6) * 2 + ADJ;
+		return y;
+	}
+
 	private void findPressedIndex(MouseEvent e) {
 		// Checks whether or not the cursor is inside of the rectangle while the user is pressing the mouse
 		Ellipse2D circle;
-		for (int i = 1; i < 11; i++) {
-			int x = Formations.getX(of, squad, altBox.getSelectedIndex(), i);
-			int y = Formations.getY(of, squad, altBox.getSelectedIndex(), i);
-			x = (x - 2) * 7 + ADJ;
-			y = (y - 6) * 2 + ADJ;
+		for (int i = 1; i < Formations.PLAYER_COUNT; i++) {
+			int x = getXForPlayer(i);
+			int y = getYForPlayer(i);
 
 			circle = new Ellipse2D.Double(x, y, DIA, DIA);
 			if (circle.contains(e.getX(), e.getY())) {

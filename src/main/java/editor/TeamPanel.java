@@ -170,7 +170,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		list = new JList<String>();
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setLayoutOrientation(JList.VERTICAL);
-		list.setVisibleRowCount(11);
+		list.setVisibleRowCount(Formations.PLAYER_COUNT);
 		list.addListSelectionListener(this);
 		list.addMouseListener(this);
 		editor = new JTextField(14);// TODO: maxlength

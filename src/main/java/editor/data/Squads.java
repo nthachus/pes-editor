@@ -142,10 +142,10 @@ public final class Squads {
 		int firstAdr = getOffset(team);
 		int firstNumAdr = getNumOffset(team);
 
-		byte[] tempSlot = new byte[(size - 11) * 2];
-		byte[] tempNum = new byte[size - 11];
+		byte[] tempSlot = new byte[(size - Formations.PLAYER_COUNT) * 2];
+		byte[] tempNum = new byte[size - Formations.PLAYER_COUNT];
 		int tempPos = 0;
-		for (int i = 11; i < size; i++) {
+		for (int i = Formations.PLAYER_COUNT; i < size; i++) {
 
 			int slotAdr = firstAdr + i * 2;
 			int numAdr = firstNumAdr + i;
@@ -161,8 +161,8 @@ public final class Squads {
 
 		Arrays.fill(tempNum, tempPos, tempNum.length, (byte) 0xFF);
 
-		System.arraycopy(tempSlot, 0, of.getData(), firstAdr + 11 * 2, tempSlot.length);
-		System.arraycopy(tempNum, 0, of.getData(), firstNumAdr + 11, tempNum.length);
+		System.arraycopy(tempSlot, 0, of.getData(), firstAdr + Formations.PLAYER_COUNT * 2, tempSlot.length);
+		System.arraycopy(tempNum, 0, of.getData(), firstNumAdr + Formations.PLAYER_COUNT, tempNum.length);
 	}
 
 	private static Map.Entry<Integer, Stat> getRolePos(int selPos) {
@@ -220,9 +220,10 @@ public final class Squads {
 	}
 
 	private static List<Map.Entry<Integer, Integer>> getPlayerScores(OptionFile of, int size, int pos, int offset) {
-		List<Map.Entry<Integer, Integer>> list = new ArrayList<Map.Entry<Integer, Integer>>(size - 11);
+		List<Map.Entry<Integer, Integer>> list
+				= new ArrayList<Map.Entry<Integer, Integer>>(size - Formations.PLAYER_COUNT);
 
-		for (int i = 11; i < size; i++) {
+		for (int i = Formations.PLAYER_COUNT; i < size; i++) {
 			int adr = offset + i * 2;
 			int playerIdx = Bits.toInt16(of.getData(), adr);
 			if (playerIdx == 0) break;
@@ -347,7 +348,7 @@ public final class Squads {
 			bestPlayer = bestPosPlayer;
 
 		Bits.toBytes(playerScores.get(bestPlayer).getKey().shortValue(), of.getData(), firstAdr + freePos * 2);
-		bestPlayer += 11;
+		bestPlayer += Formations.PLAYER_COUNT;
 		Bits.toBytes((short) 0, of.getData(), firstAdr + bestPlayer * 2);
 
 		of.getData()[firstNumAdr + freePos] = of.getData()[firstNumAdr + bestPlayer];

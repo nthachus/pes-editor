@@ -260,7 +260,6 @@ public final class Editor extends JFrame {
 
 		if (fs.isFile() && of.load(fs)) {
 			currentFile = fs;
-			refreshTitle(currentFile.getName());
 
 			Squads.fixAll(of);
 
@@ -273,7 +272,6 @@ public final class Editor extends JFrame {
 			teamPan.refresh();
 			leaguePan.refresh();
 
-			tabbedPane.setVisible(true);
 			importPanel.refresh();
 			csvItem.setEnabled(true);
 			open2Item.setEnabled(true);
@@ -281,15 +279,18 @@ public final class Editor extends JFrame {
 			saveAsItem.setEnabled(true);
 			convertItem.setEnabled(of2.isLoaded());
 
+			refreshTitle(currentFile.getName());
+			tabbedPane.setVisible(true);
 		} else {
+			refreshTitle(null);
+			tabbedPane.setVisible(false);
+
 			csvItem.setEnabled(false);
 			open2Item.setEnabled(false);
 			saveItem.setEnabled(false);
 			saveAsItem.setEnabled(false);
-			tabbedPane.setVisible(false);
 			convertItem.setEnabled(false);
 
-			refreshTitle(null);
 			showOpenFailMsg();
 		}
 	}
@@ -553,6 +554,7 @@ public final class Editor extends JFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				log.info("Main form is initializing...");
 				try {
 					Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 						public void uncaughtException(Thread thread, Throwable throwable) {
@@ -563,6 +565,8 @@ public final class Editor extends JFrame {
 
 					Editor form = new Editor();
 					form.setVisible(true);
+					// DEBUG
+					log.info("Main form has been initialized.");
 					form.openFile();
 
 				} catch (Exception e) {

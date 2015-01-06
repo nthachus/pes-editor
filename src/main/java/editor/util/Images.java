@@ -1,9 +1,15 @@
 package editor.util;
 
+import editor.util.swing.IndexColorComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.*;
 import java.awt.image.*;
 
 public final class Images {
+	private static final Logger log = LoggerFactory.getLogger(Images.class);
+
 	private Images() {
 	}
 
@@ -180,6 +186,45 @@ public final class Images {
 		}
 
 		return true;
+	}
+
+	public static BufferedImage paintToIndexImage(Component comp) {
+		if (null == comp) throw new NullPointerException("comp");
+		if (!(comp instanceof IndexColorComponent)) throw new IllegalArgumentException("comp");
+
+		Graphics2D g2 = null;
+		BufferedImage image = null;
+		try {
+			Color[] palette = ((IndexColorComponent) comp).getPalette();
+			int bpp = (int) Math.ceil(Math.log(palette.length) / Math.log(2));
+			int palSize = (1 << bpp);
+
+			byte[] red = new byte[palSize];
+			byte[] green = new byte[palSize];
+			byte[] blue = new byte[palSize];
+			byte[] alpha = new byte[palSize];
+
+			for (int i = 0; i < palette.length; i++) {
+				red[i] = (byte) palette[i].getRed();
+				green[i] = (byte) palette[i].getGreen();
+				blue[i] = (byte) palette[i].getBlue();
+				alpha[i] = (byte) palette[i].getAlpha();
+			}
+
+			Dimension size = comp.getSize();
+			IndexColorModel colMod = new IndexColorModel(bpp, palSize, red, green, blue, alpha);
+			image = new BufferedImage(size.width, size.height, BufferedImage.TYPE_BYTE_INDEXED, colMod);
+
+			g2 = image.createGraphics();
+			comp.paint(g2);
+
+		} catch (Exception e) {
+			log.error("Failed to paint Component " + comp + " to indexed color image:", e);
+		} finally {
+			if (null != g2) g2.dispose();
+		}
+
+		return image;
 	}
 
 }

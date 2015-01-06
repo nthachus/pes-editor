@@ -5,10 +5,11 @@ import editor.data.OptionFile;
 import editor.data.Player;
 import editor.ui.*;
 import editor.util.Files;
-import editor.util.Systems;
+import editor.util.Images;
 import editor.util.swing.DefaultComboBoxModel;
 import editor.util.swing.JComboBox;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -19,7 +20,9 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 public class FormationPanel extends JPanel
 		implements ListSelectionListener, DropTargetListener, DragSourceListener, DragGestureListener {
@@ -144,7 +147,7 @@ public class FormationPanel extends JPanel
 				if (e.getActionCommand() == "y") {
 					int si = squadList.getSelectedIndex();
 					Role role = roleBox.getSelectedItem();
-					if (si >= 0 && si < 11 && role.index != -1) {
+					if (si >= 0 && si < Formations.PLAYER_COUNT && role.index != -1) {
 						// int a = 670641 + (628 * team) + 6232 + si;
 						int oldRole = Formations.getPosition(of, team, altBox
 								.getSelectedIndex(), si);
@@ -457,7 +460,7 @@ public class FormationPanel extends JPanel
 			if (!e.getValueIsAdjusting() && isOk) {
 				int i = squadList.getSelectedIndex();
 				updateRoleBox();
-				if (i >= 0 && i < 11) {
+				if (i >= 0 && i < Formations.PLAYER_COUNT) {
 					pitchPanel.setSelectedIndex(i);
 					adPanel.setSelectedIndex(i);
 				} else {
@@ -478,7 +481,7 @@ public class FormationPanel extends JPanel
 		int si = squadList.getSelectedIndex();
 		int selPos = Formations.getPosition(of, team, altBox.getSelectedIndex(), si);
 		roleBox.setEnabled(true);
-		if (si > 0 && si < 11) {
+		if (si > 0 && si < Formations.PLAYER_COUNT) {
 			int count = 0;
 			boolean free;
 			boolean cbt = false;
@@ -496,7 +499,7 @@ public class FormationPanel extends JPanel
 				} else {
 
 					if (r == 15) {
-						for (int p = 0; free && p < 11; p++) {
+						for (int p = 0; free && p < Formations.PLAYER_COUNT; p++) {
 							pos = Formations.getPosition(of, team, altBox
 									.getSelectedIndex(), p);
 							if (pos != selPos) {
@@ -508,7 +511,7 @@ public class FormationPanel extends JPanel
 					}
 
 					if (r == 16) {
-						for (int p = 0; free && p < 11; p++) {
+						for (int p = 0; free && p < Formations.PLAYER_COUNT; p++) {
 							pos = Formations.getPosition(of, team, altBox
 									.getSelectedIndex(), p);
 							if (pos != selPos) {
@@ -520,7 +523,7 @@ public class FormationPanel extends JPanel
 					}
 
 					if (selPos != 15 && (r == 8 || r == 22)) {
-						for (int p = 0; free && p < 11; p++) {
+						for (int p = 0; free && p < Formations.PLAYER_COUNT; p++) {
 							pos = Formations.getPosition(of, team, altBox
 									.getSelectedIndex(), p);
 							if (pos == 15) {
@@ -530,7 +533,7 @@ public class FormationPanel extends JPanel
 					}
 
 					if (selPos != 16 && (r == 9 || r == 23)) {
-						for (int p = 0; free && p < 11; p++) {
+						for (int p = 0; free && p < Formations.PLAYER_COUNT; p++) {
 							pos = Formations.getPosition(of, team, altBox
 									.getSelectedIndex(), p);
 							if (pos == 16) {
@@ -577,7 +580,7 @@ public class FormationPanel extends JPanel
 				}
 				// }
 
-				for (int p = 0; free && p < 11; p++) {
+				for (int p = 0; free && p < Formations.PLAYER_COUNT; p++) {
 					// System.out.println(r + ", " + p);
 					pos = Formations.getPosition(of, team,
 							altBox.getSelectedIndex(), p);
@@ -698,7 +701,7 @@ public class FormationPanel extends JPanel
 		mid2 = 0;
 		att = 0;
 		int pos;
-		for (int i = 1; i < 11; i++) {
+		for (int i = 1; i < Formations.PLAYER_COUNT; i++) {
 			pos = Formations.getPosition(of, team, altBox.getSelectedIndex(), i);
 			if (isDef(pos)) {
 				def++;
@@ -733,7 +736,6 @@ public class FormationPanel extends JPanel
 	}
 
 	private void savePNG() {
-		boolean error = false;
 		int returnVal = pngChooser.showSaveDialog(null);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File dest = pngChooser.getSelectedFile();
@@ -758,22 +760,26 @@ public class FormationPanel extends JPanel
 					return;
 				}
 			}
+			//log.debug("{}, {}", dest, slotChooser.slot);
 
-			// System.out.println(dest);
-			// System.out.println(slotChooser.slot);
-			if (Systems.saveComponentAsImage(pitchPanel, dest)) {
-				JOptionPane.showMessageDialog(null, dest.getName()
-						+ "\nSaved in:\n" + dest.getParent(),
-						"File Successfully Saved",
-						JOptionPane.INFORMATION_MESSAGE);
-			} else {
-				error = true;
-			}
-			if (error) {
-				JOptionPane.showMessageDialog(null, "Could not access file",
-						"Error", JOptionPane.ERROR_MESSAGE);
+			IOException error = null;
+			BufferedImage img = Images.paintToIndexImage(pitchPanel);
+			try {
+				if (ImageIO.write(img, Files.PNG, dest)) {
+					JOptionPane.showMessageDialog(null, dest.getName()
+							+ "\nSaved in:\n" + dest.getParent(),
+							"File Successfully Saved",
+							JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					error = new IOException("Could not access file");
+				}
+			} catch (IOException e) {
+				error = e;
 			}
 
+			if (null != error) {
+				JOptionPane.showMessageDialog(null, error.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 
@@ -827,7 +833,7 @@ public class FormationPanel extends JPanel
 			int tb = Formations.getSlot(of, team, sourceIndex);
 			Formations.setSlot(of, team, sourceIndex, Formations.getSlot(of, team, ti));
 			Formations.setSlot(of, team, ti, tb);
-			if (sourceIndex < 11 && ti < 11) {
+			if (sourceIndex < Formations.PLAYER_COUNT && ti < Formations.PLAYER_COUNT) {
 				for (int j = 0; j < 6; j++) {
 					if (Formations.getJob(of, team, j) == sourceIndex) {
 						Formations.setJob(of, team, j, ti);

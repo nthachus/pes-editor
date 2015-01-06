@@ -47,7 +47,7 @@ public class SelectByNation extends JPanel {
 
 		freeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		freeList.setLayoutOrientation(JList.VERTICAL);
-		freeList.setVisibleRowCount(11);
+		freeList.setVisibleRowCount(Formations.PLAYER_COUNT);
 
 		JScrollPane scroll = new JScrollPane(
 				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,

@@ -48,7 +48,7 @@ public class JobList extends JList<String> implements ListSelectionListener {
 		isOk = false;
 		this.team = team;
 
-		String[] posJobs = new String[11];
+		String[] posJobs = new String[Formations.PLAYER_COUNT];
 		Arrays.fill(posJobs, " ");
 
 		int p = 0;

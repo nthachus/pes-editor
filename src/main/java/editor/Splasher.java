@@ -12,6 +12,7 @@ public class Splasher {
 	 * @param args The command line arguments.
 	 */
 	public static void main(String[] args) {
+		log.info("Application is starting...");
 		try {
 			SplashWindow.splash(Splasher.class.getResource("/META-INF/images/splash.jpg"));
 			editor.ui.Editor.main(args);

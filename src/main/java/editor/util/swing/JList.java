@@ -8,40 +8,16 @@ public class JList<T> extends javax.swing.JList {
 		super(dataModel);
 	}
 
-	public JList(final Object[] listData) {
-		super(new AbstractListModel<T>() {
-			public int getSize() {
-				return listData.length;
-			}
-
-			public T getElementAt(int index) {
-				return (T) listData[index];
-			}
-		});
+	public JList(Object[] listData) {
+		super(new ArrayListModel<T>(listData));
 	}
 
-	public JList(final Vector<T> listData) {
-		super(new AbstractListModel<T>() {
-			public int getSize() {
-				return listData.size();
-			}
-
-			public T getElementAt(int index) {
-				return listData.elementAt(index);
-			}
-		});
+	public JList(Vector<T> listData) {
+		super(new VectorListModel<T>(listData));
 	}
 
 	public JList() {
-		super(new AbstractListModel<T>() {
-			public int getSize() {
-				return 0;
-			}
-
-			public T getElementAt(int index) {
-				return null;
-			}
-		});
+		super(new BlankListModel<T>());
 	}
 
 	@Override
@@ -57,29 +33,13 @@ public class JList<T> extends javax.swing.JList {
 	}
 
 	@Override
-	public void setListData(final Object[] listData) {
-		setModel(new AbstractListModel<T>() {
-			public int getSize() {
-				return listData.length;
-			}
-
-			public T getElementAt(int index) {
-				return (T) listData[index];
-			}
-		});
+	public void setListData(Object[] listData) {
+		setModel(new ArrayListModel<T>(listData));
 	}
 
 	@Override
-	public void setListData(final Vector<?> listData) {
-		setModel(new AbstractListModel<T>() {
-			public int getSize() {
-				return listData.size();
-			}
-
-			public T getElementAt(int index) {
-				return (T) listData.elementAt(index);
-			}
-		});
+	public void setListData(Vector<?> listData) {
+		setModel(new VectorListModel<T>(listData));
 	}
 
 	@Override

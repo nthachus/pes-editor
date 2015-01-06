@@ -52,13 +52,13 @@ public class PositionList extends JList<String> {
 
 			posList[0] = Formations.positionToString(0) + "   ";// NOTE: padding right string ?
 			posNum[0] = 0;
-			for (int i = 1; i < 11; i++) {
+			for (int i = 1; i < Formations.PLAYER_COUNT; i++) {
 				int pos = Formations.getPosition(of, team, alt, i);
 				posNum[i] = pos;
 				posList[i] = Formations.positionToString(pos);
 			}
 
-			for (int i = 11; i < posList.length; i++) {
+			for (int i = Formations.PLAYER_COUNT; i < posList.length; i++) {
 				posList[i] = " ";
 			}
 		}
@@ -70,7 +70,7 @@ public class PositionList extends JList<String> {
 		if (null == squadList) throw new NullPointerException("squadList");
 		clearSelection();
 
-		if (listIndex < 0 || listIndex >= 11)
+		if (listIndex < 0 || listIndex >= Formations.PLAYER_COUNT)
 			return;
 
 		int selPos = posNum[listIndex];

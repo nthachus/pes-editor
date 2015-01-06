@@ -142,7 +142,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 		Formations.setStrategy(of, squad, btnId, strategy);
 
 		if (strategy == CB_OVERLAP && Formations.getCBOverlap(of, squad) == 0) {
-			for (int i = 1; i < 11; i++) {
+			for (int i = 1; i < Formations.PLAYER_COUNT; i++) {
 				int pos = Formations.getPosition(of, squad, 0, i);
 				if (pos > 0 && pos < 8) {
 					Formations.setCBOverlap(of, squad, i);
@@ -204,7 +204,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 
 		int count = 0, sel = -1;
 		Player p;
-		for (int i = 1; i < 11; i++) {
+		for (int i = 1; i < Formations.PLAYER_COUNT; i++) {
 			int pos = Formations.getPosition(of, squad, 0, i);
 			if (pos > 0 && pos < 8) {
 				if (i == Formations.getCBOverlap(of, squad))

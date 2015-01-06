@@ -86,6 +86,7 @@ public class OptionFile implements Serializable {
 		filename = null;
 
 		RandomAccessFile in = null;
+		log.info("Start loading save game file: {}", file.getName());
 		try {
 			String extension = Files.getExtension(file);
 			in = new RandomAccessFile(file, "r");
@@ -108,6 +109,8 @@ public class OptionFile implements Serializable {
 				checksum(data, true);
 				decrypt(data);
 			}
+
+			log.info("Loading of {} save game file succeeded", format);
 		} catch (Exception e) {
 			log.error("Failed to load save game file:", e);
 			format = null;

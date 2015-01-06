@@ -86,7 +86,7 @@ public final class StringsTest {
 
 	@Test
 	public void testMessageResource() throws Exception {
-		Assert.assertNotNull(Resources.getMessages());
+		Assert.assertNotNull(Resources.getMessages(false));
 
 		String notFoundKey = getClass().getName();
 		String msg = Resources.getMessage(notFoundKey);
