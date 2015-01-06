@@ -172,7 +172,7 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 				count++;
 			}
 		}
-		// TODO: log.debug("", count);
+		//log.debug("Attack directions count: {}", count);
 		return count;
 	}
 

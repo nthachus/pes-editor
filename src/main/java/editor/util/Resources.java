@@ -22,11 +22,15 @@ public final class Resources {
 		return messages;
 	}
 
+	public static ResourceBundle getMessages() {
+		return getMessages(false);
+	}
+
 	public static String getMessage(String key, Object... args) {
 		if (null == key) throw new NullPointerException("key");
 
 		String msg;
-		if (getMessages(false).containsKey(key))
+		if (getMessages().containsKey(key))
 			msg = messages.getString(key);
 		else {
 			msg = key;

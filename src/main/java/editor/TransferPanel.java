@@ -117,7 +117,7 @@ public class TransferPanel extends JPanel
 		sourceR.createDefaultDragGestureRecognizer(selectorR.getSquadList(),
 				DnDConstants.ACTION_MOVE, this);
 
-		infoPanel = new InfoPanel(selectorL, of);
+		infoPanel = new InfoPanel(of, selectorL);
 
 		selectorL.getSquadList().setToolTipText("Double click to edit player, right click to edit formation");
 		selectorR.getSquadList().setToolTipText("Double click to edit player, right click to edit formation");

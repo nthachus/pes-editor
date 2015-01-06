@@ -552,15 +552,16 @@ public final class Editor extends JFrame {
 	}
 
 	public static void main(String[] args) {
+		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+			public void uncaughtException(Thread thread, Throwable throwable) {
+				log.error("Unhandled exception occurred:", throwable);
+			}
+		});
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				log.info("Main form is initializing...");
 				try {
-					Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-						public void uncaughtException(Thread thread, Throwable throwable) {
-							log.error("Unhandled exception occurred:", throwable);
-						}
-					});
 					Systems.systemUI();
 
 					Editor form = new Editor();

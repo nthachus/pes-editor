@@ -476,12 +476,20 @@ public class FormationPanel extends JPanel
 
 	private void updateRoleBox() {
 		countForm();
+
 		roleBox.setActionCommand("n");
 		roleBox.removeAllItems();
-		int si = squadList.getSelectedIndex();
-		int selPos = Formations.getPosition(of, team, altBox.getSelectedIndex(), si);
 		roleBox.setEnabled(true);
-		if (si > 0 && si < Formations.PLAYER_COUNT) {
+
+		int si = squadList.getSelectedIndex();
+		if (si <= 0 || si >= Formations.PLAYER_COUNT) {
+			if (si == 0) {
+				roleBox.addItem(new Role(0));
+			} else {
+				roleBox.setEnabled(false);
+			}
+		} else {
+			int selPos = Formations.getPosition(of, team, altBox.getSelectedIndex(), si);
 			int count = 0;
 			boolean free;
 			boolean cbt = false;
@@ -614,13 +622,8 @@ public class FormationPanel extends JPanel
 			}
 
 			// roleBox.setSelectedItem();
-		} else {
-			if (si == 0) {
-				roleBox.addItem(new Role(0));
-			} else {
-				roleBox.setEnabled(false);
-			}
 		}
+
 		roleBox.setActionCommand("y");
 	}
 

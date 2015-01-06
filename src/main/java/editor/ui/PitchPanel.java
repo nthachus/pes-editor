@@ -58,7 +58,7 @@ public class PitchPanel extends JPanel
 
 		setOpaque(true);
 		setPreferredSize(new Dimension(329 + ADJ * 2, 200 + ADJ * 2));
-		setBackground(COLORS[0]);
+		setBackground(Color.BLACK);
 		addMouseListener(this);
 		addMouseMotionListener(this);
 	}
@@ -121,29 +121,10 @@ public class PitchPanel extends JPanel
 		}
 	}
 
-	private void drawDefDirections(Graphics2D g2, int player, int x, int y) {
-		if (!showDefence)
-			return;
-
-		g2.setPaint(COLORS[6]);
-		int size = 6;
-		int x1 = (x + 7) - 13 - (size / 2);
-		int y1 = (y + 7) - 5 - (size / 2);
-		int x2 = (x + 7) - 13 - (size / 2);
-		int y2 = (y + 7) + 5 - (size / 2);
-		if (Formations.getDefence(of, squad, altBox.getSelectedIndex(), player) == 1) {
-			g2.fill(new Ellipse2D.Double(x2, y2, size, size));
-		} else if (Formations.getDefence(of, squad, altBox
-				.getSelectedIndex(), player) == 0) {
-			g2.fill(new Ellipse2D.Double(x1, y1, size, size));
-			g2.fill(new Ellipse2D.Double(x2, y2, size, size));
-		}
-	}
-
 	private void drawStadiumLayout(Graphics2D g2) {
-		g2.setPaint(COLORS[0]);
+		g2.setPaint(Color.BLACK);
 		g2.fill(new Rectangle2D.Double(0, 0, 329 + ADJ * 2, 200 + ADJ * 2));
-		g2.setPaint(COLORS[7]);
+		g2.setPaint(Color.GRAY);
 		//g2.setStroke(stroke);
 		g2.draw(new Rectangle2D.Double(13, 13, 329 + 2, 200 + 2));
 		g2.draw(new Line2D.Double(178, 13, 178, 215));
@@ -158,16 +139,16 @@ public class PitchPanel extends JPanel
 
 	private Color getPositionColor(int player, int pos) {
 		if (player == selectedIdx) {
-			return COLORS[1];
+			return Color.WHITE;
 		} else {
 			if (pos <= 0) {
-				return COLORS[2];
+				return Color.YELLOW;
 			} else if (pos < 10) {
-				return COLORS[3];
+				return Color.CYAN;
 			} else if (pos < 29) {
-				return COLORS[4];
+				return Color.GREEN;
 			} else if (pos < 41) {
-				return COLORS[5];
+				return Color.RED;
 			}
 		}
 		return null;
@@ -266,8 +247,28 @@ public class PitchPanel extends JPanel
 			textAdj--;
 
 		g2.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
-		g2.setPaint(COLORS[0]);
+		g2.setPaint(Color.BLACK);
 		g2.drawString(numText, x + 2 + textAdj, y + 11);
+	}
+
+	private void drawDefDirections(Graphics2D g2, int player, int x, int y) {
+		if (!showDefence)
+			return;
+
+		g2.setPaint(Color.BLUE);
+
+		final int size = 6;
+		int x1 = x + ADJ / 2 - 13 - size / 2;
+		int y1 = y + ADJ / 2 - 5 - size / 2;
+		int x2 = x + ADJ / 2 - 13 - size / 2;
+		int y2 = y + ADJ / 2 + 5 - size / 2;
+
+		if (Formations.getDefence(of, squad, altBox.getSelectedIndex(), player) != 0) {
+			g2.fill(new Ellipse2D.Double(x2, y2, size, size));
+		} else {
+			g2.fill(new Ellipse2D.Double(x1, y1, size, size));
+			g2.fill(new Ellipse2D.Double(x2, y2, size, size));
+		}
 	}
 
 	public void mousePressed(MouseEvent e) {

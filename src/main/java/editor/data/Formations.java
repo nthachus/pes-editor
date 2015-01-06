@@ -58,7 +58,7 @@ public final class Formations {
 	}
 
 	private static int getPosOffset(int squad, int alt, int index) {
-		if (index <= 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index");
+		if (index < 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index");
 		return getAltOffset(squad, alt) + 138 + index;
 	}
 
@@ -191,11 +191,11 @@ public final class Formations {
 		return Bits.toInt(of.getData()[adr]);
 	}
 
-	public static void setDefence(OptionFile of, int squad, int alt, int index, int direction) {
+	public static void setDefence(OptionFile of, int squad, int alt, int index, int defence) {
 		if (null == of) throw new NullPointerException("of");
 
 		int adr = getDefOffset(squad, alt, index);
-		of.getData()[adr] = Bits.toByte(direction);
+		of.getData()[adr] = Bits.toByte(defence);
 	}
 
 	private static int getStrategyOffset(int squad, int button) {

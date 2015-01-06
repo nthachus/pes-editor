@@ -1,6 +1,5 @@
 package editor.ui;
 
-import editor.InfoPanel;
 import editor.data.OptionFile;
 import editor.data.Player;
 import editor.data.Stat;
