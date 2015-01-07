@@ -66,10 +66,12 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 
 	@Override
 	public void paintComponent(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
-		if (null == g2) throw new NullPointerException("g");
+		if (null == g) throw new NullPointerException("g");
+		if (!(g instanceof Graphics2D)) throw new IllegalArgumentException("g");
 
+		Graphics2D g2 = (Graphics2D) g;
 		Rectangle2D bound = new Rectangle2D.Double(0, 0, BOX_SIZE, BOX_SIZE);
+
 		if (selectedIndex < 0) {
 			g2.setPaint(Color.GRAY);
 			g2.fill(bound);

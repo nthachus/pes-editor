@@ -82,9 +82,9 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		JButton btn = (JButton) evt.getSource();
-		if (null == btn) throw new IllegalArgumentException("evt");
+		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 
+		AbstractButton btn = (AbstractButton) evt.getSource();
 		slot = Integer.parseInt(btn.getActionCommand());
 		setVisible(false);
 	}
@@ -113,13 +113,13 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	public ImageIcon getFlagBackground(Image image, int bgIndex, byte[] red, byte[] green, byte[] blue) {
 		if (bgIndex < 0 || bgIndex >= rasterData.length) throw new IndexOutOfBoundsException("bgIndex");
 
-		IndexColorModel colorModel = new IndexColorModel(BITS_DEPTH, (1 << BITS_DEPTH), red, green, blue);
+		IndexColorModel colorModel = new IndexColorModel(BITS_DEPTH, Images.paletteSize(BITS_DEPTH), red, green, blue);
 		BufferedImage bi = new BufferedImage(colorModel, rasterData[bgIndex], false, null);
 
 		BufferedImage img = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g2 = null;
 		try {
-			g2 = (Graphics2D) img.getGraphics();
+			g2 = img.createGraphics();
 			g2.drawImage(bi, 0, 0, null);
 			if (image != null) {
 				int x = (IMG_WIDTH - image.getWidth(null)) / 2;

@@ -108,9 +108,9 @@ public class LogoImportDialog extends JDialog {
 
 	private void importFlag(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		JButton btn = (JButton) evt.getSource();
-		if (null == btn) throw new IllegalArgumentException("evt");
+		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 
+		AbstractButton btn = (AbstractButton) evt.getSource();
 		replacement = Integer.parseInt(btn.getActionCommand());
 		Logos.importData(of2, replacement, of, slot);
 

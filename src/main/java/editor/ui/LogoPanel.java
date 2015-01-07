@@ -88,9 +88,9 @@ public class LogoPanel extends JPanel {
 
 	private void onSelectLogo(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		JButton btn = (JButton) evt.getSource();
-		if (null == btn) throw new IllegalArgumentException("evt");
+		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 
+		AbstractButton btn = (AbstractButton) evt.getSource();
 		int slot = Integer.parseInt(btn.getActionCommand());
 		ImageIcon icon = new ImageIcon(Logos.get(of, slot, !isTrans));
 

@@ -1,11 +1,14 @@
 package editor.util;
 
-import editor.util.swing.IndexColorComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.*;
+import java.io.File;
+import java.util.*;
+import java.util.List;
 
 public final class Images {
 	private static final Logger log = LoggerFactory.getLogger(Images.class);
@@ -18,6 +21,14 @@ public final class Images {
 			throw new IllegalArgumentException("bitsPerPixel");
 
 		return (1 << bitsPerPixel);
+	}
+
+	public static int bitsPerPixel(int colorsCount) {
+		int bpp = (int) Math.ceil(Math.log(colorsCount) / Math.log(2));
+		if (bpp <= 0) bpp = 1;
+		else if (bpp == 3) bpp = 4;
+		else if (bpp > 4 && (bpp % 8) != 0) bpp = (bpp + 7) / 8;
+		return bpp;
 	}
 
 	public static int rasterDataSize(int bitsPerPixel, int imgSize) {
@@ -188,38 +199,86 @@ public final class Images {
 		return true;
 	}
 
-	public static BufferedImage paintToIndexImage(Component comp) {
+	public static boolean saveComponentAsImage(Component comp, File out) {
 		if (null == comp) throw new NullPointerException("comp");
-		if (!(comp instanceof IndexColorComponent)) throw new IllegalArgumentException("comp");
+		if (null == out) throw new NullPointerException("out");
+		String format = Files.getExtension(out);
+		if (Strings.isBlank(format)) throw new IllegalArgumentException("out");
 
 		Graphics2D g2 = null;
-		BufferedImage image = null;
 		try {
-			Color[] palette = ((IndexColorComponent) comp).getPalette();
-			int bpp = (int) Math.ceil(Math.log(palette.length) / Math.log(2));
-			int palSize = (1 << bpp);
-
-			byte[] red = new byte[palSize];
-			byte[] green = new byte[palSize];
-			byte[] blue = new byte[palSize];
-			byte[] alpha = new byte[palSize];
-
-			for (int i = 0; i < palette.length; i++) {
-				red[i] = (byte) palette[i].getRed();
-				green[i] = (byte) palette[i].getGreen();
-				blue[i] = (byte) palette[i].getBlue();
-				alpha[i] = (byte) palette[i].getAlpha();
-			}
-
 			Dimension size = comp.getSize();
-			IndexColorModel colMod = new IndexColorModel(bpp, palSize, red, green, blue, alpha);
-			image = new BufferedImage(size.width, size.height, BufferedImage.TYPE_BYTE_INDEXED, colMod);
+			BufferedImage img = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_RGB);
 
-			g2 = image.createGraphics();
+			g2 = img.createGraphics();
 			comp.paint(g2);
 
+			if (Files.PNG.equalsIgnoreCase(format))
+				img = rgbToIndexedColor(img);
+
+			return ImageIO.write(img, format.toLowerCase(), out);
+
 		} catch (Exception e) {
-			log.error("Failed to paint Component " + comp + " to indexed color image:", e);
+			log.error("Failed to save Component " + comp + " as image: " + out, e);
+		} finally {
+			if (null != g2) g2.dispose();
+		}
+
+		return false;
+	}
+
+	// NOTE: Optimize PNG with pngtastic before saving
+	public static BufferedImage rgbToIndexedColor(BufferedImage image) {
+		if (null == image)
+			return null;
+
+		if (image.getType() != BufferedImage.TYPE_INT_RGB && image.getType() != BufferedImage.TYPE_INT_ARGB)
+			return image;
+
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		for (int y = 0; y < image.getHeight(); y++) {
+			for (int x = 0; x < image.getWidth(); x++) {
+
+				int rgb = image.getRGB(x, y);
+				int cnt = (map.containsKey(rgb) ? map.get(rgb) : 0) + 1;
+				map.put(rgb, cnt);
+			}
+		}
+
+		if (map.size() > 256)
+			return image;
+
+		// sort the palette
+		List<Map.Entry<Integer, Integer>> list = new ArrayList<Map.Entry<Integer, Integer>>(map.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<Integer, Integer>>() {
+			public int compare(Map.Entry<Integer, Integer> o1, Map.Entry<Integer, Integer> o2) {
+				return o2.getValue().compareTo(o1.getValue());
+			}
+		});
+		log.debug("Sorted palette: {}", list);
+
+		int bitsDepth = bitsPerPixel(list.size());
+		int paletteSize = paletteSize(bitsDepth);
+
+		int[] palette = new int[paletteSize];
+		for (int i = 0; i < list.size(); i++)
+			palette[i] = list.get(i).getKey();
+
+		int rasterSize = rasterDataSize(bitsDepth, image.getWidth(), image.getHeight());
+		DataBuffer buf = new DataBufferByte(rasterSize);
+		SampleModel sampleMod = new MultiPixelPackedSampleModel(
+				DataBuffer.TYPE_BYTE, image.getWidth(), image.getHeight(), bitsDepth);
+		WritableRaster raster = Raster.createWritableRaster(sampleMod, buf, null);
+
+		ColorModel colorMod = new IndexColorModel(bitsDepth, palette.length, palette, 0,
+				image.getType() == BufferedImage.TYPE_INT_ARGB, -1, DataBuffer.TYPE_BYTE);
+		BufferedImage img = new BufferedImage(colorMod, raster, false, null);
+
+		Graphics2D g2 = null;
+		try {
+			g2 = img.createGraphics();
+			if (g2.drawImage(image, 0, 0, null))
+				return img;
 		} finally {
 			if (null != g2) g2.dispose();
 		}

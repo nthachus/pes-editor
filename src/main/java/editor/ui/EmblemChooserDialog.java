@@ -60,9 +60,9 @@ public class EmblemChooserDialog extends JDialog {
 
 	private void onSelectEmblem(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		JButton btn = (JButton) evt.getSource();
-		if (null == btn) throw new IllegalArgumentException("evt");
+		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 
+		AbstractButton btn = (AbstractButton) evt.getSource();
 		slot = Integer.parseInt(btn.getActionCommand());
 		if (slot >= Emblems.count16(of)) {
 			slot = Emblems.TOTAL16 - slot - 1;

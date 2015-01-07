@@ -65,7 +65,7 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 			file = null;
 			isUpdated = true;
 		} else if (JFileChooser.SELECTED_FILE_CHANGED_PROPERTY.equalsIgnoreCase(prop)) {
-			file = (File) evt.getNewValue();
+			file = (evt.getNewValue() instanceof File) ? (File) evt.getNewValue() : null;
 			isUpdated = true;
 		}
 

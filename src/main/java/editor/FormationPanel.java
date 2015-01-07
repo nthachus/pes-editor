@@ -9,7 +9,6 @@ import editor.util.Images;
 import editor.util.swing.DefaultComboBoxModel;
 import editor.util.swing.JComboBox;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -20,9 +19,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 public class FormationPanel extends JPanel
 		implements ListSelectionListener, DropTargetListener, DragSourceListener, DragGestureListener {
@@ -765,23 +762,13 @@ public class FormationPanel extends JPanel
 			}
 			//log.debug("{}, {}", dest, slotChooser.slot);
 
-			IOException error = null;
-			BufferedImage img = Images.paintToIndexImage(pitchPanel);
-			try {
-				if (ImageIO.write(img, Files.PNG, dest)) {
-					JOptionPane.showMessageDialog(null, dest.getName()
-							+ "\nSaved in:\n" + dest.getParent(),
-							"File Successfully Saved",
-							JOptionPane.INFORMATION_MESSAGE);
-				} else {
-					error = new IOException("Could not access file");
-				}
-			} catch (IOException e) {
-				error = e;
-			}
-
-			if (null != error) {
-				JOptionPane.showMessageDialog(null, error.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			if (Images.saveComponentAsImage(pitchPanel, dest)) {
+				JOptionPane.showMessageDialog(null, dest.getName()
+						+ "\nSaved in:\n" + dest.getParent(),
+						"File Successfully Saved",
+						JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(null, "Could not access file", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}

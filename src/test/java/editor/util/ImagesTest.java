@@ -22,7 +22,7 @@ public final class ImagesTest extends BaseTest {
 		ColorModel colorModel = img.getColorModel();
 		Assert.assertTrue(colorModel instanceof IndexColorModel);
 
-		int bpp = (int) (Math.log(((IndexColorModel) colorModel).getMapSize()) / Math.log(2));
+		int bpp = Images.bitsPerPixel(((IndexColorModel) colorModel).getMapSize());
 		int imgSize = img.getWidth();
 
 		byte[] buffer = new byte[Images.recordSize(bpp, imgSize)];

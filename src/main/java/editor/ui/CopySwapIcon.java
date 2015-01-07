@@ -27,9 +27,10 @@ public class CopySwapIcon implements Icon {
 	}
 
 	public void paintIcon(Component c, Graphics g, int x, int y) {
-		Graphics2D g2 = (Graphics2D) g;
-		if (null == g2) throw new NullPointerException("g");
+		if (null == g) throw new NullPointerException("g");
+		if (!(g instanceof Graphics2D)) throw new IllegalArgumentException("g");
 
+		Graphics2D g2 = (Graphics2D) g;
 		g2.translate(x, y);
 
 		g2.setPaint(Color.BLACK);

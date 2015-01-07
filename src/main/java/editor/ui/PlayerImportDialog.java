@@ -113,13 +113,16 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 
 	public void mouseClicked(MouseEvent e) {
 		if (null == e) throw new NullPointerException("e");
-		if (e.getClickCount() < 2) return;
+		if (!(e.getSource() instanceof JList)) throw new IllegalArgumentException("e");
+
+		if (e.getClickCount() < 2)
+			return;
 
 		JList list = (JList) e.getSource();
-		if (null == list) throw new IllegalArgumentException("e");
+		if (!(list.getSelectedValue() instanceof Player))
+			return;
 
-		Player p = (Player) list.getSelectedValue();
-		int pid = (null == p) ? -1 : p.getIndex();
+		int pid = ((Player) list.getSelectedValue()).getIndex();
 		if (pid > 0) {
 			replacement = pid;
 			importPlayer();

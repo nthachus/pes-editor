@@ -3,7 +3,6 @@ package editor.ui;
 import editor.data.*;
 import editor.util.Bits;
 import editor.util.Resources;
-import editor.util.swing.IndexColorComponent;
 import editor.util.swing.JComboBoxModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,7 @@ import java.awt.*;
 /**
  * Player information panel.
  */
-public class InfoPanel extends JScrollPane implements IndexColorComponent {
+public class InfoPanel extends JScrollPane {
 	private static final Logger log = LoggerFactory.getLogger(InfoPanel.class);
 
 	private final OptionFile of;
@@ -60,14 +59,6 @@ public class InfoPanel extends JScrollPane implements IndexColorComponent {
 
 	private boolean hasListSquads() {
 		return (null != selector);
-	}
-
-	private static final Color[] COLORS = {
-			Color.BLACK, Color.WHITE, Color.RED, Color.GREEN, Color.ORANGE, Color.YELLOW, new Color(183, 255, 0)
-	};
-
-	public Color[] getPalette() {
-		return COLORS;
 	}
 
 	/**
@@ -394,7 +385,7 @@ public class InfoPanel extends JScrollPane implements IndexColorComponent {
 			} else if (val >= 80) {
 				return Color.YELLOW;
 			} else if (val >= 75) {
-				return COLORS[6];
+				return new Color(183, 255, 0);
 			}
 		}
 		return Color.WHITE;

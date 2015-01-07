@@ -3,7 +3,6 @@ package editor.ui;
 import editor.FormationPanel;
 import editor.data.Formations;
 import editor.data.OptionFile;
-import editor.util.swing.IndexColorComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,9 +14,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
-public class PitchPanel extends JPanel
-		implements IndexColorComponent, MouseListener, MouseMotionListener {
-
+public class PitchPanel extends JPanel implements MouseListener, MouseMotionListener {
 	private static final int ADJ = 14;
 	private static final int DIA = 14;
 
@@ -87,19 +84,12 @@ public class PitchPanel extends JPanel
 		roleOn = isRoleOn;
 	}
 
-	private static final Color[] COLORS = {
-			Color.BLACK, Color.WHITE, Color.YELLOW, Color.CYAN, Color.GREEN, Color.RED, Color.BLUE, Color.GRAY
-	};
-
-	public Color[] getPalette() {
-		return COLORS;
-	}
-
 	@Override
 	public void paintComponent(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
-		if (null == g2) throw new NullPointerException("g");
+		if (null == g) throw new NullPointerException("g");
+		if (!(g instanceof Graphics2D)) throw new IllegalArgumentException("g");
 
+		Graphics2D g2 = (Graphics2D) g;
 		drawStadiumLayout(g2);
 
 		Color c;

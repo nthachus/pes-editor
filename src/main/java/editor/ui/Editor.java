@@ -518,9 +518,10 @@ public final class Editor extends JFrame {
 			in = new FileInputStream(settingsFile);
 			sr = new ObjectInputStream(in);
 
-			dir = (File) sr.readObject();
-			if (null != dir && !dir.exists()) {
-				dir = null;
+			Object o = sr.readObject();
+			if (o instanceof File) {
+				dir = (File) o;
+				if (!dir.exists()) dir = null;
 			}
 		} catch (Exception e) {
 			log.error("Failed to load settings:", e);

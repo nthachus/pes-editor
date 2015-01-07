@@ -78,9 +78,9 @@ public class LogoChooserDialog extends JDialog {
 
 	private void onSelectLogo(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		JButton btn = (JButton) evt.getSource();
-		if (null == btn) throw new IllegalArgumentException("evt");
+		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 
+		AbstractButton btn = (AbstractButton) evt.getSource();
 		slot = Integer.parseInt(btn.getActionCommand());
 		setVisible(false);
 	}

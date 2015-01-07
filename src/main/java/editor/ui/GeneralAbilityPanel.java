@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 
 public class GeneralAbilityPanel extends JPanel {
@@ -189,8 +190,10 @@ public class GeneralAbilityPanel extends JPanel {
 
 		@Override
 		public boolean verify(JComponent input) {
-			JTextField tf = (JTextField) input;
-			if (null == tf) throw new NullPointerException("input");
+			if (null == input) throw new NullPointerException("input");
+			if (!(input instanceof JTextComponent)) throw new IllegalArgumentException("input");
+
+			JTextComponent tf = (JTextComponent) input;
 			try {
 				int v = Integer.parseInt(tf.getText());
 				if (v >= stat.minValue() && v <= stat.maxValue()) {
@@ -199,6 +202,7 @@ public class GeneralAbilityPanel extends JPanel {
 			} catch (NumberFormatException nfe) {
 				log.info(nfe.toString());
 			}
+
 			return false;
 		}
 	}

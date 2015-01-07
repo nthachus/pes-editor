@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -77,9 +78,9 @@ public class Ability99Panel extends JPanel
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		JTextField tf = (JTextField) evt.getSource();
-		if (null == tf) throw new IllegalArgumentException("evt");
+		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
 
+		JTextComponent tf = (JTextComponent) evt.getSource();
 		int f = 0;
 		try {
 			f = Integer.parseInt(evt.getActionCommand());
@@ -106,9 +107,10 @@ public class Ability99Panel extends JPanel
 	public static class Verifier99 extends InputVerifier {
 		@Override
 		public boolean verify(JComponent input) {
-			JTextField tf = (JTextField) input;
-			if (null == tf) throw new NullPointerException("input");
+			if (null == input) throw new NullPointerException("input");
+			if (!(input instanceof JTextComponent)) throw new IllegalArgumentException("input");
 
+			JTextComponent tf = (JTextComponent) input;
 			try {
 				int v = Integer.parseInt(tf.getText());
 				if (v >= 1 && v <= MAX_VAL) {
@@ -124,9 +126,9 @@ public class Ability99Panel extends JPanel
 
 	public void caretUpdate(CaretEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		JTextField tf = (JTextField) evt.getSource();
-		if (null == tf) throw new IllegalArgumentException("evt");
+		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
 
+		JTextComponent tf = (JTextComponent) evt.getSource();
 		String text = tf.getText();
 		Color bg = Color.WHITE;
 
@@ -156,9 +158,9 @@ public class Ability99Panel extends JPanel
 
 	public void keyPressed(KeyEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		JTextField tf = (JTextField) evt.getSource();
-		if (null == tf) throw new IllegalArgumentException("evt");
+		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
 
+		JTextComponent tf = (JTextComponent) evt.getSource();
 		try {
 			int v = Integer.parseInt(tf.getText());
 			int key = evt.getKeyCode();
