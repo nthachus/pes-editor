@@ -7,18 +7,18 @@ import java.awt.*;
 
 public class CsvSwitchPanel extends JPanel {
 	private final JCheckBox head;
-	private final JCheckBox extra;
+	//private final JCheckBox extra;
 	private final JCheckBox create;
 
 	public CsvSwitchPanel() {
 		super(new GridLayout(0, 1));
 
 		head = new JCheckBox(Resources.getMessage("csv.headings"));
-		extra = new JCheckBox(Resources.getMessage("csv.extra"));
+		//extra = new JCheckBox(Resources.getMessage("csv.extra"));
 		create = new JCheckBox(Resources.getMessage("csv.create"));
 
 		add(head);
-		add(extra);
+		//add(extra);
 		add(create);
 	}
 
@@ -26,9 +26,9 @@ public class CsvSwitchPanel extends JPanel {
 		return head;
 	}
 
-	public JCheckBox getExtra() {
+	/*public JCheckBox getExtra() {
 		return extra;
-	}
+	}*/
 
 	public JCheckBox getCreate() {
 		return create;

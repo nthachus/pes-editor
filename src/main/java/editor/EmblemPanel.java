@@ -5,6 +5,7 @@ import editor.data.OptionFile;
 import editor.ui.EmblemImportDialog;
 import editor.ui.ImageFileFilter;
 import editor.ui.PngFilter;
+import editor.util.Colors;
 import editor.util.Files;
 import editor.util.Systems;
 
@@ -40,7 +41,6 @@ public class EmblemPanel extends JPanel implements MouseListener {
 		teamPanel = tp;
 
 		initComponents();
-
 		refresh();
 	}
 
@@ -68,119 +68,26 @@ public class EmblemPanel extends JPanel implements MouseListener {
 
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
 		Systems.javaUI();// fix button background color
-		for (int l = 0; l < Emblems.TOTAL16; l++) {
-			flagButtons[l] = new JButton();
-			flagButtons[l].setBackground(new Color(0xCC, 0xCC, 0xCC));
-			flagButtons[l].setMargin(new Insets(0, 0, 0, 0));
-			flagButtons[l].setActionCommand(Integer.toString(l));
-			flagButtons[l].addMouseListener(this);
-			flagButtons[l].addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent b) {
-					int slot = Integer.parseInt(((JButton) b.getSource()).getActionCommand());
-					ImageIcon icon;
-					boolean is128 = false;
-					if (slot >= Emblems.count16(of)) {
-						is128 = true;
-						slot = Emblems.TOTAL16 - 1 - slot;
-						icon = new ImageIcon(Emblems.get128(of, slot, !isTrans, false));
-					} else {
-						icon = new ImageIcon(Emblems.get16(of, slot, !isTrans, false));
-					}
-					Object[] options;
-					Object[] options1 = {
-							"Delete", "Import PNG / GIF",
-							"Export as PNG", "Import (OF2)", "Cancel"
-					};
-					Object[] options2 = {
-							"Delete", "Import PNG / GIF",
-							"Export as PNG", "Cancel"
-					};
-					if (flagImportDia.isOf2Loaded()) {
-						options = options1;
-					} else {
-						options = options2;
-					}
-					int n = JOptionPane.showOptionDialog(null, "Options:",
-							"Emblem", JOptionPane.YES_NO_CANCEL_OPTION,
-							JOptionPane.QUESTION_MESSAGE, icon, options,
-							options[0]);
-
-					if (n == 0) {
-						if (is128) {
-							Emblems.delete128(of, slot);
-						} else {
-							Emblems.delete16(of, slot);
-						}
-						teamPanel.refresh();
-						refresh();
-					}
-					if (n == 1) {
-						int returnVal = chooser.showOpenDialog(null);
-						if (returnVal == JFileChooser.APPROVE_OPTION) {
-							File source = chooser.getSelectedFile();
-							try {
-								BufferedImage image;
-								image = ImageIO.read(source);
-
-								int check = checkImage(image);
-								if (check != -1) {
-									if (is128) {
-										if (check < 128) {
-											if (check > 15) {
-												Emblems.set128(of, slot, image);
-											} else {
-												wasteMsg();
-											}
-										}
-									} else {
-										if (check < 16) {
-											Emblems.set16(of, slot, image);
-										} else {
-											col16Msg();
-										}
-									}
-									teamPanel.refresh();
-									refresh();
-								}
-							} catch (Exception e) {
-								JOptionPane.showMessageDialog(null, "Could not open file", "Error",
-										JOptionPane.ERROR_MESSAGE);
-							}
-						}
-					}
-					if (n == 2) {
-						savePNG(is128, slot);
-					}
-					if (flagImportDia.isOf2Loaded() && n == 3) {
-						int replacement;
-						if (is128) {
-							replacement = flagImportDia.getEmblem("Import Emblem", 2);
-							if (replacement != -1) {
-								flagImportDia.import128(of, slot, replacement);
-							}
-						} else {
-							replacement = flagImportDia
-									.getEmblem("Import Emblem", 1);
-							if (replacement != -1) {
-								replacement = replacement - Emblems.TOTAL128;
-								flagImportDia.import16(of, slot, replacement);
-							}
-						}
-
-						teamPanel.refresh();
-						refresh();
-					}
+		for (int i = 0; i < flagButtons.length; i++) {
+			flagButtons[i] = new JButton();
+			flagButtons[i].setBackground(Colors.GRAY80);
+			flagButtons[i].setMargin(new Insets(0, 0, 0, 0));
+			flagButtons[i].setActionCommand(Integer.toString(i));
+			flagButtons[i].addMouseListener(this);
+			flagButtons[i].addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					onSelectEmblem(evt);
 				}
 			});
-			flagPanel.add(flagButtons[l]);
+
+			flagPanel.add(flagButtons[i]);
 		}
 		Systems.systemUI();
 
 		JButton transButton = new JButton("Transparency");
 		transButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent t) {
-				isTrans = !isTrans;
-				refresh();
+			public void actionPerformed(ActionEvent evt) {
+				onTransparency(/*evt*/);
 			}
 		});
 
@@ -188,7 +95,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 		free128Label = new JLabel();
 		addButton = new JButton("Add Emblem");
 		addButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent t) {
+			public void actionPerformed(ActionEvent evt) {
 				if (Emblems.getFree128(of) > 0 || (Emblems.getFree16(of) > 0)) {
 
 					int returnVal = chooser.showOpenDialog(null);
@@ -260,14 +167,115 @@ public class EmblemPanel extends JPanel implements MouseListener {
 		pan1.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		pan1.add(new JLabel("16 Colour Format"), BorderLayout.NORTH);
 		pan1.add(flagPanel, BorderLayout.CENTER);
-		pan1.add(new JLabel("128 Colour Format", SwingConstants.RIGHT),
-				BorderLayout.SOUTH);
+		pan1.add(new JLabel("128 Colour Format", SwingConstants.RIGHT), BorderLayout.SOUTH);
 		JPanel pan2 = new JPanel(new BorderLayout());
 		pan2.add(pan1, BorderLayout.CENTER);
 		pan2.add(transButton, BorderLayout.SOUTH);
 		add(pan2);
 		add(largeFlag);
 		add(freePanel);
+	}
+
+	private void onTransparency(/*ActionEvent evt*/) {
+		isTrans = !isTrans;
+		refresh();
+	}
+
+	private void onSelectEmblem(ActionEvent evt) {
+		int slot = Integer.parseInt(((JButton) evt.getSource()).getActionCommand());
+		ImageIcon icon;
+		boolean is128 = false;
+		if (slot >= Emblems.count16(of)) {
+			is128 = true;
+			slot = Emblems.TOTAL16 - 1 - slot;
+			icon = new ImageIcon(Emblems.get128(of, slot, !isTrans, false));
+		} else {
+			icon = new ImageIcon(Emblems.get16(of, slot, !isTrans, false));
+		}
+		Object[] options;
+		Object[] options1 = {
+				"Delete", "Import PNG / GIF",
+				"Export as PNG", "Import (OF2)", "Cancel"
+		};
+		Object[] options2 = {
+				"Delete", "Import PNG / GIF",
+				"Export as PNG", "Cancel"
+		};
+		if (flagImportDia.isOf2Loaded()) {
+			options = options1;
+		} else {
+			options = options2;
+		}
+		int n = JOptionPane.showOptionDialog(null, "Options:",
+				"Emblem", JOptionPane.YES_NO_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE, icon, options,
+				options[0]);
+
+		if (n == 0) {
+			if (is128) {
+				Emblems.delete128(of, slot);
+			} else {
+				Emblems.delete16(of, slot);
+			}
+			teamPanel.refresh();
+			refresh();
+		}
+		if (n == 1) {
+			int returnVal = chooser.showOpenDialog(null);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File source = chooser.getSelectedFile();
+				try {
+					BufferedImage image;
+					image = ImageIO.read(source);
+
+					int check = checkImage(image);
+					if (check != -1) {
+						if (is128) {
+							if (check < 128) {
+								if (check > 15) {
+									Emblems.set128(of, slot, image);
+								} else {
+									wasteMsg();
+								}
+							}
+						} else {
+							if (check < 16) {
+								Emblems.set16(of, slot, image);
+							} else {
+								col16Msg();
+							}
+						}
+						teamPanel.refresh();
+						refresh();
+					}
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(null, "Could not open file", "Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
+		if (n == 2) {
+			savePNG(is128, slot);
+		}
+		if (flagImportDia.isOf2Loaded() && n == 3) {
+			int replacement;
+			if (is128) {
+				replacement = flagImportDia.getEmblem("Import Emblem", 2);
+				if (replacement != -1) {
+					flagImportDia.import128(of, slot, replacement);
+				}
+			} else {
+				replacement = flagImportDia
+						.getEmblem("Import Emblem", 1);
+				if (replacement != -1) {
+					replacement = replacement - Emblems.TOTAL128;
+					flagImportDia.import16(of, slot, replacement);
+				}
+			}
+
+			teamPanel.refresh();
+			refresh();
+		}
 	}
 
 	private void savePNG(boolean is128, int slot) {

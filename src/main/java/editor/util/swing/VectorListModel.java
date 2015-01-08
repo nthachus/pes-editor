@@ -3,9 +3,9 @@ package editor.util.swing;
 import java.util.Vector;
 
 public class VectorListModel<T> extends AbstractListModel<T> {
-	private final Vector<?> listData;
+	private final Vector<T> listData;
 
-	public VectorListModel(Vector<?> listData) {
+	public VectorListModel(Vector<T> listData) {
 		if (null == listData) throw new NullPointerException("listData");
 		this.listData = listData;
 	}
@@ -17,8 +17,7 @@ public class VectorListModel<T> extends AbstractListModel<T> {
 		return listData.size();
 	}
 
-	@SuppressWarnings("unchecked")
 	public T getElementAt(int index) {
-		return (T) listData.elementAt(index);
+		return listData.elementAt(index);
 	}
 }

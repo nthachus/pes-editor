@@ -21,7 +21,7 @@ public class CsvMaker implements Serializable {
 		this(false);
 	}
 
-	public boolean makeFile(OptionFile of, File dest, boolean headings, boolean extra, boolean create) {
+	public boolean makeFile(OptionFile of, File dest, boolean headings/*, boolean extra*/, boolean create) {
 		if (null == of) throw new NullPointerException("of");
 		if (null == dest) throw new NullPointerException("dest");
 
@@ -40,11 +40,11 @@ public class CsvMaker implements Serializable {
 				writePlayer(of, out, player, teams);
 			}
 
-			if (extra) {
+			/*if (extra) {
 				for (int player = Player.FIRST_UNUSED; player < Player.TOTAL; player++) {
 					writePlayer(of, out, player, teams);
 				}
-			}
+			}*/
 
 			if (create) {
 				for (int player = 0; player < Player.TOTAL_EDIT; player++) {

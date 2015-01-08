@@ -7,7 +7,7 @@ public class DefaultComboBoxModel<T> extends javax.swing.DefaultComboBoxModel im
 	public DefaultComboBoxModel() {
 	}
 
-	public DefaultComboBoxModel(Object[] items) {
+	public DefaultComboBoxModel(T[] items) {
 		super(items);
 	}
 

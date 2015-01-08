@@ -2,44 +2,20 @@ package editor;
 
 import editor.data.*;
 import editor.util.Bits;
+import editor.util.Resources;
 import editor.util.swing.DefaultComboBoxModel;
 import editor.util.swing.JComboBox;
+import editor.util.swing.JTextFieldLimit;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class GlobalPanel extends JPanel {
-
-	private static final String[] statNames = {
-			"1-99 Stats", "ATTACK", "DEFENSE",
-			"BALANCE", "STAMINA", "TOP SPEED", "ACCELERATION", "RESPONSE",
-			"AGILITY", "DRIBBLE ACCURACY", "DRIBBLE SPEED",
-			"SHORT PASS ACCURACY", "SHORT PASS SPEED", "LONG PASS ACCURACY",
-			"LONG PASS SPEED", "SHOT ACCURACY", "SHOT POWER", "SHOT TECHNIQUE",
-			"FREE KICK ACCURACY", "CURLING", "HEADING", "JUMP", "TECHNIQUE",
-			"AGGRESSION", "MENTALITY", "GOAL KEEPING", "TEAM WORK",
-			"1-8 Stats", "WEAK FOOT ACCURACY", "WEAK FOOT FREQUENCY",
-			"CONSISTENCY", "CONDITION / FITNESS", "AGE"
-	};
-
-	private static final String[] ops = {"+", "-", "=", "+ %", "- %"};
-
-	private static final String[] scopes = {
-			"All Players", "GK", "SW", "CB", "SB", "DMF",
-			"WB", "CMF", "SMF", "AMF", "WG", "SS", "CF"
-	};
-
 	private final OptionFile of;
 	private final TransferPanel transferPan;
-
-	private JTextField numField;
-	private JComboBox<String> statBox;
-	private JComboBox<String> opBox;
-	private JComboBox<String> scopeBox;
-	private JComboBox<String> teamBox;
-	private JCheckBox onlyEditPlayer;
 
 	public GlobalPanel(OptionFile of, TransferPanel tp) {
 		super();
@@ -51,41 +27,85 @@ public class GlobalPanel extends JPanel {
 		initComponents();
 	}
 
+	//region Initialize the GUI components
+
+	private JTextField numField;
+	private JComboBox<String> statBox;
+	private JComboBox<String> opBox;
+	private JComboBox<String> scopeBox;
+	private JComboBox<String> teamBox;
+	private JCheckBox onlyEditPlayer;
+
+	private static String[] getScopes() {
+		ArrayList<String> scopes = new ArrayList<String>();
+		scopes.add(Resources.getMessage("All Players"));
+		for (Stat st : Stats.ROLES)
+			scopes.add(st.getName());
+
+		return scopes.toArray(new String[scopes.size()]);
+	}
+
+	private static String[] getStatNames() {
+		ArrayList<String> names = new ArrayList<String>();
+		names.add(Resources.getMessage("1-99 Stats"));
+		for (Stat st : Stats.ABILITY99)
+			names.add(Resources.getMessage(st.getName()).toUpperCase());
+
+		names.add(Resources.getMessage("1-8 Stats"));
+		names.add(Resources.getMessage(Stats.WEAK_FOOT_ACC.getName()).toUpperCase());
+		names.add(Resources.getMessage(Stats.WEAK_FOOT_FREQ.getName()).toUpperCase());
+		names.add(Resources.getMessage(Stats.CONSISTENCY.getName()).toUpperCase());
+		names.add(Resources.getMessage(Stats.CONDITION.getName()).toUpperCase());
+		names.add(Resources.getMessage(Stats.AGE.getName()).toUpperCase());
+
+		return names.toArray(new String[names.size()]);
+	}
+
+	private static final String[] OPS = {"+", "-", "=", "+ %", "- %"};
+
 	private void initComponents() {
-		statBox = new JComboBox<String>(statNames);
-		numField = new JTextField(2);// TODO: maxlength
-		opBox = new JComboBox<String>(ops);
-		JPanel panel99 = new JPanel();
-		JPanel scopePanel = new JPanel(new GridLayout(2, 3));
-		JPanel main = new JPanel(new GridLayout(0, 1));
-		scopePanel.setBorder(BorderFactory.createTitledBorder("Scope"));
-		panel99.setBorder(BorderFactory.createTitledBorder("Adjustment"));
-		scopeBox = new JComboBox<String>(scopes);
+		scopeBox = new JComboBox<String>(getScopes());
 		teamBox = new JComboBox<String>();
 		onlyEditPlayer = new JCheckBox();
 
-		JButton doButton = new JButton("Adjust");
-		doButton.addActionListener(new ActionListener() {
+		JPanel scopePanel = new JPanel(new GridLayout(2, 3));
+		scopePanel.setBorder(BorderFactory.createTitledBorder(Resources.getMessage("global.scope")));
+
+		scopePanel.add(new JLabel(Resources.getMessage("global.regPos")));
+		scopePanel.add(new JLabel(Resources.getMessage("global.exTeam")));
+		scopePanel.add(new JLabel(Resources.getMessage("global.editOnly")));
+		scopePanel.add(scopeBox);
+		scopePanel.add(teamBox);
+		scopePanel.add(onlyEditPlayer);
+
+		statBox = new JComboBox<String>(getStatNames());
+		opBox = new JComboBox<String>(OPS);
+		numField = new JTextField(2);
+		numField.setDocument(new JTextFieldLimit(2));
+
+		JButton adjustBtn = new JButton(Resources.getMessage("global.adjust"));
+		adjustBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				doAdjust();
 			}
 		});
 
-		scopePanel.add(new JLabel("Registered Position:"));
-		scopePanel.add(new JLabel("Exclude Team:"));
-		scopePanel.add(new JLabel("Created Players:"));
-		scopePanel.add(scopeBox);
-		scopePanel.add(teamBox);
-		scopePanel.add(onlyEditPlayer);
+		JPanel panel99 = new JPanel();
+		panel99.setBorder(BorderFactory.createTitledBorder(Resources.getMessage("global.adjustment")));
+
 		panel99.add(statBox);
 		panel99.add(opBox);
 		panel99.add(numField);
-		panel99.add(doButton);
-		main.add(scopePanel);
-		main.add(panel99);
+		panel99.add(adjustBtn);
 
-		add(main);
+		JPanel mainPanel = new JPanel(new GridLayout(0, 1));
+		mainPanel.add(scopePanel);
+		mainPanel.add(panel99);
+
+		add(mainPanel);
 	}
+
+	//endregion
 
 	private void doAdjust() {
 		int num = getNum();
@@ -110,9 +130,44 @@ public class GlobalPanel extends JPanel {
 			}
 			JOptionPane.showMessageDialog(null, "Enter a number: " + dm
 					+ "-" + dx, "Error", JOptionPane.ERROR_MESSAGE);
-		} else {
-			if (si == 0) {
-				for (int p = 1; p < Player.TOTAL; p++) {
+			return;
+		}
+
+		if (si == 0) {
+			for (int p = 1; p < Player.TOTAL; p++) {
+				if (adj(p) && adjTeam(p)) {
+					for (int i = 1; i < 27; i++) {
+						switch (oi) {
+							case 0:
+								v = getStat(i, p) + num;
+								break;
+							case 1:
+								v = getStat(i, p) - num;
+								break;
+							case 2:
+								v = num;
+								break;
+							case 3:
+								v = getStat(i, p)
+										+ (getStat(i, p) * num / 100);
+								break;
+							case 4:
+								v = getStat(i, p)
+										- (getStat(i, p) * num / 100);
+								break;
+						}
+						if (v > 99) {
+							v = 99;
+						}
+						if (v < 1) {
+							v = 1;
+						}
+						setStat(i, p, v);
+					}
+				}
+			}
+			if (onlyEditPlayer.isSelected()) {
+				for (int p = Player.FIRST_EDIT; p < 32952; p++) {
 					if (adj(p) && adjTeam(p)) {
 						for (int i = 1; i < 27; i++) {
 							switch (oi) {
@@ -144,44 +199,44 @@ public class GlobalPanel extends JPanel {
 						}
 					}
 				}
-				if (onlyEditPlayer.isSelected()) {
-					for (int p = Player.FIRST_EDIT; p < 32952; p++) {
-						if (adj(p) && adjTeam(p)) {
-							for (int i = 1; i < 27; i++) {
-								switch (oi) {
-									case 0:
-										v = getStat(i, p) + num;
-										break;
-									case 1:
-										v = getStat(i, p) - num;
-										break;
-									case 2:
-										v = num;
-										break;
-									case 3:
-										v = getStat(i, p)
-												+ (getStat(i, p) * num / 100);
-										break;
-									case 4:
-										v = getStat(i, p)
-												- (getStat(i, p) * num / 100);
-										break;
-								}
-								if (v > 99) {
-									v = 99;
-								}
-								if (v < 1) {
-									v = 1;
-								}
-								setStat(i, p, v);
-							}
+			}
+		}
+
+		if (si == 27) {
+			for (int p = 1; p < Player.TOTAL; p++) {
+				if (adj(p) && adjTeam(p)) {
+					for (int i = 28; i < 32; i++) {
+						switch (oi) {
+							case 0:
+								v = getStat(i, p) + num;
+								break;
+							case 1:
+								v = getStat(i, p) - num;
+								break;
+							case 2:
+								v = num;
+								break;
+							case 3:
+								v = getStat(i, p)
+										+ (getStat(i, p) * num / 100);
+								break;
+							case 4:
+								v = getStat(i, p)
+										- (getStat(i, p) * num / 100);
+								break;
 						}
+						if (v > 8) {
+							v = 8;
+						}
+						if (v < 1) {
+							v = 1;
+						}
+						setStat(i, p, v);
 					}
 				}
 			}
-
-			if (si == 27) {
-				for (int p = 1; p < Player.TOTAL; p++) {
+			if (onlyEditPlayer.isSelected()) {
+				for (int p = Player.FIRST_EDIT; p < 32952; p++) {
 					if (adj(p) && adjTeam(p)) {
 						for (int i = 28; i < 32; i++) {
 							switch (oi) {
@@ -213,44 +268,42 @@ public class GlobalPanel extends JPanel {
 						}
 					}
 				}
-				if (onlyEditPlayer.isSelected()) {
-					for (int p = Player.FIRST_EDIT; p < 32952; p++) {
-						if (adj(p) && adjTeam(p)) {
-							for (int i = 28; i < 32; i++) {
-								switch (oi) {
-									case 0:
-										v = getStat(i, p) + num;
-										break;
-									case 1:
-										v = getStat(i, p) - num;
-										break;
-									case 2:
-										v = num;
-										break;
-									case 3:
-										v = getStat(i, p)
-												+ (getStat(i, p) * num / 100);
-										break;
-									case 4:
-										v = getStat(i, p)
-												- (getStat(i, p) * num / 100);
-										break;
-								}
-								if (v > 8) {
-									v = 8;
-								}
-								if (v < 1) {
-									v = 1;
-								}
-								setStat(i, p, v);
-							}
-						}
+			}
+		}
+
+		if (si != 0 && si != 27) {
+			for (int p = 1; p < Player.TOTAL; p++) {
+				if (adj(p) && adjTeam(p)) {
+					switch (oi) {
+						case 0:
+							v = getStat(si, p) + num;
+							break;
+						case 1:
+							v = getStat(si, p) - num;
+							break;
+						case 2:
+							v = num;
+							break;
+						case 3:
+							v = getStat(si, p)
+									+ (getStat(si, p) * num / 100);
+							break;
+						case 4:
+							v = getStat(si, p)
+									- (getStat(si, p) * num / 100);
+							break;
 					}
+					if (v > max) {
+						v = max;
+					}
+					if (v < min) {
+						v = min;
+					}
+					setStat(si, p, v);
 				}
 			}
-
-			if (si != 0 && si != 27) {
-				for (int p = 1; p < Player.TOTAL; p++) {
+			if (onlyEditPlayer.isSelected()) {
+				for (int p = Player.FIRST_EDIT; p < 32952; p++) {
 					if (adj(p) && adjTeam(p)) {
 						switch (oi) {
 							case 0:
@@ -274,48 +327,17 @@ public class GlobalPanel extends JPanel {
 						if (v > max) {
 							v = max;
 						}
-						if (v < min) {
-							v = min;
+						if (v < 1) {
+							v = 1;
 						}
 						setStat(si, p, v);
 					}
 				}
-				if (onlyEditPlayer.isSelected()) {
-					for (int p = Player.FIRST_EDIT; p < 32952; p++) {
-						if (adj(p) && adjTeam(p)) {
-							switch (oi) {
-								case 0:
-									v = getStat(si, p) + num;
-									break;
-								case 1:
-									v = getStat(si, p) - num;
-									break;
-								case 2:
-									v = num;
-									break;
-								case 3:
-									v = getStat(si, p)
-											+ (getStat(si, p) * num / 100);
-									break;
-								case 4:
-									v = getStat(si, p)
-											- (getStat(si, p) * num / 100);
-									break;
-							}
-							if (v > max) {
-								v = max;
-							}
-							if (v < 1) {
-								v = 1;
-							}
-							setStat(si, p, v);
-						}
-					}
-				}
 			}
-			JOptionPane.showMessageDialog(null,
-					"Stats have been adjusted", "Stats Adjusted",
-					JOptionPane.INFORMATION_MESSAGE);
+		}
+		JOptionPane.showMessageDialog(null,
+				"Stats have been adjusted", "Stats Adjusted",
+				JOptionPane.INFORMATION_MESSAGE);
 					/*
 					 * String messageText1 = " set to: "; switch (oi) { case 0:
 					 * messageText1 = " increased by: "; break; case 1:
@@ -328,8 +350,7 @@ public class GlobalPanel extends JPanel {
 					 * " of "+ messageText2 + messageText1 + num,
 					 * "Stats Adjusted", JOptionPane.INFORMATION_MESSAGE);
 					 */
-			transferPan.refresh();
-		}
+		transferPan.refresh();
 	}
 
 	private int getNum() {

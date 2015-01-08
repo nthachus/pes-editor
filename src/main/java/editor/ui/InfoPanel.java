@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.*;
 import editor.util.Bits;
+import editor.util.Colors;
 import editor.util.Resources;
 import editor.util.swing.JComboBoxModel;
 import org.slf4j.Logger;
@@ -385,7 +386,7 @@ public class InfoPanel extends JScrollPane {
 			} else if (val >= 80) {
 				return Color.YELLOW;
 			} else if (val >= 75) {
-				return new Color(183, 255, 0);
+				return Colors.CHARTREUSE0;
 			}
 		}
 		return Color.WHITE;

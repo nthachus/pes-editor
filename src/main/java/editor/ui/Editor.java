@@ -332,7 +332,7 @@ public final class Editor extends JFrame {
 		}
 
 		boolean head = csvSwitch.getHead().isSelected();
-		boolean extra = csvSwitch.getExtra().isSelected();
+		//boolean extra = csvSwitch.getExtra().isSelected();
 		boolean create = csvSwitch.getCreate().isSelected();
 
 		dest = Files.addExtension(dest, Files.CSV);
@@ -346,7 +346,7 @@ public final class Editor extends JFrame {
 			}
 		}
 
-		if (csvMaker.makeFile(of, dest, head, extra, create)) {
+		if (csvMaker.makeFile(of, dest, head/*, extra*/, create)) {
 			showSaveOkMsg(dest);
 		} else {
 			showSaveFailMsg();
@@ -553,16 +553,15 @@ public final class Editor extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-			public void uncaughtException(Thread thread, Throwable throwable) {
-				log.error("Unhandled exception occurred:", throwable);
-			}
-		});
-
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				log.info("Main form is initializing...");
 				try {
+					Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+						public void uncaughtException(Thread thread, Throwable throwable) {
+							log.error("Unhandled exception occurred:", throwable);
+						}
+					});
 					Systems.systemUI();
 
 					Editor form = new Editor();

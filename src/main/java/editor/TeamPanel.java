@@ -2,6 +2,7 @@ package editor;
 
 import editor.data.*;
 import editor.ui.*;
+import editor.util.Colors;
 import editor.util.Strings;
 import editor.util.Systems;
 import editor.util.swing.JComboBox;
@@ -69,7 +70,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		Systems.javaUI();// fix button background color
 
 		backButton = new JButton(new ImageIcon(Emblems.get16(of, -1, false, false)));
-		backButton.setBackground(new Color(0xCC, 0xCC, 0xCC));
+		backButton.setBackground(Colors.GRAY80);
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int t = list.getSelectedIndex();
@@ -119,7 +120,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		});
 
 		badgeButton = new JButton(new ImageIcon(Emblems.get16(of, -1, false, false)));
-		badgeButton.setBackground(new Color(0xCC, 0xCC, 0xCC));
+		badgeButton.setBackground(Colors.GRAY80);
 		badgeButton.addMouseListener(this);
 		badgeButton.setToolTipText("Left click to change, right click to default");
 		badgeButton.setAlignmentX(CENTER_ALIGNMENT);
@@ -405,9 +406,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 	private void updateBackBut() {
 		int i = list.getSelectedIndex();
-		backButton.setIcon(backChooser.getFlagBackground(getEmblemImage(), Clubs
-				.getBackFlag(of, i), Clubs.getRed(of, i), Clubs.getGreen(of, i),
-				Clubs.getBlue(of, i)));
+		backButton.setIcon(backChooser.getFlagBackground(getEmblemImage(),
+				Clubs.getBackFlag(of, i), Clubs.getRed(of, i), Clubs.getGreen(of, i), Clubs.getBlue(of, i)));
 	}
 
 	private Image getEmblemImage() {

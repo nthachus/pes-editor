@@ -60,7 +60,7 @@ public class WenPanel extends JPanel implements ActionListener {
 		} else {
 			field.setText("");
 			JOptionPane.showMessageDialog(null,
-					Resources.getMessage("wen.invalid", MAX_WEN), Resources.getMessage("Error"),
+					Resources.getMessage("msg.invalidWen", MAX_WEN), Resources.getMessage("Error"),
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}

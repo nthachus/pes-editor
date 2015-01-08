@@ -8,7 +8,7 @@ public class JList<T> extends javax.swing.JList {
 		super(dataModel);
 	}
 
-	public JList(Object[] listData) {
+	public JList(T[] listData) {
 		super(new ArrayListModel<T>(listData));
 	}
 
@@ -27,19 +27,19 @@ public class JList<T> extends javax.swing.JList {
 
 	@Override
 	public void setModel(javax.swing.ListModel model) {
-		if (null != model && !(model instanceof JListModel<?>))
-			throw new IllegalArgumentException("model");
+		if (null == model) throw new NullPointerException("model");
+		if (!(model instanceof JListModel<?>)) throw new IllegalArgumentException("model");
 		super.setModel(model);
 	}
 
 	@Override
 	public void setListData(Object[] listData) {
-		setModel(new ArrayListModel<T>(listData));
+		super.setModel(new ArrayListModel<T>((T[]) listData));
 	}
 
 	@Override
-	public void setListData(Vector<?> listData) {
-		setModel(new VectorListModel<T>(listData));
+	public void setListData(Vector listData) {
+		super.setModel(new VectorListModel<T>((Vector<T>) listData));
 	}
 
 	@Override

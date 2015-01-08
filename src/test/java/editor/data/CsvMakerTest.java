@@ -15,7 +15,7 @@ public final class CsvMakerTest extends BaseTest {
 			OptionFile of = loadOptionFile(fn);
 
 			File fs = createTempFile(fn, Files.CSV);
-			boolean res = csvMaker.makeFile(of, fs, true, true, false);
+			boolean res = csvMaker.makeFile(of, fs, true/*, true*/, false);
 
 			Assert.assertTrue(res);
 		}
@@ -23,12 +23,12 @@ public final class CsvMakerTest extends BaseTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testExportWithNullOF() throws Exception {
-		csvMaker.makeFile(null, new File(getClass().getSimpleName()), true, true, true);
+		csvMaker.makeFile(null, new File(getClass().getSimpleName()), true/*, true*/, true);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testExportWithNullDest() throws Exception {
-		csvMaker.makeFile(new OptionFile(), null, true, true, true);
+		csvMaker.makeFile(new OptionFile(), null, true/*, true*/, true);
 	}
 
 }

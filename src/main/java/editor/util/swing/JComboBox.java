@@ -8,7 +8,7 @@ public class JComboBox<T> extends javax.swing.JComboBox {
 		super(model);
 	}
 
-	public JComboBox(Object[] items) {
+	public JComboBox(T[] items) {
 		super(new DefaultComboBoxModel<T>(items));
 	}
 
@@ -27,8 +27,8 @@ public class JComboBox<T> extends javax.swing.JComboBox {
 
 	@Override
 	public void setModel(javax.swing.ComboBoxModel model) {
-		if (null != model && !(model instanceof JComboBoxModel<?>))
-			throw new IllegalArgumentException("model");
+		if (null == model) throw new NullPointerException("model");
+		if (!(model instanceof JComboBoxModel<?>)) throw new IllegalArgumentException("model");
 		super.setModel(model);
 	}
 

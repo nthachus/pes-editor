@@ -54,7 +54,7 @@ public class LogoPanel extends JPanel {
 		Systems.javaUI();// fix button background color
 		for (int l = 0; l < flagButtons.length; l++) {
 			flagButtons[l] = new JButton();
-			flagButtons[l].setBackground(new Color(0xCC, 0xCC, 0xCC));
+			flagButtons[l].setBackground(Colors.GRAY80);
 			flagButtons[l].setMargin(new Insets(0, 0, 0, 0));
 			flagButtons[l].setActionCommand(Integer.toString(l));
 			flagButtons[l].addActionListener(new ActionListener() {
