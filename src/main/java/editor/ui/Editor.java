@@ -1,7 +1,6 @@
 package editor.ui;
 
 import editor.EmblemPanel;
-import editor.GlobalPanel;
 import editor.TeamPanel;
 import editor.TransferPanel;
 import editor.data.CsvMaker;

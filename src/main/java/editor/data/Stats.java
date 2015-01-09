@@ -319,6 +319,8 @@ public final class Stats {
 	public static final String[] MOD_PK = {"1", "2", "3", "4", "5"};
 	public static final String[] MOD_1_4 = {"1", "2", "3", "4"};
 
+	public static final int MAX_STAT99 = 99;
+
 	//endregion
 
 	public static int getValue(OptionFile of, int player, Stat stat) {
@@ -366,21 +368,15 @@ public final class Stats {
 	public static void setValue(OptionFile of, int player, Stat stat, String value) throws NumberFormatException {
 		if (null == stat) throw new NullPointerException("stat");
 
-		int val = 0;
-		if (stat.getType() == StatType.integer) {
-			val = Integer.parseInt(value);
-		} else if (stat.getType() == StatType.height148) {
-			val = Integer.parseInt(value) - 148;
-		} else if (stat.getType() == StatType.age15) {
-			val = Integer.parseInt(value) - 15;
-		} else if (stat.getType() == StatType.nationId) {
+		int val;
+		if (stat.getType() == StatType.nationId) {
 			val = Arrays.indexOfIgnoreCase(NATION, value);
 		} else if (stat.getType() == StatType.footId) {
 			val = Arrays.indexOfIgnoreCase(MOD_FOOT, value);
-		} else if (stat.getType() == StatType.positiveInt) {
-			val = Integer.parseInt(value) - 1;
 		} else if (stat.getType() == StatType.injuryId) {
 			val = Arrays.indexOfIgnoreCase(MOD_INJURY, value);
+		} else {
+			val = Integer.parseInt(value) - stat.minValue();
 		}
 
 		setValue(of, player, stat, val);
@@ -389,21 +385,15 @@ public final class Stats {
 	public static String getString(OptionFile of, int player, Stat stat) throws IndexOutOfBoundsException {
 		int val = getValue(of, player, stat);
 
-		String result = "";
-		if (stat.getType() == StatType.integer) {
-			result = Integer.toString(val);
-		} else if (stat.getType() == StatType.height148) {
-			result = Integer.toString(val + 148);
-		} else if (stat.getType() == StatType.age15) {
-			result = Integer.toString(val + 15);
-		} else if (stat.getType() == StatType.nationId) {
+		String result;
+		if (stat.getType() == StatType.nationId) {
 			result = NATION[val];
 		} else if (stat.getType() == StatType.footId) {
 			result = MOD_FOOT[val];
-		} else if (stat.getType() == StatType.positiveInt) {
-			result = Integer.toString(val + 1);
 		} else if (stat.getType() == StatType.injuryId) {
 			result = MOD_INJURY[val];
+		} else {
+			result = Integer.toString(val + stat.minValue());
 		}
 
 		return result;

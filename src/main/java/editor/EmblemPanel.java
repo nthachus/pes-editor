@@ -287,8 +287,8 @@ public class EmblemPanel extends JPanel implements MouseListener {
 
 			if (dest.exists()) {
 				int n = JOptionPane.showConfirmDialog(null, dest.getName()
-						+ "\nAlready exists in:\n" + dest.getParent()
-						+ "\nAre you sure you want to overwrite this file?",
+								+ "\nAlready exists in:\n" + dest.getParent()
+								+ "\nAre you sure you want to overwrite this file?",
 						"Overwrite:  " + dest.getName(),
 						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
 						null);
@@ -307,7 +307,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 
 			if (writeFile(dest, is128, slot)) {
 				JOptionPane.showMessageDialog(null, dest.getName()
-						+ "\nSaved in:\n" + dest.getParent(),
+								+ "\nSaved in:\n" + dest.getParent(),
 						"File Successfully Saved",
 						JOptionPane.INFORMATION_MESSAGE);
 			} else {

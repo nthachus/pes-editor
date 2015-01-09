@@ -319,7 +319,7 @@ public class TransferPanel extends JPanel
 				int i = selectorL.getNumList().getSelectedIndex();
 				try {
 					int v = Integer.parseInt(getText());
-					if (v != 0 && v <= 99) {
+					if (v != 0 && v <= Stats.MAX_STAT99) {
 						setShirt(source, i, v);
 					}
 					selectorR.getNumList().refresh(selectorR.getTeamBox()
@@ -336,7 +336,7 @@ public class TransferPanel extends JPanel
 				int i = selectorR.getNumList().getSelectedIndex();
 				try {
 					int v = Integer.parseInt(getText());
-					if (v != 0 && v <= 99) {
+					if (v != 0 && v <= Stats.MAX_STAT99) {
 						setShirt(source, i, v);
 					}
 					selectorR.getNumList().refresh(selectorR.getTeamBox()
@@ -572,7 +572,7 @@ public class TransferPanel extends JPanel
 			size = 32;
 			firstAdr = Squads.CLUB_NUM_ADR + ((s - 75) * size);
 		}
-		for (byte i = 0; num == -1 && i < 99; i++) {
+		for (byte i = 0; num == -1 && i < Stats.MAX_STAT99; i++) {
 			spare = true;
 			for (int p = 0; spare && p < size; p++) {
 				a = firstAdr + p;
