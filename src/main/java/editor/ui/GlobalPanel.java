@@ -144,7 +144,7 @@ public class GlobalPanel extends JPanel {
 		}
 
 		int num = getNum(dm, dx);
-		if (num == 0) {
+		if (num <= 0) {
 			JOptionPane.showMessageDialog(null, Resources.getMessage("msg.invalidRange", dm, dx),
 					Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
 			return;

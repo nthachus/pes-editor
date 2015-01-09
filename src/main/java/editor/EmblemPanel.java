@@ -5,9 +5,7 @@ import editor.data.OptionFile;
 import editor.ui.EmblemImportDialog;
 import editor.ui.ImageFileFilter;
 import editor.ui.PngFilter;
-import editor.util.Colors;
-import editor.util.Files;
-import editor.util.Systems;
+import editor.util.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -19,11 +17,10 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
-import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 
-public class EmblemPanel extends JPanel implements MouseListener {
+public class EmblemPanel extends JPanel implements MouseListener, ActionListener {
 	private final OptionFile of;
 	private final EmblemImportDialog flagImportDia;
 	private final TeamPanel teamPanel;
@@ -44,27 +41,29 @@ public class EmblemPanel extends JPanel implements MouseListener {
 		refresh();
 	}
 
+	//region Initialize the GUI components
+
 	private JFileChooser chooser;
 	private JFileChooser pngChooser;
 	private final JButton[] flagButtons = new JButton[Emblems.TOTAL16];
-	private JButton addButton;
-	private JButton add2Button;
+	private JLabel largeFlag;
 	private JLabel free16Label;
 	private JLabel free128Label;
-	private JLabel largeFlag;
+	private JButton addButton;
+	private JButton add2Button;
 
 	private void initComponents() {
 		ImageFileFilter filter128 = new ImageFileFilter();
 		chooser = new JFileChooser();
 		chooser.addChoosableFileFilter(filter128);
 		chooser.setAcceptAllFileFilterUsed(false);
-		chooser.setDialogTitle("Import Emblem");
+		chooser.setDialogTitle(Resources.getMessage("emblem.import"));
 
 		PngFilter pngFilter = new PngFilter();
 		pngChooser = new JFileChooser();
 		pngChooser.addChoosableFileFilter(pngFilter);
 		pngChooser.setAcceptAllFileFilterUsed(false);
-		pngChooser.setDialogTitle("Export Emblem");
+		pngChooser.setDialogTitle(Resources.getMessage("emblem.export"));
 
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
 		Systems.javaUI();// fix button background color
@@ -74,115 +73,126 @@ public class EmblemPanel extends JPanel implements MouseListener {
 			flagButtons[i].setMargin(new Insets(0, 0, 0, 0));
 			flagButtons[i].setActionCommand(Integer.toString(i));
 			flagButtons[i].addMouseListener(this);
-			flagButtons[i].addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					onSelectEmblem(evt);
-				}
-			});
+			flagButtons[i].addActionListener(this);
 
 			flagPanel.add(flagButtons[i]);
 		}
 		Systems.systemUI();
 
-		JButton transButton = new JButton("Transparency");
+		JPanel contentPane = new JPanel(new BorderLayout());
+		contentPane.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		contentPane.add(new JLabel(Resources.getMessage("emblem.label16")), BorderLayout.NORTH);
+		contentPane.add(flagPanel, BorderLayout.CENTER);
+		contentPane.add(new JLabel(Resources.getMessage("emblem.label128"), SwingConstants.RIGHT), BorderLayout.SOUTH);
+
+		JButton transButton = new JButton(Resources.getMessage("Transparency"));
 		transButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				onTransparency(/*evt*/);
 			}
 		});
 
+		JPanel bottomPane = new JPanel(new BorderLayout());
+		bottomPane.add(contentPane, BorderLayout.CENTER);
+		bottomPane.add(transButton, BorderLayout.SOUTH);
+
+		largeFlag = new JLabel();
+		largeFlag.setIcon(new ImageIcon(Emblems.BLANK16));
+
 		free16Label = new JLabel();
 		free128Label = new JLabel();
-		addButton = new JButton("Add Emblem");
+
+		addButton = new JButton(Resources.getMessage("emblem.add"));
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				if (Emblems.getFree128(of) > 0 || (Emblems.getFree16(of) > 0)) {
-
-					int returnVal = chooser.showOpenDialog(null);
-					if (returnVal == JFileChooser.APPROVE_OPTION) {
-						File source = chooser.getSelectedFile();
-						try {
-							BufferedImage image;
-							image = ImageIO.read(source);
-
-							int check = checkImage(image);
-							if (check != -1) {
-								if (check < 16) {
-									Emblems.set16(of, Emblems.count16(of), image);
-								} else {
-									if (Emblems.getFree128(of) == 0) {
-										noSpaceMsg();
-									} else {
-										Emblems.set128(of, Emblems.count128(of), image);
-									}
-								}
-								teamPanel.refresh();
-								refresh();
-							}
-						} catch (Exception e) {
-							JOptionPane.showMessageDialog(null,
-									"Could not open file", "Error",
-									JOptionPane.ERROR_MESSAGE);
-						}
-					}
-				}
-
+				onAddEmblem();
 			}
 		});
 
-		add2Button = new JButton("Add Emblem (OF2)");
+		add2Button = new JButton(Resources.getMessage("emblem.add2"));
 		add2Button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent t) {
-				int emblem = -1;
-				if (Emblems.getFree128(of) > 0) {
-					emblem = flagImportDia.getEmblem("Import Emblem", 0);
-				} else if (Emblems.getFree16(of) > 0) {
-					emblem = flagImportDia.getEmblem("Import Emblem", 1);
-				}
-				if (emblem != -1) {
-					if (emblem > Emblems.TOTAL128 - 1) {
-						emblem = emblem - Emblems.TOTAL128;
-						flagImportDia.import16(of, Emblems.count16(of), emblem);
-					} else {
-						flagImportDia.import128(of, Emblems.count128(of), emblem);
-					}
-					teamPanel.refresh();
-					refresh();
-				}
+			public void actionPerformed(ActionEvent evt) {
+				onImportEmblem();
 			}
 		});
 
-		JPanel freePanel = new JPanel();
 		JPanel freePan = new JPanel(new GridLayout(0, 1));
 		freePan.add(free16Label);
 		freePan.add(free128Label);
 		freePan.add(addButton);
 		freePan.add(add2Button);
-		freePanel.add(freePan);
 
-		largeFlag = new JLabel();
-		largeFlag.setIcon(new ImageIcon(Emblems.get16(of, -1, false, false)));
+		JPanel freePane = new JPanel();
+		freePane.add(freePan);
 
-		JPanel pan1 = new JPanel(new BorderLayout());
-		pan1.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		pan1.add(new JLabel("16 Colour Format"), BorderLayout.NORTH);
-		pan1.add(flagPanel, BorderLayout.CENTER);
-		pan1.add(new JLabel("128 Colour Format", SwingConstants.RIGHT), BorderLayout.SOUTH);
-		JPanel pan2 = new JPanel(new BorderLayout());
-		pan2.add(pan1, BorderLayout.CENTER);
-		pan2.add(transButton, BorderLayout.SOUTH);
-		add(pan2);
+		add(bottomPane);
 		add(largeFlag);
-		add(freePanel);
+		add(freePane);
 	}
+
+	//endregion
 
 	private void onTransparency(/*ActionEvent evt*/) {
 		isTrans = !isTrans;
 		refresh();
 	}
 
-	private void onSelectEmblem(ActionEvent evt) {
-		int slot = Integer.parseInt(((JButton) evt.getSource()).getActionCommand());
+	private void onAddEmblem() {
+		if (Emblems.getFree128(of) <= 0 && Emblems.getFree16(of) <= 0)
+			return;
+
+		int returnVal = chooser.showOpenDialog(null);
+		if (returnVal != JFileChooser.APPROVE_OPTION)
+			return;
+
+		try {
+			File source = chooser.getSelectedFile();
+			BufferedImage image = ImageIO.read(source);
+
+			int palSize = validateImage(image, Emblems.PALETTE_SIZE128);
+			if (palSize <= Emblems.PALETTE_SIZE16) {
+				Emblems.set16(of, Emblems.count16(of), image);
+			} else if (Emblems.getFree128(of) > 0) {
+				Emblems.set128(of, Emblems.count128(of), image);
+			} else {
+				throw new IllegalStateException(Resources.getMessage("msg.emblemNoSpace", Emblems.PALETTE_SIZE128));
+			}
+
+			teamPanel.refresh();
+			refresh();
+
+		} catch (Exception e) {
+			showOpenFailedMsg(e.getLocalizedMessage());
+		}
+	}
+
+	private void onImportEmblem() {
+		int emblem = -1;
+		if (Emblems.getFree128(of) > 0) {
+			emblem = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), Emblems.TYPE_INHERIT);
+		} else if (Emblems.getFree16(of) > 0) {
+			emblem = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), Emblems.TYPE_16);
+		}
+
+		if (emblem >= 0) {
+			if (emblem >= Emblems.TOTAL128) {
+				flagImportDia.import16(of, Emblems.count16(of), emblem - Emblems.TOTAL128);
+			} else {
+				flagImportDia.import128(of, Emblems.count128(of), emblem);
+			}
+
+			teamPanel.refresh();
+			refresh();
+		}
+	}
+
+	public void actionPerformed(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+		if (!(evt.getSource() instanceof AbstractButton)) throw new NullPointerException("evt");
+
+		AbstractButton btn = (AbstractButton) evt.getSource();
+		int slot = Integer.parseInt(btn.getActionCommand());
+
 		ImageIcon icon;
 		boolean is128 = false;
 		if (slot >= Emblems.count16(of)) {
@@ -228,21 +238,21 @@ public class EmblemPanel extends JPanel implements MouseListener {
 					BufferedImage image;
 					image = ImageIO.read(source);
 
-					int check = checkImage(image);
+					int check = validateImage(image, is128 ? Emblems.PALETTE_SIZE128 : Emblems.PALETTE_SIZE16);
 					if (check != -1) {
 						if (is128) {
-							if (check < 128) {
+							if (check < Emblems.PALETTE_SIZE128) {
 								if (check > 15) {
 									Emblems.set128(of, slot, image);
 								} else {
-									wasteMsg();
+									showWasteSpaceMsg();
 								}
 							}
 						} else {
-							if (check < 16) {
+							if (check < Emblems.PALETTE_SIZE16) {
 								Emblems.set16(of, slot, image);
 							} else {
-								col16Msg();
+								showManyColorsMsg(Emblems.PALETTE_SIZE16);
 							}
 						}
 						teamPanel.refresh();
@@ -265,8 +275,7 @@ public class EmblemPanel extends JPanel implements MouseListener {
 					flagImportDia.import128(of, slot, replacement);
 				}
 			} else {
-				replacement = flagImportDia
-						.getEmblem("Import Emblem", 1);
+				replacement = flagImportDia.getEmblem("Import Emblem", 1);
 				if (replacement != -1) {
 					replacement = replacement - Emblems.TOTAL128;
 					flagImportDia.import16(of, slot, replacement);
@@ -339,21 +348,23 @@ public class EmblemPanel extends JPanel implements MouseListener {
 	}
 
 	public void refresh() {
+		Image icon;
 		for (int i = 0; i < Emblems.count16(of); i++) {
-			flagButtons[i].setIcon(new ImageIcon(Emblems.get16(of, i, !isTrans, true)));
+			icon = Emblems.get16(of, i, !isTrans, true);
+			flagButtons[i].setIcon(new ImageIcon(icon));
 			flagButtons[i].setVisible(true);
 		}
 		for (int i = 0; i < Emblems.count128(of); i++) {
-			flagButtons[Emblems.TOTAL16 - 1 - i].setIcon(new ImageIcon(Emblems.get128(of, i, !isTrans, true)));
+			icon = Emblems.get128(of, i, !isTrans, true);
+			flagButtons[Emblems.TOTAL16 - 1 - i].setIcon(new ImageIcon(icon));
 			flagButtons[Emblems.TOTAL16 - 1 - i].setVisible(true);
 		}
 
 		for (int i = Emblems.count16(of); i < Emblems.TOTAL16 - Emblems.count128(of); i++) {
 			flagButtons[i].setVisible(false);
 		}
-		free16Label.setText("16-colour, can stock: " + Emblems.getFree16(of));
-		free128Label
-				.setText("128-colour, can stock: " + Emblems.getFree128(of));
+		free16Label.setText(Resources.getMessage("emblem.free16", Emblems.getFree16(of)));
+		free128Label.setText(Resources.getMessage("emblem.free128", Emblems.getFree128(of)));
 		if (flagImportDia.isOf2Loaded()) {
 			add2Button.setVisible(true);
 		} else {
@@ -368,6 +379,8 @@ public class EmblemPanel extends JPanel implements MouseListener {
 		}
 	}
 
+	//region Emblem Icon button Mouse Events
+
 	public void mousePressed(MouseEvent e) {
 	}
 
@@ -375,80 +388,64 @@ public class EmblemPanel extends JPanel implements MouseListener {
 	}
 
 	public void mouseEntered(MouseEvent e) {
-		JButton but = (JButton) e.getSource();
-		int slot = Integer.parseInt(but.getActionCommand());
+		if (null == e) throw new NullPointerException("e");
+		if (!(e.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("e");
+
+		AbstractButton btn = (AbstractButton) e.getSource();
+		int slot = Integer.parseInt(btn.getActionCommand());
+
+		Image icon;
 		if (slot >= Emblems.count16(of)) {
-			slot = Emblems.TOTAL16 - 1 - slot;
-			largeFlag.setIcon(new ImageIcon(Emblems.get128(of, slot, !isTrans, false)));
+			slot = Emblems.TOTAL16 - slot - 1;
+			icon = Emblems.get128(of, slot, !isTrans, false);
 		} else {
-			largeFlag.setIcon(new ImageIcon(Emblems.get16(of, slot, !isTrans, false)));
+			icon = Emblems.get16(of, slot, !isTrans, false);
 		}
+
+		largeFlag.setIcon(new ImageIcon(icon));
 	}
 
 	public void mouseExited(MouseEvent e) {
-		largeFlag.setIcon(new ImageIcon(Emblems.get16(of, -1, false, false)));
+		largeFlag.setIcon(new ImageIcon(Emblems.BLANK16));
 	}
 
 	public void mouseClicked(MouseEvent e) {
 	}
 
-	private int checkImage(BufferedImage image) {
-		int max = -1;
-		if (image.getWidth() == 64 && image.getHeight() == 64) {
-			ColorModel colorMod = image.getColorModel();
-			if (colorMod instanceof IndexColorModel) {
-				int[] pix = new int[Emblems.IMG_SIZE * Emblems.IMG_SIZE];
-				Raster rast = image.getData();
-				rast.getPixels(0, 0, Emblems.IMG_SIZE, Emblems.IMG_SIZE, pix);
-				for (int i = 0; i < pix.length; i++) {
-					if (pix[i] > max) {
-						max = pix[i];
-					}
-				}
-				if (max > 127) {
-					colourMsg();
-					max = -1;
-				}
-			} else {
-				notIndexMsg();
-			}
-		} else {
-			sizeMsg();
-		}
-		return max;
+	//endregion
+
+	private static int validateImage(BufferedImage image, int paletteSize) {
+		if (null == image) throw new NullPointerException("image");
+
+		if (image.getWidth() != Emblems.IMG_SIZE || image.getHeight() != Emblems.IMG_SIZE)
+			throw new IllegalArgumentException(
+					Resources.getMessage("msg.invalidSize", Emblems.IMG_SIZE, Emblems.IMG_SIZE));
+
+		ColorModel colorMod = image.getColorModel();
+		if (null == colorMod || !(colorMod instanceof IndexColorModel))
+			throw new IllegalArgumentException(Resources.getMessage("msg.notIndexed"));
+
+		int colorsCount = ((IndexColorModel) colorMod).getMapSize();
+		if (colorsCount > paletteSize)
+			throw new IllegalArgumentException(Resources.getMessage("msg.manyColors", paletteSize));
+
+		return colorsCount;
 	}
 
-	private void notIndexMsg() {
-		JOptionPane.showMessageDialog(null, "PNG files must be INDEXED format",
-				"Error", JOptionPane.ERROR_MESSAGE);
+	private static void showManyColorsMsg(int paletteSize) {
+		JOptionPane.showMessageDialog(null, Resources.getMessage("msg.emblemManyColors", paletteSize),
+				Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
 	}
 
-	private void noSpaceMsg() {
+	private static void showWasteSpaceMsg() {
 		JOptionPane.showMessageDialog(null,
-				"Not enough space for a 128-colour emblem", "Error",
-				JOptionPane.ERROR_MESSAGE);
+				Resources.getMessage("msg.imgWasteSpace", Emblems.PALETTE_SIZE16, Emblems.PALETTE_SIZE128),
+				Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
 	}
 
-	private void colourMsg() {
-		JOptionPane.showMessageDialog(null, "Too many colours, maximum is 128",
-				"Error", JOptionPane.ERROR_MESSAGE);
-	}
-
-	private void sizeMsg() {
-		JOptionPane.showMessageDialog(null, "Size must be 64x64 pixels",
-				"Error", JOptionPane.ERROR_MESSAGE);
-	}
-
-	private void col16Msg() {
-		JOptionPane.showMessageDialog(null,
-				"Too many colours for a 16-colour slot", "Error",
-				JOptionPane.ERROR_MESSAGE);
-	}
-
-	private void wasteMsg() {
-		JOptionPane.showMessageDialog(null,
-				"A 16 colour image in a 128-colour slot would waste space!",
-				"Error", JOptionPane.ERROR_MESSAGE);
+	private static void showOpenFailedMsg(String msg) {
+		if (Strings.isBlank(msg)) msg = Resources.getMessage("msg.openFailed");
+		JOptionPane.showMessageDialog(null, msg, Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
 	}
 
 }

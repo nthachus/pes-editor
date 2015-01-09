@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class LogoImportDialog extends JDialog {
+public class LogoImportDialog extends JDialog implements ActionListener {
 	private final OptionFile of;
 	private final OptionFile of2;
 
@@ -36,18 +36,11 @@ public class LogoImportDialog extends JDialog {
 		JPanel flagPanel = new JPanel(new GridLayout(8, 10));
 
 		Systems.javaUI();// fix button background color
-		Image icon;
 		for (int l = 0; l < flagButtons.length; l++) {
-
-			icon = Logos.get(of, -1, false);
-			flagButtons[l] = new JButton(new ImageIcon(icon));
+			flagButtons[l] = new JButton(new ImageIcon(Logos.BLANK));
 			flagButtons[l].setMargin(new Insets(0, 0, 0, 0));
 			flagButtons[l].setActionCommand(Integer.toString(l));
-			flagButtons[l].addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					importFlag(evt);
-				}
-			});
+			flagButtons[l].addActionListener(this);
 
 			flagPanel.add(flagButtons[l]);
 		}
@@ -106,7 +99,7 @@ public class LogoImportDialog extends JDialog {
 		setVisible(true);
 	}
 
-	private void importFlag(ActionEvent evt) {
+	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
 		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 

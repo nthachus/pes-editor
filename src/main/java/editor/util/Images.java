@@ -45,7 +45,7 @@ public final class Images {
 	}
 
 	public static Image read(byte[] data, int imgSize, int bitsDepth, int offset, boolean opaque, float scale) {
-		if (null == data) throw new NullPointerException("data");
+		if (offset >= 0 && null == data) throw new NullPointerException("data");
 
 		byte[] red = new byte[paletteSize(bitsDepth)];
 		byte[] green = new byte[red.length];

@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class EmblemChooserDialog extends JDialog {
+public class EmblemChooserDialog extends JDialog implements ActionListener {
 	private final JButton[] emblemButtons = new JButton[Emblems.TOTAL16];
 
 	private final OptionFile of;
@@ -24,19 +24,13 @@ public class EmblemChooserDialog extends JDialog {
 		this.of = of;
 
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
-		Image icon;
+
 		Systems.javaUI();// fix button background color
 		for (int i = 0; i < emblemButtons.length; i++) {
-
-			icon = Emblems.get16(of, -1, false, true);
-			emblemButtons[i] = new JButton(new ImageIcon(icon));
+			emblemButtons[i] = new JButton(new ImageIcon(Emblems.BLANK16));
 			emblemButtons[i].setMargin(new Insets(0, 0, 0, 0));
 			emblemButtons[i].setActionCommand(Integer.toString(i));
-			emblemButtons[i].addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					onSelectEmblem(evt);
-				}
-			});
+			emblemButtons[i].addActionListener(this);
 
 			flagPanel.add(emblemButtons[i]);
 		}
@@ -58,7 +52,7 @@ public class EmblemChooserDialog extends JDialog {
 		pack();
 	}
 
-	private void onSelectEmblem(ActionEvent evt) {
+	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
 		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 

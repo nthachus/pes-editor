@@ -69,7 +69,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 		Systems.javaUI();// fix button background color
 
-		backButton = new JButton(new ImageIcon(Emblems.get16(of, -1, false, false)));
+		backButton = new JButton(new ImageIcon(Emblems.BLANK16));
 		backButton.setBackground(Colors.GRAY80);
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -92,7 +92,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				int t = list.getSelectedIndex();
 				if (t != -1) {
 					Color newColor = JColorChooser.showDialog(null,
-							"BG Colour 1", Clubs.getColor(of, t, false));
+							"BG Color 1", Clubs.getColor(of, t, false));
 					if (newColor != null) {
 						Clubs.setColor(of, t, false, newColor);
 						color1Btn.setBackground(newColor);
@@ -109,7 +109,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				int t = list.getSelectedIndex();
 				if (t != -1) {
 					Color newColor = JColorChooser.showDialog(null,
-							"BG Colour 2", Clubs.getColor(of, t, true));
+							"BG Color 2", Clubs.getColor(of, t, true));
 					if (newColor != null) {
 						Clubs.setColor(of, t, true, newColor);
 						color2Btn.setBackground(newColor);
@@ -119,7 +119,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			}
 		});
 
-		badgeButton = new JButton(new ImageIcon(Emblems.get16(of, -1, false, false)));
+		badgeButton = new JButton(new ImageIcon(Emblems.BLANK16));
 		badgeButton.setBackground(Colors.GRAY80);
 		badgeButton.addMouseListener(this);
 		badgeButton.setToolTipText("Left click to change, right click to default");
@@ -250,8 +250,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 		stadiumBox.setSelectedIndex(-1);
 		stadiumBox.setActionCommand("y");
-		backButton.setIcon(new ImageIcon(Emblems.get16(of, -1, false, false)));
-		badgeButton.setIcon(new ImageIcon(Emblems.get16(of, -1, false, false)));
+		backButton.setIcon(new ImageIcon(Emblems.BLANK16));
+		badgeButton.setIcon(new ImageIcon(Emblems.BLANK16));
 		team = Clubs.getNames(of);
 		for (int t = 0; t < Clubs.TOTAL; t++) {
 			listText[t] = Clubs.getAbbrName(of, t) + "     " + team[t];
@@ -320,7 +320,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 					if (f == i + Clubs.FIRST_DEF_EMBLEM) {
 						badgeButton.setIcon(defaultIcon);
 					} else {
-						badgeButton.setIcon(new ImageIcon(Emblems.get16(of, -1, false, false)));
+						badgeButton.setIcon(new ImageIcon(Emblems.BLANK16));
 					}
 				}
 
@@ -342,7 +342,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				stadiumBox.setActionCommand("n");
 				stadiumBox.setSelectedIndex(-1);
 				stadiumBox.setActionCommand("y");
-				badgeButton.setIcon(new ImageIcon(Emblems.get16(of, -1, false, false)));
+				badgeButton.setIcon(new ImageIcon(Emblems.BLANK16));
 				panel3.setVisible(false);
 			}
 		}

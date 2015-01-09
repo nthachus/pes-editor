@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class LogoPanel extends JPanel {
+public class LogoPanel extends JPanel implements ActionListener {
 	private final OptionFile of;
 	private final LogoImportDialog logoImportDia;
 
@@ -57,11 +57,7 @@ public class LogoPanel extends JPanel {
 			flagButtons[l].setBackground(Colors.GRAY80);
 			flagButtons[l].setMargin(new Insets(0, 0, 0, 0));
 			flagButtons[l].setActionCommand(Integer.toString(l));
-			flagButtons[l].addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					onSelectLogo(evt);
-				}
-			});
+			flagButtons[l].addActionListener(this);
 
 			flagPanel.add(flagButtons[l]);
 		}
@@ -86,7 +82,7 @@ public class LogoPanel extends JPanel {
 		refresh();
 	}
 
-	private void onSelectLogo(ActionEvent evt) {
+	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
 		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 

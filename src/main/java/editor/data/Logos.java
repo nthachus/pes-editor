@@ -27,6 +27,10 @@ public final class Logos {
 	public static final int BITS_DEPTH = 4;
 
 	public static final int SIZE = Images.recordSize(BITS_DEPTH, IMG_SIZE);
+	//public static final int PALETTE_SIZE = Images.paletteSize(BITS_DEPTH);
+
+	public static final BufferedImage BLANK = (BufferedImage) Images.read(null, IMG_SIZE, BITS_DEPTH, -1, false, 0f);
+
 
 	private static int getOffset(int slot) {
 		if (slot < 0 || slot >= TOTAL) throw new IndexOutOfBoundsException("slot");
@@ -43,13 +47,7 @@ public final class Logos {
 	public static BufferedImage get(OptionFile of, int slot, boolean opaque) {
 		if (null == of) throw new NullPointerException("of");
 
-		int adr;
-		try {
-			adr = getOffset(slot) + IMG_SIZE;
-		} catch (Exception e) {
-			adr = -1;
-		}
-
+		int adr = getOffset(slot) + IMG_SIZE;
 		return (BufferedImage) Images.read(of.getData(), IMG_SIZE, BITS_DEPTH, adr, opaque, 0f);
 	}
 

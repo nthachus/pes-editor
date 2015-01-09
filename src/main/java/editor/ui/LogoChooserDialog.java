@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class LogoChooserDialog extends JDialog {
+public class LogoChooserDialog extends JDialog implements ActionListener {
 	private final OptionFile of;
 
 	private volatile boolean isTrans = true;
@@ -31,18 +31,12 @@ public class LogoChooserDialog extends JDialog {
 		JPanel flagPanel = new JPanel(new GridLayout(8, 10));
 
 		Systems.javaUI();// fix button background color
-		Image icon;
 		for (int l = 0; l < Logos.TOTAL; l++) {
-
-			icon = Logos.get(of, -1, false);
-			flagButtons[l] = new JButton(new ImageIcon(icon));
+			flagButtons[l] = new JButton(new ImageIcon(Logos.BLANK));
 			flagButtons[l].setMargin(new Insets(0, 0, 0, 0));
 			flagButtons[l].setActionCommand(Integer.toString(l));
-			flagButtons[l].addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					onSelectLogo(evt);
-				}
-			});
+			flagButtons[l].addActionListener(this);
+
 			flagPanel.add(flagButtons[l]);
 		}
 		Systems.systemUI();
@@ -56,8 +50,7 @@ public class LogoChooserDialog extends JDialog {
 
 		CancelButton cancelButton = new CancelButton(this);
 
-		icon = Logos.get(of, -1, false);
-		repLabel = new JLabel(new ImageIcon(icon));
+		repLabel = new JLabel(new ImageIcon(Logos.BLANK));
 
 		JPanel centrePanel = new JPanel(new BorderLayout());
 		centrePanel.add(repLabel, BorderLayout.NORTH);
@@ -76,7 +69,7 @@ public class LogoChooserDialog extends JDialog {
 		refresh();
 	}
 
-	private void onSelectLogo(ActionEvent evt) {
+	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
 		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 

@@ -51,6 +51,13 @@ public final class Emblems {
 	 */
 	public static final int SIZE16 = Images.recordSize(BPP16, IMG_SIZE);
 
+	public static final int PALETTE_SIZE16 = Images.paletteSize(BPP16);
+	public static final int PALETTE_SIZE128 = Images.paletteSize(BPP128);
+
+	public static final Image BLANK16 = Images.read(null, IMG_SIZE, BPP16, -1, false, 0f);
+	public static final Image BLANK_SMALL = Images.read(null, IMG_SIZE, BPP16, -1, false, 0.5f);
+
+
 	private static int getOffset(boolean hiRes, int slot) {
 		if (slot < 0 || (hiRes && slot >= TOTAL128) || (!hiRes && slot >= TOTAL16))
 			throw new IndexOutOfBoundsException("slot");
@@ -63,26 +70,14 @@ public final class Emblems {
 	public static Image get128(OptionFile of, int slot, boolean opaque, boolean small) {
 		if (null == of) throw new NullPointerException("of");
 
-		int adr;
-		try {
-			adr = getOffset(true, slot) + IMG_SIZE;
-		} catch (Exception e) {
-			adr = -1;
-		}
-
+		int adr = getOffset(true, slot) + IMG_SIZE;
 		return Images.read(of.getData(), IMG_SIZE, BPP128, adr, opaque, small ? 0.5f : 0f);
 	}
 
 	public static Image get16(OptionFile of, int slot, boolean opaque, boolean small) {
 		if (null == of) throw new NullPointerException("of");
 
-		int adr;
-		try {
-			adr = getOffset(false, slot) + IMG_SIZE;
-		} catch (Exception e) {
-			adr = -1;
-		}
-
+		int adr = getOffset(false, slot) + IMG_SIZE;
 		return Images.read(of.getData(), IMG_SIZE, BPP16, adr, opaque, small ? 0.5f : 0f);
 	}
 
@@ -183,6 +178,8 @@ public final class Emblems {
 
 	public static Image getImage(OptionFile of, int emblem) {
 		int slot = getLocation(of, emblem);
+		if (slot < 0)
+			return BLANK16;
 
 		if (emblem < TOTAL128)
 			return get128(of, slot, false, false);
@@ -195,7 +192,8 @@ public final class Emblems {
 		if (emblem < 0 || emblem >= TOTAL128 + TOTAL16) throw new IndexOutOfBoundsException("emblem");
 
 		int adr = getIndexOffset(true, emblem);
-		return (of.getData()[adr] == UNUSED_IDX_VALUE) ? -1 : Bits.toInt(of.getData()[adr]);
+		byte idx = of.getData()[adr];
+		return (idx == UNUSED_IDX_VALUE) ? -1 : Bits.toInt(idx);
 	}
 
 	public static void deleteImage(OptionFile of, int emblem) {
