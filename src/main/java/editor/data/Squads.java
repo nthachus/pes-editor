@@ -83,7 +83,7 @@ public final class Squads {
 
 	public static void fixFormation(OptionFile of, int squad, boolean fixJobs) {
 		if (null == of) throw new NullPointerException("of");
-		if (squad < 0 || squad >= TOTAL) throw new IndexOutOfBoundsException("squad");
+		if (squad < 0 || squad >= TOTAL) throw new IndexOutOfBoundsException("squad#" + squad);
 
 		if ((squad >= FIRST_EDIT_NATION && squad < FIRST_CLUB) || squad >= FIRST_CLUB + Clubs.TOTAL)
 			return;
@@ -131,7 +131,7 @@ public final class Squads {
 
 	public static void tidy(OptionFile of, int team) {
 		if (null == of) throw new NullPointerException("of");
-		if (team < 0 || team >= TOTAL) throw new IndexOutOfBoundsException("team");
+		if (team < 0 || team >= TOTAL) throw new IndexOutOfBoundsException("team#" + team);
 
 		if ((team >= FIRST_EDIT_NATION && team < FIRST_CLUB) || team >= FIRST_CLUB + Clubs.TOTAL)
 			return;
@@ -313,7 +313,7 @@ public final class Squads {
 
 	public static void tidy11(OptionFile of, int team, int freePos, int selPos) {
 		if (null == of) throw new NullPointerException("of");
-		if (team < 0 || team >= TOTAL) throw new IndexOutOfBoundsException("team");
+		if (team < 0 || team >= TOTAL) throw new IndexOutOfBoundsException("team#" + team);
 
 		if ((team >= FIRST_EDIT_NATION && team < FIRST_CLUB) || team >= FIRST_CLUB + Clubs.TOTAL)
 			return;

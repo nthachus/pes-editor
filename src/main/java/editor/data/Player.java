@@ -75,7 +75,7 @@ public class Player implements Serializable, Comparable<Player> {
 	 */
 	public static int getOffset(int player) {
 		if (player <= 0 || (player >= TOTAL && player < FIRST_EDIT) || player >= END_EDIT)
-			throw new IndexOutOfBoundsException("player");
+			throw new IndexOutOfBoundsException("player#" + player);
 
 		if (player >= FIRST_EDIT)
 			return START_EDIT_ADR + (player - FIRST_EDIT) * SIZE;
@@ -98,7 +98,7 @@ public class Player implements Serializable, Comparable<Player> {
 	public Player(OptionFile of, int index, int squadNumAdr) {
 		if (of == null) throw new NullPointerException();
 		if (index < 0 || (index >= TOTAL && index < FIRST_EDIT) || index >= END_EDIT)
-			throw new IndexOutOfBoundsException("index");
+			throw new IndexOutOfBoundsException("index#" + index);
 
 		this.of = of;
 		this.index = index;// NOTE: index out of range: <ERROR>

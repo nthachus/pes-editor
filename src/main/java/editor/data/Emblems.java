@@ -55,12 +55,12 @@ public final class Emblems {
 	public static final int PALETTE_SIZE128 = Images.paletteSize(BPP128);
 
 	public static final Image BLANK16 = Images.read(null, IMG_SIZE, BPP16, -1, false, 0f);
-	public static final Image BLANK_SMALL = Images.read(null, IMG_SIZE, BPP16, -1, false, 0.5f);
+	public static final Image BLANK_SMALL = Images.read(null, IMG_SIZE, BPP16, -1, false, 0.58f);
 
 
 	private static int getOffset(boolean hiRes, int slot) {
 		if (slot < 0 || (hiRes && slot >= TOTAL128) || (!hiRes && slot >= TOTAL16))
-			throw new IndexOutOfBoundsException("slot");
+			throw new IndexOutOfBoundsException("slot#" + slot);
 
 		if (!hiRes)
 			return START_ADR + (TOTAL128 - 1) * SIZE128 - (slot / 2) * SIZE128 + (slot % 2) * SIZE16;
@@ -71,14 +71,14 @@ public final class Emblems {
 		if (null == of) throw new NullPointerException("of");
 
 		int adr = getOffset(true, slot) + IMG_SIZE;
-		return Images.read(of.getData(), IMG_SIZE, BPP128, adr, opaque, small ? 0.5f : 0f);
+		return Images.read(of.getData(), IMG_SIZE, BPP128, adr, opaque, small ? 0.58f : 0f);
 	}
 
 	public static Image get16(OptionFile of, int slot, boolean opaque, boolean small) {
 		if (null == of) throw new NullPointerException("of");
 
 		int adr = getOffset(false, slot) + IMG_SIZE;
-		return Images.read(of.getData(), IMG_SIZE, BPP16, adr, opaque, small ? 0.5f : 0f);
+		return Images.read(of.getData(), IMG_SIZE, BPP16, adr, opaque, small ? 0.58f : 0f);
 	}
 
 	// emblem index table: [hiCount] [lowCount] [..HighResTotal] [..LowResTotal]
@@ -189,7 +189,8 @@ public final class Emblems {
 
 	public static int getLocation(OptionFile of, int emblem) {
 		if (null == of) throw new NullPointerException("of");
-		if (emblem < 0 || emblem >= TOTAL128 + TOTAL16) throw new IndexOutOfBoundsException("emblem");
+		if (emblem < 0 || emblem >= TOTAL128 + TOTAL16)
+			throw new IndexOutOfBoundsException("emblem#" + emblem);
 
 		int adr = getIndexOffset(true, emblem);
 		byte idx = of.getData()[adr];
@@ -209,7 +210,7 @@ public final class Emblems {
 
 	public static int getIndex(OptionFile of, int slot) {
 		if (null == of) throw new NullPointerException("of");
-		if (slot < 0 || slot >= TOTAL128 + TOTAL16) throw new IndexOutOfBoundsException("slot");
+		if (slot < 0 || slot >= TOTAL128 + TOTAL16) throw new IndexOutOfBoundsException("slot#" + slot);
 
 		int adr = (slot < TOTAL128) ? getOffset(true, slot) : getOffset(false, slot - TOTAL128);
 		return Bits.toInt16(of.getData(), adr + 4);

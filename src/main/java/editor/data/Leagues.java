@@ -17,7 +17,7 @@ public final class Leagues {
 	public static final int START_ADR = Stadiums.END_ADR + (Stadiums.SIZE + 1);
 
 	private static int getOffset(int league) {
-		if (league < 0 || league >= TOTAL) throw new IndexOutOfBoundsException("league");
+		if (league < 0 || league >= TOTAL) throw new IndexOutOfBoundsException("league#" + league);
 		return START_ADR + league * SIZE;
 	}
 

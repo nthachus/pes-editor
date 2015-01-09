@@ -24,7 +24,7 @@ public class NationalityList extends JList<Player> {
 	public void refresh(int nation, boolean alphaOrder) {
 		int extraCount = SelectByNation.getExtraNations().length;
 		if (nation < 0 || nation >= Stats.NATION.length + extraCount)
-			throw new IndexOutOfBoundsException("nation");
+			throw new IndexOutOfBoundsException("nation#" + nation);
 
 		Vector<Player> model = new Vector<Player>();
 		if (nation < Stats.NATION.length) {

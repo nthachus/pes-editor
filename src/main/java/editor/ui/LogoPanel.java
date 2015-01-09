@@ -51,11 +51,14 @@ public class LogoPanel extends JPanel implements ActionListener {
 		pngChooser.setDialogTitle(Resources.getMessage("logo.export"));
 
 		JPanel flagPanel = new JPanel(new GridLayout(8, 10));
+		int iconSize = Math.round(1.2f * Logos.IMG_SIZE);
+
 		Systems.javaUI();// fix button background color
 		for (int l = 0; l < flagButtons.length; l++) {
 			flagButtons[l] = new JButton();
 			flagButtons[l].setBackground(Colors.GRAY80);
 			flagButtons[l].setMargin(new Insets(0, 0, 0, 0));
+			flagButtons[l].setPreferredSize(new Dimension(iconSize, iconSize));
 			flagButtons[l].setActionCommand(Integer.toString(l));
 			flagButtons[l].addActionListener(this);
 

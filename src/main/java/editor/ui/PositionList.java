@@ -32,7 +32,8 @@ public class PositionList extends JList<String> {
 	}
 
 	public int getPosNum(int index) {
-		if (index < 0 || index >= posNum.length) throw new ArrayIndexOutOfBoundsException("index");
+		if (index < 0 || index >= posNum.length)
+			throw new ArrayIndexOutOfBoundsException(Integer.toString(index));
 		return posNum[index];
 	}
 

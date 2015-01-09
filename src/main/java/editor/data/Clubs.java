@@ -25,7 +25,7 @@ public final class Clubs {
 	public static final int FIRST_EMBLEM = FIRST_DEF_EMBLEM + Squads.FIRST_CLUB + TOTAL;
 
 	private static int getOffset(int club) {
-		if (club < 0 || club >= TOTAL) throw new IndexOutOfBoundsException("club");
+		if (club < 0 || club >= TOTAL) throw new IndexOutOfBoundsException("club#" + club);
 		return START_ADR + club * SIZE;
 	}
 

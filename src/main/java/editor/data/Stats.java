@@ -399,4 +399,12 @@ public final class Stats {
 		return result;
 	}
 
+	public static int regPosToRole(int regPos) {
+		return (regPos > 1) ? regPos - 1 : regPos;
+	}
+
+	public static int roleToRegPos(int regRole) {
+		return (regRole > 0) ? regRole + 1 : regRole;
+	}
+
 }

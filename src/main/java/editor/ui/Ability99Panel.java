@@ -65,7 +65,8 @@ public class Ability99Panel extends JPanel
 	}
 
 	public JTextField getField(int index) {
-		if (index < 0 || index >= fields.length) throw new ArrayIndexOutOfBoundsException("index");
+		if (index < 0 || index >= fields.length)
+			throw new ArrayIndexOutOfBoundsException(Integer.toString(index));
 		return fields[index];
 	}
 

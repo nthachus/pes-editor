@@ -31,7 +31,7 @@ public class SquadNumberList extends JList<String> {
 	 */
 	public void refresh(int team) {
 		if (team < 0 || team >= Squads.TOTAL)
-			throw new IndexOutOfBoundsException("team");
+			throw new IndexOutOfBoundsException("team#" + team);
 
 		int size, firstAdr, ft = team;
 		if (team < Squads.LAST_EDIT_NATION) {

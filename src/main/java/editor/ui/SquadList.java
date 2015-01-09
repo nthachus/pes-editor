@@ -36,7 +36,7 @@ public class SquadList extends JList<Player> {
 
 	public void refresh(int team, boolean normal) {
 		if (team < 0 || team > Squads.TOTAL)
-			throw new IndexOutOfBoundsException("team");
+			throw new IndexOutOfBoundsException("team#" + team);
 
 		this.team = team;
 		if (!normal) {

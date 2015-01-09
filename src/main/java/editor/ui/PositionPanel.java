@@ -3,7 +3,6 @@ package editor.ui;
 import editor.data.OptionFile;
 import editor.data.Stats;
 import editor.util.Resources;
-import editor.util.Strings;
 import editor.util.swing.JComboBox;
 
 import javax.swing.*;
@@ -13,7 +12,7 @@ import java.awt.event.ActionListener;
 
 public class PositionPanel extends JPanel implements ActionListener {
 	private final OptionFile of;
-	private volatile int regPos;
+	private volatile int regRole;
 
 	private final JCheckBox[] roleCheck = new JCheckBox[Stats.ROLES.length];
 	private/* final*/ JComboBox<String> regBox;
@@ -47,7 +46,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 		regBox = new JComboBox<String>();
 		regBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				onRegPos(evt);
+				onRegisterRole(evt);
 			}
 		});
 
@@ -68,15 +67,17 @@ public class PositionPanel extends JPanel implements ActionListener {
 	}
 
 	public JCheckBox getRoleCheck(int index) {
-		if (index < 0 || index >= roleCheck.length) throw new ArrayIndexOutOfBoundsException("index");
+		if (index < 0 || index >= roleCheck.length)
+			throw new ArrayIndexOutOfBoundsException(Integer.toString(index));
 		return roleCheck[index];
 	}
 
 	public void load(int player) {
-		regPos = Stats.getValue(of, player, Stats.REG_POS);
+		regRole = Stats.getValue(of, player, Stats.REG_POS);
+		regRole = Stats.regPosToRole(regRole);
 
 		for (int i = 0; i < roleCheck.length; i++) {
-			if (Stats.getValue(of, player, Stats.ROLES[i]) != 0 || regPos == i) {
+			if (Stats.getValue(of, player, Stats.ROLES[i]) != 0 || regRole == i) {
 				roleCheck[i].setSelected(true);
 			} else {
 				roleCheck[i].setSelected(false);
@@ -96,7 +97,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 			}
 		}
 
-		regBox.setSelectedItem(Stats.ROLES[regPos].getName());
+		regBox.setSelectedItem(Stats.ROLES[regRole].getName());
 		regBox.setActionCommand("y");
 	}
 
@@ -107,30 +108,25 @@ public class PositionPanel extends JPanel implements ActionListener {
 		if (null == evt) throw new NullPointerException("evt");
 
 		int box = Integer.parseInt(evt.getActionCommand());
-		if (regPos == box) {
+		if (regRole == box) {
 			roleCheck[box].setSelected(true);
 		}
 
 		updateRegBox();
 	}
 
-	private void onRegPos(ActionEvent evt) {
+	private void onRegisterRole(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
 		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
 			return;
 
 		String roleName = regBox.getSelectedItem();
-		int r = 0;
-		if (!Strings.isEmpty(roleName)) {
-			for (int i = 0; i < Stats.ROLES.length; i++) {
-				if (roleName.equalsIgnoreCase(Stats.ROLES[i].getName())) {
-					r = i;
-					break;
-				}
+		for (int i = 0; i < Stats.ROLES.length; i++) {
+			if (Stats.ROLES[i].getName().equalsIgnoreCase(roleName)) {
+				regRole = i;
+				break;
 			}
 		}
-		//log.debug("", r);
-		regPos = r;
 	}
 
 }

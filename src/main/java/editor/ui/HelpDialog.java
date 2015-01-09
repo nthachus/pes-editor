@@ -31,7 +31,7 @@ public class HelpDialog extends JDialog {
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setViewportView(editPanel);
-		scroll.setPreferredSize(new Dimension(430, 550));
+		scroll.setPreferredSize(new Dimension(645, 550));
 
 		URL helpUrl = getIndexPage();
 		showPage(helpUrl);

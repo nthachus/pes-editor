@@ -29,7 +29,8 @@ public enum ControlButton {
 	}
 
 	public static ControlButton valueOf(int ordinal) {
-		if (ordinal < 0 || ordinal >= size()) throw new ArrayIndexOutOfBoundsException("ordinal");
+		if (ordinal < 0 || ordinal >= size())
+			throw new ArrayIndexOutOfBoundsException(Integer.toString(ordinal));
 		return values[ordinal];
 	}
 

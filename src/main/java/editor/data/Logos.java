@@ -33,7 +33,7 @@ public final class Logos {
 
 
 	private static int getOffset(int slot) {
-		if (slot < 0 || slot >= TOTAL) throw new IndexOutOfBoundsException("slot");
+		if (slot < 0 || slot >= TOTAL) throw new IndexOutOfBoundsException("slot#" + slot);
 		return START_ADR + slot * SIZE;
 	}
 

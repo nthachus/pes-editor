@@ -66,11 +66,14 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		pngChooser.setDialogTitle(Resources.getMessage("emblem.export"));
 
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
+		int iconSize = Math.round(0.67f * Emblems.IMG_SIZE);
+
 		Systems.javaUI();// fix button background color
 		for (int i = 0; i < flagButtons.length; i++) {
 			flagButtons[i] = new JButton();
 			flagButtons[i].setBackground(Colors.GRAY80);
 			flagButtons[i].setMargin(new Insets(0, 0, 0, 0));
+			flagButtons[i].setPreferredSize(new Dimension(iconSize, iconSize));
 			flagButtons[i].setActionCommand(Integer.toString(i));
 			flagButtons[i].addMouseListener(this);
 			flagButtons[i].addActionListener(this);

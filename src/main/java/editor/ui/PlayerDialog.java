@@ -128,14 +128,12 @@ public class PlayerDialog extends JDialog {
 			Stats.setValue(of, index, Stats.ROLES[i], Bits.toByte(positionPan.getRoleCheck(i).isSelected()));
 		}
 
-		int regRole = 0;
 		for (int i = 0; i < Stats.ROLES.length; i++) {
 			if (Stats.ROLES[i].getName().equalsIgnoreCase(positionPan.getRegBox().getSelectedItem())) {
-				regRole = i;
+				Stats.setValue(of, index, Stats.REG_POS, Stats.roleToRegPos(i));
 				break;
 			}
 		}
-		Stats.setValue(of, index, Stats.REG_POS, regRole);
 
 		Stats.setValue(of, index, Stats.HEIGHT, generalPan.getHeightField().getText());
 

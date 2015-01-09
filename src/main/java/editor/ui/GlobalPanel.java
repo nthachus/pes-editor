@@ -35,6 +35,7 @@ public class GlobalPanel extends JPanel {
 	private JComboBox<String> opBox;
 	private JComboBox<String> scopeBox;
 	private JComboBox<String> teamBox;
+	private JCheckBox isExcluded;
 	private JCheckBox forEditPlayer;
 
 	private static String[] getScopes() {
@@ -83,17 +84,25 @@ public class GlobalPanel extends JPanel {
 	private void initComponents() {
 		scopeBox = new JComboBox<String>(getScopes());
 		teamBox = new JComboBox<String>();
+		isExcluded = new JCheckBox();
 		forEditPlayer = new JCheckBox();
 
-		JPanel scopePanel = new JPanel(new GridLayout(2, 3));
-		scopePanel.setBorder(BorderFactory.createTitledBorder(Resources.getMessage("global.scope")));
+		JPanel scopeLeft = new JPanel(new GridLayout(2, 2));
+		scopeLeft.add(new JLabel(Resources.getMessage("global.regPos")));
+		scopeLeft.add(new JLabel(Resources.getMessage("global.team")));
+		scopeLeft.add(scopeBox);
+		scopeLeft.add(teamBox);
 
-		scopePanel.add(new JLabel(Resources.getMessage("global.regPos")));
-		scopePanel.add(new JLabel(Resources.getMessage("global.exTeam")));
-		scopePanel.add(new JLabel(Resources.getMessage("global.forEdit")));
-		scopePanel.add(scopeBox);
-		scopePanel.add(teamBox);
-		scopePanel.add(forEditPlayer);
+		JPanel scopeRight = new JPanel(new GridLayout(2, 2));
+		scopeRight.add(new JLabel(Resources.getMessage("global.excluded")));
+		scopeRight.add(new JLabel(Resources.getMessage("global.forEdit")));
+		scopeRight.add(isExcluded);
+		scopeRight.add(forEditPlayer);
+
+		JPanel scopePanel = new JPanel();
+		scopePanel.setBorder(BorderFactory.createTitledBorder(Resources.getMessage("global.scope")));
+		scopePanel.add(scopeLeft);
+		scopePanel.add(scopeRight);
 
 		statBox = new JComboBox<String>(getStatNames());
 		opBox = new JComboBox<String>(OPS);
@@ -126,12 +135,12 @@ public class GlobalPanel extends JPanel {
 
 	private void doAdjust() {
 		int statIndex = statBox.getSelectedIndex();
-		Stat st = getStat(statIndex);
-		if (null == st) return;
+		if (statIndex < 0) return;
 
 		int min = 1, max = Stats.MAX_STAT99;
+		Stat st = getStat(statIndex);
 		int len = Stats.ABILITY99.length;
-		if (statIndex > len) {
+		if (null != st && statIndex > len) {
 			min = st.minValue();
 			max = st.maxValue();
 		}
@@ -252,7 +261,7 @@ public class GlobalPanel extends JPanel {
 			return true;
 		else if (scopeId > 0) {
 			int v = Stats.getValue(of, player, Stats.REG_POS);
-			if (v == scopeId - 1)
+			if (Stats.regPosToRole(v) == scopeId - 1)
 				return true;
 		}
 		return false;
@@ -264,14 +273,19 @@ public class GlobalPanel extends JPanel {
 	private boolean isInExcludedTeam(int player) {
 		int teamId = teamBox.getSelectedIndex();
 		if (teamId > 0) {
+			boolean toExclude = isExcluded.isSelected();
+
 			int adr = Squads.CLUB_ADR + (teamId - 1) * Formations.CLUB_TEAM_SIZE * 2;
 			for (int sp = 0; sp < Formations.CLUB_TEAM_SIZE; sp++) {
 				int id = Bits.toInt16(of.getData(), adr);
 				if (id == player)
-					return true;
+					return toExclude;
 				adr += 2;
 			}
+
+			return !toExclude;
 		}
+
 		return false;
 	}
 

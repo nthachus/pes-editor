@@ -69,7 +69,8 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public JButton getFlagButton(int index) {
-		if (index < 0 || index >= flagButtons.length) throw new ArrayIndexOutOfBoundsException("index");
+		if (index < 0 || index >= flagButtons.length)
+			throw new ArrayIndexOutOfBoundsException(Integer.toString(index));
 		return flagButtons[index];
 	}
 
@@ -111,7 +112,8 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public ImageIcon getFlagBackground(Image image, int bgIndex, byte[] red, byte[] green, byte[] blue) {
-		if (bgIndex < 0 || bgIndex >= rasterData.length) throw new IndexOutOfBoundsException("bgIndex");
+		if (bgIndex < 0 || bgIndex >= rasterData.length)
+			throw new IndexOutOfBoundsException("bgIndex#" + bgIndex);
 
 		IndexColorModel colorModel = new IndexColorModel(BITS_DEPTH, Images.paletteSize(BITS_DEPTH), red, green, blue);
 		BufferedImage bi = new BufferedImage(colorModel, rasterData[bgIndex], false, null);

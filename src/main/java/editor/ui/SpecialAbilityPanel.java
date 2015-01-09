@@ -28,7 +28,8 @@ public class SpecialAbilityPanel extends JPanel {
 	}
 
 	public JCheckBox getAbilityCheck(int index) {
-		if (index < 0 || index >= abilityCheck.length) throw new ArrayIndexOutOfBoundsException("index");
+		if (index < 0 || index >= abilityCheck.length)
+			throw new ArrayIndexOutOfBoundsException(Integer.toString(index));
 		return abilityCheck[index];
 	}
 

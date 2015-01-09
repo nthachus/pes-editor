@@ -26,7 +26,7 @@ public final class Kits {
 	private static final int IS_LICENSED_OFS = 80;
 
 	private static int getOffset(int teamId) {
-		if (teamId < 0 || teamId >= TOTAL) throw new IndexOutOfBoundsException("teamId");
+		if (teamId < 0 || teamId >= TOTAL) throw new IndexOutOfBoundsException("teamId#" + teamId);
 		if (teamId < Clubs.TOTAL)
 			return START_CLUB_ADR + teamId * SIZE_CLUB;
 		return START_ADR + (teamId - Clubs.TOTAL) * SIZE_NATION;
@@ -37,7 +37,7 @@ public final class Kits {
 	}
 
 	private static int getOffset(int teamId, int logo) {
-		if (logo < 0 || logo >= TOTAL_LOGO_SLOT) throw new IndexOutOfBoundsException("logo");
+		if (logo < 0 || logo >= TOTAL_LOGO_SLOT) throw new IndexOutOfBoundsException("logo#" + logo);
 		return getOffset(teamId) + USED_LOGO_OFS + logo * 24;
 	}
 

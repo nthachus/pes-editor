@@ -48,17 +48,17 @@ public final class Formations {
 	//endregion
 
 	public static int getOffset(int squad) {
-		if (squad < 0 || squad >= TOTAL) throw new IndexOutOfBoundsException("squad");
+		if (squad < 0 || squad >= TOTAL) throw new IndexOutOfBoundsException("squad#" + squad);
 		return START_ADR + SIZE * squad;
 	}
 
 	private static int getAltOffset(int squad, int alt) {
-		if (alt < 0 || alt >= ALT_ITEMS.length) throw new IndexOutOfBoundsException("alt");
+		if (alt < 0 || alt >= ALT_ITEMS.length) throw new IndexOutOfBoundsException("alt#" + alt);
 		return getOffset(squad) + alt * ALT_SIZE;
 	}
 
 	private static int getPosOffset(int squad, int alt, int index) {
-		if (index < 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index");
+		if (index < 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index#" + index);
 		return getAltOffset(squad, alt) + 138 + index;
 	}
 
@@ -77,7 +77,7 @@ public final class Formations {
 	}
 
 	private static int getSlotOffset(int squad, int index) {
-		if (index < 0 || index >= CLUB_TEAM_SIZE) throw new IndexOutOfBoundsException("index");
+		if (index < 0 || index >= CLUB_TEAM_SIZE) throw new IndexOutOfBoundsException("index#" + index);
 		return getOffset(squad) + 6 + index;
 	}
 
@@ -96,7 +96,7 @@ public final class Formations {
 	}
 
 	private static int getJobOffset(int squad, int index) {
-		if (index < 0 || index >= JOBS_COUNT) throw new IndexOutOfBoundsException("index");
+		if (index < 0 || index >= JOBS_COUNT) throw new IndexOutOfBoundsException("index#" + index);
 		return getOffset(squad) + 111 + index;
 	}
 
@@ -115,12 +115,12 @@ public final class Formations {
 	}
 
 	private static int getXOffset(int squad, int alt, int index) {
-		if (index <= 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index");
+		if (index <= 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index#" + index);
 		return getAltOffset(squad, alt) + 118 + (index - 1) * 2;
 	}
 
 	private static int getYOffset(int squad, int alt, int index) {
-		if (index <= 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index");
+		if (index <= 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index#" + index);
 		return getAltOffset(squad, alt) + 119 + (index - 1) * 2;
 	}
 
@@ -153,7 +153,7 @@ public final class Formations {
 	}
 
 	private static int getAtkOffset(int squad, int alt, int index) {
-		if (index < 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index");
+		if (index < 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index#" + index);
 		return getAltOffset(squad, alt) + 149 + index;
 	}
 
@@ -180,7 +180,7 @@ public final class Formations {
 	}
 
 	private static int getDefOffset(int squad, int alt, int index) {
-		if (index < 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index");
+		if (index < 0 || index >= PLAYER_COUNT) throw new IndexOutOfBoundsException("index#" + index);
 		return getAltOffset(squad, alt) + 160 + index;
 	}
 
@@ -199,7 +199,8 @@ public final class Formations {
 	}
 
 	private static int getStrategyOffset(int squad, int button) {
-		if (button < 0 || button >= ControlButton.size()) throw new IndexOutOfBoundsException("button");
+		if (button < 0 || button >= ControlButton.size())
+			throw new IndexOutOfBoundsException("button#" + button);
 		return getOffset(squad) + 102 + button;
 	}
 
@@ -257,7 +258,8 @@ public final class Formations {
 	}
 
 	private static int getTeamSetOffset(int squad, int alt, int setting) {
-		if (setting < 0 || setting >= SETTING_COUNT) throw new IndexOutOfBoundsException("setting");
+		if (setting < 0 || setting >= SETTING_COUNT)
+			throw new IndexOutOfBoundsException("setting#" + setting);
 		return getAltOffset(squad, alt) + 194 + setting;
 	}
 

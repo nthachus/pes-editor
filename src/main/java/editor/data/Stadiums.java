@@ -18,7 +18,7 @@ public final class Stadiums {
 	public static final int END_ADR = SWITCH_ADR + TOTAL;
 
 	private static int getOffset(int stadium) {
-		if (stadium < 0 || stadium >= TOTAL) throw new IndexOutOfBoundsException("stadium");
+		if (stadium < 0 || stadium >= TOTAL) throw new IndexOutOfBoundsException("stadium#" + stadium);
 		return START_ADR + stadium * SIZE;
 	}
 
