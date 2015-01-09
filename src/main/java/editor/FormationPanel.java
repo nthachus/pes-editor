@@ -107,7 +107,7 @@ public class FormationPanel extends JPanel
 		altBox = new JComboBox<String>(Formations.ALT_ITEMS);
 		altBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (e.getActionCommand() == "y") {
+				if ("y".equalsIgnoreCase(e.getActionCommand())) {
 					// countForm();
 					posList.setAlt(altBox.getSelectedIndex());
 					posList.refresh(team);
@@ -141,7 +141,7 @@ public class FormationPanel extends JPanel
 		roleBox.setPreferredSize(new Dimension(56, 25));
 		roleBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (e.getActionCommand() == "y") {
+				if ("y".equalsIgnoreCase(e.getActionCommand())) {
 					int si = squadList.getSelectedIndex();
 					Role role = roleBox.getSelectedItem();
 					if (si >= 0 && si < Formations.PLAYER_COUNT && role.index != -1) {
@@ -306,7 +306,7 @@ public class FormationPanel extends JPanel
 			public void actionPerformed(ActionEvent e) {
 				int i = formBox.getSelectedIndex();
 				// System.out.println(i);
-				if (i != -1 && e.getActionCommand() == "y") {
+				if (i != -1 && "y".equalsIgnoreCase(e.getActionCommand())) {
 					int a = Formations.START_ADR + 118
 							+ (Formations.SIZE * team)
 							+ (altBox.getSelectedIndex() * Formations.ALT_SIZE);
@@ -743,8 +743,8 @@ public class FormationPanel extends JPanel
 
 			if (dest.exists()) {
 				int n = JOptionPane.showConfirmDialog(null, dest.getName()
-						+ "\nAlready exists in:\n" + dest.getParent()
-						+ "\nAre you sure you want to overwrite this file?",
+								+ "\nAlready exists in:\n" + dest.getParent()
+								+ "\nAre you sure you want to overwrite this file?",
 						"Overwrite:  " + dest.getName(),
 						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
 						null);
@@ -764,7 +764,7 @@ public class FormationPanel extends JPanel
 
 			if (Images.saveComponentAsImage(pitchPanel, dest)) {
 				JOptionPane.showMessageDialog(null, dest.getName()
-						+ "\nSaved in:\n" + dest.getParent(),
+								+ "\nSaved in:\n" + dest.getParent(),
 						"File Successfully Saved",
 						JOptionPane.INFORMATION_MESSAGE);
 			} else {

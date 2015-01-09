@@ -162,7 +162,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			public void actionPerformed(ActionEvent e) {
 				int s = stadiumBox.getSelectedIndex();
 				int t = list.getSelectedIndex();
-				if (e.getActionCommand() == "y" && s != -1 && t != -1) {
+				if ("y".equalsIgnoreCase(e.getActionCommand()) && s != -1 && t != -1) {
 					Clubs.setStadium(of, t, s);
 				}
 			}
@@ -257,9 +257,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			listText[t] = Clubs.getAbbrName(of, t) + "     " + team[t];
 		}
 		globalPanel.updateTeamBox(team);
-		for (int n = 0; n < 60; n++) {
-			listText[n + Clubs.TOTAL] = Stats.NATION[n];
-		}
+		System.arraycopy(Stats.NATION, 0, listText, Clubs.TOTAL, 60);
 		for (int n = 0; n < 7; n++) {
 			listText[n + Clubs.TOTAL + 60] = Squads.EXTRAS[n];
 		}
@@ -423,11 +421,10 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 	}
 
 	private void importKit(int t1, int t2) {
-		int emblem1 = 0;
 		if (t1 < Clubs.TOTAL) {
-			emblem1 = Clubs.getEmblem(of, t1) - Clubs.FIRST_EMBLEM;
-			if (emblem1 >= 0 && emblem1 < Emblems.TOTAL128 + Emblems.TOTAL16) {
-				Emblems.deleteImage(of, emblem1);
+			int deleteId = Clubs.getEmblem(of, t1) - Clubs.FIRST_EMBLEM;
+			if (deleteId >= 0 && deleteId < Emblems.TOTAL128 + Emblems.TOTAL16) {
+				Emblems.deleteImage(of, deleteId);
 			}
 		}
 

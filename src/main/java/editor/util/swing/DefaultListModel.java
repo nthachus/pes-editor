@@ -14,4 +14,9 @@ public class DefaultListModel<T> extends javax.swing.DefaultListModel implements
 	public T get(int index) {
 		return (T) super.get(index);
 	}
+
+	@Override
+	public void addElement(Object obj) {
+		super.addElement(obj);
+	}
 }

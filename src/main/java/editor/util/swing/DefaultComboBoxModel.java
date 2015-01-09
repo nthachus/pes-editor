@@ -24,4 +24,9 @@ public class DefaultComboBoxModel<T> extends javax.swing.DefaultComboBoxModel im
 	public T getElementAt(int index) {
 		return (T) super.getElementAt(index);
 	}
+
+	@Override
+	public void addElement(Object anObject) {
+		super.addElement(anObject);
+	}
 }

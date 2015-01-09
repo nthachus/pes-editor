@@ -41,4 +41,9 @@ public class JComboBox<T> extends javax.swing.JComboBox {
 	public T getItemAt(int index) {
 		return (T) super.getItemAt(index);
 	}
+
+	@Override
+	public void addItem(Object anObject) {
+		super.addItem(anObject);
+	}
 }
