@@ -1,6 +1,5 @@
 package editor.ui;
 
-import editor.TeamPanel;
 import editor.TransferPanel;
 import editor.data.CsvMaker;
 import editor.data.OfFormat;

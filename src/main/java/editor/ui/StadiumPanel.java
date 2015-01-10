@@ -1,6 +1,5 @@
 package editor.ui;
 
-import editor.TeamPanel;
 import editor.data.OptionFile;
 import editor.data.Stadiums;
 import editor.util.Resources;

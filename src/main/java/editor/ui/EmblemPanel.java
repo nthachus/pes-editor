@@ -1,6 +1,5 @@
 package editor.ui;
 
-import editor.TeamPanel;
 import editor.data.Emblems;
 import editor.data.OptionFile;
 import editor.util.*;

@@ -21,9 +21,12 @@ public final class Kits {
 	public static final int START_CLUB_ADR = START_ADR + (TOTAL - Clubs.TOTAL) * SIZE_NATION;
 	public static final int END_ADR = START_CLUB_ADR + Clubs.TOTAL * SIZE_CLUB;
 
-	public static final int TOTAL_LOGO_SLOT = 4;
+	public static final int TOTAL_LOGO = 4;
 	private static final int USED_LOGO_OFS = 360;
+	private static final byte UNUSED_LOGO_VAL = Logos.TOTAL + Logos.TOTAL / 10;
+
 	private static final int IS_LICENSED_OFS = 80;
+	private static final byte UNLICENSED_VAL = (byte) 0xFF;
 
 	private static int getOffset(int teamId) {
 		if (teamId < 0 || teamId >= TOTAL) throw new IndexOutOfBoundsException("teamId#" + teamId);
@@ -37,7 +40,7 @@ public final class Kits {
 	}
 
 	private static int getOffset(int teamId, int logo) {
-		if (logo < 0 || logo >= TOTAL_LOGO_SLOT) throw new IndexOutOfBoundsException("logo#" + logo);
+		if (logo < 0 || logo >= TOTAL_LOGO) throw new IndexOutOfBoundsException("logo#" + logo);
 		return getOffset(teamId) + USED_LOGO_OFS + logo * 24;
 	}
 
@@ -70,10 +73,8 @@ public final class Kits {
 
 		int adr = getOffset(team, logo) + 2;
 		of.getData()[adr] = 0;
-		of.getData()[adr + 1] = Logos.TOTAL + 8;
+		of.getData()[adr + 1] = UNUSED_LOGO_VAL;
 	}
-
-	private static final byte UNLICENSED_VAL = (byte) 0xFF;
 
 	public static boolean isLicensed(OptionFile of, int team) {
 		if (null == of) throw new NullPointerException("of");

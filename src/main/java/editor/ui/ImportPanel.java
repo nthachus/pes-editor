@@ -1,6 +1,5 @@
 package editor.ui;
 
-import editor.TeamPanel;
 import editor.TransferPanel;
 import editor.data.*;
 import editor.util.Resources;

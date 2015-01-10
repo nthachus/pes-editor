@@ -1,10 +1,9 @@
-package editor;
+package editor.ui;
 
+import editor.TransferPanel;
 import editor.data.*;
-import editor.ui.*;
 import editor.util.Colors;
 import editor.util.Resources;
-import editor.util.Strings;
 import editor.util.Systems;
 import editor.util.swing.JComboBox;
 import editor.util.swing.JList;
@@ -13,11 +12,13 @@ import editor.util.swing.JTextFieldLimit;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
 
 public class TeamPanel extends JPanel
 		implements ActionListener, ListSelectionListener, MouseListener {
@@ -33,7 +34,7 @@ public class TeamPanel extends JPanel
 
 	private volatile EmblemPanel emblemPan;
 
-	private String[] team = new String[Clubs.TOTAL];
+	private volatile String[] teams;
 	private volatile boolean isOk = false;
 
 	public TeamPanel(
@@ -285,30 +286,39 @@ public class TeamPanel extends JPanel
 		}
 	}
 
-	public void refresh() {// TODO: !!!
-		String[] listText = new String[67 + Clubs.TOTAL];
+	public void refresh() {
+		isOk = false;
+
 		stadiumBox.setActionCommand("n");
 		stadiumBox.removeAllItems();
+		String name;
 		for (int s = 0; s < Stadiums.TOTAL; s++) {
-			stadiumBox.addItem(Stadiums.get(of, s));
+			name = Stadiums.get(of, s);
+			stadiumBox.addItem(name);
 		}
-
 		stadiumBox.setSelectedIndex(-1);
 		stadiumBox.setActionCommand("y");
+
 		backButton.setIcon(new ImageIcon(Emblems.BLANK16));
 		badgeButton.setIcon(new ImageIcon(Emblems.BLANK16));
-		team = Clubs.getNames(of);
-		for (int t = 0; t < Clubs.TOTAL; t++) {
-			listText[t] = Clubs.getAbbrName(of, t) + "     " + team[t];
+
+		teams = Clubs.getNames(of);
+		int ofs = teams.length;
+
+		String[] list = new String[ofs + Squads.NATION_COUNT + Squads.CLASSIC_COUNT];
+		for (int c = 0; c < ofs; c++) {
+			name = Clubs.getAbbrName(of, c);
+			list[c] = name + "     " + teams[c];
 		}
-		globalPan.updateTeamBox(team);
-		System.arraycopy(Stats.NATION, 0, listText, Clubs.TOTAL, 60);
-		for (int n = 0; n < 7; n++) {
-			listText[n + Clubs.TOTAL + 60] = Squads.EXTRAS[n];
-		}
-		isOk = false;
-		teamList.setListData(listText);
+
+		System.arraycopy(Stats.NATION, 0, list, ofs, Squads.NATION_COUNT);
+		ofs += Squads.NATION_COUNT;
+		System.arraycopy(Squads.EXTRAS, 0, list, ofs, Squads.CLASSIC_COUNT);
+
+		globalPan.updateTeamBox(teams);
+		teamList.setListData(list);
 		contentPane.setVisible(false);
+
 		isOk = true;
 	}
 
@@ -317,38 +327,40 @@ public class TeamPanel extends JPanel
 	 */
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		if (!(evt.getSource() instanceof JTextField)) throw new IllegalArgumentException("evt");
+		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
 
-		if (evt.getSource() == nameField) {
-			String text = nameField.getText();
-			if (!Strings.isEmpty(text) && text.length() <= 48) {
-				int t = teamList.getSelectedIndex();
-				Clubs.setName(of, t, text);
-				refresh();
-				transferPan.refresh();
-				if (t < teamList.getModel().getSize() - 1) {
-					teamList.setSelectedIndex(t + 1);
-					teamList.ensureIndexIsVisible(teamList.getSelectedIndex());
-					nameField.requestFocusInWindow();
-					nameField.selectAll();
+		int team = teamList.getSelectedIndex();
+		if (team < 0) return;
+
+		JTextComponent tf = (JTextComponent) evt.getSource();
+		String name = tf.getText();
+		boolean updated = false;
+
+		if (null != name) {
+			if (tf == nameField) {
+				if (name.length() <= Clubs.NAME_LEN) {
+					Clubs.setName(of, team, name);
+					updated = true;
 				}
-
+			} else {
+				if ((name = name.trim()).length() <= Clubs.ABBR_NAME_LEN) {
+					name = name.toUpperCase();
+					Clubs.setAbbrName(of, team, name);
+					updated = true;
+				}
 			}
-		} else {
-			String text = abvEditor.getText();
-			if (text.length() == 3) {
-				text = text.toUpperCase();
-				int t = teamList.getSelectedIndex();
-				Clubs.setAbbrName(of, t, text);
-				refresh();
-				transferPan.refresh();
-				if (t < teamList.getModel().getSize() - 1) {
-					teamList.setSelectedIndex(t + 1);
-					teamList.ensureIndexIsVisible(teamList.getSelectedIndex());
-					abvEditor.requestFocusInWindow();
-					abvEditor.selectAll();
-				}
+		}
 
+		if (updated) {
+			refresh();
+			transferPan.refresh();
+
+			if (team < teamList.getModel().getSize() - 1) {
+				teamList.setSelectedIndex(team + 1);
+				teamList.ensureIndexIsVisible(teamList.getSelectedIndex());
+
+				tf.requestFocusInWindow();
+				tf.selectAll();
 			}
 		}
 	}
@@ -357,47 +369,47 @@ public class TeamPanel extends JPanel
 	 * On team selected.
 	 */
 	public void valueChanged(ListSelectionEvent e) {
-		if (isOk && !e.getValueIsAdjusting()) {
-			int team = teamList.getSelectedIndex();
-			if (team >= 0 && team < Clubs.TOTAL) {
-				if (!contentPane.isVisible()) {
-					contentPane.setVisible(true);
-				}
+		if (null == e) throw new NullPointerException("e");
+		if (!isOk || e.getValueIsAdjusting()) return;
 
-				int f = Clubs.getEmblem(of, team);
-				if (f >= Clubs.FIRST_EMBLEM
-						&& f < Clubs.FIRST_EMBLEM + Emblems.TOTAL128 + Emblems.TOTAL16) {
-					f = f - Clubs.FIRST_EMBLEM;
-					badgeButton.setIcon(new ImageIcon(Emblems.getImage(of, f)));
-				} else {
-					if (f == team + Clubs.FIRST_DEF_EMBLEM) {
-						badgeButton.setIcon(defaultIcon);
-					} else {
-						badgeButton.setIcon(new ImageIcon(Emblems.BLANK16));
-					}
-				}
+		int team = teamList.getSelectedIndex();
+		if (team < 0 || team >= teams.length) {
+			nameField.setText("");
+			abvEditor.setText("");
 
-				color1Btn.setBackground(Clubs.getColor(of, team, false));
-				color2Btn.setBackground(Clubs.getColor(of, team, true));
+			stadiumBox.setActionCommand("n");
+			stadiumBox.setSelectedIndex(-1);
+			stadiumBox.setActionCommand("y");
 
-				updateBackButton(team);
+			badgeButton.setIcon(new ImageIcon(Emblems.BLANK16));
+			contentPane.setVisible(false);
 
-				stadiumBox.setActionCommand("n");
-				stadiumBox.setSelectedIndex(Clubs.getStadium(of, team));
-				stadiumBox.setActionCommand("y");
-				nameField.setText(this.team[team]);
+		} else {
+			int flag = Clubs.getEmblem(of, team);
+			if (flag >= Clubs.FIRST_EMBLEM && flag < Clubs.FIRST_EMBLEM + Emblems.TOTAL128 + Emblems.TOTAL16) {
 
-				abvEditor.setText(Clubs.getAbbrName(of, team));
-
+				Image icon = Emblems.getImage(of, flag - Clubs.FIRST_EMBLEM);
+				badgeButton.setIcon(new ImageIcon(icon));
+			} else if (flag == team + Clubs.FIRST_DEF_EMBLEM) {
+				badgeButton.setIcon(defaultIcon);
 			} else {
-				nameField.setText("");
-				abvEditor.setText("");
-				stadiumBox.setActionCommand("n");
-				stadiumBox.setSelectedIndex(-1);
-				stadiumBox.setActionCommand("y");
 				badgeButton.setIcon(new ImageIcon(Emblems.BLANK16));
-				contentPane.setVisible(false);
 			}
+
+			color1Btn.setBackground(Clubs.getColor(of, team, false));
+			color2Btn.setBackground(Clubs.getColor(of, team, true));
+
+			updateBackButton(team);
+
+			stadiumBox.setActionCommand("n");
+			int stadiumId = Clubs.getStadium(of, team);
+			stadiumBox.setSelectedIndex(stadiumId);
+			stadiumBox.setActionCommand("y");
+
+			nameField.setText(teams[team]);
+			abvEditor.setText(Clubs.getAbbrName(of, team));
+
+			contentPane.setVisible(true);
 		}
 	}
 
@@ -417,44 +429,56 @@ public class TeamPanel extends JPanel
 	 * On teams list / emblem button clicked.
 	 */
 	public void mouseClicked(MouseEvent e) {
-		int clicks = e.getClickCount();
+		if (null == e) throw new NullPointerException("e");
+		if (null == e.getSource()) throw new IllegalArgumentException("e");
+
 		int team = teamList.getSelectedIndex();
-		if (e.getSource() == teamList && e.getButton() == MouseEvent.BUTTON1
-				&& clicks == 2) {
+		if (team < 0) return;
+
+		int mBtn = e.getButton();
+		int clicks = e.getClickCount();
+		if (e.getSource() == teamList && mBtn == MouseEvent.BUTTON1 && clicks > 1) {
+
 			if (of2.isLoaded()) {
-				if (team != -1) {
-					int t2 = kitImportDia.show(team);
-					if (t2 != -1) {
-						importKit(team, t2);
-					}
+				int kitTeam = kitImportDia.show(team);
+				if (kitTeam >= 0) {
+					importTeamKit(kitTeam, team);
 				}
 			}
-		}
+		} else if (e.getSource() == badgeButton && clicks == 1) {
+			if (mBtn == MouseEvent.BUTTON3 || (mBtn == MouseEvent.BUTTON1 && e.isControlDown())) {
 
-		if (e.getSource() == badgeButton && clicks == 1) {
-			if ((e.getButton() == MouseEvent.BUTTON3 || (e.getButton() == MouseEvent.BUTTON1 && e.isControlDown()))) {
-
-				if (team != -1 && team < Clubs.TOTAL) {
-					Clubs.setEmblem(of, team, -1);
-					badgeButton.setIcon(defaultIcon);
-					updateBackButton(team);
-				}
-
-			} else if (e.getButton() == MouseEvent.BUTTON1) {
-				if (team != -1) {
-					int f = flagChooser.getEmblem("Choose Emblem", Emblems.TYPE_INHERIT);
-					if (f != -1) {
-						if (f < Emblems.TOTAL128) {
-							badgeButton.setIcon(new ImageIcon(Emblems.get128(of, f, false, false)));
-						} else {
-							badgeButton.setIcon(new ImageIcon(Emblems.get16(of, f - Emblems.TOTAL128, false, false)));
-						}
-						Clubs.setEmblem(of, team, Emblems.getIndex(of, f));
-						updateBackButton(team);
-					}
-				}
+				deleteTeamEmblem(team);
+			} else if (mBtn == MouseEvent.BUTTON1) {
+				choiceTeamEmblem(team);
 			}
 		}
+	}
+
+	private void deleteTeamEmblem(int team) {
+		if (team < Clubs.TOTAL) {
+			Clubs.setEmblem(of, team, -1);
+			badgeButton.setIcon(defaultIcon);
+
+			updateBackButton(team);
+		}
+	}
+
+	private void choiceTeamEmblem(int team) {
+		int flag = flagChooser.getEmblem(Resources.getMessage("teamPane.choiceFlag"), Emblems.TYPE_INHERIT);
+		if (flag < 0) return;
+
+		Image icon;
+		if (flag < Emblems.TOTAL128) {
+			icon = Emblems.get128(of, flag, false, false);
+		} else {
+			icon = Emblems.get16(of, flag - Emblems.TOTAL128, false, false);
+		}
+
+		badgeButton.setIcon(new ImageIcon(icon));
+		Clubs.setEmblem(of, team, Emblems.getIndex(of, flag));
+
+		updateBackButton(team);
 	}
 
 	private void updateBackButton(int team) {
@@ -473,123 +497,151 @@ public class TeamPanel extends JPanel
 		return null;
 	}
 
-	private void importKit(int t1, int t2) {
-		if (t1 < Clubs.TOTAL) {
-			int deleteId = Clubs.getEmblem(of, t1) - Clubs.FIRST_EMBLEM;
-			if (deleteId >= 0 && deleteId < Emblems.TOTAL128 + Emblems.TOTAL16) {
-				Emblems.deleteImage(of, deleteId);
-			}
-		}
+	private void importTeamKit(int teamSource, int teamDest) {
+		deleteEmblem(teamDest);
 
-		int[] logos = new int[4];
-		boolean[] delete = new boolean[4];
-		for (int l = 0; l < 4; l++) {
-			delete[l] = true;
-			if (Kits.isLogoUsed(of, t1, l)) {
-				logos[l] = Kits.getLogo(of, t1, l);
-			} else {
-				logos[l] = -1;
-			}
-		}
-		for (int t = 0; t < Clubs.TOTAL + Squads.NATION_COUNT + Squads.CLASSIC_COUNT; t++) {
-			for (int l = 0; t != t1 && l < 4; l++) {
-				if (logos[l] >= 0) {
-					for (int k = 0; k < 4; k++) {
-						if (Kits.getLogo(of, t, k) == logos[l]) {
-							if (Kits.isLogoUsed(of, t, k)) {
-								delete[l] = false;
-							} else {
-								Kits.setLogoUnused(of, t, k);
-							}
-						}
-					}
-				}
-			}
-		}
+		deleteLogos(teamDest);
 
-		for (int l = 0; l < 4; l++) {
-			if (delete[l] && logos[l] >= 0 && logos[l] < 80) {
-				Logos.delete(of, logos[l]);
-			}
-		}
+		if (teamDest < Clubs.TOTAL)
+			importClubData(teamSource, teamDest);
 
-		if (t1 < Clubs.TOTAL) {
-			int emblem2 = Clubs.getEmblem(of2, t2) - Clubs.FIRST_EMBLEM;
-			int embIndex = 0;
-			if (emblem2 >= 0 && emblem2 < Emblems.TOTAL128 + Emblems.TOTAL16) {
+		Kits.importData(of2, teamSource, of, teamDest);
 
-				if (emblem2 < Emblems.TOTAL128) {
-					if (Emblems.getFree128(of) > 0) {
-						Emblems.importData128(of2, Emblems.getLocation(of2, emblem2), of, Emblems.count128(of));
-						embIndex = Emblems.getIndex(of, Emblems.count128(of) - 1);
-					} else {
-						int rep = flagChooser.getEmblem("Replace Emblem", Emblems.TYPE_128);
-						if (rep != -1) {
-							Emblems.importData128(of2, Emblems.getLocation(of2, emblem2), of, rep);
-							embIndex = Emblems.getIndex(of, rep);
-						} else {
-							embIndex = 0;
-						}
-					}
-				} else {
-					if (Emblems.getFree16(of) > 0) {
-						Emblems.importData16(of2, Emblems.getLocation(of2, emblem2) - Emblems.TOTAL128, of,
-								Emblems.count16(of));
-						embIndex = Emblems.getIndex(of, Emblems.count16(of) + Emblems.TOTAL128 - 1);
-					} else {
-						int rep = flagChooser.getEmblem("Replace Emblem", Emblems.TYPE_16);
-						if (rep != -1) {
-							Emblems.importData16(of2, Emblems.getLocation(of2, emblem2) - Emblems.TOTAL128, of,
-									rep - Emblems.TOTAL128);
-							embIndex = Emblems.getIndex(of, rep);
-						} else {
-							embIndex = 0;
-						}
-					}
-				}
-			}
-
-			Clubs.importClub(of, t1, of2, t2);
-			if (emblem2 >= 0 && emblem2 < Emblems.TOTAL128 + Emblems.TOTAL16) {
-				Clubs.setEmblem(of, t1, embIndex);
-			}
-		}
-
-		Kits.importData(of2, t2, of, t1);
-
-		for (int l = 0; l < 4; l++) {
-			if (Kits.isLogoUsed(of2, t2, l)) {
-				boolean dupe = false;
-				for (int k = 0; !dupe && k < l; k++) {
-					if (Kits.getLogo(of2, t2, l) == Kits.getLogo(of2, t2, k)) {
-						dupe = true;
-					}
-				}
-				if (!dupe) {
-					int targetLogo = logoChooser.getFlag("Choose logo to replace",
-							Logos.get(of2, Kits.getLogo(of2, t2, l), false));
-					if (targetLogo >= 0) {
-						Logos.importData(of2, Kits.getLogo(of2, t2, l), of, targetLogo);
-						for (int k = l; k < 4; k++) {
-							if (Kits.getLogo(of2, t2, l) == Kits.getLogo(of2, t2, k)) {
-								Kits.setLogo(of, t1, k, targetLogo);
-							}
-						}
-					} else {
-						for (int k = l; k < 4; k++) {
-							if (Kits.getLogo(of2, t2, l) == Kits.getLogo(of2, t2, k)) {
-								Kits.setLogoUnused(of, t1, k);
-							}
-						}
-					}
-				}
-			}
-		}
+		importLogos(teamSource, teamDest);
 
 		if (null != emblemPan) emblemPan.refresh();
 		logoPan.refresh();
 		transferPan.refresh();
 		refresh();
+	}
+
+	private void deleteEmblem(int team) {
+		if (team < Clubs.TOTAL) {
+			int deleteId = Clubs.getEmblem(of, team) - Clubs.FIRST_EMBLEM;
+			if (deleteId >= 0 && deleteId < Emblems.TOTAL128 + Emblems.TOTAL16) {
+				Emblems.deleteImage(of, deleteId);
+			}
+		}
+	}
+
+	private void deleteLogos(int team) {
+		int[] usedLogos = getUsedLogos(team);
+		boolean[] logoDelete = checkLogosToDelete(team, usedLogos);
+
+		for (int l = 0; l < usedLogos.length; l++) {
+			if (logoDelete[l] && usedLogos[l] >= 0 && usedLogos[l] < Logos.TOTAL) {
+				Logos.delete(of, usedLogos[l]);
+			}
+		}
+	}
+
+	private int[] getUsedLogos(int team) {
+		int[] usedLogos = new int[Kits.TOTAL_LOGO];
+		for (int l = 0; l < usedLogos.length; l++) {
+			if (Kits.isLogoUsed(of, team, l)) {
+				usedLogos[l] = Kits.getLogo(of, team, l);
+			} else {
+				usedLogos[l] = -1;
+			}
+		}
+		return usedLogos;
+	}
+
+	private boolean[] checkLogosToDelete(int team, int[] usedLogos) {
+		boolean[] logoDelete = new boolean[usedLogos.length];
+		Arrays.fill(logoDelete, true);
+
+		for (int t = 0; t < teamList.getModel().getSize(); t++) {
+			if (t == team) continue;
+
+			for (int l = 0; l < logoDelete.length; l++) {
+				if (usedLogos[l] < 0 || usedLogos[l] >= Logos.TOTAL)
+					continue;
+
+				for (int k = 0; k < logoDelete.length; k++) {
+					if (Kits.getLogo(of, t, k) != usedLogos[l]) continue;
+
+					if (Kits.isLogoUsed(of, t, k)) {
+						logoDelete[l] = false;
+					} else {
+						Kits.setLogoUnused(of, t, k);
+					}
+				}
+			}
+		}
+
+		return logoDelete;
+	}
+
+	private void importClubData(int clubSource, int clubDest) {
+		int emblemS = Clubs.getEmblem(of2, clubSource) - Clubs.FIRST_EMBLEM;
+
+		boolean embValid = (emblemS >= 0 && emblemS < Emblems.TOTAL128 + Emblems.TOTAL16);
+		int embIndex = 0;
+		if (embValid) {
+			int locS = Emblems.getLocation(of2, emblemS);
+
+			if (emblemS < Emblems.TOTAL128) {
+				if (Emblems.getFree128(of) > 0) {
+					Emblems.importData128(of2, locS, of, Emblems.count128(of));
+					embIndex = Emblems.getIndex(of, Emblems.count128(of) - 1);
+				} else {
+					int rep = flagChooser.getEmblem(Resources.getMessage("teamPane.replaceFlag"), Emblems.TYPE_128);
+					if (rep >= 0) {
+						Emblems.importData128(of2, locS, of, rep);
+						embIndex = Emblems.getIndex(of, rep);
+					}
+				}
+			} else {
+				if (Emblems.getFree16(of) > 0) {
+					Emblems.importData16(of2, locS - Emblems.TOTAL128, of, Emblems.count16(of));
+					embIndex = Emblems.getIndex(of, Emblems.count16(of) + Emblems.TOTAL128 - 1);
+				} else {
+					int rep = flagChooser.getEmblem(Resources.getMessage("teamPane.replaceFlag"), Emblems.TYPE_16);
+					if (rep >= 0) {
+						Emblems.importData16(of2, locS - Emblems.TOTAL128, of, rep - Emblems.TOTAL128);
+						embIndex = Emblems.getIndex(of, rep);
+					}
+				}
+			}
+		}
+
+		Clubs.importClub(of2, clubSource, of, clubDest);
+		if (embValid) {
+			Clubs.setEmblem(of, clubDest, embIndex);
+		}
+	}
+
+	private void importLogos(int teamSource, int teamDest) {
+		for (int l = 0; l < Kits.TOTAL_LOGO; l++) {
+			if (!Kits.isLogoUsed(of2, teamSource, l))
+				continue;
+
+			boolean isDupe = false;
+			for (int k = 0; k < l; k++) {
+				if (Kits.getLogo(of2, teamSource, l) == Kits.getLogo(of2, teamSource, k)) {
+					isDupe = true;
+					break;
+				}
+			}
+			if (isDupe) continue;
+
+			Image targetIco = Logos.get(of2, Kits.getLogo(of2, teamSource, l), false);
+			int targetLogo = logoChooser.getFlag(Resources.getMessage("teamPane.replaceLogo"), targetIco);
+
+			if (targetLogo >= 0)
+				Logos.importData(of2, Kits.getLogo(of2, teamSource, l), of, targetLogo);
+
+			for (int k = l; k < Kits.TOTAL_LOGO; k++) {
+				if (Kits.getLogo(of2, teamSource, l) == Kits.getLogo(of2, teamSource, k)) {
+
+					if (targetLogo >= 0)
+						Kits.setLogo(of, teamDest, k, targetLogo);
+					else
+						Kits.setLogoUnused(of, teamDest, k);
+				}
+			}
+		}
 	}
 
 }

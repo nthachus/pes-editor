@@ -41,7 +41,7 @@ public final class KitsTest extends BaseTest {
 		List<Integer> logoList = new ArrayList<Integer>();
 
 		for (int t = 0; t < Kits.TOTAL; t++) {
-			for (int l = 0; l < Kits.TOTAL_LOGO_SLOT; l++) {
+			for (int l = 0; l < Kits.TOTAL_LOGO; l++) {
 				list.add(Kits.isLogoUsed(of, t, l));
 				logoList.add(Kits.getLogo(of, t, l));
 			}
