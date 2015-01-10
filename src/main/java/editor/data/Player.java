@@ -2,16 +2,12 @@ package editor.data;
 
 import editor.util.Resources;
 import editor.util.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.awt.datatransfer.DataFlavor;
 import java.io.Serializable;
 import java.util.Arrays;
 
 public class Player implements Serializable, Comparable<Player> {
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(Player.class);
 
 	//region Constants
 
@@ -246,19 +242,6 @@ public class Player implements Serializable, Comparable<Player> {
 		}
 
 		return result.toString();
-	}
-
-	private static volatile DataFlavor dataFlavor = null;
-
-	public static DataFlavor getDataFlavor() {
-		if (null == dataFlavor) {
-			try {
-				dataFlavor = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType + ";class=" + Player.class.getName());
-			} catch (ClassNotFoundException e) {
-				log.warn("Unable to create data flavor: {}", e.toString());
-			}
-		}
-		return dataFlavor;
 	}
 
 }

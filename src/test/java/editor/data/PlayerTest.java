@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.ui.PlayerTransferable;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ public final class PlayerTest extends BaseTest {
 
 	@Test
 	public void testDataFlavor() throws Exception {
-		Assert.assertNotNull(Player.getDataFlavor());
+		Assert.assertNotNull(PlayerTransferable.getDataFlavor());
 	}
 
 	// TODO: More tests here!

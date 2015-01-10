@@ -91,7 +91,7 @@ public final class Editor extends JFrame {
 		KitImportDialog kitImportDia = new KitImportDialog(this, of2);
 		LogoChooserDialog logoChooser = new LogoChooserDialog(this, of);
 		teamPan = new TeamPanel(
-				of, transferPan, emblemChooser, of2, imagePanel, globalPan, kitImportDia, logoChooser);
+				of, of2, transferPan, emblemChooser, imagePanel, globalPan, kitImportDia, logoChooser);
 
 		EmblemImportDialog emblemImportDia = new EmblemImportDialog(this, of2);
 		flagPanel = new EmblemPanel(of, emblemImportDia, teamPan);

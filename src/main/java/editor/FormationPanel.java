@@ -13,9 +13,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,11 +51,9 @@ public class FormationPanel extends JPanel
 	};
 
 	private final OptionFile of;
-	private final DataFlavor localPlayerFlavor = Player.getDataFlavor();
 
 	private volatile int def = 0;
 	private volatile int mid = 0;
-	private volatile int mid2 = 0;
 	private volatile int att = 0;
 
 	private volatile int team;
@@ -73,6 +69,8 @@ public class FormationPanel extends JPanel
 		initComponents();
 	}
 
+	//region Initialize the GUI components
+
 	private SquadList squadList;
 	private PositionList posList;
 	private JobList sFK;
@@ -87,12 +85,13 @@ public class FormationPanel extends JPanel
 	private JComboBox<Role> roleBox;
 	private JComboBox<String> altBox;
 	private SquadNumberList numList;
-	private JFileChooser pngChooser = new JFileChooser();
+	private JFileChooser pngChooser;
 	private TeamSettingPanel teamSettingPan;
 	private StrategyPanel strategyPan;
 
 	private void initComponents() {
 		PngFilter pngFilter = new PngFilter();
+		pngChooser = new JFileChooser();
 		pngChooser.addChoosableFileFilter(pngFilter);
 		pngChooser.setAcceptAllFileFilterUsed(false);
 		pngChooser.setDialogTitle("Save Snapshot");
@@ -411,6 +410,8 @@ public class FormationPanel extends JPanel
 		add(panelR);
 	}
 
+	//endregion
+
 	public void setFromPitch(boolean isFromPitch) {
 		this.isFromPitch = isFromPitch;
 	}
@@ -698,7 +699,7 @@ public class FormationPanel extends JPanel
 	private void countForm() {
 		def = 0;
 		mid = 0;
-		mid2 = 0;
+		int mid2 = 0;
 		att = 0;
 		int pos;
 		for (int i = 1; i < Formations.PLAYER_COUNT; i++) {
@@ -817,7 +818,7 @@ public class FormationPanel extends JPanel
 	public void drop(DropTargetDropEvent event) {
 		Transferable transferable = event.getTransferable();
 		int ti = squadList.getSelectedIndex();
-		if (transferable.isDataFlavorSupported(localPlayerFlavor)) {
+		if (transferable.isDataFlavorSupported(PlayerTransferable.getDataFlavor())) {
 			event.acceptDrop(DnDConstants.ACTION_MOVE);
 
 			int tb = Formations.getSlot(of, team, sourceIndex);
@@ -903,30 +904,6 @@ public class FormationPanel extends JPanel
 	}
 
 	public void dropActionChanged(DragSourceDragEvent event) {
-	}
-
-	public class PlayerTransferable implements Transferable {
-		Player data;
-
-		public PlayerTransferable(Player p) {
-			data = p;
-		}
-
-		public Object getTransferData(DataFlavor flavor)
-				throws UnsupportedFlavorException {
-			if (!isDataFlavorSupported(flavor)) {
-				throw new UnsupportedFlavorException(flavor);
-			}
-			return data;
-		}
-
-		public DataFlavor[] getTransferDataFlavors() {
-			return new DataFlavor[]{localPlayerFlavor};
-		}
-
-		public boolean isDataFlavorSupported(DataFlavor flavor) {
-			return localPlayerFlavor.equals(flavor);
-		}
 	}
 
 }

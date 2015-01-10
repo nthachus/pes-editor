@@ -20,51 +20,55 @@ import java.awt.event.MouseListener;
 public class TeamPanel extends JPanel implements ActionListener, ListSelectionListener, MouseListener {
 	private final OptionFile of;
 	private final OptionFile of2;
-
-	private final JList<String> list;
-	private final JTextField editor;
-	private final JTextField abvEditor;
-
-	private final TransferPanel tran;
-
-	private String[] team = new String[Clubs.TOTAL];
-
-	private final JButton badgeButton;
-	private final JButton backButton;
-	private final JComboBox<String> stadiumBox;
-
-	private final JPanel panel3;
+	private final TransferPanel transferPan;
 	private final EmblemChooserDialog flagChooser;
+	private final LogoPanel logoPan;
 	private final LogoChooserDialog logoChooser;
-	private final LogoPanel imagePan;
+	private final GlobalPanel globalPan;
+	private final KitImportDialog kitImportDia;
 
 	private volatile EmblemPanel emblemPan;
-	private volatile boolean ok = false;
+	private final DefaultIcon defaultIcon;
 
-	private final GlobalPanel globalPanel;
-	private final BackChooserDialog backChooser;
-
-	private final JButton color1Btn;
-	private final JButton color2Btn;
-
-	private final KitImportDialog kitImpDia;
-
-	private final DefaultIcon defaultIcon = new DefaultIcon();
+	private String[] team = new String[Clubs.TOTAL];
+	private volatile boolean isOk = false;
 
 	public TeamPanel(
-			OptionFile opf, TransferPanel tr, EmblemChooserDialog fc,
-			OptionFile opf2, LogoPanel ip, GlobalPanel gp, KitImportDialog kd,
-			LogoChooserDialog lc) {
+			OptionFile of, OptionFile of2,
+			TransferPanel tran, EmblemChooserDialog fc,
+			LogoPanel imgPan, GlobalPanel gp, KitImportDialog kid, LogoChooserDialog lc) {
 		super(new BorderLayout());
-		of = opf;
-		of2 = opf2;
-		tran = tr;
+
+		if (null == of) throw new NullPointerException("of");
+		if (null == of2) throw new NullPointerException("of2");
+		this.of = of;
+		this.of2 = of2;
+		transferPan = tran;
 		flagChooser = fc;
 		logoChooser = lc;
-		imagePan = ip;
-		kitImpDia = kd;
-		globalPanel = gp;
+		logoPan = imgPan;
+		kitImportDia = kid;
+		globalPan = gp;
 
+		initComponents();
+
+		defaultIcon = new DefaultIcon();
+	}
+
+	//region Initialize the GUI components
+
+	private/* final*/ JList<String> list;
+	private/* final*/ JTextField editor;
+	private/* final*/ JTextField abvEditor;
+	private/* final*/ JButton badgeButton;
+	private/* final*/ JButton backButton;
+	private/* final*/ JComboBox<String> stadiumBox;
+	private/* final*/ JPanel panel3;
+	private/* final*/ BackChooserDialog backChooser;
+	private/* final*/ JButton color1Btn;
+	private/* final*/ JButton color2Btn;
+
+	private void initComponents() {
 		backChooser = new BackChooserDialog(null);
 
 		Systems.javaUI();// fix button background color
@@ -232,6 +236,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		add(panel3, BorderLayout.CENTER);
 	}
 
+	//endregion
+
 	public JList<String> getList() {
 		return list;
 	}
@@ -256,15 +262,15 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		for (int t = 0; t < Clubs.TOTAL; t++) {
 			listText[t] = Clubs.getAbbrName(of, t) + "     " + team[t];
 		}
-		globalPanel.updateTeamBox(team);
+		globalPan.updateTeamBox(team);
 		System.arraycopy(Stats.NATION, 0, listText, Clubs.TOTAL, 60);
 		for (int n = 0; n < 7; n++) {
 			listText[n + Clubs.TOTAL + 60] = Squads.EXTRAS[n];
 		}
-		ok = false;
+		isOk = false;
 		list.setListData(listText);
 		panel3.setVisible(false);
-		ok = true;
+		isOk = true;
 
 	}
 
@@ -275,7 +281,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				int t = list.getSelectedIndex();
 				Clubs.setName(of, t, text);
 				refresh();
-				tran.refresh();
+				transferPan.refresh();
 				if (t < list.getModel().getSize() - 1) {
 					list.setSelectedIndex(t + 1);
 					list.ensureIndexIsVisible(list.getSelectedIndex());
@@ -291,7 +297,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				int t = list.getSelectedIndex();
 				Clubs.setAbbrName(of, t, text);
 				refresh();
-				tran.refresh();
+				transferPan.refresh();
 				if (t < list.getModel().getSize() - 1) {
 					list.setSelectedIndex(t + 1);
 					list.ensureIndexIsVisible(list.getSelectedIndex());
@@ -304,7 +310,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 	}
 
 	public void valueChanged(ListSelectionEvent e) {
-		if (ok && !e.getValueIsAdjusting()) {
+		if (isOk && !e.getValueIsAdjusting()) {
 			int i = list.getSelectedIndex();
 			if (i >= 0 && i < Clubs.TOTAL) {
 				if (!panel3.isVisible()) {
@@ -367,7 +373,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				&& clicks == 2) {
 			if (of2.isLoaded()) {
 				if (ti != -1) {
-					int t2 = kitImpDia.show(ti);
+					int t2 = kitImportDia.show(ti);
 					if (t2 != -1) {
 						importKit(ti, t2);
 					}
@@ -534,8 +540,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		}
 
 		emblemPan.refresh();
-		imagePan.refresh();
-		tran.refresh();
+		logoPan.refresh();
+		transferPan.refresh();
 		refresh();
 	}
 
