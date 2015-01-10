@@ -104,9 +104,9 @@ public class LogoPanel extends JPanel implements ActionListener {
 				break;
 			case JOptionPane.NO_OPTION:
 				if (Logos.isUsed(of, slot))
-					exportLogo(slot);
+					saveLogoAsPNG(slot);
 				break;
-			case JOptionPane.CANCEL_OPTION:
+			default:// JOptionPane.CANCEL_OPTION:
 				if (logoImportDia.isOf2Loaded())
 					importFromOF2(slot);
 				break;
@@ -146,7 +146,7 @@ public class LogoPanel extends JPanel implements ActionListener {
 		}
 	}
 
-	private void exportLogo(int slot) {
+	private void saveLogoAsPNG(int slot) {
 		int returnVal = pngChooser.showSaveDialog(null);
 		if (returnVal != JFileChooser.APPROVE_OPTION)
 			return;
@@ -174,11 +174,11 @@ public class LogoPanel extends JPanel implements ActionListener {
 	private void writeFile(File dest, int slot) {
 		try {
 			BufferedImage image = Logos.get(of, slot, false);
-			ImageIO.write(image, Files.PNG, dest);
-
-			JOptionPane.showMessageDialog(null,
-					Resources.getMessage("msg.saveSuccess", dest.getName(), dest.getParent()),
-					Resources.getMessage("msg.saveSuccess.title"), JOptionPane.INFORMATION_MESSAGE);
+			if (ImageIO.write(image, Files.PNG, dest)) {
+				JOptionPane.showMessageDialog(null,
+						Resources.getMessage("msg.saveSuccess", dest.getName(), dest.getParent()),
+						Resources.getMessage("msg.saveSuccess.title"), JOptionPane.INFORMATION_MESSAGE);
+			}
 		} catch (Exception e) {
 			showAccessFailedMsg(e.getLocalizedMessage());
 		}

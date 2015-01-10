@@ -1,10 +1,8 @@
-package editor;
+package editor.ui;
 
+import editor.TeamPanel;
 import editor.data.Emblems;
 import editor.data.OptionFile;
-import editor.ui.EmblemImportDialog;
-import editor.ui.ImageFileFilter;
-import editor.ui.PngFilter;
 import editor.util.*;
 
 import javax.imageio.ImageIO;
@@ -19,6 +17,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class EmblemPanel extends JPanel implements MouseListener, ActionListener {
 	private final OptionFile of;
@@ -115,7 +114,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		add2Button = new JButton(Resources.getMessage("emblem.add2"));
 		add2Button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				onImportEmblem();
+				onAddEmblemFromOF2();
 			}
 		});
 
@@ -169,7 +168,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		}
 	}
 
-	private void onImportEmblem() {
+	private void onAddEmblemFromOF2() {
 		int emblem = -1;
 		if (Emblems.getFree128(of) > 0) {
 			emblem = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), Emblems.TYPE_INHERIT);
@@ -196,190 +195,178 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		AbstractButton btn = (AbstractButton) evt.getSource();
 		int slot = Integer.parseInt(btn.getActionCommand());
 
-		ImageIcon icon;
+		Image icon;
 		boolean is128 = false;
 		if (slot >= Emblems.count16(of)) {
 			is128 = true;
-			slot = Emblems.TOTAL16 - 1 - slot;
-			icon = new ImageIcon(Emblems.get128(of, slot, !isTrans, false));
+			slot = Emblems.TOTAL16 - slot - 1;
+			icon = Emblems.get128(of, slot, !isTrans, false);
 		} else {
-			icon = new ImageIcon(Emblems.get16(of, slot, !isTrans, false));
+			icon = Emblems.get16(of, slot, !isTrans, false);
 		}
-		Object[] options;
-		Object[] options1 = {
-				"Delete", "Import PNG / GIF",
-				"Export as PNG", "Import (OF2)", "Cancel"
-		};
-		Object[] options2 = {
-				"Delete", "Import PNG / GIF",
-				"Export as PNG", "Cancel"
-		};
-		if (flagImportDia.isOf2Loaded()) {
-			options = options1;
-		} else {
-			options = options2;
-		}
-		int n = JOptionPane.showOptionDialog(null, "Options:",
-				"Emblem", JOptionPane.YES_NO_CANCEL_OPTION,
-				JOptionPane.QUESTION_MESSAGE, icon, options,
-				options[0]);
 
-		if (n == 0) {
-			if (is128) {
-				Emblems.delete128(of, slot);
-			} else {
-				Emblems.delete16(of, slot);
-			}
-			teamPanel.refresh();
-			refresh();
-		}
-		if (n == 1) {
-			int returnVal = chooser.showOpenDialog(null);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File source = chooser.getSelectedFile();
-				try {
-					BufferedImage image;
-					image = ImageIO.read(source);
+		Object[] opts = getOptions(flagImportDia.isOf2Loaded());
+		int returnVal = JOptionPane.showOptionDialog(null,
+				Resources.getMessage("emblem.title"), Resources.getMessage("emblem.label"),
+				JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, new ImageIcon(icon), opts, opts[0]);
 
-					int check = validateImage(image, is128 ? Emblems.PALETTE_SIZE128 : Emblems.PALETTE_SIZE16);
-					if (check != -1) {
-						if (is128) {
-							if (check < Emblems.PALETTE_SIZE128) {
-								if (check > 15) {
-									Emblems.set128(of, slot, image);
-								} else {
-									showWasteSpaceMsg();
-								}
-							}
-						} else {
-							if (check < Emblems.PALETTE_SIZE16) {
-								Emblems.set16(of, slot, image);
-							} else {
-								showManyColorsMsg(Emblems.PALETTE_SIZE16);
-							}
-						}
-						teamPanel.refresh();
-						refresh();
-					}
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null, "Could not open file", "Error",
-							JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		}
-		if (n == 2) {
-			savePNG(is128, slot);
-		}
-		if (flagImportDia.isOf2Loaded() && n == 3) {
-			int replacement;
-			if (is128) {
-				replacement = flagImportDia.getEmblem("Import Emblem", 2);
-				if (replacement != -1) {
-					flagImportDia.import128(of, slot, replacement);
-				}
-			} else {
-				replacement = flagImportDia.getEmblem("Import Emblem", 1);
-				if (replacement != -1) {
-					replacement = replacement - Emblems.TOTAL128;
-					flagImportDia.import16(of, slot, replacement);
-				}
-			}
-
-			teamPanel.refresh();
-			refresh();
+		switch (returnVal) {
+			case JOptionPane.YES_OPTION:
+				deleteEmblem(is128, slot);
+				break;
+			case JOptionPane.NO_OPTION:
+				importEmblem(is128, slot);
+				break;
+			case JOptionPane.CANCEL_OPTION:
+				saveEmblemAsPNG(is128, slot);
+				break;
+			default://JOptionPane.CLOSED_OPTION
+				if (flagImportDia.isOf2Loaded())
+					importEmblemFromOF2(is128, slot);
+				break;
 		}
 	}
 
-	private void savePNG(boolean is128, int slot) {
-		boolean error = false;
-		int returnVal = pngChooser.showSaveDialog(null);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File dest = pngChooser.getSelectedFile();
-			dest = Files.addExtension(dest, Files.PNG);
-
-			if (dest.exists()) {
-				int n = JOptionPane.showConfirmDialog(null, dest.getName()
-								+ "\nAlready exists in:\n" + dest.getParent()
-								+ "\nAre you sure you want to overwrite this file?",
-						"Overwrite:  " + dest.getName(),
-						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
-						null);
-				if (n == 0) {
-					boolean deleted = dest.delete();
-					if (!deleted) {
-						JOptionPane.showMessageDialog(null,
-								"Could not access file", "Error",
-								JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-				} else {
-					return;
-				}
-			}
-
-			if (writeFile(dest, is128, slot)) {
-				JOptionPane.showMessageDialog(null, dest.getName()
-								+ "\nSaved in:\n" + dest.getParent(),
-						"File Successfully Saved",
-						JOptionPane.INFORMATION_MESSAGE);
-			} else {
-				error = true;
-			}
-			if (error) {
-				JOptionPane.showMessageDialog(null, "Could not access file",
-						"Error", JOptionPane.ERROR_MESSAGE);
-			}
-
-		}
-	}
-
-	private boolean writeFile(File dest, boolean is128, int slot) {
-		boolean ok;
-		BufferedImage image;
+	private void importEmblemFromOF2(boolean is128, int slot) {
+		int replacement;
 		if (is128) {
-			image = (BufferedImage) Emblems.get128(of, slot, false, false);
+			replacement = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), Emblems.TYPE_128);
+			if (replacement >= 0) {
+				flagImportDia.import128(of, slot, replacement);
+			}
 		} else {
-			image = (BufferedImage) Emblems.get16(of, slot, false, false);
+			replacement = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), Emblems.TYPE_16);
+			if (replacement >= 0) {
+				flagImportDia.import16(of, slot, replacement - Emblems.TOTAL128);
+			}
 		}
+
+		teamPanel.refresh();
+		refresh();
+	}
+
+	private void importEmblem(boolean is128, int slot) {
+		int returnVal = chooser.showOpenDialog(null);
+		if (returnVal != JFileChooser.APPROVE_OPTION)
+			return;
+
 		try {
-			ImageIO.write(image, "png", dest);
-			ok = true;
-		} catch (IOException e) {
-			ok = false;
+			File source = chooser.getSelectedFile();
+			BufferedImage image = ImageIO.read(source);
+
+			int palSize = validateImage(image, is128 ? Emblems.PALETTE_SIZE128 : Emblems.PALETTE_SIZE16);
+			if (is128) {
+				if (palSize > Emblems.PALETTE_SIZE16) {
+					Emblems.set128(of, slot, image);
+				} else {
+					throw new IllegalStateException(
+							Resources.getMessage("msg.imgWasteSpace", Emblems.PALETTE_SIZE16, Emblems.PALETTE_SIZE128));
+				}
+			} else {
+				Emblems.set16(of, slot, image);
+			}
+
+			teamPanel.refresh();
+			refresh();
+
+		} catch (Exception e) {
+			showOpenFailedMsg(e.getLocalizedMessage());
 		}
-		return ok;
+	}
+
+	private void deleteEmblem(boolean is128, int slot) {
+		if (is128) {
+			Emblems.delete128(of, slot);
+		} else {
+			Emblems.delete16(of, slot);
+		}
+
+		teamPanel.refresh();
+		refresh();
+	}
+
+	private static Object[] getOptions(boolean of2Loaded) {
+		String s = Resources.getMessage("emblem.options");
+		String[] opts = s.split("\\s*,\\s*");
+		if (of2Loaded || opts.length < 2)
+			return opts;
+
+		ArrayList<String> arr = new ArrayList<String>(java.util.Arrays.asList(opts));
+		arr.remove(arr.size() - 2);
+		return arr.toArray();
+	}
+
+	private void saveEmblemAsPNG(boolean is128, int slot) {
+		int returnVal = pngChooser.showSaveDialog(null);
+		if (returnVal != JFileChooser.APPROVE_OPTION)
+			return;
+
+		File dest = pngChooser.getSelectedFile();
+		dest = Files.addExtension(dest, Files.PNG);
+
+		if (dest.exists()) {
+			returnVal = JOptionPane.showConfirmDialog(null,
+					Resources.getMessage("msg.overwrite", dest.getName(), dest.getParent()),
+					Resources.getMessage("msg.overwrite.title", dest.getName()),
+					JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null);
+
+			if (returnVal != JOptionPane.YES_OPTION) {
+				return;
+			} else if (!dest.delete()) {
+				showAccessFailedMsg(null);
+				return;
+			}
+		}
+
+		writeFile(dest, is128, slot);
+	}
+
+	private void writeFile(File dest, boolean is128, int slot) {
+		try {
+			BufferedImage image;
+			if (is128) {
+				image = (BufferedImage) Emblems.get128(of, slot, false, false);
+			} else {
+				image = (BufferedImage) Emblems.get16(of, slot, false, false);
+			}
+
+			if (ImageIO.write(image, Files.PNG, dest)) {
+				JOptionPane.showMessageDialog(null,
+						Resources.getMessage("msg.saveSuccess", dest.getName(), dest.getParent()),
+						Resources.getMessage("msg.saveSuccess.title"), JOptionPane.INFORMATION_MESSAGE);
+			}
+		} catch (IOException e) {
+			showAccessFailedMsg(e.getLocalizedMessage());
+		}
 	}
 
 	public void refresh() {
+		int n16 = Emblems.count16(of);
+		int n128 = Emblems.count128(of);
+
 		Image icon;
-		for (int i = 0; i < Emblems.count16(of); i++) {
+		for (int i = 0; i < n16; i++) {
 			icon = Emblems.get16(of, i, !isTrans, true);
 			flagButtons[i].setIcon(new ImageIcon(icon));
 			flagButtons[i].setVisible(true);
 		}
-		for (int i = 0; i < Emblems.count128(of); i++) {
+		for (int i = 0; i < n128; i++) {
 			icon = Emblems.get128(of, i, !isTrans, true);
-			flagButtons[Emblems.TOTAL16 - 1 - i].setIcon(new ImageIcon(icon));
-			flagButtons[Emblems.TOTAL16 - 1 - i].setVisible(true);
+			flagButtons[Emblems.TOTAL16 - i - 1].setIcon(new ImageIcon(icon));
+			flagButtons[Emblems.TOTAL16 - i - 1].setVisible(true);
 		}
 
-		for (int i = Emblems.count16(of); i < Emblems.TOTAL16 - Emblems.count128(of); i++) {
+		for (int i = n16; i < Emblems.TOTAL16 - n128; i++) {
 			flagButtons[i].setVisible(false);
 		}
+
 		free16Label.setText(Resources.getMessage("emblem.free16", Emblems.getFree16(of)));
 		free128Label.setText(Resources.getMessage("emblem.free128", Emblems.getFree128(of)));
-		if (flagImportDia.isOf2Loaded()) {
-			add2Button.setVisible(true);
-		} else {
-			add2Button.setVisible(false);
-		}
-		if (Emblems.getFree16(of) > 0) {
-			addButton.setEnabled(true);
-			add2Button.setEnabled(true);
-		} else {
-			addButton.setEnabled(false);
-			add2Button.setEnabled(false);
-		}
+
+		addButton.setEnabled(Emblems.getFree16(of) > 0);
+		add2Button.setVisible(flagImportDia.isOf2Loaded());
+		if (add2Button.isVisible())
+			add2Button.setEnabled(addButton.isEnabled());
 	}
 
 	//region Emblem Icon button Mouse Events
@@ -435,19 +422,13 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		return colorsCount;
 	}
 
-	private static void showManyColorsMsg(int paletteSize) {
-		JOptionPane.showMessageDialog(null, Resources.getMessage("msg.emblemManyColors", paletteSize),
-				Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
-	}
-
-	private static void showWasteSpaceMsg() {
-		JOptionPane.showMessageDialog(null,
-				Resources.getMessage("msg.imgWasteSpace", Emblems.PALETTE_SIZE16, Emblems.PALETTE_SIZE128),
-				Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
-	}
-
 	private static void showOpenFailedMsg(String msg) {
 		if (Strings.isBlank(msg)) msg = Resources.getMessage("msg.openFailed");
+		JOptionPane.showMessageDialog(null, msg, Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
+	}
+
+	private static void showAccessFailedMsg(String msg) {
+		if (Strings.isBlank(msg)) msg = Resources.getMessage("msg.accessFailed");
 		JOptionPane.showMessageDialog(null, msg, Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
 	}
 

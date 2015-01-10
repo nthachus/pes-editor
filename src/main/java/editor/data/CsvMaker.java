@@ -174,8 +174,9 @@ public class CsvMaker implements Serializable {
 		}
 
 		out.write(separator);
-		int regPos = Stats.getValue(of, player, Stats.REG_POS);
-		out.writeBytes(regPos + " (" + Stats.ROLES[Stats.regPosToRole(regPos)] + ")");
+		int v = Stats.getValue(of, player, Stats.REG_POS);
+		assert (v >= 0 && v <= Stats.ROLES.length) : "Invalid registered position #" + v + " of player #" + player;
+		out.writeBytes(Stats.ROLES[Stats.regPosToRole(v)] + (v == 1 ? "?" : ""));
 
 		out.write(separator);
 		out.writeBytes(Stats.getString(of, player, Stats.HEIGHT));

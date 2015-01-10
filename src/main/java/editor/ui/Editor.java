@@ -1,6 +1,5 @@
 package editor.ui;
 
-import editor.EmblemPanel;
 import editor.TeamPanel;
 import editor.TransferPanel;
 import editor.data.CsvMaker;
@@ -23,42 +22,53 @@ import java.net.URL;
 
 public final class Editor extends JFrame {
 	private static final Logger log = LoggerFactory.getLogger(Editor.class);
+	public static final float LINE_HEIGHT = 4f / 3;
 
 	private final OptionFile of;
 	private final OptionFile of2;
-
-	public static final float LINE_HEIGHT = 4f / 3;
-
-	//region Initialize Components
-
-	private final JFileChooser opFileChooser;
-	private final OptionFileFilter opFileFilter;
-
-	private final EmblemPanel flagPanel;
-	private final LogoPanel imagePanel;
-	private final TransferPanel transferPan;
-	private final WenShopPanel wenShop;
-	private final StadiumPanel stadiumPan;
-	private final TeamPanel teamPan;
-	private final LeaguePanel leaguePan;
-	private final JTabbedPane tabbedPane;
-	private final PlayerImportDialog playerImportDia;
-	private final LogoImportDialog logoImportDia;
-	private final ImportPanel importPanel;
-	private final HelpDialog helpDia;
-
-	private final CsvMaker csvMaker = new CsvMaker();
-	private final CsvSwitchPanel csvSwitch;
-	private final JFileChooser csvChooser;
+	private final CsvMaker csvMaker;
 
 	public Editor() {
 		super(Resources.getMessage("editor.title"));
 
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		initIcon();
-
 		of = new OptionFile();
 		of2 = new OptionFile();
+		csvMaker = new CsvMaker();
+
+		initComponents();
+
+		tabbedPane.setVisible(false);
+	}
+
+	//region Initialize the GUI components
+
+	private/* final*/ JFileChooser opFileChooser;
+	private/* final*/ OptionFileFilter opFileFilter;
+
+	private/* final*/ EmblemPanel flagPanel;
+	private/* final*/ LogoPanel imagePanel;
+	private/* final*/ TransferPanel transferPan;
+	private/* final*/ WenShopPanel wenShop;
+	private/* final*/ StadiumPanel stadiumPan;
+	private/* final*/ TeamPanel teamPan;
+	private/* final*/ LeaguePanel leaguePan;
+	private/* final*/ JTabbedPane tabbedPane;
+	private/* final*/ PlayerImportDialog playerImportDia;
+	private/* final*/ LogoImportDialog logoImportDia;
+	private/* final*/ ImportPanel importPanel;
+	private/* final*/ HelpDialog helpDia;
+
+	private/* final*/ CsvSwitchPanel csvSwitch;
+	private/* final*/ JFileChooser csvChooser;
+
+	private void initComponents() {
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+		URL iconUrl = getClass().getResource("/META-INF/images/icon.png");
+		if (iconUrl != null) {
+			ImageIcon icon = new ImageIcon(iconUrl);
+			setIconImage(icon.getImage());
+		}
 
 		csvSwitch = new CsvSwitchPanel();
 
@@ -113,26 +123,12 @@ public final class Editor extends JFrame {
 		opFileChooser.addChoosableFileFilter(opFileFilter);
 		opFileChooser.setAccessory(new OptionPreviewPanel(opFileChooser));
 
-		buildMenu();
+		initMenuComponents();
 		getContentPane().add(tabbedPane);
 
 		setResizable(false);
 		pack();
-
-		tabbedPane.setVisible(false);
 	}
-
-	private void initIcon() {
-		URL imageUrl = getClass().getResource("/META-INF/images/icon.png");
-		if (imageUrl != null) {
-			ImageIcon icon = new ImageIcon(imageUrl);
-			setIconImage(icon.getImage());
-		}
-	}
-
-	//endregion
-
-	//region Initialize Menu
 
 	private JMenuItem open2Item;
 	private JMenuItem saveItem;
@@ -140,7 +136,7 @@ public final class Editor extends JFrame {
 	private JMenuItem csvItem;
 	private JMenuItem convertItem;
 
-	private void buildMenu() {
+	private void initMenuComponents() {
 		JMenuItem openItem = new JMenuItem(Resources.getMessage("menu.open"));
 		openItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -243,7 +239,7 @@ public final class Editor extends JFrame {
 		setTitle(s);
 	}
 
-	//region Events Handler
+	//region Event Handlers
 
 	private volatile File currentFile = null;
 

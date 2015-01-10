@@ -43,6 +43,7 @@ public class PositionList extends JList<String> {
 
 	public void refresh(int team) {
 		String[] posList = new String[Formations.CLUB_TEAM_SIZE];
+		Arrays.fill(posList, " ");
 
 		if (!inTransfer
 				|| ((team < Squads.FIRST_EDIT_NATION || team >= Squads.FIRST_CLUB)
@@ -58,10 +59,6 @@ public class PositionList extends JList<String> {
 				int pos = Formations.getPosition(of, team, alt, i);
 				posNum[i] = pos;
 				posList[i] = Formations.positionToString(pos);
-			}
-
-			for (int i = Formations.PLAYER_COUNT; i < posList.length; i++) {
-				posList[i] = " ";
 			}
 		}
 

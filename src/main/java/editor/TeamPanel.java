@@ -232,7 +232,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		add(panel3, BorderLayout.CENTER);
 	}
 
-	public JList getList() {
+	public JList<String> getList() {
 		return list;
 	}
 

@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.*;
 import editor.util.Resources;
+import editor.util.Strings;
 import editor.util.swing.DefaultListModel;
 import editor.util.swing.JList;
 
@@ -137,7 +138,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 
 		@Override
 		public String toString() {
-			return team;
+			return Strings.isEmpty(team) ? " " : team;
 		}
 	}
 
