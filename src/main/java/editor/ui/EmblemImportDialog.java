@@ -79,7 +79,7 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 		if (slot >= Emblems.count16(of2)) {
 			slot = Emblems.TOTAL16 - slot - 1;
 		} else {
-			slot = slot + Emblems.TOTAL128;
+			slot += Emblems.TOTAL128;
 		}
 
 		setVisible(false);
@@ -94,13 +94,14 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 	 */
 	public void refresh() {
 		Image icon;
-		if (type == Emblems.TYPE_INHERIT || type == Emblems.TYPE_16) {
+		if (type == Emblems.TYPE_BOTH || type == Emblems.TYPE_16) {
 			for (int i = 0, n = Emblems.count16(of2); i < n; i++) {
 				icon = Emblems.get16(of2, i, !isTrans, true);
 				emblemButtons[i].setIcon(new ImageIcon(icon));
 				emblemButtons[i].setVisible(true);
 			}
-		} else if (type == Emblems.TYPE_INHERIT || type == Emblems.TYPE_128) {
+		}
+		if (type == Emblems.TYPE_BOTH || type == Emblems.TYPE_128) {
 			for (int i = 0, n = Emblems.count128(of2); i < n; i++) {
 				icon = Emblems.get128(of2, i, !isTrans, true);
 				emblemButtons[Emblems.TOTAL16 - i - 1].setIcon(new ImageIcon(icon));
@@ -123,7 +124,7 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * @see Emblems#TYPE_INHERIT
+	 * @see Emblems#TYPE_BOTH
 	 */
 	public int getEmblem(String title, int type) {
 		this.type = type;

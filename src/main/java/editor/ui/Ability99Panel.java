@@ -41,7 +41,7 @@ public class Ability99Panel extends JPanel
 		Verifier99 verifier99 = new Verifier99();
 		for (int i = 0; i < fields.length; i++) {
 			JLabel lab = new JLabel(Stats.ABILITY99[i].getName());
-			lab.setToolTipText(Resources.getMessage(lab.getText()));
+			lab.setToolTipText(Resources.getNullableMessage(lab.getText()));
 			//lab.setHorizontalAlignment(SwingConstants.TRAILING);
 
 			grid.anchor = GridBagConstraints.EAST;

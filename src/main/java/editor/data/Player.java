@@ -131,7 +131,7 @@ public class Player implements Serializable, Comparable<Player> {
 
 		int cmp = getName().compareTo(other.getName());
 		if (cmp == 0) {
-			cmp = new Integer(Stats.getValue(of, index, Stats.AGE)).compareTo(
+			cmp = Integer.valueOf(Stats.getValue(of, index, Stats.AGE)).compareTo(
 					Stats.getValue(of, other.index, Stats.AGE));
 		}
 		return cmp;

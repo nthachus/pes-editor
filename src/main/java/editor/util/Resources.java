@@ -34,10 +34,15 @@ public final class Resources {
 			msg = messages.getString(key);
 		else {
 			msg = key;
-			log.warn("Message key '{}' not found for '{}'.", key, Locale.getDefault());
+			log.warn("Message key '{}' not found for '{}'", key, Locale.getDefault());
 		}
 
 		return (null == args || args.length == 0) ? msg : String.format(msg, args);
+	}
+
+	public static String getNullableMessage(String key, Object... args) {
+		String msg = getMessage(key, args);
+		return Strings.isEmpty(msg) ? null : msg;
 	}
 
 }

@@ -6,6 +6,7 @@ import editor.data.Player;
 import editor.ui.*;
 import editor.util.Files;
 import editor.util.Images;
+import editor.util.Resources;
 import editor.util.swing.DefaultComboBoxModel;
 import editor.util.swing.JComboBox;
 
@@ -21,37 +22,16 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FormationPanel extends JPanel
 		implements ListSelectionListener, DropTargetListener, DragSourceListener, DragGestureListener {
-	private static final byte[] formData = {
-			9, 63, 9, 41, 12, 87, 12, 17, 26,
-			77, 26, 61, 26, 43, 26, 27, 43, 66, 43, 38, 0, 7, 1, 9, 8, 20, 21,
-			17, 18, 40, 36, 9, 63, 9, 41, 12, 87, 12, 17, 18, 52, 26, 70, 26,
-			34, 34, 52, 43, 66, 43, 38, 0, 7, 1, 9, 8, 12, 21, 17, 26, 40, 36,
-			9, 63, 9, 41, 12, 87, 12, 17, 18, 61, 18, 43, 29, 80, 29, 24, 32, 52,
-			43, 52, 0, 7, 1, 9, 8, 14, 10, 23, 22, 26, 38, 9, 63, 9, 41, 12, 87,
-			12, 17, 18, 61, 18, 43, 32, 52, 43, 72, 43, 32, 43, 52, 0, 7, 1, 9, 8,
-			14, 10, 26, 30, 29, 38, 9, 63, 9, 41, 12, 87, 12, 17, 18, 52, 29, 61, 29,
-			43, 31, 80, 31, 24, 43, 52, 0, 7, 1, 9, 8, 12, 21, 17, 23, 22, 38, 9, 63,
-			9, 41, 12, 87, 12, 17, 18, 52, 32, 70, 32, 34, 43, 72, 43, 32, 43, 52, 0,
-			7, 1, 9, 8, 12, 28, 24, 30, 29, 38, 9, 63, 9, 41, 12, 87, 12, 17, 26, 77,
-			26, 52, 26, 27, 43, 72, 43, 32, 43, 52, 0, 7, 1, 9, 8, 21, 19, 17, 30, 29,
-			38, 9, 63, 9, 41, 12, 87, 12, 17, 22, 77, 22, 52, 22, 27, 34, 70, 34, 34,
-			43, 52, 0, 7, 1, 9, 8, 21, 19, 17, 28, 24, 38, 9, 72, 9, 52, 9, 32, 18,
-			61, 18, 43, 24, 80, 24, 24, 32, 52, 43, 66, 43, 38, 0, 7, 3, 1, 14, 10, 16,
-			15, 26, 40, 36, 9, 72, 9, 52, 9, 32, 18, 52, 24, 80, 24, 24, 32, 61, 32, 43,
-			43, 66, 43, 38, 0, 7, 3, 1, 12, 16, 15, 28, 24, 40, 36, 9, 72, 9, 52, 9, 32,
-			24, 80, 24, 24, 22, 61, 22, 43, 43, 72, 43, 32, 43, 52, 0, 7, 3, 1, 16, 15,
-			21, 17, 30, 29, 38, 9, 72, 9, 52, 9, 32, 12, 87, 12, 17, 18, 61, 18, 43, 31,
-			80, 31, 24, 43, 52, 0, 7, 3, 1, 9, 8, 14, 10, 23, 22, 38
-	};
 
 	private final OptionFile of;
 
-	private volatile int def = 0;
-	private volatile int mid = 0;
-	private volatile int att = 0;
+	private final AtomicInteger def = new AtomicInteger(0);
+	private final AtomicInteger mid = new AtomicInteger(0);
+	private final AtomicInteger atk = new AtomicInteger(0);
 
 	private volatile int team;
 	private volatile int sourceIndex = -1;
@@ -72,13 +52,13 @@ public class FormationPanel extends JPanel
 	private PositionList posList;
 	private JobList sFK;
 	private JobList lFK;
-	private JobList rCR;
-	private JobList lCR;
+	private JobList rCorner;
+	private JobList lCorner;
 	private JobList pk;
-	private JobList cap;
-	private JComboBox<String> formBox;
+	private JobList captain;
+	private JComboBox<String> formNamesBox;
 	private PitchPanel pitchPanel;
-	private AtkDefPanel adPanel;
+	private AtkDefPanel atkDefPanel;
 	private JComboBox<Role> roleBox;
 	private JComboBox<String> altBox;
 	private SquadNumberList numList;
@@ -91,320 +71,112 @@ public class FormationPanel extends JPanel
 		pngChooser = new JFileChooser();
 		pngChooser.addChoosableFileFilter(pngFilter);
 		pngChooser.setAcceptAllFileFilterUsed(false);
-		pngChooser.setDialogTitle("Save Snapshot");
-
-		JPanel panel = new JPanel(new GridLayout(0, 6));
-		JPanel panel2 = new JPanel(new BorderLayout());
-		JPanel panel3 = new JPanel(new BorderLayout());
-		JPanel panelR = new JPanel(new BorderLayout());
+		pngChooser.setDialogTitle(Resources.getMessage("formation.snapTitle"));
 
 		numList = new SquadNumberList(of);
 
 		altBox = new JComboBox<String>(Formations.ALT_ITEMS);
 		altBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if ("y".equalsIgnoreCase(e.getActionCommand())) {
-					// countForm();
-					posList.setAlt(altBox.getSelectedIndex());
-					posList.refresh(team);
-					// squadList.refresh(team);
-					updateRoleBox();
-					teamSettingPan.setAlt(altBox.getSelectedIndex());
-					teamSettingPan.refresh(team);
-					pitchPanel.repaint();
-					adPanel.repaint();
-				}
+			public void actionPerformed(ActionEvent evt) {
+				onAltChanged(evt);
 			}
 		});
-
-		/*
-		 * ActionListener chkAct = new ActionListener() { public void
-		 * actionPerformed (ActionEvent a) { if (roleCheck.isSelected()) {
-		 * pitchPanel.roleOn = true; } else { pitchPanel.roleOn = false; } if
-		 * (defAttCheck.isSelected()) { pitchPanel.defence = true;
-		 * pitchPanel.attack = true; } else { pitchPanel.defence = false;
-		 * pitchPanel.attack = false; } if (numCheck.isSelected()) {
-		 * pitchPanel.numbers = true; } else { pitchPanel.numbers = false; }
-		 * pitchPanel.repaint(); } }; roleCheck = new JCheckBox("Roles");
-		 * roleCheck.setSelected(true); roleCheck.addActionListener(chkAct);
-		 * defAttCheck = new JCheckBox("Att/Def");
-		 * defAttCheck.setSelected(true); defAttCheck.addActionListener(chkAct);
-		 * numCheck = new JCheckBox("Numbers"); numCheck.setSelected(true);
-		 * numCheck.addActionListener(chkAct);
-		 */
 
 		roleBox = new JComboBox<Role>();
 		roleBox.setPreferredSize(new Dimension(56, 25));
 		roleBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if ("y".equalsIgnoreCase(e.getActionCommand())) {
-					int si = squadList.getSelectedIndex();
-					Role role = roleBox.getSelectedItem();
-					if (si >= 0 && si < Formations.PLAYER_COUNT && role.index != -1) {
-						// int a = 670641 + (628 * team) + 6232 + si;
-						int oldRole = Formations.getPosition(of, team, altBox
-								.getSelectedIndex(), si);
-						if (oldRole != role.index) {
-							// System.out.println(oldRole);
-							if (oldRole < 10) {
-								if (role.index > 9) {
-									if (role.index < 29) {
-										Formations.setX(of, team, altBox
-												.getSelectedIndex(), si, 25);
-									} else {
-										Formations.setX(of, team, altBox
-												.getSelectedIndex(), si, 41);
-									}
-								}
-							}
-							if (oldRole > 9 && oldRole < 29) {
-								if (role.index < 10) {
-									Formations.setX(of, team, altBox
-											.getSelectedIndex(), si, 8);
-								} else if (role.index > 28) {
-									Formations.setX(of, team, altBox
-											.getSelectedIndex(), si, 41);
-								}
-							}
-							if (oldRole > 28) {
-								if (role.index < 29) {
-									if (role.index < 10) {
-										Formations.setX(of, team, altBox
-												.getSelectedIndex(), si, 8);
-									} else {
-										Formations.setX(of, team, altBox
-												.getSelectedIndex(), si, 25);
-									}
-								}
-							}
-							if (role.index == 8 || role.index == 15
-									|| role.index == 22 || role.index == 29) {
-								if (oldRole != 8 && oldRole != 15
-										&& oldRole != 22 && oldRole != 29) {
-									if (Formations.getY(of, team, altBox
-											.getSelectedIndex(), si) > 50) {
-										Formations.setY(of, team, altBox
-												.getSelectedIndex(), si, 28);
-									}
-								}
-							}
-							if (role.index == 9 || role.index == 16
-									|| role.index == 23 || role.index == 30) {
-								if (oldRole != 9 && oldRole != 16
-										&& oldRole != 23 && oldRole != 30) {
-									if (Formations.getY(of, team, altBox
-											.getSelectedIndex(), si) < 54) {
-										Formations.setY(of, team, altBox
-												.getSelectedIndex(), si, 76);
-									}
-								}
-							}
-						}
-						Formations.setPosition(of, team, altBox.getSelectedIndex(),
-								si, role.index);
-						// of.data[a + (altBox.getSelectedIndex() * 171)] = of
-						// .toByte(role.index);
-						// countForm();
-						// System.out.println(oldRole);
-						if (oldRole > 0 && oldRole < 8
-								&& (role.index < 1 || role.index > 7)) {
-							/*
-							 * int swe = of.data[670785 + (628 team) + 6232 +
-							 * (altBox.getSelectedIndex() 171)]; //
-							 * System.out.println(swe + ", " + si); if (si ==
-							 * swe) { // System.out.println("changing");
-							 * of.data[670785 + (628 team) + 6232 +
-							 * (altBox.getSelectedIndex() 171)] = 0;
-							 * of.data[670784 + (628 team) + 6232 +
-							 * (altBox.getSelectedIndex() 171)] = 0;
-							 *
-							 * for (int i = 1; swe == of.data[670785 + (628
-							 * team) + 6232 + (altBox.getSelectedIndex() 171)]
-							 * && i < 11; i++) { String pos =
-							 * (String)posList.getModel().getElementAt(i); if
-							 * (pos.equals("CBT") || pos.equals("CBW") ||
-							 * pos.equals("ASW")) { of.data[670785 + (628 team)
-							 * + 6232 + (altBox.getSelectedIndex() 171)] =
-							 * (byte)i; } }
-							 *
-							 * }
-							 */
-
-							// swe = of.data[670612 + (628 * team) + 6232];
-							if (altBox.getSelectedIndex() == 0
-									&& si == Formations.getCBOverlap(of, team)) {
-								// of.data[670612 + (628 * team) + 6232] = 0;
-								Formations.setCBOverlap(of, team, 0);
-								/*
-								 * for (int s = 0; s < 4; s++) { int strat =
-								 * of.data[670608 + s + (628 team) + 6232]; if
-								 * (strat == 7) { of.data[670608 + s + (628
-								 * team) + 6232] = 0; } }
-								 */
-								/*
-								 * for (int i = 1; swe == of.data[670612 + (628
-								 * team) + 6232] && i < 11; i++) { byte pos =
-								 * of.data[670641 + (628 team) + 6232 + i]; if
-								 * (pos > 0 && pos < 8) { of.data[670612 + (628
-								 * team) + 6232] = (byte)i; } }
-								 */
-							}
-
-						}
-
-						updateRoleBox();
-
-						posList.refresh(team);
-						teamSettingPan.refresh(team);
-						strategyPan.refresh(team);
-						pitchPanel.repaint();
-						adPanel.repaint();
-					}
-					// System.out.println(roleBox.getWidth());
-					// System.out.println(roleBox.getHeight());
-					// System.out.println(posList.getWidth());
-					// System.out.println(posList.getHeight());
-				}
+			public void actionPerformed(ActionEvent evt) {
+				onRoleChanged(evt);
 			}
 		});
 
 		squadList = new SquadList(of, true);
-		// squadList.setToolTipText("Right click to deselect player");
+		//squadList.setToolTipText(Resources.getMessage("formation.squadTip"));
 		squadList.addListSelectionListener(this);
 
 		new DropTarget(squadList, this);
 		DragSource dragSource = new DragSource();
-		dragSource.createDefaultDragGestureRecognizer(squadList,
-				DnDConstants.ACTION_MOVE, this);
+		dragSource.createDefaultDragGestureRecognizer(squadList, DnDConstants.ACTION_MOVE, this);
 
 		posList = new PositionList(of, false);
 		teamSettingPan = new TeamSettingPanel(of);
 		strategyPan = new StrategyPanel(of, squadList);
 
-		adPanel = new AtkDefPanel(of, altBox);
-		pitchPanel = new PitchPanel(of, this, squadList, adPanel, altBox, numList);
-		adPanel.setPitch(pitchPanel);
+		atkDefPanel = new AtkDefPanel(of, altBox);
+		pitchPanel = new PitchPanel(of, this, squadList, atkDefPanel, altBox, numList);
+		atkDefPanel.setPitch(pitchPanel);
 
 		lFK = new JobList(of, 0, " F-L ", Color.YELLOW);
-		lFK.setToolTipText("Long free kick");
+		lFK.setToolTipText(Resources.getMessage("formation.lFK"));
 		sFK = new JobList(of, 1, " F-S ", Color.YELLOW);
-		sFK.setToolTipText("Short free kick");
-		lCR = new JobList(of, 2, " C-L ", Color.CYAN);
-		lCR.setToolTipText("Left corner");
-		rCR = new JobList(of, 3, " C-R", Color.CYAN);
-		rCR.setToolTipText("Right corner");
+		sFK.setToolTipText(Resources.getMessage("formation.sFK"));
+		lCorner = new JobList(of, 2, " C-L ", Color.CYAN);
+		lCorner.setToolTipText(Resources.getMessage("formation.lCorner"));
+		rCorner = new JobList(of, 3, " C-R", Color.CYAN);
+		rCorner.setToolTipText(Resources.getMessage("formation.rCorner"));
 		pk = new JobList(of, 4, " PK ", Color.GREEN);
-		pk.setToolTipText("Penalty");
-		cap = new JobList(of, 5, " C ", Color.RED);
-		cap.setToolTipText("Captain");
-		formBox = new JComboBox<String>();
-		formBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int i = formBox.getSelectedIndex();
-				// System.out.println(i);
-				if (i != -1 && "y".equalsIgnoreCase(e.getActionCommand())) {
-					int a = Formations.START_ADR + 118
-							+ (Formations.SIZE * team)
-							+ (altBox.getSelectedIndex() * Formations.ALT_SIZE);
-					if (i != 0) {
-						System.arraycopy(formData, (i - 1) * 31, of.getData(), a, 31);
-					}
+		pk.setToolTipText(Resources.getMessage("formation.PK"));
+		captain = new JobList(of, 5, " C ", Color.RED);
+		captain.setToolTipText(Resources.getMessage("formation.captain"));
 
-					// byte swe = of.data[670785 + (628 * team) + 6232 +
-					// (altBox.getSelectedIndex() * 171)];
-					// byte pos = Formations.getPosition(of, team,
-					// altBox.getSelectedIndex(), swe);
-					/*
-					 * if (pos < 1 || pos > 7) { of.data[670785 + (628 team) +
-					 * 6232 + (altBox.getSelectedIndex() 171)] = 0;
-					 * of.data[670784 + (628 team) + 6232 +
-					 * (altBox.getSelectedIndex() 171)] = 0; //
-					 * System.out.println("changing");
-					 *
-					 * for (byte k = 1; swe == of.data[670785 + (628 team) +
-					 * 6232 + (altBox.getSelectedIndex() 171)] && k < 11; k++) {
-					 * String posS = (String)posList.getModel().getElementAt(k);
-					 * if (posS.equals("CBT") || posS.equals("CBW") ||
-					 * posS.equals("ASW")) { of.data[670785 + (628 team) + 6232
-					 * + (altBox.getSelectedIndex() 171)] = (byte)k; } }
-					 *
-					 * }
-					 */
-
-					// swe = of.data[670612 + (628 * team) + 6232];
-					int pos = Formations.getPosition(of, team, 0, Formations.getCBOverlap(of, team));
-					if (altBox.getSelectedIndex() == 0 && (pos < 1 || pos > 7)) {
-						// of.data[670612 + (628 * team) + 6232] = 0;
-						Formations.setCBOverlap(of, team, 0);
-						/*
-						 * for (int s = 0; s < 4; s++) { int strat =
-						 * of.data[670608 + s + (628 team) + 6232]; if (strat ==
-						 * 7) { of.data[670608 + s + (628 team) + 6232] = 0; } }
-						 */
-						/*
-						 * for (byte k = 1; swe == of.data[670612 + (628 team) +
-						 * 6232] && k < 11; k++) { pos = of.data[670641 + (628
-						 * team) + 6232 + k]; if (pos > 0 && pos < 8) {
-						 * of.data[670612 + (628 team) + 6232] = (byte)k; } }
-						 */
-					}
-					// countForm();
-					posList.refresh(team);
-					strategyPan.refresh(team);
-					teamSettingPan.refresh(team);
-					pitchPanel.repaint();
-					adPanel.repaint();
-					updateRoleBox();
-				}
+		formNamesBox = new JComboBox<String>();
+		formNamesBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				onFormationChanged(evt);
 			}
 		});
-		// formBox.setEnabled(false);
+		//formNamesBox.setEnabled(false);
 
-		JButton snapButton = new JButton("Snapshot");
-		snapButton
-				.setToolTipText("Save the formation diagram to a .png image file");
+		JButton snapButton = new JButton(Resources.getMessage("formation.snapshot"));
+		snapButton.setToolTipText(Resources.getMessage("formation.snapTip"));
 		snapButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent a) {
-				savePNG();
+			public void actionPerformed(ActionEvent evt) {
+				saveStrategyAsPNG();
 			}
 		});
 
-		// panel.add(posList);
-		// panel.add(squadList);
-		panel.add(lFK);
-		panel.add(sFK);
-		panel.add(lCR);
-		panel.add(rCR);
-		panel.add(pk);
-		panel.add(cap);
-		JPanel numPos = new JPanel(new BorderLayout());
-		numPos.add(numList, BorderLayout.WEST);
-		numPos.add(posList, BorderLayout.EAST);
-		panel2.add(numPos, BorderLayout.WEST);
-		panel2.add(squadList, BorderLayout.CENTER);
-		panel2.add(panel, BorderLayout.EAST);
-		panel3.add(panel2, BorderLayout.CENTER);
-		panel3.add(formBox, BorderLayout.NORTH);
+		JPanel rolePickPan = new JPanel(new GridLayout(0, 6));
+		rolePickPan.add(lFK);
+		rolePickPan.add(sFK);
+		rolePickPan.add(lCorner);
+		rolePickPan.add(rCorner);
+		rolePickPan.add(pk);
+		rolePickPan.add(captain);
 
-		JPanel setPanel = new JPanel();
-		setPanel.add(adPanel);
-		setPanel.add(roleBox);
+		JPanel numPosPane = new JPanel(new BorderLayout());
+		numPosPane.add(numList, BorderLayout.WEST);
+		numPosPane.add(posList, BorderLayout.EAST);
 
-		JPanel topPanel = new JPanel(new GridLayout(1, 3));
-		topPanel.add(altBox);
-		topPanel.add(formBox);
-		topPanel.add(snapButton);
+		JPanel mainPane = new JPanel(new BorderLayout());
+		mainPane.add(numPosPane, BorderLayout.WEST);
+		mainPane.add(squadList, BorderLayout.CENTER);
+		mainPane.add(rolePickPan, BorderLayout.EAST);
 
-		JPanel botPan = new JPanel(new BorderLayout());
-		botPan.add(teamSettingPan, BorderLayout.NORTH);
-		botPan.add(pitchPanel, BorderLayout.CENTER);
-		botPan.add(setPanel, BorderLayout.SOUTH);
+		JPanel contentPane = new JPanel(new BorderLayout());
+		contentPane.add(mainPane, BorderLayout.CENTER);
+		contentPane.add(formNamesBox, BorderLayout.NORTH);
 
-		panelR.add(topPanel, BorderLayout.NORTH);
-		panelR.add(botPan, BorderLayout.CENTER);
-		panelR.add(strategyPan, BorderLayout.SOUTH);
-		add(panel3);
-		add(panelR);
+		JPanel settingPane = new JPanel();
+		settingPane.add(atkDefPanel);
+		settingPane.add(roleBox);
+
+		JPanel topPane = new JPanel(new GridLayout(1, 3));
+		topPane.add(altBox);
+		topPane.add(formNamesBox);
+		topPane.add(snapButton);
+
+		JPanel bottomPane = new JPanel(new BorderLayout());
+		bottomPane.add(teamSettingPan, BorderLayout.NORTH);
+		bottomPane.add(pitchPanel, BorderLayout.CENTER);
+		bottomPane.add(settingPane, BorderLayout.SOUTH);
+
+		JPanel rightPane = new JPanel(new BorderLayout());
+		rightPane.add(topPane, BorderLayout.NORTH);
+		rightPane.add(bottomPane, BorderLayout.CENTER);
+		rightPane.add(strategyPan, BorderLayout.SOUTH);
+
+		add(contentPane);
+		add(rightPane);
 	}
 
 	//endregion
@@ -413,12 +185,142 @@ public class FormationPanel extends JPanel
 		this.isFromPitch = isFromPitch;
 	}
 
+	private void onAltChanged(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
+			return;
+
+		int alt = altBox.getSelectedIndex();
+		//countFormations();
+		posList.setAlt(alt);
+		posList.refresh(team);
+		//squadList.refresh(team);
+		updateRoleBox();
+
+		teamSettingPan.setAlt(alt);
+		teamSettingPan.refresh(team);
+
+		pitchPanel.repaint();
+		atkDefPanel.repaint();
+	}
+
+	private void onRoleChanged(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
+			return;
+
+		int squadIndex = squadList.getSelectedIndex();
+		if (squadIndex < 0 || squadIndex >= Formations.PLAYER_COUNT)
+			return;
+
+		Role role = roleBox.getSelectedItem();
+		if (null == role || role.index < 0)
+			return;
+
+		int alt = altBox.getSelectedIndex();
+		int oldPos = Formations.getPosition(of, team, alt, squadIndex);
+		if (oldPos != role.index) {
+			//log.debug("{}", oldPos);
+			if (oldPos < 10) {
+				if (role.index > 9) {
+					if (role.index < 29) {
+						Formations.setX(of, team, alt, squadIndex, 25);
+					} else {
+						Formations.setX(of, team, alt, squadIndex, 41);
+					}
+				}
+			}
+
+			if (oldPos > 9 && oldPos < 29) {
+				if (role.index < 10) {
+					Formations.setX(of, team, alt, squadIndex, 8);
+				} else if (role.index > 28) {
+					Formations.setX(of, team, alt, squadIndex, 41);
+				}
+			}
+
+			if (oldPos > 28) {
+				if (role.index < 29) {
+					if (role.index < 10) {
+						Formations.setX(of, team, alt, squadIndex, 8);
+					} else {
+						Formations.setX(of, team, alt, squadIndex, 25);
+					}
+				}
+			}
+
+			if (role.index == 8 || role.index == 15 || role.index == 22 || role.index == 29) {
+				if (oldPos != 8 && oldPos != 15 && oldPos != 22 && oldPos != 29) {
+					if (Formations.getY(of, team, alt, squadIndex) > 50) {
+						Formations.setY(of, team, alt, squadIndex, 28);
+					}
+				}
+			}
+
+			if (role.index == 9 || role.index == 16 || role.index == 23 || role.index == 30) {
+				if (oldPos != 9 && oldPos != 16 && oldPos != 23 && oldPos != 30) {
+					if (Formations.getY(of, team, alt, squadIndex) < 54) {
+						Formations.setY(of, team, alt, squadIndex, 76);
+					}
+				}
+			}
+		}
+
+		Formations.setPosition(of, team, alt, squadIndex, role.index);
+		//countFormations();
+
+		if (oldPos > 0 && oldPos < 8 && (role.index < 1 || role.index > 7)) {
+			if (alt == 0 && squadIndex == Formations.getCBOverlap(of, team)) {
+				Formations.setCBOverlap(of, team, 0);
+			}
+		}
+
+		updateRoleBox();
+
+		posList.refresh(team);
+		teamSettingPan.refresh(team);
+		strategyPan.refresh(team);
+
+		pitchPanel.repaint();
+		atkDefPanel.repaint();
+	}
+
+	private void onFormationChanged(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
+			return;
+
+		int formId = formNamesBox.getSelectedIndex();
+		if (formId < 0) return;
+
+		int alt = altBox.getSelectedIndex();
+		if (formId > 0) {
+			Formations.setFormation(of, team, alt, formId - 1);
+		}
+
+		if (alt == 0) {
+			int pos = Formations.getPosition(of, team, 0, Formations.getCBOverlap(of, team));
+			if (pos < 1 || pos > 7)
+				Formations.setCBOverlap(of, team, 0);
+		}
+
+		//countFormations();
+		posList.refresh(team);
+		strategyPan.refresh(team);
+		teamSettingPan.refresh(team);
+
+		pitchPanel.repaint();
+		atkDefPanel.repaint();
+
+		updateRoleBox();
+	}
+
 	public void refresh(int t) {
 		team = t;
 		altBox.setActionCommand("n");
 		altBox.setSelectedIndex(0);
 		altBox.setActionCommand("y");
-		// countForm();
+		// countFormations();
 		isOk = false;
 		squadList.refresh(t, false);
 		isOk = true;
@@ -432,19 +334,19 @@ public class FormationPanel extends JPanel
 		updateRoleBox();
 		sFK.refresh(t);
 		lFK.refresh(t);
-		rCR.refresh(t);
-		lCR.refresh(t);
+		rCorner.refresh(t);
+		lCorner.refresh(t);
 		pk.refresh(t);
-		cap.refresh(t);
+		captain.refresh(t);
 		teamSettingPan.setAlt(altBox.getSelectedIndex());
 		teamSettingPan.refresh(t);
 		strategyPan.refresh(t);
 		pitchPanel.setSelectedIndex(-1);
 		pitchPanel.setSquad(t);
 		pitchPanel.repaint();
-		adPanel.setSelectedIndex(-1);
-		adPanel.setSquad(t);
-		adPanel.repaint();
+		atkDefPanel.setSelectedIndex(-1);
+		atkDefPanel.setSquad(t);
+		atkDefPanel.repaint();
 	}
 
 	public void valueChanged(ListSelectionEvent e) {
@@ -457,20 +359,37 @@ public class FormationPanel extends JPanel
 				updateRoleBox();
 				if (i >= 0 && i < Formations.PLAYER_COUNT) {
 					pitchPanel.setSelectedIndex(i);
-					adPanel.setSelectedIndex(i);
+					atkDefPanel.setSelectedIndex(i);
 				} else {
 					pitchPanel.setSelectedIndex(-1);
-					adPanel.setSelectedIndex(-1);
+					atkDefPanel.setSelectedIndex(-1);
 				}
 				pitchPanel.repaint();
-				adPanel.repaint();
+				atkDefPanel.repaint();
 				// posList.selectPos(squadList, i);
 			}
 		}
 	}
 
+	private static class Role implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		private final int index;
+		private final String name;
+
+		public Role(int index) {
+			this.index = index;
+			name = Formations.positionToString(index);
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
+	}
+
 	private void updateRoleBox() {
-		countForm();
+		countFormations();
 
 		roleBox.setActionCommand("n");
 		roleBox.removeAllItems();
@@ -546,37 +465,37 @@ public class FormationPanel extends JPanel
 					}
 
 					if (isDef(selPos)) {
-						if (def <= 2 && !isDef(r)) {
+						if (def.get() <= 2 && !isDef(r)) {
 							free = false;
 						}
-						if (mid >= 6 && isMid(r)) {
+						if (mid.get() >= 6 && isMid(r)) {
 							free = false;
 						}
-						if (att >= 5 && isAtt(r)) {
+						if (atk.get() >= 5 && isAtt(r)) {
 							free = false;
 						}
 					}
 
 					if (isMid(selPos)) {
-						if (mid <= 2 && !isMid(r)) {
+						if (mid.get() <= 2 && !isMid(r)) {
 							free = false;
 						}
-						if (def >= 5 && isDef(r)) {
+						if (def.get() >= 5 && isDef(r)) {
 							free = false;
 						}
-						if (att >= 5 && isAtt(r)) {
+						if (atk.get() >= 5 && isAtt(r)) {
 							free = false;
 						}
 					}
 
 					if (isAtt(selPos)) {
-						if (att <= 1 && !isAtt(r)) {
+						if (atk.get() <= 1 && !isAtt(r)) {
 							free = false;
 						}
-						if (mid >= 6 && isMid(r)) {
+						if (mid.get() >= 6 && isMid(r)) {
 							free = false;
 						}
-						if (def >= 5 && isDef(r)) {
+						if (def.get() >= 5 && isDef(r)) {
 							free = false;
 						}
 					}
@@ -585,8 +504,7 @@ public class FormationPanel extends JPanel
 
 				for (int p = 0; free && p < Formations.PLAYER_COUNT; p++) {
 					// System.out.println(r + ", " + p);
-					pos = Formations.getPosition(of, team,
-							altBox.getSelectedIndex(), p);
+					pos = Formations.getPosition(of, team, altBox.getSelectedIndex(), p);
 					// System.out.println(a + "=" + of.data[a]);
 					if (pos == r) {
 						free = false;
@@ -622,49 +540,50 @@ public class FormationPanel extends JPanel
 		roleBox.setActionCommand("y");
 	}
 
-	private void countForm() {
-		def = mid = att = 0;
+	private void countFormations() {
+		def.set(0);
+		mid.set(0);
+		atk.set(0);
 		int mid2 = 0;
 
 		for (int i = 1; i < Formations.PLAYER_COUNT; i++) {
 			int pos = Formations.getPosition(of, team, altBox.getSelectedIndex(), i);
 			if (isDef(pos)) {
-				def++;
+				def.incrementAndGet();
 			} else if (isMid(pos)) {
 				if (pos > 23 && pos < 29) {
 					mid2++;
 				}
-				mid++;
+				mid.incrementAndGet();
 			} else if (isAtt(pos)) {
-				att++;
+				atk.incrementAndGet();
 			}
 		}
 
-		//System.out.println(def +" " +mid +" " +mid2 +" " +att);
-		formBox.setActionCommand("n");
+		//System.out.println(def +" " +mid +" " +mid2 +" " +atk);
+		formNamesBox.setActionCommand("n");
 
 		String myForm;
 		if (mid2 > 0 && mid2 < 3) {
-			mid = mid - mid2;
-			if (mid == 0) {
-				myForm = def + "-" + mid2 + "-" + att;
+			if (mid.addAndGet(-mid2) == 0) {
+				myForm = def + "-" + mid2 + "-" + atk;
 			} else {
-				myForm = def + "-" + mid + "-" + mid2 + "-" + att;
+				myForm = def + "-" + mid + "-" + mid2 + "-" + atk;
 			}
 		} else {
-			myForm = def + "-" + mid + "-" + att;
+			myForm = def + "-" + mid + "-" + atk;
 		}
 
 		ArrayList<String> formNames = new ArrayList<String>(Arrays.asList(Formations.FORM_NAMES));
 		formNames.add(0, myForm);
 		DefaultComboBoxModel<String> model
 				= new DefaultComboBoxModel<String>(formNames.toArray(new String[formNames.size()]));
-		formBox.setModel(model);
-		formBox.setActionCommand("y");
-		// System.out.println(def + "-" + mid + "-" + att);
+		formNamesBox.setModel(model);
+		formNamesBox.setActionCommand("y");
+		// System.out.println(def + "-" + mid + "-" + atk);
 	}
 
-	private void savePNG() {
+	private void saveStrategyAsPNG() {
 		int returnVal = pngChooser.showSaveDialog(null);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File dest = pngChooser.getSelectedFile();
@@ -762,10 +681,10 @@ public class FormationPanel extends JPanel
 				}
 				sFK.refresh(team);
 				lFK.refresh(team);
-				rCR.refresh(team);
-				lCR.refresh(team);
+				rCorner.refresh(team);
+				lCorner.refresh(team);
 				pk.refresh(team);
-				cap.refresh(team);
+				captain.refresh(team);
 			}
 			isOk = false;
 			int tt = team;
@@ -799,9 +718,9 @@ public class FormationPanel extends JPanel
 			roleBox.setEnabled(false);
 			roleBox.setActionCommand("y");
 			pitchPanel.setSelectedIndex(-1);
-			adPanel.setSelectedIndex(-1);
+			atkDefPanel.setSelectedIndex(-1);
 			pitchPanel.repaint();
-			adPanel.repaint();
+			atkDefPanel.repaint();
 			PlayerTransferable playerTran = new PlayerTransferable(p);
 			event.getDragSource().startDrag(event, null, playerTran, this);
 		} else {
@@ -816,9 +735,9 @@ public class FormationPanel extends JPanel
 		/*
 		 * //if (event.getDropSuccess()){} int ti =
 		 * squadList.getSelectedIndex(); updateRoleBox(); if (ti >= 0 && ti <
-		 * 11) { pitchPanel.selected = ti; adPanel.selected = ti; } else {
-		 * pitchPanel.selected = -1; adPanel.selected = -1; }
-		 * pitchPanel.repaint(); adPanel.repaint(); posList.clearSelection();
+		 * 11) { pitchPanel.selected = ti; atkDefPanel.selected = ti; } else {
+		 * pitchPanel.selected = -1; atkDefPanel.selected = -1; }
+		 * pitchPanel.repaint(); atkDefPanel.repaint(); posList.clearSelection();
 		 */
 	}
 
@@ -833,25 +752,5 @@ public class FormationPanel extends JPanel
 
 	public void dropActionChanged(DragSourceDragEvent event) {
 	}
-
-	//region Nested Classes
-
-	private static class Role implements Serializable {
-		private static final long serialVersionUID = 1L;
-
-		private final int index;
-		private final String name;
-
-		public Role(int index) {
-			this.index = index;
-			name = Formations.positionToString(index);
-		}
-
-		public String toString() {
-			return name;
-		}
-	}
-
-	//endregion
 
 }

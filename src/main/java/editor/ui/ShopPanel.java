@@ -15,13 +15,17 @@ public class ShopPanel extends JPanel {
 	private static final int START_ADR = 5144;
 
 	private final OptionFile of;
-	private final JLabel status;
+	private/* final*/ JLabel status;
 
 	public ShopPanel(OptionFile optionFile) {
 		super();
 		if (null == optionFile) throw new NullPointerException("optionFile");
 		of = optionFile;
 
+		initComponents();
+	}
+
+	private void initComponents() {
 		status = new JLabel();
 
 		JButton lock = new JButton(Resources.getMessage("Lock"));
@@ -51,7 +55,22 @@ public class ShopPanel extends JPanel {
 	}
 
 	public void refresh() {
-		status.setText("");
+		if (!of.isLoaded())
+			status.setText("");
+
+		boolean unlocked = false;
+		for (int adr = START_ADR, end = START_ADR + PLAYER_COUNT / 8 + 6; adr < end; adr++) {
+			if (of.getData()[adr] != 0) {
+				unlocked = true;
+				break;
+			}
+		}
+
+		setUnlockStatus(unlocked);
+	}
+
+	private void setUnlockStatus(boolean unlocked) {
+		status.setText(Resources.getMessage(unlocked ? "Unlocked" : "Locked"));
 	}
 
 	private void onLock(ActionEvent evt) {
@@ -59,7 +78,7 @@ public class ShopPanel extends JPanel {
 		Arrays.fill(of.getData(), START_ADR, ofs, (byte) 0);
 		Arrays.fill(of.getData(), ofs, ofs + 6, (byte) 0);
 
-		status.setText(Resources.getMessage("Locked"));
+		setUnlockStatus(false);
 	}
 
 	private void onUnlock(ActionEvent evt) {
@@ -73,7 +92,7 @@ public class ShopPanel extends JPanel {
 		of.getData()[++ofs] = (byte) 0xCF;
 		of.getData()[++ofs] = 0x7F;
 
-		status.setText(Resources.getMessage("Unlocked"));
+		setUnlockStatus(true);
 	}
 
 }

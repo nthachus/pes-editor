@@ -156,6 +156,7 @@ public class SplashWindow extends Window {
 	 *
 	 * @param image The splash image.
 	 */
+	@SuppressWarnings("SynchronizeOnNonFinalField")
 	public static void splash(Image image) {
 		if (instance != null || image == null)
 			return;
@@ -172,7 +173,7 @@ public class SplashWindow extends Window {
 		// If more than one processor is available, we don't wait,
 		// and maximize CPU throughput instead.
 		if (!EventQueue.isDispatchThread() && Runtime.getRuntime().availableProcessors() == 1) {
-			synchronized (log) {
+			synchronized (instance) {
 				while (!instance.isPaintCalled) {
 					try {
 						instance.wait();

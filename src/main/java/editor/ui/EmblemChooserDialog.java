@@ -16,7 +16,7 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 	private final OptionFile of;
 	private volatile boolean isTrans = true;
 	private volatile int slot = -1;
-	private volatile int type = Emblems.TYPE_INHERIT;
+	private volatile int type = Emblems.TYPE_BOTH;
 
 	public EmblemChooserDialog(Frame owner, OptionFile of) {
 		super(owner, true);
@@ -24,12 +24,14 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 		this.of = of;
 
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
+		int refSize = Math.round(0.69f * Emblems.IMG_SIZE);
 
 		Systems.javaUI();// fix button background color
 		for (int i = 0; i < emblemButtons.length; i++) {
 			emblemButtons[i] = new JButton(new ImageIcon(Emblems.BLANK16));
 			emblemButtons[i].setMargin(new Insets(0, 0, 0, 0));
 			emblemButtons[i].setActionCommand(Integer.toString(i));
+			emblemButtons[i].setPreferredSize(new Dimension(refSize, refSize));
 			emblemButtons[i].addActionListener(this);
 
 			flagPanel.add(emblemButtons[i]);
@@ -74,13 +76,14 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 
 	public void refresh() {
 		Image icon;
-		if (type == Emblems.TYPE_INHERIT || type == Emblems.TYPE_16) {
+		if (type == Emblems.TYPE_BOTH || type == Emblems.TYPE_16) {
 			for (int i = 0, n = Emblems.count16(of); i < n; i++) {
 				icon = Emblems.get16(of, i, !isTrans, true);
 				emblemButtons[i].setIcon(new ImageIcon(icon));
 				emblemButtons[i].setVisible(true);
 			}
-		} else if (type == Emblems.TYPE_INHERIT || type == Emblems.TYPE_128) {
+		}
+		if (type == Emblems.TYPE_BOTH || type == Emblems.TYPE_128) {
 			for (int i = 0, n = Emblems.count128(of); i < n; i++) {
 				icon = Emblems.get128(of, i, !isTrans, true);
 				emblemButtons[Emblems.TOTAL16 - i - 1].setIcon(new ImageIcon(icon));
@@ -103,7 +106,7 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * @see Emblems#TYPE_INHERIT
+	 * @see Emblems#TYPE_BOTH
 	 */
 	public int getEmblem(String title, int type) {
 		this.type = type;

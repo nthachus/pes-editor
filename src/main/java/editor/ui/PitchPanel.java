@@ -184,8 +184,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 			if (!Formations.getAttack(of, squad, altBox.getSelectedIndex(), player, i))
 				continue;
 
-			int x2 = x1;
-			int y2 = y1;
+			int x2, y2;
 			switch (i) {
 				case 0:
 					x2 = x1 - 21;
@@ -218,6 +217,10 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 				case 7:
 					x2 = x1 - 15;
 					y2 = y1 + 15;
+					break;
+				default:
+					x2 = x1;
+					y2 = y1;
 					break;
 			}
 

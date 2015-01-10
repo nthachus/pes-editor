@@ -170,7 +170,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 	private void onAddEmblemFromOF2() {
 		int emblem = -1;
 		if (Emblems.getFree128(of) > 0) {
-			emblem = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), Emblems.TYPE_INHERIT);
+			emblem = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), Emblems.TYPE_BOTH);
 		} else if (Emblems.getFree16(of) > 0) {
 			emblem = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), Emblems.TYPE_16);
 		}
@@ -219,9 +219,11 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 			case JOptionPane.CANCEL_OPTION:
 				saveEmblemAsPNG(is128, slot);
 				break;
-			default://JOptionPane.CLOSED_OPTION
+			case 3:
 				if (flagImportDia.isOf2Loaded())
 					importEmblemFromOF2(is128, slot);
+				break;
+			default:
 				break;
 		}
 	}

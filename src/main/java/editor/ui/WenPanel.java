@@ -46,7 +46,8 @@ public class WenPanel extends JPanel implements ActionListener {
 		long wen = Bits.toInt(of.getData(), ALT_ADR, 3);
 		long wen2 = Bits.toInt(of.getData(), START_ADR, 3);
 
-		current.setText(Resources.getMessage("wen.label", wen2, wen));
+		current.setText(Resources.getMessage("wen.label", wen2));
+		current.setToolTipText((wen != wen2) ? Long.toString(wen) : null);
 		field.setText("");
 	}
 

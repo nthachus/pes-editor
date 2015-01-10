@@ -23,22 +23,22 @@ public class NationalityList extends JList<Player> {
 
 	public void refresh(int nation, boolean alphaOrder) {
 		int extraCount = SelectByNation.getExtraNations().length;
-		if (nation < 0 || nation >= Stats.NATION.length + extraCount)
-			throw new IndexOutOfBoundsException("nation#" + nation);
+		int total = Stats.NATION.length + extraCount;
+		if (nation < 0 || nation >= total) throw new IndexOutOfBoundsException("nation#" + nation);
 
 		Vector<Player> model = new Vector<Player>();
 		if (nation < Stats.NATION.length) {
 			fetchNationPlayers(model, nation);
-		} else if (extraCount >= 1 && nation == Stats.NATION.length + extraCount - 1) {
+		} else if (extraCount >= 1 && nation == total - 1) {
 			fetchAllPlayers(model);
-		} else if (extraCount >= 2 && nation == Stats.NATION.length + extraCount - 2) {
+		} else if (extraCount >= 2 && nation == total - 2) {
 			fetchFreeAgents(model);
-		} else if (extraCount >= 3 && nation == Stats.NATION.length + extraCount - 3) {
+		} else if (extraCount >= 3 && nation == total - 3) {
 			fetchDuplicatedPlayers(model);
 			alphaOrder = false;
-		} else if (extraCount >= 4 && nation == Stats.NATION.length + extraCount - 4) {
+		} else if (extraCount >= 4 && nation == total - 4) {
 			fetchYoungPlayers(model);
-		} else if (extraCount >= 5 && nation == Stats.NATION.length + extraCount - 5) {
+		} else if (extraCount >= 5 && nation == total - 5) {
 			fetchOldPlayers(model);
 		}
 

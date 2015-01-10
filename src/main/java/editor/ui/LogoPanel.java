@@ -106,9 +106,11 @@ public class LogoPanel extends JPanel implements ActionListener {
 				if (Logos.isUsed(of, slot))
 					saveLogoAsPNG(slot);
 				break;
-			default:// JOptionPane.CANCEL_OPTION:
+			case JOptionPane.CANCEL_OPTION:
 				if (logoImportDia.isOf2Loaded())
 					importFromOF2(slot);
+				break;
+			default:
 				break;
 		}
 	}

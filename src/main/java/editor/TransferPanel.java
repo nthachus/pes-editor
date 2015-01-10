@@ -50,21 +50,21 @@ public class TransferPanel extends JPanel
 	private/* final*/ NameTextField nameEditor;
 	private/* final*/ NumTextField numEditor;
 	private/* final*/ InfoPanel infoPanel;
-	private/* final*/ ShirtNameTextField shirtEditor;
-	private/* final*/ JCheckBox autoRel;
-	private/* final*/ JCheckBox autoRep;
+	private/* final*/ ShirtTextField shirtEditor;
+	private/* final*/ JCheckBox autoRelease;
+	private/* final*/ JCheckBox autoGaps;
 	private/* final*/ JCheckBox safeMode;
 
 	private void initComponents() {
-		autoRel = new JCheckBox("Auto Release");
-		autoRel.setToolTipText(
+		autoRelease = new JCheckBox("Auto Release");
+		autoRelease.setToolTipText(
 				"When a player is transferred to a club squad he will be automatically released from his old squad");
-		autoRel.setSelected(true);
+		autoRelease.setSelected(true);
 
-		autoRep = new JCheckBox("Auto Sub");
-		autoRep.setToolTipText(
+		autoGaps = new JCheckBox("Auto Sub");
+		autoGaps.setToolTipText(
 				"Gaps made in a team's first 11 will be automatically filled with the most appropriate sub");
-		autoRep.setSelected(true);
+		autoGaps.setSelected(true);
 
 		safeMode = new JCheckBox("Safe Mode");
 		safeMode.setToolTipText("Only transfers that are possible in-game will be allowed");
@@ -81,7 +81,7 @@ public class TransferPanel extends JPanel
 		selectorL = new SelectByTeam(of, true);
 		nameEditor = new NameTextField();
 		numEditor = new NumTextField();
-		shirtEditor = new ShirtNameTextField();
+		shirtEditor = new ShirtTextField();
 		JPanel editPanel = new JPanel(new GridLayout(0, 1));
 		JPanel optPanel = new JPanel(new GridLayout(0, 1));
 		JPanel lPanel = new JPanel(new BorderLayout());
@@ -113,8 +113,8 @@ public class TransferPanel extends JPanel
 
 		editPanel.add(nameEditor);
 		editPanel.add(shirtEditor);
-		optPanel.add(autoRel);
-		optPanel.add(autoRep);
+		optPanel.add(autoRelease);
+		optPanel.add(autoGaps);
 		optPanel.add(safeMode);
 
 		JPanel editOptPan = new JPanel();
@@ -318,7 +318,7 @@ public class TransferPanel extends JPanel
 					if (sp >= 22) {
 						Squads.tidy(of, sqi);
 					} else {
-						if (autoRep.isSelected()) {
+						if (autoGaps.isSelected()) {
 							int t = sqi;
 							if (t > 74) {
 								t = t - 8;
@@ -644,7 +644,7 @@ public class TransferPanel extends JPanel
 
 			if (squadL > 74 && squadL < 213) {
 				int s = clubRelease(indexF, false);
-				if (autoRel.isSelected()) {
+				if (autoRelease.isSelected()) {
 					if (s != -1) {
 						int c = countPlayers(s);
 						if (c <= 16) {
@@ -660,7 +660,7 @@ public class TransferPanel extends JPanel
 
 			if (squadR > 74 && squadR < 213) {
 				int s = clubRelease(indexF, false);
-				if (autoRel.isSelected()) {
+				if (autoRelease.isSelected()) {
 					if (s != -1) {
 						int c = countPlayers(s);
 						if (c <= 16) {
@@ -691,7 +691,7 @@ public class TransferPanel extends JPanel
 					relL = false;
 					if (indexR == 0) {
 					}
-					if (autoRel.isSelected() && squadL > 74) {
+					if (autoRelease.isSelected() && squadL > 74) {
 						tranLR = false;
 					}
 				}
@@ -704,7 +704,7 @@ public class TransferPanel extends JPanel
 					tranFL = false;
 				}
 
-				if (!autoRel.isSelected() && squadL > 74 && squadL < 213) {
+				if (!autoRelease.isSelected() && squadL > 74 && squadL < 213) {
 					int s = clubRelease(indexR, false);
 					if (s != -1) {
 						tranRL = false;
@@ -730,7 +730,7 @@ public class TransferPanel extends JPanel
 					relR = false;
 					if (indexL == 0) {
 					}
-					if (autoRel.isSelected() && squadR > 74) {
+					if (autoRelease.isSelected() && squadR > 74) {
 						tranRL = false;
 					}
 				}
@@ -744,7 +744,7 @@ public class TransferPanel extends JPanel
 					tranFR = false;
 				}
 
-				if (!autoRel.isSelected() && squadR > 74 && squadR < 213) {
+				if (!autoRelease.isSelected() && squadR > 74 && squadR < 213) {
 					int s = clubRelease(indexL, false);
 					if (s != -1) {
 						tranLR = false;
@@ -758,8 +758,8 @@ public class TransferPanel extends JPanel
 			}
 
 			if (squadL < 67) {
-				int squadNat = squadL;
-				switch (squadNat) {
+				int squadNat;
+				switch (squadL) {
 					case 60:
 						squadNat = 6;
 						break;
@@ -780,6 +780,9 @@ public class TransferPanel extends JPanel
 						break;
 					case 66:
 						squadNat = 45;
+						break;
+					default:
+						squadNat = squadL;
 						break;
 				}
 
@@ -799,8 +802,8 @@ public class TransferPanel extends JPanel
 			}
 
 			if (squadR < 67) {
-				int squadNat = squadR;
-				switch (squadNat) {
+				int squadNat;
+				switch (squadR) {
 					case 60:
 						squadNat = 6;
 						break;
@@ -821,6 +824,9 @@ public class TransferPanel extends JPanel
 						break;
 					case 66:
 						squadNat = 45;
+						break;
+					default:
+						squadNat = squadR;
 						break;
 				}
 
@@ -878,7 +884,7 @@ public class TransferPanel extends JPanel
 		int adr = selectorL.getSquadList().getSelectedValue().getNumberAdr();
 		int ti = selectorL.getTeamBox().getSelectedIndex();
 		int n = -1;
-		if (ti >= 75 && ti < 213 && autoRel.isSelected()) {
+		if (ti >= 75 && ti < 213 && autoRelease.isSelected()) {
 			n = clubRelease(index, true);
 		}
 		of.getData()[adr] = Bits.toByte(index);
@@ -901,7 +907,7 @@ public class TransferPanel extends JPanel
 		int adr = selectorR.getSquadList().getSelectedValue().getNumberAdr();
 		int ti = selectorR.getTeamBox().getSelectedIndex();
 		int n = -1;
-		if (ti >= 75 && ti < 213 && autoRel.isSelected()) {
+		if (ti >= 75 && ti < 213 && autoRelease.isSelected()) {
 			n = clubRelease(index, true);
 		}
 		of.getData()[adr] = Bits.toByte(index);
@@ -927,7 +933,7 @@ public class TransferPanel extends JPanel
 			int tiR = selectorR.getTeamBox().getSelectedIndex();
 			int tiL = selectorL.getTeamBox().getSelectedIndex();
 			int n = -1;
-			if (tiR >= 75 && tiR < 213 && autoRel.isSelected()) {
+			if (tiR >= 75 && tiR < 213 && autoRelease.isSelected()) {
 				n = clubRelease(index, true);
 			}
 
@@ -956,7 +962,7 @@ public class TransferPanel extends JPanel
 			int tiL = selectorL.getTeamBox().getSelectedIndex();
 			int tiR = selectorR.getTeamBox().getSelectedIndex();
 			int n = -1;
-			if (tiL >= 75 && tiL < 213 && autoRel.isSelected()) {
+			if (tiL >= 75 && tiL < 213 && autoRelease.isSelected()) {
 				n = clubRelease(index, true);
 			}
 
@@ -1001,7 +1007,7 @@ public class TransferPanel extends JPanel
 			if (sourceIndex > 10) {
 				Squads.tidy(of, tiS);
 			} else {
-				if (autoRep.isSelected()) {
+				if (autoGaps.isSelected()) {
 					Squads.tidy11(
 							of,
 							tiS,
@@ -1012,7 +1018,7 @@ public class TransferPanel extends JPanel
 			if (targetList.getSelectedIndex() > 10) {
 				Squads.tidy(of, tiT);
 			} else {
-				if (autoRep.isSelected() && sourceList != targetList) {
+				if (autoGaps.isSelected() && sourceList != targetList) {
 					Squads.tidy11(
 							of,
 							tiT,
@@ -1034,7 +1040,7 @@ public class TransferPanel extends JPanel
 		if (si > 10) {
 			Squads.tidy(of, selectorL.getTeamBox().getSelectedIndex());
 		} else {
-			if (autoRep.isSelected()) {
+			if (autoGaps.isSelected()) {
 				Squads.tidy11(of, selectorL.getTeamBox().getSelectedIndex(), si, selectorL.getPosList().getPosNum(si));
 			}
 		}
@@ -1049,7 +1055,7 @@ public class TransferPanel extends JPanel
 		if (si > 10) {
 			Squads.tidy(of, selectorR.getTeamBox().getSelectedIndex());
 		} else {
-			if (autoRep.isSelected()) {
+			if (autoGaps.isSelected()) {
 				Squads.tidy11(of, selectorR.getTeamBox().getSelectedIndex(), si, selectorR.getPosList().getPosNum(si));
 			}
 		}
@@ -1247,10 +1253,10 @@ public class TransferPanel extends JPanel
 		}
 	}
 
-	private class ShirtNameTextField extends JTextField implements ListSelectionListener, ActionListener {
+	private class ShirtTextField extends JTextField implements ListSelectionListener, ActionListener {
 		private volatile int source = 0;
 
-		public ShirtNameTextField() {
+		public ShirtTextField() {
 			super(13);
 			addActionListener(this);
 			setToolTipText("Enter new shirt name and press return");// TODO: maxlength

@@ -242,7 +242,7 @@ public final class Stats {
 			"Liberia",
 			"Libya",
 			"Madagascar",
-			"Mauritania",
+			"Mauritius",
 			"Mozambique",
 			"Niger",
 			"Rwanda",
@@ -266,6 +266,11 @@ public final class Stats {
 			"Philippines",
 			"Syria",
 			"New Caledonia",
+
+			"[ - ]",// Black * NOTE: Nation IDs [101-102] must not be used
+			"[   ]",// White
+			"[ M ]",// Master-League country
+
 			"Albania",
 			"Andorra",
 			"Armenia",
@@ -331,13 +336,13 @@ public final class Stats {
 		int val = Bits.toInt16(of.getData(), ofs - 1);
 		val = (val >>> stat.getShift()) & stat.getMask();
 
-		if (stat.getType() == StatType.nationId) {
+		/*if (stat.getType() == StatType.nationId) {
 			if (val == 100) {
 				val = NATION.length - 1;
 			} else if (val >= 103) {
 				val = val - 3;
 			}
-		}
+		}*/
 
 		return val;
 	}
@@ -348,13 +353,13 @@ public final class Stats {
 
 		int ofs = stat.getOffset(player);
 
-		if (stat.getType() == StatType.nationId) {
+		/*if (stat.getType() == StatType.nationId) {
 			if (value == NATION.length - 1) {
 				value = 100;
 			} else if (value >= 100) {
 				value = value + 3;
 			}
-		}
+		}*/
 
 		int old = Bits.toInt16(of.getData(), ofs - 1);
 		old &= stat.getUnmask();

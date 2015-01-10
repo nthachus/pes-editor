@@ -102,9 +102,6 @@ public class TeamPanel extends JPanel
 			}
 		});
 
-		JLabel badgeLabel = new JLabel(Resources.getMessage("teamPane.badge"));
-		badgeLabel.setAlignmentX(CENTER_ALIGNMENT);
-
 		badgeButton = new JButton(new ImageIcon(Emblems.BLANK16));
 		badgeButton.setBackground(Colors.GRAY80);
 		badgeButton.setToolTipText(Resources.getMessage("teamPane.badgeTip"));
@@ -173,6 +170,9 @@ public class TeamPanel extends JPanel
 		JPanel backPanel = new JPanel(new BorderLayout());
 		backPanel.add(bgColorPan, BorderLayout.NORTH);
 		backPanel.add(backButton, BorderLayout.SOUTH);
+
+		JLabel badgeLabel = new JLabel(Resources.getMessage("teamPane.badge"));
+		badgeLabel.setAlignmentX(CENTER_ALIGNMENT);
 
 		JLabel flagLabel = new JLabel(Resources.getMessage("teamPane.flag"));
 		flagLabel.setAlignmentX(CENTER_ALIGNMENT);
@@ -465,7 +465,7 @@ public class TeamPanel extends JPanel
 	}
 
 	private void choiceTeamEmblem(int team) {
-		int flag = flagChooser.getEmblem(Resources.getMessage("teamPane.choiceFlag"), Emblems.TYPE_INHERIT);
+		int flag = flagChooser.getEmblem(Resources.getMessage("teamPane.choiceFlag"), Emblems.TYPE_BOTH);
 		if (flag < 0) return;
 
 		Image icon;

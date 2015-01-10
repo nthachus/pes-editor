@@ -31,7 +31,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 		JPanel chkPanel = new JPanel(new GridLayout(4, 4));
 		for (int i = 0; i < roleCheck.length; i++) {
 			roleCheck[i] = new JCheckBox(Stats.ROLES[i].getName());
-			roleCheck[i].setToolTipText(Resources.getMessage(roleCheck[i].getText()));
+			roleCheck[i].setToolTipText(Resources.getNullableMessage(roleCheck[i].getText()));
 			roleCheck[i].setActionCommand(Integer.toString(i));
 			roleCheck[i].addActionListener(this);
 

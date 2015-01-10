@@ -21,7 +21,7 @@ public class SpecialAbilityPanel extends JPanel {
 
 		for (int i = 0; i < abilityCheck.length; i++) {
 			abilityCheck[i] = new JCheckBox(Stats.ABILITY_SPECIAL[i].getName());
-			abilityCheck[i].setToolTipText(Resources.getMessage(abilityCheck[i].getText()));
+			abilityCheck[i].setToolTipText(Resources.getNullableMessage(abilityCheck[i].getText()));
 
 			add(abilityCheck[i]);
 		}

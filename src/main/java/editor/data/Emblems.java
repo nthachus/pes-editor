@@ -15,7 +15,7 @@ public final class Emblems {
 	private Emblems() {
 	}
 
-	public static final int TYPE_INHERIT = 0;
+	public static final int TYPE_BOTH = 0;
 	public static final int TYPE_16 = 1;
 	public static final int TYPE_128 = 2;
 
@@ -266,7 +266,7 @@ public final class Emblems {
 		setCount128(of, newCount);
 	}
 
-	public static void importData16(OptionFile ofDest, int slotDest, OptionFile ofSource, int slotSource) {
+	public static void importData16(OptionFile ofSource, int slotSource, OptionFile ofDest, int slotDest) {
 		if (null == ofSource) throw new NullPointerException("ofSource");
 		if (null == ofDest) throw new NullPointerException("ofDest");
 
