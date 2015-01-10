@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.Locale;
 
-public class HelpDialog extends JDialog {
+public class HelpDialog extends JDialog implements HyperlinkListener {
 	private static final Logger log = LoggerFactory.getLogger(HelpDialog.class);
 	private static final String INDEX_PAGE = "/META-INF/help/index%s.html";
 
@@ -25,7 +25,7 @@ public class HelpDialog extends JDialog {
 
 		editPanel = new JEditorPane();
 		editPanel.setEditable(false);
-		editPanel.addHyperlinkListener(new HelpLinkListener());
+		editPanel.addHyperlinkListener(this);
 
 		JScrollPane scroll = new JScrollPane(
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -70,19 +70,17 @@ public class HelpDialog extends JDialog {
 			try {
 				editPanel.setPage(url);
 			} catch (Exception e) {
-				log.error("Error while loading help page:", e);
+				log.error("Error while loading help page: " + url, e);
 			}
 		}
 	}
 
-	private class HelpLinkListener implements HyperlinkListener {
-		public void hyperlinkUpdate(HyperlinkEvent evt) {
-			if (null == evt) throw new NullPointerException("evt");
+	public void hyperlinkUpdate(HyperlinkEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
 
-			if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-				// Show the new page in the editor pane
-				showPage(evt.getURL());
-			}
+		if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+			// Show the new page in the editor pane
+			showPage(evt.getURL());
 		}
 	}
 

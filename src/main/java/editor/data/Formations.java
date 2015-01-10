@@ -311,26 +311,28 @@ public final class Formations {
 			return "GK";
 		} else if (pos < 4 || (pos > 5 && pos < 8)) {
 			return "CB";
-		} else if (pos == 4 || pos == 5) {
-			return "SW";
+		} else if (pos == 4) {
+			return "SW";//CWP
+		} else if (pos == 5) {
+			return "ASW";
 		} else if (pos == 8) {
 			return "LB";
 		} else if (pos == 9) {
 			return "RB";
 		} else if (pos < 15) {
-			return "DMF";
+			return "DM";
 		} else if (pos == 15) {
 			return "LWB";
 		} else if (pos == 16) {
 			return "RWB";
 		} else if (pos < 22) {
-			return "CMF";
+			return "CM";
 		} else if (pos == 22) {
 			return "LMF";
 		} else if (pos == 23) {
 			return "RMF";
 		} else if (pos < 29) {
-			return "AMF";
+			return "AM";
 		} else if (pos == 29) {
 			return "LWF";
 		} else if (pos == 30) {

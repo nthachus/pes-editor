@@ -165,58 +165,27 @@ public final class Squads {
 		System.arraycopy(tempNum, 0, of.getData(), firstNumAdr + Formations.PLAYER_COUNT, tempNum.length);
 	}
 
-	private static Map.Entry<Integer, Stat> getRolePos(int selPos) {
-		Stat stat = Stats.GK;
-		int pos = 0;
-
-		if ((selPos > 0 && selPos < 4) || (selPos > 5 && selPos < 8)) {
-			stat = Stats.CBT;
-			pos = 1;
-		} else if (selPos == 4 || selPos == 5) {
-			stat = Stats.CWP;
-			pos = 1;
-		} else if (selPos == 8) {
-			stat = Stats.SB;
-			pos = 2;
-		} else if (selPos == 9) {
-			stat = Stats.SB;
-			pos = 2;
-		} else if (selPos > 9 && selPos < 15) {
-			stat = Stats.DM;
-			pos = 3;
-		} else if (selPos == 15) {
-			stat = Stats.WB;
-			pos = 2;
-		} else if (selPos == 16) {
-			stat = Stats.WB;
-			pos = 2;
-		} else if (selPos > 16 && selPos < 22) {
-			stat = Stats.CM;
-			pos = 4;
-		} else if (selPos == 22) {
-			stat = Stats.SM;
-			pos = 5;
-		} else if (selPos == 23) {
-			stat = Stats.SM;
-			pos = 5;
-		} else if (selPos > 23 && selPos < 29) {
-			stat = Stats.AM;
-			pos = 6;
-		} else if (selPos > 35 && selPos < 41) {
-			stat = Stats.CF;
-			pos = 7;
-		} else if (selPos > 30 && selPos < 36) {
-			stat = Stats.SS;
-			pos = 6;
-		} else if (selPos == 29) {
-			stat = Stats.WG;
-			pos = 8;
-		} else if (selPos == 30) {
-			stat = Stats.WG;
-			pos = 8;
+	private static int getRolePos(Stat role) {
+		if (role == Stats.GK) {
+			return 0;
+		} else if (role == Stats.CBT || role == Stats.CWP) {
+			return 1;
+		} else if (role == Stats.SB || role == Stats.WB) {
+			return 2;
+		} else if (role == Stats.DM) {
+			return 3;
+		} else if (role == Stats.CM) {
+			return 4;
+		} else if (role == Stats.SM) {
+			return 5;
+		} else if (role == Stats.AM || role == Stats.SS) {
+			return 6;
+		} else if (role == Stats.WG) {
+			return 8;
+		} else if (role == Stats.CF) {
+			return 7;
 		}
-
-		return new AbstractMap.SimpleEntry<Integer, Stat>(pos, stat);
+		return 0;
 	}
 
 	private static List<Map.Entry<Integer, Integer>> getPlayerScores(OptionFile of, int size, int pos, int offset) {
@@ -228,7 +197,7 @@ public final class Squads {
 			int playerIdx = Bits.toInt16(of.getData(), adr);
 			if (playerIdx == 0) break;
 
-			int score = 0;
+			int score;
 			switch (pos) {
 				case 0:
 					score = Stats.getValue(of, playerIdx, Stats.DEFENCE)
@@ -303,6 +272,9 @@ public final class Squads {
 							+ Stats.getValue(of, playerIdx, Stats.TECH)
 							+ Stats.getValue(of, playerIdx, Stats.TEAM_WORK);
 					break;
+				default:
+					score = 0;
+					break;
 			}
 
 			list.add(new AbstractMap.SimpleEntry<Integer, Integer>(playerIdx, score));
@@ -318,13 +290,14 @@ public final class Squads {
 		if ((team >= FIRST_EDIT_NATION && team < FIRST_CLUB) || team >= FIRST_CLUB + Clubs.TOTAL)
 			return;
 
-		Map.Entry<Integer, Stat> rolePos = getRolePos(selPos);
+		Stat role = Formations.positionToStat(selPos);
+		int rolePos = getRolePos(role);
 
 		int size = getTeamSize(team);
 		int firstAdr = getOffset(team);
 		int firstNumAdr = getNumOffset(team);
 
-		List<Map.Entry<Integer, Integer>> playerScores = getPlayerScores(of, size, rolePos.getKey(), firstAdr);
+		List<Map.Entry<Integer, Integer>> playerScores = getPlayerScores(of, size, rolePos, firstAdr);
 
 		int bestPosPlayer = 0, bestPosScore = 0;
 		int bestPlayer = 0, bestScore = 0;
@@ -334,11 +307,11 @@ public final class Squads {
 			pIdxScore = playerScores.get(i);
 			if (pIdxScore.getKey() == 0) continue;
 
-			int isPos = Stats.getValue(of, pIdxScore.getKey(), rolePos.getValue());
-			if (isPos == 1 && pIdxScore.getValue() > bestPosScore) {
+			boolean isPos = Stats.getValue(of, pIdxScore.getKey(), role) != 0;
+			if (isPos && pIdxScore.getValue() > bestPosScore) {
 				bestPosScore = pIdxScore.getValue();
 				bestPosPlayer = i;
-			} else if (isPos == 0 && pIdxScore.getValue() > bestScore) {
+			} else if (!isPos && pIdxScore.getValue() > bestScore) {
 				bestScore = pIdxScore.getValue();
 				bestPlayer = i;
 			}

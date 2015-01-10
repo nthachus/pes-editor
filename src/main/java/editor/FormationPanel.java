@@ -18,6 +18,9 @@ import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FormationPanel extends JPanel
 		implements ListSelectionListener, DropTargetListener, DragSourceListener, DragGestureListener {
@@ -42,12 +45,6 @@ public class FormationPanel extends JPanel
 			24, 80, 24, 24, 22, 61, 22, 43, 43, 72, 43, 32, 43, 52, 0, 7, 3, 1, 16, 15,
 			21, 17, 30, 29, 38, 9, 72, 9, 52, 9, 32, 12, 87, 12, 17, 18, 61, 18, 43, 31,
 			80, 31, 24, 43, 52, 0, 7, 3, 1, 9, 8, 14, 10, 23, 22, 38
-	};
-
-	private static final String[] formName = {
-			"Formation", "4-4-2", "4-3-1-2", "4-4-1-1", "4-2-1-3",
-			"4-5-1", "4-1-2-3", "4-3-3", "4-3-2-1", "3-4-1-2", "3-3-2-2",
-			"3-4-3", "5-4-1"
 	};
 
 	private final OptionFile of;
@@ -625,85 +622,12 @@ public class FormationPanel extends JPanel
 		roleBox.setActionCommand("y");
 	}
 
-	private class Role {
-		String name;
-
-		int index;
-
-		public Role(int i) {
-			name = "---";
-			index = i;
-			if (index == 0) {
-				name = "GK";
-			}
-			if ((index > 0 && index < 4) || (index > 5 && index < 8)) {
-				name = "CBT";
-			}
-			if (index == 4) {
-				name = "CWP";
-			}
-			if (index == 5) {
-				name = "ASW";
-			}
-			if (index == 8) {
-				name = "LB";
-			}
-			if (index == 9) {
-				name = "RB";
-			}
-			if (index > 9 && index < 15) {
-				name = "DM";
-			}
-			if (index == 15) {
-				name = "LWB";
-			}
-			if (index == 16) {
-				name = "RWB";
-			}
-
-			if (index > 16 && index < 22) {
-				name = "CM";
-			}
-			if (index == 22) {
-				name = "LM";
-			}
-			if (index == 23) {
-				name = "RM";
-			}
-			if (index > 23 && index < 29) {
-				name = "AM";
-			}
-			if (index == 29) {
-				name = "LW";
-			}
-			if (index == 30) {
-				name = "RW";
-			}
-			if (index > 30 && index < 36) {
-				name = "SS";
-			}
-			if (index > 35 && index < 41) {
-				name = "CF";
-			}
-
-			if (index > 40) {
-				name = Integer.toString(index);
-			}
-		}
-
-		public String toString() {
-			return name;
-		}
-	}
-
 	private void countForm() {
-		def = 0;
-		mid = 0;
+		def = mid = att = 0;
 		int mid2 = 0;
-		att = 0;
-		int pos;
+
 		for (int i = 1; i < Formations.PLAYER_COUNT; i++) {
-			pos = Formations.getPosition(of, team, altBox.getSelectedIndex(), i);
+			int pos = Formations.getPosition(of, team, altBox.getSelectedIndex(), i);
 			if (isDef(pos)) {
 				def++;
 			} else if (isMid(pos)) {
@@ -715,22 +639,26 @@ public class FormationPanel extends JPanel
 				att++;
 			}
 		}
+
 		//System.out.println(def +" " +mid +" " +mid2 +" " +att);
 		formBox.setActionCommand("n");
+
+		String myForm;
 		if (mid2 > 0 && mid2 < 3) {
 			mid = mid - mid2;
 			if (mid == 0) {
-				formName[0] = Integer.toString(def) + "-" + Integer.toString(mid2) + "-"
-						+ Integer.toString(att);
+				myForm = def + "-" + mid2 + "-" + att;
 			} else {
-				formName[0] = Integer.toString(def) + "-" + Integer.toString(mid) + "-"
-						+ Integer.toString(mid2) + "-" + Integer.toString(att);
+				myForm = def + "-" + mid + "-" + mid2 + "-" + att;
 			}
 		} else {
-			formName[0] = Integer.toString(def) + "-" + Integer.toString(mid) + "-"
-					+ Integer.toString(att);
+			myForm = def + "-" + mid + "-" + att;
 		}
-		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>(formName);
+
+		ArrayList<String> formNames = new ArrayList<String>(Arrays.asList(Formations.FORM_NAMES));
+		formNames.add(0, myForm);
+		DefaultComboBoxModel<String> model
+				= new DefaultComboBoxModel<String>(formNames.toArray(new String[formNames.size()]));
 		formBox.setModel(model);
 		formBox.setActionCommand("y");
 		// System.out.println(def + "-" + mid + "-" + att);
@@ -905,5 +833,25 @@ public class FormationPanel extends JPanel
 
 	public void dropActionChanged(DragSourceDragEvent event) {
 	}
+
+	//region Nested Classes
+
+	private static class Role implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		private final int index;
+		private final String name;
+
+		public Role(int index) {
+			this.index = index;
+			name = Formations.positionToString(index);
+		}
+
+		public String toString() {
+			return name;
+		}
+	}
+
+	//endregion
 
 }

@@ -3,10 +3,12 @@ package editor;
 import editor.data.*;
 import editor.ui.*;
 import editor.util.Colors;
+import editor.util.Resources;
 import editor.util.Strings;
 import editor.util.Systems;
 import editor.util.swing.JComboBox;
 import editor.util.swing.JList;
+import editor.util.swing.JTextFieldLimit;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -17,7 +19,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class TeamPanel extends JPanel implements ActionListener, ListSelectionListener, MouseListener {
+public class TeamPanel extends JPanel
+		implements ActionListener, ListSelectionListener, MouseListener {
+
 	private final OptionFile of;
 	private final OptionFile of2;
 	private final TransferPanel transferPan;
@@ -28,7 +32,6 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 	private final KitImportDialog kitImportDia;
 
 	private volatile EmblemPanel emblemPan;
-	private final DefaultIcon defaultIcon;
 
 	private String[] team = new String[Clubs.TOTAL];
 	private volatile boolean isOk = false;
@@ -51,24 +54,25 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		globalPan = gp;
 
 		initComponents();
-
-		defaultIcon = new DefaultIcon();
 	}
 
 	//region Initialize the GUI components
 
-	private/* final*/ JList<String> list;
-	private/* final*/ JTextField editor;
+	private/* final*/ DefaultIcon defaultIcon;
+	private/* final*/ BackChooserDialog backChooser;
+
+	private/* final*/ JList<String> teamList;
+	private/* final*/ JTextField nameField;
 	private/* final*/ JTextField abvEditor;
 	private/* final*/ JButton badgeButton;
 	private/* final*/ JButton backButton;
 	private/* final*/ JComboBox<String> stadiumBox;
-	private/* final*/ JPanel panel3;
-	private/* final*/ BackChooserDialog backChooser;
+	private/* final*/ JPanel contentPane;
 	private/* final*/ JButton color1Btn;
 	private/* final*/ JButton color2Btn;
 
 	private void initComponents() {
+		defaultIcon = new DefaultIcon();
 		backChooser = new BackChooserDialog(null);
 
 		Systems.javaUI();// fix button background color
@@ -76,86 +80,51 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		backButton = new JButton(new ImageIcon(Emblems.BLANK16));
 		backButton.setBackground(Colors.GRAY80);
 		backButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int t = list.getSelectedIndex();
-				if (t != -1) {
-					int f = backChooser.getBack(getEmblemImage(),
-							Clubs.getRed(of, t), Clubs.getGreen(of, t), Clubs.getBlue(of, t));
-					if (f >= 0) {
-						Clubs.setBackFlag(of, t, f);
-						backButton.setIcon(backChooser.getFlagButton(f).getIcon());
-					}
-				}
+			public void actionPerformed(ActionEvent evt) {
+				onSelectBackFlag();
 			}
 		});
 
 		color1Btn = new JButton();
 		color1Btn.setPreferredSize(new Dimension(20, 20));
 		color1Btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int t = list.getSelectedIndex();
-				if (t != -1) {
-					Color newColor = JColorChooser.showDialog(null,
-							"BG Color 1", Clubs.getColor(of, t, false));
-					if (newColor != null) {
-						Clubs.setColor(of, t, false, newColor);
-						color1Btn.setBackground(newColor);
-						updateBackBut();
-					}
-				}
+			public void actionPerformed(ActionEvent evt) {
+				onSelectBgColor(1);
 			}
 		});
 
 		color2Btn = new JButton();
 		color2Btn.setPreferredSize(new Dimension(20, 20));
 		color2Btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int t = list.getSelectedIndex();
-				if (t != -1) {
-					Color newColor = JColorChooser.showDialog(null,
-							"BG Color 2", Clubs.getColor(of, t, true));
-					if (newColor != null) {
-						Clubs.setColor(of, t, true, newColor);
-						color2Btn.setBackground(newColor);
-						updateBackBut();
-					}
-				}
+			public void actionPerformed(ActionEvent evt) {
+				onSelectBgColor(2);
 			}
 		});
+
+		JLabel badgeLabel = new JLabel(Resources.getMessage("teamPane.badge"));
+		badgeLabel.setAlignmentX(CENTER_ALIGNMENT);
 
 		badgeButton = new JButton(new ImageIcon(Emblems.BLANK16));
 		badgeButton.setBackground(Colors.GRAY80);
-		badgeButton.addMouseListener(this);
-		badgeButton.setToolTipText("Left click to change, right click to default");
+		badgeButton.setToolTipText(Resources.getMessage("teamPane.badgeTip"));
 		badgeButton.setAlignmentX(CENTER_ALIGNMENT);
+		badgeButton.addMouseListener(this);
 
 		Systems.systemUI();
 
-		JButton copyBut = new JButton(new CopySwapIcon(false));
-		copyBut.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int t = list.getSelectedIndex();
-				if (t != -1) {
-					Clubs.setColor(of, t, true, Clubs.getColor(of, t, false));
-					color2Btn.setBackground(color1Btn.getBackground());
-					updateBackBut();
-				}
+		JButton copyBtn = new JButton(new CopySwapIcon(false));
+		copyBtn.setToolTipText(Resources.getMessage("teamPane.copyTip"));
+		copyBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				onCopyToBackColor2();
 			}
 		});
-		JButton swapBut = new JButton(new CopySwapIcon(true));
-		swapBut.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int t = list.getSelectedIndex();
-				if (t != -1) {
 
-					Color col = Clubs.getColor(of, t, false);
-					Clubs.setColor(of, t, false, Clubs.getColor(of, t, true));
-					Clubs.setColor(of, t, true, col);
-					color1Btn.setBackground(Clubs.getColor(of, t, false));
-					color2Btn.setBackground(Clubs.getColor(of, t, true));
-
-					updateBackBut();
-				}
+		JButton swapBtn = new JButton(new CopySwapIcon(true));
+		swapBtn.setToolTipText(Resources.getMessage("teamPane.swapTip"));
+		swapBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				onSwapBackColors();
 			}
 		});
 
@@ -163,90 +132,160 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		stadiumBox.setAlignmentX(CENTER_ALIGNMENT);
 		stadiumBox.setPreferredSize(new Dimension(375, 25));
 		stadiumBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int s = stadiumBox.getSelectedIndex();
-				int t = list.getSelectedIndex();
-				if ("y".equalsIgnoreCase(e.getActionCommand()) && s != -1 && t != -1) {
-					Clubs.setStadium(of, t, s);
-				}
+			public void actionPerformed(ActionEvent evt) {
+				onSelectStadium(evt);
 			}
 		});
 
-		list = new JList<String>();
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setLayoutOrientation(JList.VERTICAL);
-		list.setVisibleRowCount(Formations.PLAYER_COUNT);
-		list.addListSelectionListener(this);
-		list.addMouseListener(this);
-		editor = new JTextField(14);// TODO: maxlength
-		editor.setToolTipText("Enter new name and press return");
-		abvEditor = new JTextField(4);
-		abvEditor.setToolTipText("Enter new short name and press return");
-		editor.addActionListener(this);
-		abvEditor.addActionListener(this);
-		JPanel flagPanel = new JPanel();
-		JPanel stadiumPanel = new JPanel();
-		JPanel panel = new JPanel();
-		JPanel panel2 = new JPanel();
-		panel3 = new JPanel();
-		panel3.setLayout(new BoxLayout(panel3, BoxLayout.Y_AXIS));
-		stadiumPanel.add(stadiumBox);
-		panel.add(editor);
-		panel2.add(abvEditor);
-		panel3.add(panel);
-		panel3.add(panel2);
-		JLabel badgeLab = new JLabel("Emblem");
-		badgeLab.setAlignmentX(CENTER_ALIGNMENT);
-		panel3.add(badgeLab);
-		panel3.add(badgeButton);
-		JLabel flagLab = new JLabel("Flag");
-		flagLab.setAlignmentX(CENTER_ALIGNMENT);
+		teamList = new JList<String>();
+		teamList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		teamList.setLayoutOrientation(JList.VERTICAL);
+		teamList.setVisibleRowCount(Formations.PLAYER_COUNT);
+		teamList.addListSelectionListener(this);
+		teamList.addMouseListener(this);
 
-		JPanel bgColPan = new JPanel(new BorderLayout());
-		JPanel colPan = new JPanel(new GridLayout(0, 1));
-		colPan.add(color1Btn);
-		colPan.add(color2Btn);
-		bgColPan.add(copyBut, BorderLayout.WEST);
-		bgColPan.add(colPan, BorderLayout.CENTER);
-		bgColPan.add(swapBut, BorderLayout.EAST);
+		nameField = new JTextField(Clubs.NAME_LEN / 3);
+		nameField.setDocument(new JTextFieldLimit(Clubs.NAME_LEN));
+		nameField.setToolTipText(Resources.getMessage("teamPane.nameTip"));
+		nameField.addActionListener(this);
+
+		abvEditor = new JTextField(Math.round(1.5f * Clubs.ABBR_NAME_LEN));
+		abvEditor.setDocument(new JTextFieldLimit(Clubs.ABBR_NAME_LEN));
+		abvEditor.setToolTipText(Resources.getMessage("teamPane.abbrTip"));
+		abvEditor.addActionListener(this);
+
+		JPanel namePan = new JPanel();
+		namePan.add(nameField);
+
+		JPanel abbrNamePan = new JPanel();
+		abbrNamePan.add(abvEditor);
+
+		JPanel colorBtnPan = new JPanel(new GridLayout(0, 1));
+		colorBtnPan.add(color1Btn);
+		colorBtnPan.add(color2Btn);
+
+		JPanel bgColorPan = new JPanel(new BorderLayout());
+		bgColorPan.add(copyBtn, BorderLayout.WEST);
+		bgColorPan.add(colorBtnPan, BorderLayout.CENTER);
+		bgColorPan.add(swapBtn, BorderLayout.EAST);
 
 		JPanel backPanel = new JPanel(new BorderLayout());
-		backPanel.add(bgColPan, BorderLayout.NORTH);
+		backPanel.add(bgColorPan, BorderLayout.NORTH);
 		backPanel.add(backButton, BorderLayout.SOUTH);
+
+		JLabel flagLabel = new JLabel(Resources.getMessage("teamPane.flag"));
+		flagLabel.setAlignmentX(CENTER_ALIGNMENT);
+
+		JPanel flagPanel = new JPanel();
 		flagPanel.add(backPanel);
 
-		panel3.add(Box.createRigidArea(new Dimension(0, 10)));
+		JLabel stadiumLabel = new JLabel(Resources.getMessage("teamPane.stadium"));
+		stadiumLabel.setAlignmentX(CENTER_ALIGNMENT);
 
-		panel3.add(flagLab);
-		panel3.add(flagPanel);
-		panel3.add(Box.createRigidArea(new Dimension(0, 30)));
-		JLabel stadLab = new JLabel("Stadium");
-		stadLab.setAlignmentX(CENTER_ALIGNMENT);
-		panel3.add(stadLab);
-		panel3.add(stadiumPanel);
+		JPanel stadiumPan = new JPanel();
+		stadiumPan.add(stadiumBox);
 
-		JPanel bPanel = new JPanel();
-		panel3.add(bPanel);
+		contentPane = new JPanel();
+		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+		contentPane.add(namePan);
+		contentPane.add(abbrNamePan);
+		contentPane.add(badgeLabel);
+		contentPane.add(badgeButton);
+		contentPane.add(Box.createRigidArea(new Dimension(0, 10)));
+		contentPane.add(flagLabel);
+		contentPane.add(flagPanel);
+		contentPane.add(Box.createRigidArea(new Dimension(0, 30)));
+		contentPane.add(stadiumLabel);
+		contentPane.add(stadiumPan);
+		contentPane.add(new JPanel());
 
 		JScrollPane scroll = new JScrollPane(
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.setViewportView(list);
+		scroll.setViewportView(teamList);
+
 		add(scroll, BorderLayout.WEST);
-		add(panel3, BorderLayout.CENTER);
+		add(contentPane, BorderLayout.CENTER);
 	}
 
 	//endregion
 
 	public JList<String> getList() {
-		return list;
+		return teamList;
 	}
 
 	public void setEmblemPan(EmblemPanel emblemPan) {
 		this.emblemPan = emblemPan;
 	}
 
-	public void refresh() {
+	private void onSelectBackFlag() {
+		int team = teamList.getSelectedIndex();
+		if (team < 0) return;
+
+		int flagId = backChooser.getBack(getEmblemImage(team),
+				Clubs.getRed(of, team), Clubs.getGreen(of, team), Clubs.getBlue(of, team));
+		if (flagId >= 0) {
+			Clubs.setBackFlag(of, team, flagId);
+			backButton.setIcon(backChooser.getFlagButton(flagId).getIcon());
+		}
+	}
+
+	private void onSelectBgColor(int colorNo) {
+		int team = teamList.getSelectedIndex();
+		if (team < 0) return;
+
+		boolean isSecond = (colorNo == 2);
+		Color newColor = JColorChooser.showDialog(null,
+				Resources.getMessage("teamPane.choiceBg", colorNo), Clubs.getColor(of, team, isSecond));
+
+		if (newColor != null) {
+			Clubs.setColor(of, team, isSecond, newColor);
+			if (isSecond)
+				color2Btn.setBackground(newColor);
+			else
+				color1Btn.setBackground(newColor);
+
+			updateBackButton(team);
+		}
+	}
+
+	private void onCopyToBackColor2() {
+		int team = teamList.getSelectedIndex();
+		if (team < 0) return;
+
+		Clubs.setColor(of, team, true, Clubs.getColor(of, team, false));
+		color2Btn.setBackground(color1Btn.getBackground());
+
+		updateBackButton(team);
+	}
+
+	private void onSwapBackColors() {
+		int team = teamList.getSelectedIndex();
+		if (team < 0) return;
+
+		Color c = Clubs.getColor(of, team, false);
+		Clubs.setColor(of, team, false, Clubs.getColor(of, team, true));
+		Clubs.setColor(of, team, true, c);
+
+		color1Btn.setBackground(Clubs.getColor(of, team, false));
+		color2Btn.setBackground(Clubs.getColor(of, team, true));
+
+		updateBackButton(team);
+	}
+
+	private void onSelectStadium(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
+			return;
+
+		int stadiumId = stadiumBox.getSelectedIndex();
+		int team = teamList.getSelectedIndex();
+		if (stadiumId >= 0 && team >= 0) {
+			Clubs.setStadium(of, team, stadiumId);
+		}
+	}
+
+	public void refresh() {// TODO: !!!
 		String[] listText = new String[67 + Clubs.TOTAL];
 		stadiumBox.setActionCommand("n");
 		stadiumBox.removeAllItems();
@@ -268,25 +307,30 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			listText[n + Clubs.TOTAL + 60] = Squads.EXTRAS[n];
 		}
 		isOk = false;
-		list.setListData(listText);
-		panel3.setVisible(false);
+		teamList.setListData(listText);
+		contentPane.setVisible(false);
 		isOk = true;
-
 	}
 
+	/**
+	 * On club name / abbreviation name changed.
+	 */
 	public void actionPerformed(ActionEvent evt) {
-		if (evt.getSource() == editor) {
-			String text = editor.getText();
+		if (null == evt) throw new NullPointerException("evt");
+		if (!(evt.getSource() instanceof JTextField)) throw new IllegalArgumentException("evt");
+
+		if (evt.getSource() == nameField) {
+			String text = nameField.getText();
 			if (!Strings.isEmpty(text) && text.length() <= 48) {
-				int t = list.getSelectedIndex();
+				int t = teamList.getSelectedIndex();
 				Clubs.setName(of, t, text);
 				refresh();
 				transferPan.refresh();
-				if (t < list.getModel().getSize() - 1) {
-					list.setSelectedIndex(t + 1);
-					list.ensureIndexIsVisible(list.getSelectedIndex());
-					editor.requestFocusInWindow();
-					editor.selectAll();
+				if (t < teamList.getModel().getSize() - 1) {
+					teamList.setSelectedIndex(t + 1);
+					teamList.ensureIndexIsVisible(teamList.getSelectedIndex());
+					nameField.requestFocusInWindow();
+					nameField.selectAll();
 				}
 
 			}
@@ -294,13 +338,13 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			String text = abvEditor.getText();
 			if (text.length() == 3) {
 				text = text.toUpperCase();
-				int t = list.getSelectedIndex();
+				int t = teamList.getSelectedIndex();
 				Clubs.setAbbrName(of, t, text);
 				refresh();
 				transferPan.refresh();
-				if (t < list.getModel().getSize() - 1) {
-					list.setSelectedIndex(t + 1);
-					list.ensureIndexIsVisible(list.getSelectedIndex());
+				if (t < teamList.getModel().getSize() - 1) {
+					teamList.setSelectedIndex(t + 1);
+					teamList.ensureIndexIsVisible(teamList.getSelectedIndex());
 					abvEditor.requestFocusInWindow();
 					abvEditor.selectAll();
 				}
@@ -309,47 +353,50 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		}
 	}
 
+	/**
+	 * On team selected.
+	 */
 	public void valueChanged(ListSelectionEvent e) {
 		if (isOk && !e.getValueIsAdjusting()) {
-			int i = list.getSelectedIndex();
-			if (i >= 0 && i < Clubs.TOTAL) {
-				if (!panel3.isVisible()) {
-					panel3.setVisible(true);
+			int team = teamList.getSelectedIndex();
+			if (team >= 0 && team < Clubs.TOTAL) {
+				if (!contentPane.isVisible()) {
+					contentPane.setVisible(true);
 				}
 
-				int f = Clubs.getEmblem(of, i);
+				int f = Clubs.getEmblem(of, team);
 				if (f >= Clubs.FIRST_EMBLEM
 						&& f < Clubs.FIRST_EMBLEM + Emblems.TOTAL128 + Emblems.TOTAL16) {
 					f = f - Clubs.FIRST_EMBLEM;
 					badgeButton.setIcon(new ImageIcon(Emblems.getImage(of, f)));
 				} else {
-					if (f == i + Clubs.FIRST_DEF_EMBLEM) {
+					if (f == team + Clubs.FIRST_DEF_EMBLEM) {
 						badgeButton.setIcon(defaultIcon);
 					} else {
 						badgeButton.setIcon(new ImageIcon(Emblems.BLANK16));
 					}
 				}
 
-				color1Btn.setBackground(Clubs.getColor(of, i, false));
-				color2Btn.setBackground(Clubs.getColor(of, i, true));
+				color1Btn.setBackground(Clubs.getColor(of, team, false));
+				color2Btn.setBackground(Clubs.getColor(of, team, true));
 
-				updateBackBut();
+				updateBackButton(team);
 
 				stadiumBox.setActionCommand("n");
-				stadiumBox.setSelectedIndex(Clubs.getStadium(of, i));
+				stadiumBox.setSelectedIndex(Clubs.getStadium(of, team));
 				stadiumBox.setActionCommand("y");
-				editor.setText(team[i]);
+				nameField.setText(this.team[team]);
 
-				abvEditor.setText(Clubs.getAbbrName(of, i));
+				abvEditor.setText(Clubs.getAbbrName(of, team));
 
 			} else {
-				editor.setText("");
+				nameField.setText("");
 				abvEditor.setText("");
 				stadiumBox.setActionCommand("n");
 				stadiumBox.setSelectedIndex(-1);
 				stadiumBox.setActionCommand("y");
 				badgeButton.setIcon(new ImageIcon(Emblems.BLANK16));
-				panel3.setVisible(false);
+				contentPane.setVisible(false);
 			}
 		}
 	}
@@ -366,16 +413,19 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 	public void mouseExited(MouseEvent e) {
 	}
 
+	/**
+	 * On teams list / emblem button clicked.
+	 */
 	public void mouseClicked(MouseEvent e) {
 		int clicks = e.getClickCount();
-		int ti = list.getSelectedIndex();
-		if (e.getSource() == list && e.getButton() == MouseEvent.BUTTON1
+		int team = teamList.getSelectedIndex();
+		if (e.getSource() == teamList && e.getButton() == MouseEvent.BUTTON1
 				&& clicks == 2) {
 			if (of2.isLoaded()) {
-				if (ti != -1) {
-					int t2 = kitImportDia.show(ti);
+				if (team != -1) {
+					int t2 = kitImportDia.show(team);
 					if (t2 != -1) {
-						importKit(ti, t2);
+						importKit(team, t2);
 					}
 				}
 			}
@@ -384,15 +434,14 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		if (e.getSource() == badgeButton && clicks == 1) {
 			if ((e.getButton() == MouseEvent.BUTTON3 || (e.getButton() == MouseEvent.BUTTON1 && e.isControlDown()))) {
 
-				if (ti != -1 && ti < Clubs.TOTAL) {
-					Clubs.setEmblem(of, ti, -1);
+				if (team != -1 && team < Clubs.TOTAL) {
+					Clubs.setEmblem(of, team, -1);
 					badgeButton.setIcon(defaultIcon);
-					updateBackBut();
+					updateBackButton(team);
 				}
 
 			} else if (e.getButton() == MouseEvent.BUTTON1) {
-				int t = list.getSelectedIndex();
-				if (t != -1) {
+				if (team != -1) {
 					int f = flagChooser.getEmblem("Choose Emblem", Emblems.TYPE_INHERIT);
 					if (f != -1) {
 						if (f < Emblems.TOTAL128) {
@@ -400,30 +449,28 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 						} else {
 							badgeButton.setIcon(new ImageIcon(Emblems.get16(of, f - Emblems.TOTAL128, false, false)));
 						}
-						Clubs.setEmblem(of, t, Emblems.getIndex(of, f));
-						updateBackBut();
+						Clubs.setEmblem(of, team, Emblems.getIndex(of, f));
+						updateBackButton(team);
 					}
 				}
 			}
 		}
 	}
 
-	private void updateBackBut() {
-		int i = list.getSelectedIndex();
-		backButton.setIcon(backChooser.getFlagBackground(getEmblemImage(),
-				Clubs.getBackFlag(of, i), Clubs.getRed(of, i), Clubs.getGreen(of, i), Clubs.getBlue(of, i)));
+	private void updateBackButton(int team) {
+		int flag = Clubs.getBackFlag(of, team);
+		ImageIcon icon = backChooser.getFlagBackground(getEmblemImage(team), flag,
+				Clubs.getRed(of, team), Clubs.getGreen(of, team), Clubs.getBlue(of, team));
+		backButton.setIcon(icon);
 	}
 
-	private Image getEmblemImage() {
-		Image image = null;
-		int id = list.getSelectedIndex();
-		int f = Clubs.getEmblem(of, id);
-		if (f >= Clubs.FIRST_EMBLEM
-				&& f < Clubs.FIRST_EMBLEM + Emblems.TOTAL128 + Emblems.TOTAL16) {
+	private Image getEmblemImage(int team) {
+		int flag = Clubs.getEmblem(of, team);
+		if (flag >= Clubs.FIRST_EMBLEM && flag < Clubs.FIRST_EMBLEM + Emblems.TOTAL128 + Emblems.TOTAL16) {
 			ImageIcon icon = (ImageIcon) badgeButton.getIcon();
-			image = icon.getImage();
+			return icon.getImage();
 		}
-		return image;
+		return null;
 	}
 
 	private void importKit(int t1, int t2) {
@@ -539,7 +586,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			}
 		}
 
-		emblemPan.refresh();
+		if (null != emblemPan) emblemPan.refresh();
 		logoPan.refresh();
 		transferPan.refresh();
 		refresh();
