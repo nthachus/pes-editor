@@ -86,19 +86,19 @@ public class Player implements Serializable, Comparable<Player> {
 
 	private final OptionFile of;
 	private final int index;
-	private final int numberAdr;
+	private final int slotAdr;
 
 	private volatile String name = null;
 	private volatile String shirtName = null;
 
-	public Player(OptionFile of, int index, int squadNumAdr) {
+	public Player(OptionFile of, int index, int slotAdr) {
 		if (of == null) throw new NullPointerException();
 		if (index < 0 || (index >= TOTAL && index < FIRST_EDIT) || index >= END_EDIT)
 			throw new IndexOutOfBoundsException("index#" + index);
 
 		this.of = of;
 		this.index = index;// NOTE: index out of range: <ERROR>
-		numberAdr = squadNumAdr;
+		this.slotAdr = slotAdr;
 
 		if (index == 0)
 			name = Resources.getMessage("player.empty");
@@ -113,10 +113,10 @@ public class Player implements Serializable, Comparable<Player> {
 	}
 
 	/**
-	 * Squad number address.
+	 * Registered player slot address.
 	 */
-	public int getNumberAdr() {
-		return numberAdr;
+	public int getSlotAdr() {
+		return slotAdr;
 	}
 
 	@Override

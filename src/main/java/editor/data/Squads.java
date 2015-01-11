@@ -22,12 +22,15 @@ public final class Squads {
 	public static final int CLUB_ADR = NATION_ADR + FIRST_CLUB_SLOT * 2;
 	public static final int END_ADR = NATION_ADR + TOTAL_SLOTS * 2;
 
-	public static final int EDIT_TEAM_COUNT = (int) Math.ceil((double)
-			(Player.TOTAL_EDIT - Formations.CLUB_TEAM_SIZE) / Formations.NATION_TEAM_SIZE) + 1;
-	public static final int SHOP_TEAM_COUNT = (int) Math.ceil((double) Player.TOTAL_SHOP / Formations.CLUB_TEAM_SIZE);
+	public static final int EDIT_TEAM_COUNT
+			= (Player.TOTAL_EDIT - Formations.CLUB_TEAM_SIZE + Formations.NATION_TEAM_SIZE - 1)
+			/ Formations.NATION_TEAM_SIZE + 1;
+	public static final int SHOP_TEAM_COUNT
+			= (Player.TOTAL_SHOP + Formations.CLUB_TEAM_SIZE - 1) / Formations.CLUB_TEAM_SIZE;
 	public static final int EXTRA_COUNT = CLASSIC_COUNT + EDIT_TEAM_COUNT;
 
-	public static final int TOTAL = NATION_COUNT + EXTRA_COUNT + Clubs.TOTAL + 2 + SHOP_TEAM_COUNT;
+	public static final int LAST_CLUB = NATION_COUNT + EXTRA_COUNT + Clubs.TOTAL;
+	public static final int TOTAL = LAST_CLUB + 2 + SHOP_TEAM_COUNT;
 
 	public static final String[] EXTRAS = {
 			"Classic England",
