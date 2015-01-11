@@ -260,19 +260,11 @@ public class CsvMaker implements Serializable {
 		out.writeBytes(Integer.toString(playerNationalNo));
 	}
 
-	private static int getClassicNationId(String nation) {
-		for (int i = 0; i < Squads.CLASSIC_COUNT; i++) {
-			if (Squads.EXTRAS[i].substring(8).equalsIgnoreCase(nation))
-				return 60 + i;
-		}
-		return -1;
-	}
-
 	private static void writeClassicStatus(OptionFile of, DataOutput out, int player) throws IOException {
 		int playerClassicNo = 0;
 
 		String nat = Stats.getString(of, player, Stats.NATIONALITY);
-		int cNat = getClassicNationId(nat);
+		int cNat = Squads.getClassicNation(nat);
 		if (cNat > 0) {
 			for (int np = 0; np < Formations.NATION_TEAM_SIZE; np++) {
 

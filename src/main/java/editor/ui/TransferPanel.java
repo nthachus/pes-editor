@@ -1,9 +1,10 @@
-package editor;
+package editor.ui;
 
 import editor.data.*;
-import editor.ui.*;
 import editor.util.Bits;
 import editor.util.swing.JList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -18,6 +19,7 @@ import java.awt.event.MouseListener;
 
 public class TransferPanel extends JPanel
 		implements MouseListener, DropTargetListener, DragSourceListener, DragGestureListener {
+	private static final Logger log = LoggerFactory.getLogger(TransferPanel.class);
 
 	private final OptionFile of;
 	private final PlayerDialog playerDia;
@@ -758,34 +760,7 @@ public class TransferPanel extends JPanel
 			}
 
 			if (squadL < 67) {
-				int squadNat;
-				switch (squadL) {
-					case 60:
-						squadNat = 6;
-						break;
-					case 61:
-						squadNat = 8;
-						break;
-					case 62:
-						squadNat = 9;
-						break;
-					case 63:
-						squadNat = 13;
-						break;
-					case 64:
-						squadNat = 15;
-						break;
-					case 65:
-						squadNat = 44;
-						break;
-					case 66:
-						squadNat = 45;
-						break;
-					default:
-						squadNat = squadL;
-						break;
-				}
-
+				int squadNat = Squads.getNationForTeam(squadL);
 				int nat;
 				if (!fEmpty) {
 					nat = Stats.getValue(of, indexF, Stats.NATIONALITY);
@@ -802,34 +777,7 @@ public class TransferPanel extends JPanel
 			}
 
 			if (squadR < 67) {
-				int squadNat;
-				switch (squadR) {
-					case 60:
-						squadNat = 6;
-						break;
-					case 61:
-						squadNat = 8;
-						break;
-					case 62:
-						squadNat = 9;
-						break;
-					case 63:
-						squadNat = 13;
-						break;
-					case 64:
-						squadNat = 15;
-						break;
-					case 65:
-						squadNat = 44;
-						break;
-					case 66:
-						squadNat = 45;
-						break;
-					default:
-						squadNat = squadR;
-						break;
-				}
-
+				int squadNat = Squads.getNationForTeam(squadR);
 				int nat;
 				if (!fEmpty) {
 					nat = Stats.getValue(of, indexF, Stats.NATIONALITY);

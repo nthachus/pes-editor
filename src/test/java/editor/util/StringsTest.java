@@ -96,8 +96,8 @@ public final class StringsTest {
 		msg = Resources.getMessage(existsKey);
 		Assert.assertEquals(existsKey, msg);
 
-		String existsMsg = "Current:  -10 (5)";
-		msg = Resources.getMessage("wen.label", -10, 5);
+		String existsMsg = "Current:  -10";
+		msg = Resources.getMessage("wen.label", -10);
 		Assert.assertEquals(existsMsg, msg);
 	}
 

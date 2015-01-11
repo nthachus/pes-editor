@@ -1,6 +1,5 @@
 package editor.ui;
 
-import editor.FormationPanel;
 import editor.data.Formations;
 import editor.data.OptionFile;
 

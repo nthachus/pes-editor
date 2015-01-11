@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,6 +86,10 @@ public abstract class BaseTest {
 	protected static String randomString(int minLength, int maxLength) {
 		int l = rand.nextInt(maxLength + 1 - minLength) + minLength;
 		return randomString(l);
+	}
+
+	public static Color randomColor() {
+		return new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
 	}
 
 }

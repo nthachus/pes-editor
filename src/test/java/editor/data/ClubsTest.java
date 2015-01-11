@@ -22,6 +22,37 @@ public final class ClubsTest extends BaseTest {
 	}
 
 	@Test
+	public void testGetAndSetName() throws Exception {
+		OptionFile of = loadOriginalOF();
+		int cid = rand.nextInt(Clubs.TOTAL);
+
+		String name = Clubs.getName(of, cid);
+		Assert.assertThat(name, Matchers.not(Matchers.isEmptyOrNullString()));
+
+		String newName = name + "!";
+		Clubs.setName(of, cid, newName);
+		name = Clubs.getName(of, cid);
+		Assert.assertEquals(newName, name);
+		//
+		Clubs.setName(of, cid, null);
+		name = Clubs.getName(of, cid);
+		Assert.assertEquals("", name);
+
+		// abbreviation name
+		name = Clubs.getAbbrName(of, cid);
+		Assert.assertThat(name, Matchers.not(Matchers.isEmptyOrNullString()));
+
+		newName = name.substring(1) + "!";
+		Clubs.setAbbrName(of, cid, newName);
+		name = Clubs.getAbbrName(of, cid);
+		Assert.assertEquals(newName, name);
+		//
+		Clubs.setAbbrName(of, cid, "");
+		name = Clubs.getAbbrName(of, cid);
+		Assert.assertThat(name, Matchers.isEmptyOrNullString());
+	}
+
+	@Test
 	public void testGetEmblem() throws Exception {
 		OptionFile of = loadLatestOF();
 
@@ -58,6 +89,10 @@ public final class ClubsTest extends BaseTest {
 	}
 
 	@Test
+	public void testSetEmblem() throws Exception {
+	}
+
+	@Test
 	public void testGetBackFlag() throws Exception {
 		OptionFile of = loadLatestOF();
 
@@ -78,6 +113,37 @@ public final class ClubsTest extends BaseTest {
 		}
 	}
 
-	// TODO: Other test-cases! testGetBackFlag(), testSetBackFlag( +colors )
+	@Test
+	public void testSetBackFlag() throws Exception {
+		OptionFile of = loadLatestOF();
+		int cid = rand.nextInt(Clubs.TOTAL);
+
+		// update backFlag & colors
+		int oldBackFlag = Clubs.getBackFlag(of, cid);
+		Color oldC1 = Clubs.getColor(of, cid, false);
+		Color oldC2 = Clubs.getColor(of, cid, true);
+
+		int newBackFlag = (oldBackFlag > 0) ? oldBackFlag - 1 : oldBackFlag + 1;
+		Color newC1 = randomColor();
+		Color newC2 = randomColor();
+
+		Clubs.setBackFlag(of, cid, newBackFlag);
+		Clubs.setColor(of, cid, false, newC1);
+		Clubs.setColor(of, cid, true, newC2);
+
+		int backFlag = Clubs.getBackFlag(of, cid);
+		Color c1 = Clubs.getColor(of, cid, false);
+		Color c2 = Clubs.getColor(of, cid, true);
+
+		Assert.assertNotEquals(oldBackFlag, backFlag);
+		Assert.assertNotEquals(oldC1, c1);
+		Assert.assertNotEquals(oldC2, c2);
+
+		Assert.assertEquals(newBackFlag, backFlag);
+		Assert.assertEquals(newC1, c1);
+		Assert.assertEquals(newC2, c2);
+	}
+
+	// TODO: Other test-cases!
 
 }

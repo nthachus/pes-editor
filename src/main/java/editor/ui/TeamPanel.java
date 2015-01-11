@@ -1,6 +1,5 @@
 package editor.ui;
 
-import editor.TransferPanel;
 import editor.data.*;
 import editor.util.Colors;
 import editor.util.Resources;

@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -199,7 +200,7 @@ public final class Images {
 		return true;
 	}
 
-	public static boolean saveComponentAsImage(Component comp, File out) {
+	public static boolean saveComponentAsImage(Component comp, File out) throws IOException {
 		if (null == comp) throw new NullPointerException("comp");
 		if (null == out) throw new NullPointerException("out");
 		String format = Files.getExtension(out);
@@ -218,6 +219,8 @@ public final class Images {
 
 			return ImageIO.write(img, format.toLowerCase(), out);
 
+		} catch (IOException e) {
+			throw e;
 		} catch (Exception e) {
 			log.error("Failed to save Component " + comp + " as image: " + out, e);
 		} finally {

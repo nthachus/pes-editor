@@ -81,6 +81,27 @@ public final class Squads {
 		return CLUB_NUM_ADR + (team - FIRST_CLUB) * Formations.CLUB_TEAM_SIZE;
 	}
 
+	public static int getClassicNation(String nation) {
+		for (int i = 0; i < CLASSIC_COUNT; i++) {
+			if (EXTRAS[i].substring(8).equalsIgnoreCase(nation))
+				return NATION_COUNT + i;
+		}
+		return -1;
+	}
+
+	public static int getNationForTeam(int team) {
+		int idx = team - NATION_COUNT;
+		if (idx >= 0 && idx < CLASSIC_COUNT) {
+
+			String cCountry = EXTRAS[idx].substring(8);
+			for (int i = 0; i < NATION_COUNT; i++) {
+				if (cCountry.equalsIgnoreCase(Stats.NATION[i]))
+					return i;
+			}
+		}
+		return team;
+	}
+
 	public static void fixFormation(OptionFile of, int squad, boolean fixJobs) {
 		if (null == of) throw new NullPointerException("of");
 		if (squad < 0 || squad >= TOTAL) throw new IndexOutOfBoundsException("squad#" + squad);
