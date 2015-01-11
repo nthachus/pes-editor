@@ -1,6 +1,7 @@
 package editor.data;
 
 import editor.ui.PlayerTransferable;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,8 +26,41 @@ public final class PlayerTest extends BaseTest {
 	}
 
 	@Test
-	public void testDataFlavor() throws Exception {
+	public void testTransferable() throws Exception {
 		Assert.assertNotNull(PlayerTransferable.getDataFlavor());
+	}
+
+	@Test
+	public void testGetAndSetName() throws Exception {
+		OptionFile of = loadOriginalOF();
+
+		int pid = rand.nextInt(Player.TOTAL - 1) + 1;
+		Player p = new Player(of, pid);
+
+		String name = p.getName();
+		Assert.assertThat(name, Matchers.not(Matchers.isEmptyOrNullString()));
+
+		String shirtName = p.getShirtName();
+		Assert.assertThat(shirtName, Matchers.not(Matchers.isEmptyOrNullString()));
+
+		String newName = name.substring(1) + "!";
+		p.setName(newName);
+		name = p.getName();
+		Assert.assertEquals(newName, name);
+
+		String newShirt = shirtName.substring(1) + "!";
+		p.setShirtName(newShirt);
+		shirtName = p.getShirtName();
+		Assert.assertEquals(newShirt, shirtName);
+	}
+
+	@Test
+	public void testBuildShirtName() throws Exception {
+		String sn = Player.buildShirtName("abc");
+		Assert.assertEquals("A    B    C", sn);
+
+		sn = Player.buildShirtName("abcD");
+		Assert.assertEquals("A  B  C  D", sn);
 	}
 
 	// TODO: More tests here!

@@ -89,6 +89,14 @@ public final class Squads {
 		return -1;
 	}
 
+	public static int getClassicNation(int nation) {
+		if (nation < 0 || nation >= Stats.NATION.length)
+			throw new ArrayIndexOutOfBoundsException("nation#" + nation);
+
+		int cNat = getClassicNation(Stats.NATION[nation]);
+		return (cNat < 0) ? nation : cNat;
+	}
+
 	public static int getNationForTeam(int team) {
 		int idx = team - NATION_COUNT;
 		if (idx >= 0 && idx < CLASSIC_COUNT) {

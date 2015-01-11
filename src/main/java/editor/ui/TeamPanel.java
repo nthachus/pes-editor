@@ -464,7 +464,7 @@ public class TeamPanel extends JPanel
 	}
 
 	private void choiceTeamEmblem(int team) {
-		int flag = flagChooser.getEmblem(Resources.getMessage("teamPane.choiceFlag"), Emblems.TYPE_BOTH);
+		int flag = flagChooser.getEmblem(Resources.getMessage("teamPane.choiceFlag"), null);
 		if (flag < 0) return;
 
 		Image icon;
@@ -585,7 +585,7 @@ public class TeamPanel extends JPanel
 					Emblems.importData128(of2, locS, of, Emblems.count128(of));
 					embIndex = Emblems.getIndex(of, Emblems.count128(of) - 1);
 				} else {
-					int rep = flagChooser.getEmblem(Resources.getMessage("teamPane.replaceFlag"), Emblems.TYPE_128);
+					int rep = flagChooser.getEmblem(Resources.getMessage("teamPane.replaceFlag"), EmblemType.highRes);
 					if (rep >= 0) {
 						Emblems.importData128(of2, locS, of, rep);
 						embIndex = Emblems.getIndex(of, rep);
@@ -596,7 +596,7 @@ public class TeamPanel extends JPanel
 					Emblems.importData16(of2, locS - Emblems.TOTAL128, of, Emblems.count16(of));
 					embIndex = Emblems.getIndex(of, Emblems.count16(of) + Emblems.TOTAL128 - 1);
 				} else {
-					int rep = flagChooser.getEmblem(Resources.getMessage("teamPane.replaceFlag"), Emblems.TYPE_16);
+					int rep = flagChooser.getEmblem(Resources.getMessage("teamPane.replaceFlag"), EmblemType.lowRes);
 					if (rep >= 0) {
 						Emblems.importData16(of2, locS - Emblems.TOTAL128, of, rep - Emblems.TOTAL128);
 						embIndex = Emblems.getIndex(of, rep);

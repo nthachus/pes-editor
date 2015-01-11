@@ -2,7 +2,9 @@ package editor.ui;
 
 import editor.data.*;
 import editor.util.Bits;
+import editor.util.Resources;
 import editor.util.swing.JList;
+import editor.util.swing.JTextFieldLimit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,37 +60,38 @@ public class TransferPanel extends JPanel
 	private/* final*/ JCheckBox safeMode;
 
 	private void initComponents() {
-		autoRelease = new JCheckBox("Auto Release");
-		autoRelease.setToolTipText(
-				"When a player is transferred to a club squad he will be automatically released from his old squad");
+		autoRelease = new JCheckBox(Resources.getMessage("transfer.autoRelease"));
+		autoRelease.setToolTipText(Resources.getMessage("transfer.autoRelease.tip"));
 		autoRelease.setSelected(true);
 
-		autoGaps = new JCheckBox("Auto Sub");
-		autoGaps.setToolTipText(
-				"Gaps made in a team's first 11 will be automatically filled with the most appropriate sub");
-		autoGaps.setSelected(true);
+		autoGaps = new JCheckBox(Resources.getMessage("transfer.autoGaps"));
+		autoGaps.setToolTipText(Resources.getMessage("transfer.autoGaps.tip"));
+		autoGaps.setSelected(false);
 
-		safeMode = new JCheckBox("Safe Mode");
-		safeMode.setToolTipText("Only transfers that are possible in-game will be allowed");
+		safeMode = new JCheckBox(Resources.getMessage("transfer.safeMode"));
+		safeMode.setToolTipText(Resources.getMessage("transfer.safeMode.tip"));
 		safeMode.setSelected(true);
 
-		JButton compare = new JButton("Compare Stats");
-		compare.addActionListener(new ActionListener() {
+		JButton compareBtn = new JButton(Resources.getMessage("transfer.compare"));
+		compareBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				compareStats();
 			}
 		});
 
 		freeList = new SelectByNation(of);
+		freeList.getFreeList().setToolTipText(Resources.getMessage("transfer.freeList.tip"));
 		selectorL = new SelectByTeam(of, true);
-		nameEditor = new NameTextField();
-		numEditor = new NumTextField();
-		shirtEditor = new ShirtTextField();
-		JPanel editPanel = new JPanel(new GridLayout(0, 1));
-		JPanel optPanel = new JPanel(new GridLayout(0, 1));
-		JPanel lPanel = new JPanel(new BorderLayout());
-		JPanel rPanel = new JPanel(new BorderLayout());
+		selectorL.getSquadList().setToolTipText(Resources.getMessage("transfer.selectorL.tip"));
 		selectorR = new SelectByTeam(of, true);
+		selectorR.getSquadList().setToolTipText(Resources.getMessage("transfer.selectorR.tip"));
+
+		nameEditor = new NameTextField(this);
+		numEditor = new NumTextField(this);
+		shirtEditor = new ShirtTextField(this);
+
+		infoPanel = new InfoPanel(of, selectorL);
+
 		addListeners();
 		freeList.getFreeList().addMouseListener(this);
 		selectorL.getSquadList().addMouseListener(this);
@@ -98,68 +101,55 @@ public class TransferPanel extends JPanel
 		new DropTarget(selectorL.getSquadList(), this);
 		new DropTarget(selectorR.getSquadList(), this);
 		DragSource sourceF = new DragSource();
-		sourceF.createDefaultDragGestureRecognizer(freeList.getFreeList(),
-				DnDConstants.ACTION_MOVE, this);
+		sourceF.createDefaultDragGestureRecognizer(freeList.getFreeList(), DnDConstants.ACTION_MOVE, this);
 		DragSource sourceL = new DragSource();
-		sourceL.createDefaultDragGestureRecognizer(selectorL.getSquadList(),
-				DnDConstants.ACTION_MOVE, this);
+		sourceL.createDefaultDragGestureRecognizer(selectorL.getSquadList(), DnDConstants.ACTION_MOVE, this);
 		DragSource sourceR = new DragSource();
-		sourceR.createDefaultDragGestureRecognizer(selectorR.getSquadList(),
-				DnDConstants.ACTION_MOVE, this);
+		sourceR.createDefaultDragGestureRecognizer(selectorR.getSquadList(), DnDConstants.ACTION_MOVE, this);
 
-		infoPanel = new InfoPanel(of, selectorL);
-
-		selectorL.getSquadList().setToolTipText("Double click to edit player, right click to edit formation");
-		selectorR.getSquadList().setToolTipText("Double click to edit player, right click to edit formation");
-		freeList.getFreeList().setToolTipText("Double click to edit player");
-
+		JPanel editPanel = new JPanel(new GridLayout(0, 1));
 		editPanel.add(nameEditor);
 		editPanel.add(shirtEditor);
+
+		JPanel optPanel = new JPanel(new GridLayout(0, 1));
 		optPanel.add(autoRelease);
 		optPanel.add(autoGaps);
 		optPanel.add(safeMode);
 
 		JPanel editOptPan = new JPanel();
-		JPanel editOptInfoPan = new JPanel(new BorderLayout());
 		editOptPan.add(numEditor);
 		editOptPan.add(editPanel);
 		editOptPan.add(optPanel);
+
+		JPanel editOptInfoPan = new JPanel(new BorderLayout());
 		editOptInfoPan.add(editOptPan, BorderLayout.NORTH);
 		editOptInfoPan.add(infoPanel, BorderLayout.CENTER);
-		editOptInfoPan.add(compare, BorderLayout.SOUTH);
+		editOptInfoPan.add(compareBtn, BorderLayout.SOUTH);
 
+		JPanel lPanel = new JPanel(new BorderLayout());
 		lPanel.add(selectorL, BorderLayout.CENTER);
-		rPanel.add(selectorR, BorderLayout.CENTER);
-		JPanel listPan = new JPanel(new GridLayout(0, 3));
-		listPan.add(freeList);
-		listPan.add(lPanel);
-		listPan.add(rPanel);
 
-		add(listPan);
+		JPanel rPanel = new JPanel(new BorderLayout());
+		rPanel.add(selectorR, BorderLayout.CENTER);
+
+		JPanel listPane = new JPanel(new GridLayout(0, 3));
+		listPane.add(freeList);
+		listPane.add(lPanel);
+		listPane.add(rPanel);
+
+		add(listPane);
 		add(editOptInfoPan);
 	}
 
 	//endregion
 
-	private int getNumAdr(int adr) {
-		return Squads.NATION_NUM_ADR + (adr - Squads.NATION_ADR) / 2;
-	}
-
 	private void compareStats() {
 		if (compIndex == 0) {
 			compIndex = lastIndex;
-			if (nameEditor.source == 2) {
-				int squadS = selectorL.getTeamBox().getSelectedIndex();
-				if (squadS < 67 || (squadS > 74 && squadS < 212)) {
-					selectorL.getPosList().selectPos(selectorL.getSquadList(),
-							selectorL.getSquadList().getSelectedIndex());
-				}
-			} else if (nameEditor.source == 3) {
-				int squadS = selectorR.getTeamBox().getSelectedIndex();
-				if (squadS < 67 || (squadS > 74 && squadS < 212)) {
-					selectorR.getPosList().selectPos(selectorR.getSquadList(),
-							selectorR.getSquadList().getSelectedIndex());
-				}
+			if (nameEditor.source == EventSource.squadLeft) {
+				selectTeamPos(selectorL);
+			} else if (nameEditor.source == EventSource.squadRight) {
+				selectTeamPos(selectorR);
 			}
 		} else {
 			compIndex = 0;
@@ -169,13 +159,28 @@ public class TransferPanel extends JPanel
 		infoPanel.refresh(lastIndex, compIndex);
 	}
 
+	private static boolean isValidSquad(int squadS) {
+		return (squadS < Squads.FIRST_EDIT_NATION || (squadS >= Squads.FIRST_CLUB && squadS < Squads.TOTAL));
+	}
+
+	private static void selectTeamPos(SelectByTeam selector) {
+		int squadS = selector.getTeamBox().getSelectedIndex();
+		if (isValidSquad(squadS)) {
+			SquadList squadList = selector.getSquadList();
+			int squadIndex = squadList.getSelectedIndex();
+			selector.getPosList().selectPos(squadList, squadIndex);
+		}
+	}
+
 	public void refresh() {
 		freeList.refresh();
 		selectorL.refresh();
 		selectorR.refresh();
+
 		nameEditor.setText("");
 		numEditor.setText("");
 		shirtEditor.setText("");
+
 		compIndex = 0;
 		lastIndex = 0;
 		infoPanel.refresh(lastIndex, compIndex);
@@ -183,48 +188,53 @@ public class TransferPanel extends JPanel
 
 	public void refreshLists() {
 		freeList.getFreeList().refresh(freeList.getNationBox().getSelectedIndex(), freeList.isAlphaOrder());
+
 		selectorL.getSquadList().refresh(selectorL.getTeamBox().getSelectedIndex(), true);
 		selectorR.getSquadList().refresh(selectorR.getTeamBox().getSelectedIndex(), true);
+
 		selectorL.getNumList().refresh(selectorL.getTeamBox().getSelectedIndex());
 		selectorR.getNumList().refresh(selectorR.getTeamBox().getSelectedIndex());
+
 		selectorL.getPosList().refresh(selectorL.getTeamBox().getSelectedIndex());
 		selectorR.getPosList().refresh(selectorR.getTeamBox().getSelectedIndex());
+
 		nameEditor.setText("");
 		numEditor.setText("");
 		shirtEditor.setText("");
+
 		compIndex = 0;
 		lastIndex = 0;
 		infoPanel.refresh(lastIndex, compIndex);
 	}
 
-	public int getShirt(int s, int i) {
-		int a;
-		if (s == 2) {
-			a = selectorL.getSquadList().getModel().getElementAt(i).getNumberAdr();
-		} else {
-			a = selectorR.getSquadList().getModel().getElementAt(i).getNumberAdr();
-		}
-		a = getNumAdr(a);
-		int shirt = Bits.toInt(of.getData()[a]) + 1;
-		if (shirt == 256) {
-			shirt = 0;
-		}
+	private static int getNumAdr(int adr) {
+		return Squads.NATION_NUM_ADR + (adr - Squads.NATION_ADR) / 2;
+	}
+
+	private int getTeamNumAdr(EventSource source, int index) {
+		SelectByTeam selector = (source == EventSource.squadLeft) ? selectorL : selectorR;
+		int adr = selector.getSquadList().getModel().getElementAt(index).getNumberAdr();
+		return getNumAdr(adr);
+	}
+
+	private int getShirtNumber(EventSource source, int index) {
+		int adr = getTeamNumAdr(source, index);
+
+		int shirt = Bits.toInt(of.getData()[adr]) + 1;
+		if (shirt > 0xFF) shirt = 0;
 		return shirt;
 	}
 
-	public void setShirt(int s, int i, int newShirt) {
-		int a;
-		if (s == 2) {
-			a = selectorL.getSquadList().getModel().getElementAt(i).getNumberAdr();
-		} else {
-			a = selectorR.getSquadList().getModel().getElementAt(i).getNumberAdr();
-		}
-		a = getNumAdr(a);
-		int shirt = Bits.toInt(of.getData()[a]) + 1;
-		if (shirt != 256) {
-			of.getData()[a] = Bits.toByte(newShirt - 1);
+	private void setShirtNumber(EventSource source, int index, int newShirt) {
+		int adr = getTeamNumAdr(source, index);
+
+		int shirt = Bits.toInt(of.getData()[adr]) + 1;
+		if (shirt <= 0xFF) {
+			of.getData()[adr] = Bits.toByte(newShirt - 1);
 		}
 	}
+
+	//region Mouse Events
 
 	public void mousePressed(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON1 && e.isControlDown()) {
@@ -291,6 +301,8 @@ public class TransferPanel extends JPanel
 			}
 		}
 	}
+
+	//endregion
 
 	private int clubRelease(int p, boolean rel) {
 		int a = Squads.CLUB_ADR - 2;
@@ -472,7 +484,7 @@ public class TransferPanel extends JPanel
 				int squadT = ((SelectByTeam) (targetList.getParent())).getTeamBox()
 						.getSelectedIndex();
 				if (sourceList == targetList) {
-					if (squadS < 67 || (squadS > 74 && squadS < 213)) {
+					if (isValidSquad(squadS) || squadS == Squads.TOTAL) {
 						if (indexS != indexT) {
 							event.acceptDrop(DnDConstants.ACTION_MOVE);
 							transferS(sourcePlayer, targetPlayer, squadS, squadT, sourceList, targetList);
@@ -529,12 +541,12 @@ public class TransferPanel extends JPanel
 				infoPanel.refresh(lastIndex, compIndex);
 				nameEditor.setText("");
 				shirtEditor.setText("");
-				nameEditor.source = 0;
-				shirtEditor.source = 0;
+				nameEditor.source = null;
+				shirtEditor.source = null;
 				PlayerTransferable playerTran = new PlayerTransferable(p);
 				if (list != freeList.getFreeList()) {
 					int squadS = ((SelectByTeam) (list.getParent())).getTeamBox().getSelectedIndex();
-					if (squadS < 67 || (squadS > 74 && squadS < 213)) {
+					if (isValidSquad(squadS) || squadS == Squads.TOTAL) {
 						if (list == selectorL.getSquadList()) {
 							selectorL.getPosList().selectPos(selectorL.getSquadList(),
 									selectorL.getSquadList().getSelectedIndex());
@@ -798,7 +810,7 @@ public class TransferPanel extends JPanel
 
 		if (sourceList != freeList.getFreeList() && targetList != freeList.getFreeList()) {
 			if (sourceList == targetList) {
-				if (squadS < 67 || (squadS > 74 && squadS < 213)) {
+				if (isValidSquad(squadS) || squadS == Squads.TOTAL) {
 					if (indexS != indexT) {
 						result = true;
 					}
@@ -1034,166 +1046,185 @@ public class TransferPanel extends JPanel
 
 	//region Nested Classes
 
-	private class NameTextField extends JTextField implements ListSelectionListener, ActionListener {
-		private volatile int source = 0;
+	private static enum EventSource {
+		freeList,
+		squadLeft,
+		squadRight
+	}
 
-		public NameTextField() {
-			super(13);
+	/**
+	 * Player name TextBox.
+	 */
+	private static class NameTextField extends JTextField implements ListSelectionListener, ActionListener {
+		private final TransferPanel owner;
+		private volatile EventSource source = null;
+
+		public NameTextField(TransferPanel owner) {
+			super(Math.round(0.4f * Player.NAME_LEN));
+			this.owner = owner;
+
+			setDocument(new JTextFieldLimit(Player.NAME_LEN));
+			setToolTipText(Resources.getMessage("transfer.nameField.tip"));
 			addActionListener(this);
-			setToolTipText("Enter new name and press return");// TODO: maxlength
 		}
 
 		public void valueChanged(ListSelectionEvent e) {
 			if (!e.getValueIsAdjusting()) {
-				if (e.getSource() == freeList.getFreeList()) {
-					if (freeList.getFreeList().isSelectionEmpty()) {
+				if (e.getSource() == owner.freeList.getFreeList()) {
+					if (owner.freeList.getFreeList().isSelectionEmpty()) {
 						setText("");
-						lastIndex = 0;
+						owner.lastIndex = 0;
 					} else {
-						setText(freeList.getFreeList().getSelectedValue().getName());
-						source = 1;
+						setText(owner.freeList.getFreeList().getSelectedValue().getName());
+						source = EventSource.freeList;
 						selectAll();
-						lastIndex = freeList.getFreeList().getSelectedValue().getIndex();
+						owner.lastIndex = owner.freeList.getFreeList().getSelectedValue().getIndex();
 					}
 				}
-				if (e.getSource() == selectorL.getSquadList()) {
-					if (selectorL.getSquadList().isSelectionEmpty()) {
+				if (e.getSource() == owner.selectorL.getSquadList()) {
+					if (owner.selectorL.getSquadList().isSelectionEmpty()) {
 						setText("");
-						lastIndex = 0;
+						owner.lastIndex = 0;
 					} else {
-						if (selectorL.getSquadList().getSelectedValue().getIndex() != 0) {
-							setText(selectorL.getSquadList().getSelectedValue().getName());
+						if (owner.selectorL.getSquadList().getSelectedValue().getIndex() != 0) {
+							setText(owner.selectorL.getSquadList().getSelectedValue().getName());
 						} else {
 							setText("");
 						}
-						source = 2;
+						source = EventSource.squadLeft;
 						selectAll();
-						lastIndex = selectorL.getSquadList().getSelectedValue().getIndex();
+						owner.lastIndex = owner.selectorL.getSquadList().getSelectedValue().getIndex();
 					}
 				}
-				if (e.getSource() == selectorR.getSquadList()) {
-					if (selectorR.getSquadList().isSelectionEmpty()) {
+				if (e.getSource() == owner.selectorR.getSquadList()) {
+					if (owner.selectorR.getSquadList().isSelectionEmpty()) {
 						setText("");
-						lastIndex = 0;
+						owner.lastIndex = 0;
 					} else {
-						if (selectorR.getSquadList().getSelectedValue().getIndex() != 0) {
-							setText(selectorR.getSquadList().getSelectedValue().getName());
+						if (owner.selectorR.getSquadList().getSelectedValue().getIndex() != 0) {
+							setText(owner.selectorR.getSquadList().getSelectedValue().getName());
 						} else {
 							setText("");
 						}
-						source = 3;
+						source = EventSource.squadRight;
 						selectAll();
-						lastIndex = selectorR.getSquadList().getSelectedValue().getIndex();
+						owner.lastIndex = owner.selectorR.getSquadList().getSelectedValue().getIndex();
 					}
 				}
-				infoPanel.refresh(lastIndex, compIndex);
+				owner.infoPanel.refresh(owner.lastIndex, owner.compIndex);
 			}
 		}
 
 		public void actionPerformed(ActionEvent evt) {
-			if (source == 1 && !freeList.getFreeList().isSelectionEmpty()
+			if (source == EventSource.freeList && !owner.freeList.getFreeList().isSelectionEmpty()
 					&& getText().length() < 16 && getText().length() != 0) {
-				int i = freeList.getFreeList().getSelectedIndex();
-				if (!freeList.getFreeList().getSelectedValue().getName().equals(getText())) {
-					freeList.getFreeList().getSelectedValue().setName(getText());
-					freeList.getFreeList().getSelectedValue().setShirtName(Player.buildShirtName(getText()));
-					refreshLists();
+				int i = owner.freeList.getFreeList().getSelectedIndex();
+				if (!owner.freeList.getFreeList().getSelectedValue().getName().equals(getText())) {
+					owner.freeList.getFreeList().getSelectedValue().setName(getText());
+					owner.freeList.getFreeList().getSelectedValue().setShirtName(Player.buildShirtName(getText()));
+					owner.refreshLists();
 				}
-				if (!freeList.isAlphaOrder() && i < freeList.getFreeList().getModel().getSize() - 1) {
-					freeList.getFreeList().setSelectedIndex(i + 1);
-					freeList.getFreeList().ensureIndexIsVisible(i + 1);
+				if (!owner.freeList.isAlphaOrder() && i < owner.freeList.getFreeList().getModel().getSize() - 1) {
+					owner.freeList.getFreeList().setSelectedIndex(i + 1);
+					owner.freeList.getFreeList().ensureIndexIsVisible(i + 1);
 				}
 			}
-			if (source == 2 && !selectorL.getSquadList().isSelectionEmpty()
+			if (source == EventSource.squadLeft && !owner.selectorL.getSquadList().isSelectionEmpty()
 					&& getText().length() < 16 && getText().length() != 0) {
-				int i = selectorL.getSquadList().getSelectedIndex();
-				if (!selectorL.getSquadList().getSelectedValue().getName().equals(getText())) {
-					selectorL.getSquadList().getSelectedValue().setName(getText());
-					selectorL.getSquadList().getSelectedValue().setShirtName(Player.buildShirtName(getText()));
-					refreshLists();
+				int i = owner.selectorL.getSquadList().getSelectedIndex();
+				if (!owner.selectorL.getSquadList().getSelectedValue().getName().equals(getText())) {
+					owner.selectorL.getSquadList().getSelectedValue().setName(getText());
+					owner.selectorL.getSquadList().getSelectedValue().setShirtName(Player.buildShirtName(getText()));
+					owner.refreshLists();
 				}
-				if (i < selectorL.getSquadList().getModel().getSize() - 1) {
-					selectorL.getSquadList().setSelectedIndex(i + 1);
+				if (i < owner.selectorL.getSquadList().getModel().getSize() - 1) {
+					owner.selectorL.getSquadList().setSelectedIndex(i + 1);
 				}
 			}
-			if (source == 3 && !selectorR.getSquadList().isSelectionEmpty()
+			if (source == EventSource.squadRight && !owner.selectorR.getSquadList().isSelectionEmpty()
 					&& getText().length() < 16 && getText().length() != 0) {
-				int i = selectorR.getSquadList().getSelectedIndex();
-				if (!selectorR.getSquadList().getSelectedValue().getName().equals(getText())) {
-					selectorR.getSquadList().getSelectedValue().setName(getText());
-					selectorR.getSquadList().getSelectedValue().setShirtName(Player.buildShirtName(getText()));
-					refreshLists();
+				int i = owner.selectorR.getSquadList().getSelectedIndex();
+				if (!owner.selectorR.getSquadList().getSelectedValue().getName().equals(getText())) {
+					owner.selectorR.getSquadList().getSelectedValue().setName(getText());
+					owner.selectorR.getSquadList().getSelectedValue().setShirtName(Player.buildShirtName(getText()));
+					owner.refreshLists();
 				}
-				if (i < selectorR.getSquadList().getModel().getSize() - 1) {
-					selectorR.getSquadList().setSelectedIndex(i + 1);
+				if (i < owner.selectorR.getSquadList().getModel().getSize() - 1) {
+					owner.selectorR.getSquadList().setSelectedIndex(i + 1);
 				}
 			}
 		}
 	}
 
-	private class NumTextField extends JTextField implements ListSelectionListener, ActionListener {
-		private volatile int source = 0;
+	private static class NumTextField extends JTextField implements ListSelectionListener, ActionListener {
+		private final TransferPanel owner;
+		private volatile EventSource source = null;
 
-		public NumTextField() {
+		public NumTextField(TransferPanel owner) {
 			super(2);
+			this.owner = owner;
+
+			setDocument(new JTextFieldLimit(3));
+			setToolTipText(Resources.getMessage("transfer.numField.tip"));
 			addActionListener(this);
-			setToolTipText("Enter new squad number and press return");// TODO: maxlength
 		}
 
 		public void valueChanged(ListSelectionEvent e) {
-			if (e.getSource() == selectorL.getNumList()) {
-				if (selectorL.getNumList().isSelectionEmpty()) {
+			if (e.getSource() == owner.selectorL.getNumList()) {
+				if (owner.selectorL.getNumList().isSelectionEmpty()) {
 					setText("");
 				} else {
-					source = 2;
-					setText(Integer.toString(getShirt(source, selectorL.getNumList().getSelectedIndex())));
-					selectorR.getNumList().clearSelection();
+					source = EventSource.squadLeft;
+					setText(Integer.toString(owner.getShirtNumber(source,
+							owner.selectorL.getNumList().getSelectedIndex())));
+					owner.selectorR.getNumList().clearSelection();
 					selectAll();
 				}
 			}
-			if (e.getSource() == selectorR.getNumList()) {
-				if (selectorR.getNumList().isSelectionEmpty()) {
+			if (e.getSource() == owner.selectorR.getNumList()) {
+				if (owner.selectorR.getNumList().isSelectionEmpty()) {
 					setText("");
 				} else {
-					source = 3;
-					setText(Integer.toString(getShirt(source, selectorR.getNumList().getSelectedIndex())));
-					selectorL.getNumList().clearSelection();
+					source = EventSource.squadRight;
+					setText(Integer.toString(owner.getShirtNumber(source,
+							owner.selectorR.getNumList().getSelectedIndex())));
+					owner.selectorL.getNumList().clearSelection();
 					selectAll();
 				}
 			}
 		}
 
 		public void actionPerformed(ActionEvent evt) {
-			if (source == 2 && !selectorL.getNumList().isSelectionEmpty()) {
-				int i = selectorL.getNumList().getSelectedIndex();
+			if (source == EventSource.squadLeft && !owner.selectorL.getNumList().isSelectionEmpty()) {
+				int i = owner.selectorL.getNumList().getSelectedIndex();
 				try {
 					int v = Integer.parseInt(getText());
 					if (v != 0 && v <= Stats.MAX_STAT99) {
-						setShirt(source, i, v);
+						owner.setShirtNumber(source, i, v);
 					}
-					selectorR.getNumList().refresh(selectorR.getTeamBox()
+					owner.selectorR.getNumList().refresh(owner.selectorR.getTeamBox()
 							.getSelectedIndex());
-					selectorL.getNumList().refresh(selectorL.getTeamBox()
+					owner.selectorL.getNumList().refresh(owner.selectorL.getTeamBox()
 							.getSelectedIndex());
-					if (i < selectorL.getSquadList().getModel().getSize() - 1) {
-						selectorL.getNumList().setSelectedIndex(i + 1);
+					if (i < owner.selectorL.getSquadList().getModel().getSize() - 1) {
+						owner.selectorL.getNumList().setSelectedIndex(i + 1);
 					}
 				} catch (NumberFormatException nfe) {
 				}
 			}
-			if (source == 3 && !selectorR.getNumList().isSelectionEmpty()) {
-				int i = selectorR.getNumList().getSelectedIndex();
+			if (source == EventSource.squadRight && !owner.selectorR.getNumList().isSelectionEmpty()) {
+				int i = owner.selectorR.getNumList().getSelectedIndex();
 				try {
 					int v = Integer.parseInt(getText());
 					if (v != 0 && v <= Stats.MAX_STAT99) {
-						setShirt(source, i, v);
+						owner.setShirtNumber(source, i, v);
 					}
-					selectorR.getNumList().refresh(selectorR.getTeamBox()
+					owner.selectorR.getNumList().refresh(owner.selectorR.getTeamBox()
 							.getSelectedIndex());
-					selectorL.getNumList().refresh(selectorL.getTeamBox()
+					owner.selectorL.getNumList().refresh(owner.selectorL.getTeamBox()
 							.getSelectedIndex());
-					if (i < selectorR.getSquadList().getModel().getSize() - 1) {
-						selectorR.getNumList().setSelectedIndex(i + 1);
+					if (i < owner.selectorR.getSquadList().getModel().getSize() - 1) {
+						owner.selectorR.getNumList().setSelectedIndex(i + 1);
 					}
 				} catch (NumberFormatException nfe) {
 				}
@@ -1201,41 +1232,45 @@ public class TransferPanel extends JPanel
 		}
 	}
 
-	private class ShirtTextField extends JTextField implements ListSelectionListener, ActionListener {
-		private volatile int source = 0;
+	private static class ShirtTextField extends JTextField implements ListSelectionListener, ActionListener {
+		private final TransferPanel owner;
+		private volatile EventSource source = null;
 
-		public ShirtTextField() {
-			super(13);
+		public ShirtTextField(TransferPanel owner) {
+			super(Math.round(0.8f * Player.SHIRT_NAME_LEN));
+			this.owner = owner;
+
+			setDocument(new JTextFieldLimit(Player.SHIRT_NAME_LEN));
+			setToolTipText(Resources.getMessage("transfer.shirtName.tip"));
 			addActionListener(this);
-			setToolTipText("Enter new shirt name and press return");// TODO: maxlength
 		}
 
 		public void valueChanged(ListSelectionEvent e) {
 			if (!e.getValueIsAdjusting()) {
-				if (e.getSource() == freeList.getFreeList()) {
-					if (freeList.getFreeList().isSelectionEmpty()) {
+				if (e.getSource() == owner.freeList.getFreeList()) {
+					if (owner.freeList.getFreeList().isSelectionEmpty()) {
 						setText("");
 					} else {
-						setText(freeList.getFreeList().getSelectedValue().getShirtName());
-						source = 1;
+						setText(owner.freeList.getFreeList().getSelectedValue().getShirtName());
+						source = EventSource.freeList;
 						selectAll();
 					}
 				}
-				if (e.getSource() == selectorL.getSquadList()) {
-					if (selectorL.getSquadList().isSelectionEmpty()) {
+				if (e.getSource() == owner.selectorL.getSquadList()) {
+					if (owner.selectorL.getSquadList().isSelectionEmpty()) {
 						setText("");
 					} else {
-						setText(selectorL.getSquadList().getSelectedValue().getShirtName());
-						source = 2;
+						setText(owner.selectorL.getSquadList().getSelectedValue().getShirtName());
+						source = EventSource.squadLeft;
 						selectAll();
 					}
 				}
-				if (e.getSource() == selectorR.getSquadList()) {
-					if (selectorR.getSquadList().isSelectionEmpty()) {
+				if (e.getSource() == owner.selectorR.getSquadList()) {
+					if (owner.selectorR.getSquadList().isSelectionEmpty()) {
 						setText("");
 					} else {
-						setText(selectorR.getSquadList().getSelectedValue().getShirtName());
-						source = 3;
+						setText(owner.selectorR.getSquadList().getSelectedValue().getShirtName());
+						source = EventSource.squadRight;
 						selectAll();
 					}
 				}
@@ -1243,27 +1278,27 @@ public class TransferPanel extends JPanel
 		}
 
 		public void actionPerformed(ActionEvent evt) {
-			if (source == 1 && !freeList.getFreeList().isSelectionEmpty()
+			if (source == EventSource.freeList && !owner.freeList.getFreeList().isSelectionEmpty()
 					&& getText().length() < 16) {
-				freeList.getFreeList().getSelectedValue().setShirtName(getText());
-				refreshLists();
+				owner.freeList.getFreeList().getSelectedValue().setShirtName(getText());
+				owner.refreshLists();
 			}
-			if (source == 2 && !selectorL.getSquadList().isSelectionEmpty()
+			if (source == EventSource.squadLeft && !owner.selectorL.getSquadList().isSelectionEmpty()
 					&& getText().length() < 16) {
-				int i = selectorL.getSquadList().getSelectedIndex();
-				selectorL.getSquadList().getSelectedValue().setShirtName(getText());
-				refreshLists();
-				if (i < selectorL.getSquadList().getModel().getSize() - 1) {
-					selectorL.getSquadList().setSelectedIndex(i + 1);
+				int i = owner.selectorL.getSquadList().getSelectedIndex();
+				owner.selectorL.getSquadList().getSelectedValue().setShirtName(getText());
+				owner.refreshLists();
+				if (i < owner.selectorL.getSquadList().getModel().getSize() - 1) {
+					owner.selectorL.getSquadList().setSelectedIndex(i + 1);
 				}
 			}
-			if (source == 3 && !selectorR.getSquadList().isSelectionEmpty()
+			if (source == EventSource.squadRight && !owner.selectorR.getSquadList().isSelectionEmpty()
 					&& getText().length() < 16) {
-				int i = selectorR.getSquadList().getSelectedIndex();
-				selectorR.getSquadList().getSelectedValue().setShirtName(getText());
-				refreshLists();
-				if (i < selectorR.getSquadList().getModel().getSize() - 1) {
-					selectorR.getSquadList().setSelectedIndex(i + 1);
+				int i = owner.selectorR.getSquadList().getSelectedIndex();
+				owner.selectorR.getSquadList().getSelectedValue().setShirtName(getText());
+				owner.refreshLists();
+				if (i < owner.selectorR.getSquadList().getModel().getSize() - 1) {
+					owner.selectorR.getSquadList().setSelectedIndex(i + 1);
 				}
 			}
 		}

@@ -15,10 +15,6 @@ public final class Emblems {
 	private Emblems() {
 	}
 
-	public static final int TYPE_BOTH = 0;
-	public static final int TYPE_16 = 1;
-	public static final int TYPE_128 = 2;
-
 	public static final int TOTAL16 = 60;
 	public static final int TOTAL128 = 30;
 

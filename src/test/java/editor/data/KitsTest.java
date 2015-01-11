@@ -54,4 +54,6 @@ public final class KitsTest extends BaseTest {
 		Assert.assertThat(logoList, m);
 	}
 
+	// TODO: More tests here!
+
 }

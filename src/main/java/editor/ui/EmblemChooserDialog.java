@@ -1,5 +1,6 @@
 package editor.ui;
 
+import editor.data.EmblemType;
 import editor.data.Emblems;
 import editor.data.OptionFile;
 import editor.util.Resources;
@@ -16,7 +17,7 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 	private final OptionFile of;
 	private volatile boolean isTrans = true;
 	private volatile int slot = -1;
-	private volatile int type = Emblems.TYPE_BOTH;
+	private volatile EmblemType type = null;
 
 	public EmblemChooserDialog(Frame owner, OptionFile of) {
 		super(owner, true);
@@ -76,14 +77,14 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 
 	public void refresh() {
 		Image icon;
-		if (type == Emblems.TYPE_BOTH || type == Emblems.TYPE_16) {
+		if (type == null || type == EmblemType.lowRes) {
 			for (int i = 0, n = Emblems.count16(of); i < n; i++) {
 				icon = Emblems.get16(of, i, !isTrans, true);
 				emblemButtons[i].setIcon(new ImageIcon(icon));
 				emblemButtons[i].setVisible(true);
 			}
 		}
-		if (type == Emblems.TYPE_BOTH || type == Emblems.TYPE_128) {
+		if (type == null || type == EmblemType.highRes) {
 			for (int i = 0, n = Emblems.count128(of); i < n; i++) {
 				icon = Emblems.get128(of, i, !isTrans, true);
 				emblemButtons[Emblems.TOTAL16 - i - 1].setIcon(new ImageIcon(icon));
@@ -92,10 +93,10 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 		}
 
 		int start = 0, end = 0;
-		if (type == Emblems.TYPE_16) {
+		if (type == EmblemType.lowRes) {
 			start = Emblems.count16(of);
 			end = Emblems.TOTAL16;
-		} else if (type == Emblems.TYPE_128) {
+		} else if (type == EmblemType.highRes) {
 			start = 0;
 			end = Emblems.TOTAL16 - Emblems.count128(of);
 		}
@@ -105,10 +106,7 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 		}
 	}
 
-	/**
-	 * @see Emblems#TYPE_BOTH
-	 */
-	public int getEmblem(String title, int type) {
+	public int getEmblem(String title, EmblemType type) {
 		this.type = type;
 		slot = -1;
 		setTitle(title);

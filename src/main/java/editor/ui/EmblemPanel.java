@@ -1,5 +1,6 @@
 package editor.ui;
 
+import editor.data.EmblemType;
 import editor.data.Emblems;
 import editor.data.OptionFile;
 import editor.util.*;
@@ -170,9 +171,9 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 	private void onAddEmblemFromOF2() {
 		int emblem = -1;
 		if (Emblems.getFree128(of) > 0) {
-			emblem = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), Emblems.TYPE_BOTH);
+			emblem = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), null);
 		} else if (Emblems.getFree16(of) > 0) {
-			emblem = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), Emblems.TYPE_16);
+			emblem = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), EmblemType.lowRes);
 		}
 
 		if (emblem >= 0) {
@@ -231,12 +232,12 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 	private void importEmblemFromOF2(boolean is128, int slot) {
 		int replacement;
 		if (is128) {
-			replacement = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), Emblems.TYPE_128);
+			replacement = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), EmblemType.highRes);
 			if (replacement >= 0) {
 				flagImportDia.import128(of, slot, replacement);
 			}
 		} else {
-			replacement = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), Emblems.TYPE_16);
+			replacement = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), EmblemType.lowRes);
 			if (replacement >= 0) {
 				flagImportDia.import16(of, slot, replacement - Emblems.TOTAL128);
 			}
