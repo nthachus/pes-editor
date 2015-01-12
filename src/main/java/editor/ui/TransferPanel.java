@@ -6,8 +6,6 @@ import editor.util.Resources;
 import editor.util.Strings;
 import editor.util.swing.JList;
 import editor.util.swing.JTextFieldLimit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -22,16 +20,16 @@ import java.awt.event.MouseListener;
 
 public class TransferPanel extends JPanel
 		implements MouseListener, DropTargetListener, DragSourceListener, DragGestureListener {
-	private static final Logger log = LoggerFactory.getLogger(TransferPanel.class);
+	//private static final Logger log = LoggerFactory.getLogger(TransferPanel.class);
 
 	private final OptionFile of;
 	private final PlayerDialog playerDia;
 	private final FormationDialog teamDia;
 
 	private volatile int releasedIndex = 0;
-	private volatile Component sourceComp = null;
+	private volatile JList sourceList = null;
 	private volatile int sourceIndex = -1;
-	private volatile int compIndex = 0;
+	private volatile int compareIndex = 0;
 	private volatile int lastIndex = 0;
 
 	public TransferPanel(OptionFile of, PlayerDialog pd, FormationDialog td) {
@@ -145,19 +143,19 @@ public class TransferPanel extends JPanel
 	//endregion
 
 	private void compareStats() {
-		if (compIndex == 0) {
-			compIndex = lastIndex;
+		if (compareIndex == 0) {
+			compareIndex = lastIndex;
 			if (nameEditor.source == EventSource.squadLeft) {
 				selectTeamPos(selectorL);
 			} else if (nameEditor.source == EventSource.squadRight) {
 				selectTeamPos(selectorR);
 			}
 		} else {
-			compIndex = 0;
+			compareIndex = 0;
 			selectorL.getPosList().clearSelection();
 			selectorR.getPosList().clearSelection();
 		}
-		infoPanel.refresh(lastIndex, compIndex);
+		infoPanel.refresh(lastIndex, compareIndex);
 	}
 
 	private static boolean isValidSquad(int squadS) {
@@ -183,9 +181,9 @@ public class TransferPanel extends JPanel
 		numEditor.setText("");
 		shirtEditor.setText("");
 
-		compIndex = 0;
+		compareIndex = 0;
 		lastIndex = 0;
-		infoPanel.refresh(lastIndex, compIndex);
+		infoPanel.refresh(lastIndex, compareIndex);
 	}
 
 	public void refreshLists() {
@@ -204,9 +202,9 @@ public class TransferPanel extends JPanel
 		numEditor.setText("");
 		shirtEditor.setText("");
 
-		compIndex = 0;
+		compareIndex = 0;
 		lastIndex = 0;
-		infoPanel.refresh(lastIndex, compIndex);
+		infoPanel.refresh(lastIndex, compareIndex);
 	}
 
 	private static int getNumberAdr(int adr) {
@@ -312,136 +310,117 @@ public class TransferPanel extends JPanel
 
 	//endregion
 
-	private int clubRelease(int p, boolean rel) {// TODO: !!!
-		int a = Squads.CLUB_ADR - 2;
-		int index;
+	private int clubRelease(int player, boolean release) {
 		int result = -1;
-		int sqi;
-		int sp;
-		do {
-			a = a + 2;
-			index = (Bits.toInt(of.getData()[a + 1]) << 8) | Bits.toInt(of.getData()[a]);
-			if (index == p) {
-				sqi = ((a - Squads.CLUB_ADR) / 64) + 75;
-				sp = (a - Squads.CLUB_ADR) % 64;
-				if (result == -1) {
-					if (!rel || sp < 22) {
-						result = sqi;
-						if (rel) {
-							releasedIndex = sp / 2;
-						}
 
-					}
-				}
-				if (rel) {
-					of.getData()[a] = 0;
-					of.getData()[a + 1] = 0;
-					of.getData()[getNumberAdr(a)] = -1;
-					if (sp >= 22) {
-						Squads.tidy(of, sqi);
-					} else {
-						if (autoGaps.isSelected()) {
-							int t = sqi;
-							if (t > 74) {
-								t = t - 8;
-							}
-							Squads.tidy11(of, sqi, sp / 2, Formations.getPosition(
-									of, t, 0, sp / 2));
-						}
-					}
+		int slotsSize = Formations.CLUB_TEAM_SIZE * 2;
+		int endAdr = Squads.CLUB_ADR + Clubs.TOTAL * slotsSize;
+		for (int adr = Squads.CLUB_ADR; adr < endAdr; adr += 2) {
+
+			int index = Bits.toInt16(of.getData(), adr);
+			if (index != player) continue;
+
+			int squadId = (adr - Squads.CLUB_ADR) / slotsSize + Squads.FIRST_CLUB;
+			int sp = (adr - Squads.CLUB_ADR) % slotsSize;
+			if (result < 0) {
+				if (!release || sp < Formations.PLAYER_COUNT * 2) {
+					result = squadId;
+					if (release)
+						releasedIndex = sp / 2;
 				}
 			}
-		} while (a < Squads.CLUB_ADR + (Clubs.TOTAL * 64) - 2);// && index != p);
+
+			if (release) {
+				Bits.toBytes((short) 0, of.getData(), adr);
+				int numAdr = getNumberAdr(adr);
+				of.getData()[numAdr] = -1;
+
+				if (sp >= Formations.PLAYER_COUNT * 2) {
+					Squads.tidy(of, squadId);
+				} else if (autoGaps.isSelected()) {
+
+					int t = squadId;
+					if (t >= Squads.FIRST_CLUB) t -= Squads.EDIT_TEAM_COUNT;
+					int pos = Formations.getPosition(of, t, 0, sp / 2);
+					Squads.tidy11(of, squadId, sp / 2, pos);
+				}
+			}
+		}
+
 		return result;
 	}
 
-	private byte getNextNum(int s) {
-		int size;
-		int firstAdr;
-		byte num = -1;
-		int a;
-		byte n;
-		boolean spare;
-		if (s < 75) {
-			size = 23;
-			firstAdr = Squads.NATION_NUM_ADR + (s * size);
-		} else {
-			size = 32;
-			firstAdr = Squads.CLUB_NUM_ADR + ((s - 75) * size);
-		}
-		for (byte i = 0; num == -1 && i < Stats.MAX_STAT99; i++) {
-			spare = true;
-			for (int p = 0; spare && p < size; p++) {
-				a = firstAdr + p;
-				n = of.getData()[a];
-				if (n == i) {
+	private static int getTeamSize(int squad) {
+		return (squad < Squads.FIRST_CLUB) ? Formations.NATION_TEAM_SIZE : Formations.CLUB_TEAM_SIZE;
+	}
+
+	private static int getSquadAdr(int squad) {
+		if (squad < Squads.FIRST_CLUB)
+			return Squads.NATION_ADR + squad * Formations.NATION_TEAM_SIZE * 2;
+		return Squads.CLUB_ADR + (squad - Squads.FIRST_CLUB) * Formations.CLUB_TEAM_SIZE * 2;
+	}
+
+	private static int getSquadNumAdr(int squad) {
+		if (squad < Squads.FIRST_CLUB)
+			return Squads.NATION_NUM_ADR + squad * Formations.NATION_TEAM_SIZE;
+		return Squads.CLUB_NUM_ADR + (squad - Squads.FIRST_CLUB) * Formations.CLUB_TEAM_SIZE;
+	}
+
+	private byte getNextNumber(int squad) {
+		int size = getTeamSize(squad);
+		int adr = getSquadNumAdr(squad);
+
+		for (int i = 0; i < 99; i++) {
+			boolean spare = true;
+			for (int p = 0; p < size; p++) {
+				byte num = of.getData()[adr + p];
+				if (num == i) {
 					spare = false;
+					break;
 				}
 			}
-			if (spare) {
-				num = i;
-			}
+			if (spare)
+				return (byte) i;
 		}
-		if (num == -1) {
-			num = 0;
-		}
-		return num;
+
+		return 0;
 	}
 
 	private int countPlayers(int squad) {
-		int size;
-		int firstAdr;
-		int i;
+		int size = getTeamSize(squad);
+		int adr = getSquadAdr(squad);
+
 		int count = 0;
-		int a;
-		if (squad < 75) {
-			size = 23;
-			firstAdr = Squads.NATION_ADR + (squad * size * 2);
-		} else {
-			size = 32;
-			firstAdr = Squads.CLUB_ADR + ((squad - 75) * size * 2);
-		}
 		for (int p = 0; p < size; p++) {
-			a = firstAdr + (p * 2);
-			i = (Bits.toInt(of.getData()[a + 1]) << 8) | Bits.toInt(of.getData()[a]);
-			if (i != 0) {
-				count++;
-			}
+			int id = Bits.toInt16(of.getData(), adr);
+			if (id > 0) count++;
+			adr += 2;
 		}
 		return count;
 	}
 
-	private boolean inNationSquad(int pi) {
-		for (int i = 0; i < 67; i++) {
-			if (inSquad(i, pi))
-				return true;
+	private boolean inNationSquad(int playerId) {
+		if (playerId > 0) {
+			for (int t = 0; t < Squads.FIRST_EDIT_NATION; t++) {
+				if (inSquad(t, playerId))
+					return true;
+			}
 		}
 		return false;
 	}
 
-	private boolean inSquad(int squad, int pi) {
-		boolean in = false;
-		if (pi != 0) {
-			int size;
-			int firstAdr;
-			int i;
-			int a;
-			if (squad < 75) {
-				size = 23;
-				firstAdr = Squads.NATION_ADR + (squad * size * 2);
-			} else {
-				size = 32;
-				firstAdr = Squads.CLUB_ADR + ((squad - 75) * size * 2);
-			}
-			for (int p = 0; !in && p < size; p++) {
-				a = firstAdr + (p * 2);
-				i = (Bits.toInt(of.getData()[a + 1]) << 8) | Bits.toInt(of.getData()[a]);
-				if (i == pi) {
-					in = true;
-				}
+	private boolean inSquad(int squad, int playerId) {
+		if (playerId > 0) {
+			int size = getTeamSize(squad);
+			int adr = getSquadAdr(squad);
+
+			for (int p = 0; p < size; p++) {
+				int id = Bits.toInt16(of.getData(), adr);
+				if (id == playerId) return true;
+				adr += 2;
 			}
 		}
-		return in;
+		return false;
 	}
 
 	//region Drag and Drop
@@ -453,17 +432,25 @@ public class TransferPanel extends JPanel
 	}
 
 	public void dragOver(DropTargetDragEvent evt) {
-		JList targetList = (JList) (evt.getDropTargetContext().getComponent());
-		int i = targetList.locationToIndex(evt.getLocation());
+		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt.getDropTargetContext()) throw new NullPointerException("evt.context");
+		if (!(evt.getDropTargetContext().getComponent() instanceof JList<?>))
+			throw new IllegalArgumentException("evt");
+
+		JList targetList = (JList) evt.getDropTargetContext().getComponent();
+		int idx = targetList.locationToIndex(evt.getLocation());
+
 		Player p;
-		if (i != -1) {
-			p = (Player) (targetList.getModel().getElementAt(i));
-		} else {
+		if (idx < 0) {
 			p = new Player(of, 0);
+		} else {
+			p = (Player) targetList.getModel().getElementAt(idx);
 		}
-		boolean chk = checkSafeDrag(safeMode.isSelected(), targetList, p);
-		targetList.setSelectedIndex(i);
-		if (chk) {
+
+		boolean safety = checkSafeDrag(safeMode.isSelected(), targetList, p);
+		targetList.setSelectedIndex(idx);
+
+		if (safety) {
 			evt.acceptDrag(DnDConstants.ACTION_MOVE);
 		} else {
 			evt.rejectDrag();
@@ -471,111 +458,123 @@ public class TransferPanel extends JPanel
 	}
 
 	public void drop(DropTargetDropEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
 		Transferable transferable = evt.getTransferable();
-		if (transferable.isDataFlavorSupported(PlayerTransferable.getDataFlavor())) {
-			JList sourceList = (JList) sourceComp;
-			JList targetList = (JList) (evt.getDropTargetContext().getComponent());
-			Player sourcePlayer = (Player) (sourceList.getModel().getElementAt(sourceIndex));
-			int indexS = sourcePlayer.getIndex();
-			Player targetPlayer;
-			int indexT;
-			if (targetList.getSelectedIndex() != -1) {
-				targetPlayer = (Player) (targetList.getSelectedValue());
-				indexT = targetPlayer.getIndex();
-			} else {
-				targetPlayer = new Player(of, 0);
-				indexT = 0;
-			}
+		if (null == transferable) throw new NullPointerException("evt.transferable");
 
-			if (sourceList != freeList.getFreeList()
-					&& targetList != freeList.getFreeList()) {
-				int squadS = ((SelectByTeam) (sourceList.getParent())).getTeamBox()
-						.getSelectedIndex();
-				int squadT = ((SelectByTeam) (targetList.getParent())).getTeamBox()
-						.getSelectedIndex();
-				if (sourceList == targetList) {
-					if (isValidSquad(squadS) || squadS == Squads.TOTAL) {
-						if (indexS != indexT) {
-							evt.acceptDrop(DnDConstants.ACTION_MOVE);
-							transferS(sourcePlayer, targetPlayer, squadS, squadT, sourceList, targetList);
-						}
+		if (!transferable.isDataFlavorSupported(PlayerTransferable.getDataFlavor())) {
+			evt.rejectDrop();
+			return;
+		}
+
+		if (null == evt.getDropTargetContext()) throw new NullPointerException("evt.context");
+		if (!(evt.getDropTargetContext().getComponent() instanceof JList<?>))
+			throw new IllegalArgumentException("evt");
+
+		JList targetList = (JList) evt.getDropTargetContext().getComponent();
+		Player sourcePlayer = (Player) sourceList.getModel().getElementAt(sourceIndex);
+		int playerS = sourcePlayer.getIndex();
+
+		Player targetPlayer;
+		if (targetList.getSelectedIndex() < 0) {
+			targetPlayer = new Player(of, 0);
+		} else {
+			targetPlayer = (Player) targetList.getSelectedValue();
+		}
+		int playerT = targetPlayer.getIndex();
+
+		if (sourceList != freeList.getFreeList() && targetList != freeList.getFreeList()) {
+			SelectByTeam selectorS = (SelectByTeam) sourceList.getParent();
+			SelectByTeam selectorT = (SelectByTeam) targetList.getParent();
+			int squadS = selectorS.getTeamBox().getSelectedIndex();
+			int squadT = selectorT.getTeamBox().getSelectedIndex();
+
+			if (sourceList == targetList) {
+				if (isValidSquad(squadS) || squadS == Squads.TOTAL) {// NOTE: should not need == Squads.TOTAL
+					if (playerS != playerT) {
+						evt.acceptDrop(DnDConstants.ACTION_MOVE);
+						transferSwap(sourcePlayer, targetPlayer, squadS, squadT, sourceList, targetList);
 					}
-				} else if (sourceList == selectorL.getSquadList()
-						&& targetList == selectorR.getSquadList()) {
-					evt.acceptDrop(DnDConstants.ACTION_MOVE);
-					transferLR(sourcePlayer);
-				} else if (sourceList == selectorR.getSquadList()
-						&& targetList == selectorL.getSquadList()) {
-					evt.acceptDrop(DnDConstants.ACTION_MOVE);
-					transferRL(sourcePlayer);
 				}
-			} else if (sourceList == freeList.getFreeList()
-					&& targetList == selectorL.getSquadList()) {
+			} else if (sourceList == selectorL.getSquadList() && targetList == selectorR.getSquadList()) {
 				evt.acceptDrop(DnDConstants.ACTION_MOVE);
-				transferFL(indexS);
-			} else if (sourceList == freeList.getFreeList()
-					&& targetList == selectorR.getSquadList()) {
-				evt.acceptDrop(DnDConstants.ACTION_MOVE);
-				transferFR(indexS);
-			} else if (sourceList == selectorL.getSquadList()
-					&& targetList == freeList.getFreeList()) {
-				evt.acceptDrop(DnDConstants.ACTION_MOVE);
-				transferRelease(selectorL, sourcePlayer, sourceIndex);
-			} else if (sourceList == selectorR.getSquadList()
-					&& targetList == freeList.getFreeList()) {
-				evt.acceptDrop(DnDConstants.ACTION_MOVE);
-				transferRelease(selectorR, sourcePlayer, sourceIndex);
-			} else {
-				evt.rejectDrop();
-			}
+				transferBetweenLR(selectorL, selectorR, sourcePlayer);
 
-			evt.getDropTargetContext().dropComplete(true);
+			} else if (sourceList == selectorR.getSquadList() && targetList == selectorL.getSquadList()) {
+				evt.acceptDrop(DnDConstants.ACTION_MOVE);
+				transferBetweenLR(selectorR, selectorL, sourcePlayer);
+			}
+		} else if (sourceList == freeList.getFreeList() && targetList == selectorL.getSquadList()) {
+			evt.acceptDrop(DnDConstants.ACTION_MOVE);
+			transferFromFree(selectorL, playerS);
+
+		} else if (sourceList == freeList.getFreeList() && targetList == selectorR.getSquadList()) {
+			evt.acceptDrop(DnDConstants.ACTION_MOVE);
+			transferFromFree(selectorR, playerS);
+
+		} else if (sourceList == selectorL.getSquadList() && targetList == freeList.getFreeList()) {
+			evt.acceptDrop(DnDConstants.ACTION_MOVE);
+			transferRelease(selectorL, sourcePlayer, sourceIndex);
+
+		} else if (sourceList == selectorR.getSquadList() && targetList == freeList.getFreeList()) {
+			evt.acceptDrop(DnDConstants.ACTION_MOVE);
+			transferRelease(selectorR, sourcePlayer, sourceIndex);
+
 		} else {
 			evt.rejectDrop();
 		}
+
+		evt.getDropTargetContext().dropComplete(true);
 	}
 
 	public void dropActionChanged(DropTargetDragEvent evt) {
 	}
 
 	public void dragGestureRecognized(DragGestureEvent evt) {
-		sourceComp = evt.getComponent();
-		if (sourceComp instanceof JList) {
-			JList list = (JList) sourceComp;
-			sourceIndex = list.getSelectedIndex();
-			Player p = (Player) list.getSelectedValue();
-			if (sourceIndex != -1 && p.getIndex() != 0) {
-				removeListListeners();
-				lastIndex = 0;
-				compIndex = 0;
-				infoPanel.refresh(lastIndex, compIndex);
-				nameEditor.setText("");
-				shirtEditor.setText("");
-				nameEditor.source = null;
-				shirtEditor.source = null;
-				PlayerTransferable playerTran = new PlayerTransferable(p);
-				if (list != freeList.getFreeList()) {
-					int squadS = ((SelectByTeam) (list.getParent())).getTeamBox().getSelectedIndex();
-					if (isValidSquad(squadS) || squadS == Squads.TOTAL) {
-						if (list == selectorL.getSquadList()) {
-							selectorL.getPosList().selectPos(selectorL.getSquadList(),
-									selectorL.getSquadList().getSelectedIndex());
-						} else if (list == selectorR.getSquadList()) {
-							selectorR.getPosList().selectPos(selectorR.getSquadList(),
-									selectorR.getSquadList().getSelectedIndex());
-						}
-					}
-				}
-				evt.getDragSource().startDrag(evt, null, playerTran, this);
+		if (null == evt) throw new NullPointerException("evt");
+		if (!(evt.getComponent() instanceof JList<?>)) throw new IllegalArgumentException("evt");
 
+		sourceList = (JList) evt.getComponent();
+		sourceIndex = sourceList.getSelectedIndex();
+		if (sourceIndex < 0) return;
+
+		Player p = (Player) sourceList.getSelectedValue();
+		if (p.getIndex() <= 0) return;
+
+		removeListListeners();
+
+		lastIndex = 0;
+		compareIndex = 0;
+		infoPanel.refresh(lastIndex, compareIndex);
+
+		nameEditor.setText("");
+		shirtEditor.setText("");
+		nameEditor.source = null;
+		shirtEditor.source = null;
+
+		if (sourceList.getParent() instanceof SelectByTeam) {
+			SelectByTeam selectorS = (SelectByTeam) sourceList.getParent();
+			int squadS = selectorS.getTeamBox().getSelectedIndex();
+
+			if (isValidSquad(squadS) || squadS == Squads.TOTAL) {
+				if (sourceList == selectorL.getSquadList()) {
+					selectorL.getPosList().selectPos(selectorL.getSquadList(), sourceIndex);
+				} else if (sourceList == selectorR.getSquadList()) {
+					selectorR.getPosList().selectPos(selectorR.getSquadList(), sourceIndex);
+				}
 			}
 		}
+
+		PlayerTransferable tPlayer = new PlayerTransferable(p);
+		evt.getDragSource().startDrag(evt, null, tPlayer, this);
 	}
 
 	public void dragDropEnd(DragSourceDropEvent evt) {
-		if (!evt.getDropSuccess()) {
+		if (null == evt) throw new NullPointerException("evt");
+
+		if (!evt.getDropSuccess())
 			refreshLists();
-		}
+
 		addListListeners();
 	}
 
@@ -593,7 +592,7 @@ public class TransferPanel extends JPanel
 
 	//endregion
 
-	private boolean checkSafeDrag(boolean safe, JList targetList, Player targetPlayer) {
+	private boolean checkSafeDrag(boolean safe, JList targetList, Player targetPlayer) {// TODO: !!!
 		boolean tranFL = true;
 		boolean tranFR = true;
 		boolean tranLR = true;
@@ -604,7 +603,6 @@ public class TransferPanel extends JPanel
 		boolean lEmpty = true;
 		boolean rEmpty = true;
 
-		JList sourceList = (JList) sourceComp;
 		int indexS = ((Player) (sourceList.getModel().getElementAt(sourceIndex))).getIndex();
 		int indexT = targetPlayer.getIndex();
 		int squadS = -1;
@@ -852,152 +850,106 @@ public class TransferPanel extends JPanel
 		return result;
 	}
 
-	private void transferFL(int index) {
-		int adr = selectorL.getSquadList().getSelectedValue().getSlotAdr();
-		int ti = selectorL.getTeamBox().getSelectedIndex();
-		int n = -1;
-		if (ti >= 75 && ti < 213 && autoRelease.isSelected()) {
-			n = clubRelease(index, true);
-		}
-		of.getData()[adr] = Bits.toByte(index);
-		of.getData()[adr + 1] = Bits.toByte(index >>> 8);
-		if (of.getData()[getNumberAdr(adr)] == -1) {
-			of.getData()[getNumberAdr(adr)] = getNextNum(ti);
-		}
-		if (selectorL.getSquadList().getSelectedIndex() > 10) {
-			Squads.tidy(of, ti);
-		}
+	private void transferFromFree(SelectByTeam selector, int player) {
+		int adr = selector.getSquadList().getSelectedValue().getSlotAdr();
+		int teamId = selector.getTeamBox().getSelectedIndex();
+
+		int newIdx = -1;
+		if (autoRelease.isSelected() && teamId >= Squads.FIRST_CLUB && teamId <= Squads.TOTAL)
+			newIdx = clubRelease(player, true);
+
+		Bits.toBytes((short) player, of.getData(), adr);
+		int numAdr = getNumberAdr(adr);
+		if (of.getData()[numAdr] == -1)
+			of.getData()[numAdr] = getNextNumber(teamId);
+
+		if (selector.getSquadList().getSelectedIndex() >= Formations.PLAYER_COUNT)
+			Squads.tidy(of, teamId);
+
 		refreshLists();
-		if (n != -1) {
-			selectorR.getTeamBox().setSelectedIndex(n);
-			selectorR.getPosList().clearSelection();
-			selectorR.getPosList().setSelectedIndex(releasedIndex);
+
+		if (newIdx >= 0) {
+			SelectByTeam other = (selector == selectorL) ? selectorR : selectorL;
+			other.getTeamBox().setSelectedIndex(newIdx);
+			other.getPosList().clearSelection();
+			other.getPosList().setSelectedIndex(releasedIndex);
 		}
 	}
 
-	private void transferFR(int index) {
-		int adr = selectorR.getSquadList().getSelectedValue().getSlotAdr();
-		int ti = selectorR.getTeamBox().getSelectedIndex();
-		int n = -1;
-		if (ti >= 75 && ti < 213 && autoRelease.isSelected()) {
-			n = clubRelease(index, true);
-		}
-		of.getData()[adr] = Bits.toByte(index);
-		of.getData()[adr + 1] = Bits.toByte(index >>> 8);
-		if (of.getData()[getNumberAdr(adr)] == -1) {
-			of.getData()[getNumberAdr(adr)] = getNextNum(ti);
-		}
-		if (selectorR.getSquadList().getSelectedIndex() > 10) {
-			Squads.tidy(of, ti);
-		}
+	/**
+	 * Transfer between left and right.
+	 */
+	private void transferBetweenLR(SelectByTeam fromList, SelectByTeam toList, Player player) {
+		if (null == player) throw new NullPointerException("player");
+
+		int pId = player.getIndex();
+		if (pId <= 0) return;
+
+		int adrD = toList.getSquadList().getSelectedValue().getSlotAdr();
+		int teamD = toList.getTeamBox().getSelectedIndex();
+		int teamS = fromList.getTeamBox().getSelectedIndex();
+
+		int newIdx = -1;
+		if (autoRelease.isSelected() && teamD >= Squads.FIRST_CLUB && teamD <= Squads.TOTAL)// NOTE: should be < TOTAL
+			newIdx = clubRelease(pId, true);
+
+		Bits.toBytes((short) pId, of.getData(), adrD);
+		int numAdr = getNumberAdr(adrD);
+		if (of.getData()[numAdr] == -1)
+			of.getData()[numAdr] = getNextNumber(teamD);
+
+		if (toList.getSquadList().getSelectedIndex() >= Formations.PLAYER_COUNT)
+			Squads.tidy(of, teamD);
+
 		refreshLists();
-		if (n != -1) {
-			selectorL.getTeamBox().setSelectedIndex(n);
-			selectorL.getPosList().clearSelection();
-			selectorL.getPosList().setSelectedIndex(releasedIndex);
+
+		if (newIdx >= 0 && (teamS < Squads.FIRST_CLUB || teamS >= Squads.TOTAL - 1)) {
+			fromList.getTeamBox().setSelectedIndex(newIdx);
+			fromList.getPosList().clearSelection();
+			fromList.getPosList().setSelectedIndex(releasedIndex);
 		}
 	}
 
-	private void transferLR(Player player) {
-		int adrR = selectorR.getSquadList().getSelectedValue().getSlotAdr();
-		int index = player.getIndex();
-		if (index != 0) {
-			int tiR = selectorR.getTeamBox().getSelectedIndex();
-			int tiL = selectorL.getTeamBox().getSelectedIndex();
-			int n = -1;
-			if (tiR >= 75 && tiR < 213 && autoRelease.isSelected()) {
-				n = clubRelease(index, true);
-			}
-
-			of.getData()[adrR] = Bits.toByte(index);
-			of.getData()[adrR + 1] = Bits.toByte(index >>> 8);
-			if (of.getData()[getNumberAdr(adrR)] == -1) {
-				of.getData()[getNumberAdr(adrR)] = getNextNum(tiR);
-			}
-			if (selectorR.getSquadList().getSelectedIndex() > 10) {
-				Squads.tidy(of, selectorR.getTeamBox().getSelectedIndex());
-			}
-
-			refreshLists();
-			if (n != -1 && (tiL < 75 || tiL > 210)) {
-				selectorL.getTeamBox().setSelectedIndex(n);
-				selectorL.getPosList().clearSelection();
-				selectorL.getPosList().setSelectedIndex(releasedIndex);
-			}
-		}
-	}
-
-	private void transferRL(Player player) {
-		int adrL = selectorL.getSquadList().getSelectedValue().getSlotAdr();
-		int index = player.getIndex();
-		if (index != 0) {
-			int tiL = selectorL.getTeamBox().getSelectedIndex();
-			int tiR = selectorR.getTeamBox().getSelectedIndex();
-			int n = -1;
-			if (tiL >= 75 && tiL < 213 && autoRelease.isSelected()) {
-				n = clubRelease(index, true);
-			}
-
-			of.getData()[adrL] = Bits.toByte(index);
-			of.getData()[adrL + 1] = Bits.toByte(index >>> 8);
-			if (of.getData()[getNumberAdr(adrL)] == -1) {
-				of.getData()[getNumberAdr(adrL)] = getNextNum(tiL);
-			}
-			if (selectorL.getSquadList().getSelectedIndex() > 10) {
-				Squads.tidy(of, selectorL.getTeamBox().getSelectedIndex());
-			}
-
-			refreshLists();
-			if (n != -1 && (tiR < 75 || tiR > 210)) {
-				selectorR.getTeamBox().setSelectedIndex(n);
-				selectorR.getPosList().clearSelection();
-				selectorR.getPosList().setSelectedIndex(releasedIndex);
-			}
-		}
-	}
-
-	private void transferS(
-			Player playerS, Player playerT, int tiS, int tiT,
+	private void transferSwap(
+			Player sourcePlayer, Player targetPlayer, int sourceTeam, int targetTeam,
 			JList sourceList, JList targetList) {
-		int adrS = playerS.getSlotAdr();
-		int indexS = playerS.getIndex();
-		int adrT = playerT.getSlotAdr();
-		int indexT = playerT.getIndex();
 
-		of.getData()[adrS] = Bits.toByte(indexT);
-		of.getData()[adrS + 1] = Bits.toByte(indexT >>> 8);
-		of.getData()[adrT] = Bits.toByte(indexS);
-		of.getData()[adrT + 1] = Bits.toByte(indexS >>> 8);
+		int adrS = sourcePlayer.getSlotAdr();
+		int pidS = sourcePlayer.getIndex();
+		int adrT = targetPlayer.getSlotAdr();
+		int pidT = targetPlayer.getIndex();
 
-		if (tiS == tiT) {
-			byte t = of.getData()[getNumberAdr(adrT)];
-			of.getData()[getNumberAdr(adrT)] = of.getData()[getNumberAdr(adrS)];
-			of.getData()[getNumberAdr(adrS)] = t;
+		Bits.toBytes((short) pidT, of.getData(), adrS);
+		Bits.toBytes((short) pidS, of.getData(), adrT);
+
+		if (sourceTeam == targetTeam) {
+			int numAdrS = getNumberAdr(adrS);
+			int numAdrT = getNumberAdr(adrT);
+
+			byte num = of.getData()[numAdrT];
+			of.getData()[numAdrT] = of.getData()[numAdrS];
+			of.getData()[numAdrS] = num;
 		}
 
-		if (indexS == 0 || indexT == 0) {
-			if (sourceIndex > 10) {
-				Squads.tidy(of, tiS);
-			} else {
-				if (autoGaps.isSelected()) {
-					Squads.tidy11(
-							of,
-							tiS,
-							sourceIndex,
-							((SelectByTeam) (sourceList.getParent())).getPosList().getPosNum(sourceIndex));
-				}
+		if (pidS == 0 || pidT == 0) {
+			if (sourceIndex >= Formations.PLAYER_COUNT) {
+				Squads.tidy(of, sourceTeam);
+			} else if (autoGaps.isSelected() && sourceList.getParent() instanceof SelectByTeam) {
+
+				SelectByTeam selector = (SelectByTeam) sourceList.getParent();
+				int posNum = selector.getPosList().getPosNum(sourceIndex);
+				Squads.tidy11(of, sourceTeam, sourceIndex, posNum);
 			}
-			if (targetList.getSelectedIndex() > 10) {
-				Squads.tidy(of, tiT);
-			} else {
-				if (autoGaps.isSelected() && sourceList != targetList) {
-					Squads.tidy11(
-							of,
-							tiT,
-							targetList.getSelectedIndex(),
-							((SelectByTeam) (targetList.getParent())).getPosList().getPosNum(
-									targetList.getSelectedIndex()));
-				}
+
+			int targetIndex = targetList.getSelectedIndex();
+			if (targetIndex >= Formations.PLAYER_COUNT) {
+				Squads.tidy(of, targetTeam);
+			} else if (autoGaps.isSelected() && sourceList != targetList
+					&& targetList.getParent() instanceof SelectByTeam) {
+
+				SelectByTeam selector = (SelectByTeam) targetList.getParent();
+				int posNum = selector.getPosList().getPosNum(targetIndex);
+				Squads.tidy11(of, targetTeam, targetIndex, posNum);
 			}
 		}
 
@@ -1098,7 +1050,7 @@ public class TransferPanel extends JPanel
 				selectAll();
 
 				owner.lastIndex = p.getIndex();
-				owner.infoPanel.refresh(owner.lastIndex, owner.compIndex);
+				owner.infoPanel.refresh(owner.lastIndex, owner.compareIndex);
 			}
 		}
 
@@ -1187,7 +1139,7 @@ public class TransferPanel extends JPanel
 			} catch (NumberFormatException nfe) {
 				num = -1;
 			}
-			if (num <= 0 || num > Stats.MAX_STAT99) {
+			if (num <= 0 || num > 99) {// NOTE: max squad number is 99 ?
 				setText("");
 				return;
 			}
