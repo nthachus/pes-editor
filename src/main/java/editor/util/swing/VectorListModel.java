@@ -2,7 +2,7 @@ package editor.util.swing;
 
 import java.util.Vector;
 
-public class VectorListModel<T> extends AbstractListModel<T> {
+public class VectorListModel<T> extends javax.swing.AbstractListModel implements JListModel<T> {
 	private final Vector<T> listData;
 
 	public VectorListModel(Vector<T> listData) {

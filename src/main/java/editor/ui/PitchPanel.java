@@ -92,8 +92,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 		drawStadiumLayout(g2);
 
 		Color c;
+		int alt = altBox.getSelectedIndex();
 		for (int p = 0; p < Formations.PLAYER_COUNT; p++) {
-			int pos = Formations.getPosition(of, squad, altBox.getSelectedIndex(), p);
+			int pos = Formations.getPosition(of, squad, alt, p);
 			int x = getXForPlayer(p);
 			int y = getYForPlayer(p);
 			//log.debug("x: {}, y: {}", x, y);
@@ -151,8 +152,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 		int adjX = 0;
 		if (pos == 30 || pos == 16 || pos == 4) adjX = -1;
 
-		boolean up = Formations.getAttack(of, squad, altBox.getSelectedIndex(), player, 2);
-		boolean down = Formations.getAttack(of, squad, altBox.getSelectedIndex(), player, 6);
+		int alt = altBox.getSelectedIndex();
+		boolean up = Formations.getAttack(of, squad, alt, player, 2);
+		boolean down = Formations.getAttack(of, squad, alt, player, 6);
 
 		if (up && down) {
 			g2.drawString(Formations.positionToString(pos).substring(0, 1), x + 15, y + 6);
@@ -179,8 +181,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 
 		int x1 = x + ADJ / 2;
 		int y1 = y + ADJ / 2;
+		int alt = altBox.getSelectedIndex();
 		for (int i = 0; i < 8; i++) {
-			if (!Formations.getAttack(of, squad, altBox.getSelectedIndex(), player, i))
+			if (!Formations.getAttack(of, squad, alt, player, i))
 				continue;
 
 			int x2, y2;
@@ -337,14 +340,15 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 		if (null == e) throw new NullPointerException("e");
 		if (selectedIdx <= 0) return;
 
-		int pos = Formations.getPosition(of, squad, altBox.getSelectedIndex(), selectedIdx);
+		int alt = altBox.getSelectedIndex();
+		int pos = Formations.getPosition(of, squad, alt, selectedIdx);
 
 		int x = adjustDraggedX(e.getX(), pos);
 		int y = adjustDraggedY(e.getY(), pos);
 		//log.debug("{}, {}", x, y);
 
-		Formations.setX(of, squad, altBox.getSelectedIndex(), selectedIdx, x);
-		Formations.setY(of, squad, altBox.getSelectedIndex(), selectedIdx, y);
+		Formations.setX(of, squad, alt, selectedIdx, x);
+		Formations.setY(of, squad, alt, selectedIdx, y);
 
 		repaint();
 	}

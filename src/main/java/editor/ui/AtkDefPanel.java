@@ -99,14 +99,15 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 	}
 
 	private void drawAtkSquares(Graphics2D g2) {
-		int pos = Formations.getPosition(of, squad, altBox.getSelectedIndex(), selectedIndex);
+		int alt = altBox.getSelectedIndex();
+		int pos = Formations.getPosition(of, squad, alt, selectedIndex);
 		Color posColor = getPositionColor(pos);
 
 		g2.setPaint(posColor);
 		g2.fill(new Ellipse2D.Double(SQR_MID, SQR_MID, SQR_SIZE, SQR_SIZE));
 
 		for (int i = 0; i < atkSquares.length; i++) {
-			if (Formations.getAttack(of, squad, altBox.getSelectedIndex(), selectedIndex, i)) {
+			if (Formations.getAttack(of, squad, alt, selectedIndex, i)) {
 				g2.setPaint(posColor);
 				g2.fill(atkSquares[i]);
 			} else if (selectedIndex != 0 || (i == 0 || i == 4)) {
@@ -117,7 +118,8 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 	}
 
 	private void drawDefDirections(Graphics2D g2) {
-		int def = Formations.getDefence(of, squad, altBox.getSelectedIndex(), selectedIndex);
+		int alt = altBox.getSelectedIndex();
+		int def = Formations.getDefence(of, squad, alt, selectedIndex);
 
 		if (def == 1) {
 			g2.setPaint(Color.GRAY);
@@ -137,26 +139,27 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 
 	public void mousePressed(MouseEvent e) {
 		if (null == e) throw new NullPointerException("e");
-		int def = Formations.getDefence(of, squad, altBox.getSelectedIndex(), selectedIndex);
+		int alt = altBox.getSelectedIndex();
+		int def = Formations.getDefence(of, squad, alt, selectedIndex);
 
 		// Checks whether or not the cursor is inside of the rectangle while the user is pressing the mouse.
 		if (new Ellipse2D.Double(SQR_MID, SQR_MID, SQR_SIZE, SQR_SIZE).contains(e.getX(), e.getY())) {
-			Formations.setAttack(of, squad, altBox.getSelectedIndex(), selectedIndex, -1);
-			Formations.setDefence(of, squad, altBox.getSelectedIndex(), selectedIndex, 2);
+			Formations.setAttack(of, squad, alt, selectedIndex, -1);
+			Formations.setDefence(of, squad, alt, selectedIndex, 2);
 
 		} else if (new Ellipse2D.Double(SQR_QRT, SQR_QRT, SQR_SIZE, SQR_SIZE).contains(e.getX(), e.getY())) {
-			Formations.setDefence(of, squad, altBox.getSelectedIndex(), selectedIndex, (def == 0) ? 1 : 0);
+			Formations.setDefence(of, squad, alt, selectedIndex, (def == 0) ? 1 : 0);
 
 		} else if (new Ellipse2D.Double(SQR_QRT, SQR_MID * 3 / 2, SQR_SIZE, SQR_SIZE).contains(e.getX(), e.getY())) {
-			Formations.setDefence(of, squad, altBox.getSelectedIndex(), selectedIndex, (def == 2) ? 1 : 2);
+			Formations.setDefence(of, squad, alt, selectedIndex, (def == 2) ? 1 : 2);
 
 		} else {
 			int count = countAtkDirections();
 			for (int i = 0; i < atkSquares.length; i++) {
 				if (atkSquares[i].contains(e.getX(), e.getY())) {
-					if (Formations.getAttack(of, squad, altBox.getSelectedIndex(), selectedIndex, i)
+					if (Formations.getAttack(of, squad, alt, selectedIndex, i)
 							|| (count < 2 && (selectedIndex != 0 || i == 0 || i == 4))) {
-						Formations.setAttack(of, squad, altBox.getSelectedIndex(), selectedIndex, i);
+						Formations.setAttack(of, squad, alt, selectedIndex, i);
 					}
 					break;
 				}
@@ -169,8 +172,9 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 
 	private int countAtkDirections() {
 		int count = 0;
+		int alt = altBox.getSelectedIndex();
 		for (int j = 0; j < atkSquares.length; j++) {
-			if (Formations.getAttack(of, squad, altBox.getSelectedIndex(), selectedIndex, j)) {
+			if (Formations.getAttack(of, squad, alt, selectedIndex, j)) {
 				count++;
 			}
 		}

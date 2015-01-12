@@ -1,7 +1,7 @@
 package editor.util.swing;
 
-public class BlankListModel<T> extends AbstractListModel<T> {
-	public BlankListModel() {
+public class EmptyListModel<T> extends javax.swing.AbstractListModel implements JListModel<T> {
+	public EmptyListModel() {
 	}
 
 	public int getSize() {

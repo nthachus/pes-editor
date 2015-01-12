@@ -313,7 +313,7 @@ public final class Stats {
 			"Uzbekistan"
 	};
 
-	public static final String[] MOD_FOOT = {"R", "L"};
+	static final String[] MOD_FOOT = {"R", "L"};
 	public static final String[] MOD_INJURY = {"C", "B", "A"};
 	public static final String[] MOD_1_8 = {"1", "2", "3", "4", "5", "6", "7", "8"};
 	public static final String[] MOD_FOOT_SIDE = {

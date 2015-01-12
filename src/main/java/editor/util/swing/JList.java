@@ -17,7 +17,7 @@ public class JList<T> extends javax.swing.JList {
 	}
 
 	public JList() {
-		super(new BlankListModel<T>());
+		super(new EmptyListModel<T>());
 	}
 
 	@Override

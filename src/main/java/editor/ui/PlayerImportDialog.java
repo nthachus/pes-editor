@@ -5,6 +5,7 @@ import editor.data.Player;
 import editor.data.Stat;
 import editor.data.Stats;
 import editor.util.Resources;
+import editor.util.swing.JList;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -113,16 +114,13 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 
 	public void mouseClicked(MouseEvent e) {
 		if (null == e) throw new NullPointerException("e");
-		if (!(e.getSource() instanceof JList)) throw new IllegalArgumentException("e");
+		if (e.getClickCount() < 2) return;
 
-		if (e.getClickCount() < 2)
-			return;
-
+		if (!(e.getSource() instanceof JList<?>)) throw new IllegalArgumentException("e");
 		JList list = (JList) e.getSource();
-		if (!(list.getSelectedValue() instanceof Player))
-			return;
+		Player p = (Player) list.getSelectedValue();
 
-		int pid = ((Player) list.getSelectedValue()).getIndex();
+		int pid = (null == p) ? 0 : p.getIndex();
 		if (pid > 0) {
 			replacement = pid;
 			importPlayer();

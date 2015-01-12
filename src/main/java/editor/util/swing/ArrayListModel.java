@@ -1,6 +1,6 @@
 package editor.util.swing;
 
-public class ArrayListModel<T> extends AbstractListModel<T> {
+public class ArrayListModel<T> extends javax.swing.AbstractListModel implements JListModel<T> {
 	private final T[] listData;
 
 	public ArrayListModel(T[] listData) {
