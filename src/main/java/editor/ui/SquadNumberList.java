@@ -5,7 +5,6 @@ import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.data.Squads;
 import editor.util.Bits;
-import editor.util.swing.JList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +22,7 @@ public class SquadNumberList extends JList<String> {
 		setVisibleRowCount(1);
 		//setFont(new Font(Font.DIALOG, Font.BOLD, 12));
 
-		setPreferredSize(new Dimension(16, 576));
+		setPreferredSize(new Dimension(18, 576));//16
 	}
 
 	/**

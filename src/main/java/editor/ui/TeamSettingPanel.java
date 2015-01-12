@@ -3,7 +3,6 @@ package editor.ui;
 import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.util.Resources;
-import editor.util.swing.JComboBox;
 
 import javax.swing.*;
 import java.awt.*;

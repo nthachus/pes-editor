@@ -14,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.net.URL;
 
 /**
@@ -41,7 +41,7 @@ import java.net.URL;
  * @author Werner Randelshofer
  * @version 2.2.1 2006-05-27 Abort when splash image can not be loaded.
  */
-public class SplashWindow extends Window {
+public class SplashWindow extends Window implements MouseListener {
 	private static final Logger log = LoggerFactory.getLogger(SplashWindow.class);
 
 	/**
@@ -106,15 +106,11 @@ public class SplashWindow extends Window {
 			// Users shall be able to close the splash window by
 			// clicking on its display area. This mouse listener
 			// listens for mouse clicks and disposes the splash window.
-			addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent evt) {
-					disposeOnClick();
-				}
-			});
+			addMouseListener(this);
 		}
 	}
 
-	private void disposeOnClick() {
+	public void mouseClicked(MouseEvent e) {
 		// [*] To avoid that method splash hangs, we must set isPaintCalled to true and call notifyAll.
 		// This is necessary because the mouse click may occur before the contents of the window has been painted.
 		synchronized (this) {
@@ -122,6 +118,18 @@ public class SplashWindow extends Window {
 			notifyAll();
 		}
 		dispose();
+	}
+
+	public void mousePressed(MouseEvent e) {
+	}
+
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	public void mouseExited(MouseEvent e) {
 	}
 
 	/**

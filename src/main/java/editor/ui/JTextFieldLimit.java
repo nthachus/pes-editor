@@ -1,4 +1,4 @@
-package editor.util.swing;
+package editor.ui;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;

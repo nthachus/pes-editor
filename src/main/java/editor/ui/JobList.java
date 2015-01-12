@@ -3,7 +3,6 @@ package editor.ui;
 import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.util.Strings;
-import editor.util.swing.JList;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

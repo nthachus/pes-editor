@@ -5,7 +5,6 @@ import editor.data.Player;
 import editor.data.Stat;
 import editor.data.Stats;
 import editor.util.Resources;
-import editor.util.swing.JList;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

@@ -3,8 +3,6 @@ package editor.ui;
 import editor.data.*;
 import editor.util.Resources;
 import editor.util.Strings;
-import editor.util.swing.DefaultListModel;
-import editor.util.swing.JList;
 
 import javax.swing.*;
 import java.awt.*;

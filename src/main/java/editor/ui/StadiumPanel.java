@@ -3,8 +3,6 @@ package editor.ui;
 import editor.data.OptionFile;
 import editor.data.Stadiums;
 import editor.util.Resources;
-import editor.util.swing.JList;
-import editor.util.swing.JTextFieldLimit;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -37,7 +35,7 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 		editor.addActionListener(this);
 
 		list = new JList<String>();
-		list.setFixedCellHeight(Math.round(Editor.LINE_HEIGHT * getFont().getSize()));
+		list.setFixedCellHeight(Math.round(4f * getFont().getSize() / 3));
 		list.setVisibleRowCount(Stadiums.TOTAL);
 		list.addListSelectionListener(this);
 

@@ -5,7 +5,6 @@ import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.data.Player;
 import editor.util.Resources;
-import editor.util.swing.JComboBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -127,7 +126,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 	private void onOverlapCB(ActionEvent evt) {
 		if (!isOk) return;
 
-		SweepItem item = overlapBox.getSelectedItem();
+		SweepItem item = (SweepItem) overlapBox.getSelectedItem();
 		if (null != item) {
 			Formations.setCBOverlap(of, squad, item.index);
 		}

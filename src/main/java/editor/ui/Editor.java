@@ -20,7 +20,6 @@ import java.net.URL;
 
 public final class Editor extends JFrame {
 	private static final Logger log = LoggerFactory.getLogger(Editor.class);
-	public static final float LINE_HEIGHT = 4f / 3;
 
 	private final OptionFile of;
 	private final OptionFile of2;
@@ -551,8 +550,8 @@ public final class Editor extends JFrame {
 				log.info("Main form is initializing...");
 				try {
 					Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-						public void uncaughtException(Thread thread, Throwable throwable) {
-							log.error("Unhandled exception occurred:", throwable);
+						public void uncaughtException(Thread t, Throwable e) {
+							log.error("Unhandled exception occurred:", e);
 						}
 					});
 					Systems.systemUI();

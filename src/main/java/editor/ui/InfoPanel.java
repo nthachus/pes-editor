@@ -4,7 +4,6 @@ import editor.data.*;
 import editor.util.Bits;
 import editor.util.Colors;
 import editor.util.Resources;
-import editor.util.swing.JComboBoxModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -230,7 +229,7 @@ public class InfoPanel extends JScrollPane {
 		StyleConstants.setForeground(attr, Color.WHITE);
 		doc.insertString(doc.getLength(), Resources.getMessage("info.squads"), attr);
 
-		JComboBoxModel<String> teams = selector.getTeamBox().getModel();
+		ComboBoxModel<String> teams = selector.getTeamBox().getModel();
 		int adr = Squads.NATION_ADR;
 		while (adr < Squads.END_ADR) {
 			int id = Bits.toInt16(of.getData(), adr);

@@ -15,12 +15,12 @@
 		</encoder>
 	</appender>
 
-	<appender name="EMAIL" class="editor.util.logback.AlternateSMTPAppender">
+	<appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
 		<smtpHost>smtp.sendgrid.net</smtpHost>
 		<smtpPort>587</smtpPort>
 		<STARTTLS>true</STARTTLS>
 		<username>pes-editor</username>
-		<password>egQJUK0H9/30dGVUkKmUtw==</password>
+		<password>PesS@fety1</password>
 
 		<from>pes-editor@sendgrid.me</from>
 		<to>nthachus@gmail.com</to>
@@ -36,11 +36,9 @@
 		<cyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTracker">
 			<bufferSize>3</bufferSize>
 		</cyclicBufferTracker>
+
 		<charsetEncoding>UTF-8</charsetEncoding>
 		<asynchronousSending>true</asynchronousSending>
-
-		<connectionTimeout>3000</connectionTimeout>
-		<timeout>2000</timeout>
 	</appender>
 
 	<root level="INFO">

@@ -4,8 +4,6 @@ import editor.data.*;
 import editor.util.Bits;
 import editor.util.Resources;
 import editor.util.Strings;
-import editor.util.swing.JList;
-import editor.util.swing.JTextFieldLimit;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

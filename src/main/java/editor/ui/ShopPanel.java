@@ -27,6 +27,7 @@ public class ShopPanel extends JPanel {
 
 	private void initComponents() {
 		status = new JLabel();
+		status.setHorizontalAlignment(SwingConstants.CENTER);
 
 		JButton lock = new JButton(Resources.getMessage("Lock"));
 		lock.addActionListener(new ActionListener() {

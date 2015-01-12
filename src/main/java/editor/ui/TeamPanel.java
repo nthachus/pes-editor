@@ -4,9 +4,6 @@ import editor.data.*;
 import editor.util.Colors;
 import editor.util.Resources;
 import editor.util.Systems;
-import editor.util.swing.JComboBox;
-import editor.util.swing.JList;
-import editor.util.swing.JTextFieldLimit;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

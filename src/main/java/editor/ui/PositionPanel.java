@@ -3,7 +3,6 @@ package editor.ui;
 import editor.data.OptionFile;
 import editor.data.Stats;
 import editor.util.Resources;
-import editor.util.swing.JComboBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -120,7 +119,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
 			return;
 
-		String roleName = regBox.getSelectedItem();
+		String roleName = (String) regBox.getSelectedItem();
 		for (int i = 0; i < Stats.ROLES.length; i++) {
 			if (Stats.ROLES[i].getName().equalsIgnoreCase(roleName)) {
 				regRole = i;

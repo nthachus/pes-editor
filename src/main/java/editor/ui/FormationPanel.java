@@ -8,8 +8,6 @@ import editor.util.Files;
 import editor.util.Images;
 import editor.util.Resources;
 import editor.util.Strings;
-import editor.util.swing.DefaultComboBoxModel;
-import editor.util.swing.JComboBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -218,7 +216,7 @@ public class FormationPanel extends JPanel
 		if (squadIndex < 0 || squadIndex >= Formations.PLAYER_COUNT)
 			return;
 
-		Role role = roleBox.getSelectedItem();
+		Role role = (Role) roleBox.getSelectedItem();
 		if (null == role || role.index < 0)
 			return;
 

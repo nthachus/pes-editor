@@ -5,8 +5,6 @@ import editor.data.OptionFile;
 import editor.data.Squads;
 import editor.data.Stats;
 import editor.util.Resources;
-import editor.util.swing.DefaultComboBoxModel;
-import editor.util.swing.JComboBox;
 
 import javax.swing.*;
 import java.awt.*;

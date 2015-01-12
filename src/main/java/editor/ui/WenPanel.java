@@ -3,7 +3,6 @@ package editor.ui;
 import editor.data.OptionFile;
 import editor.util.Bits;
 import editor.util.Resources;
-import editor.util.swing.JTextFieldLimit;
 
 import javax.swing.*;
 import java.awt.*;

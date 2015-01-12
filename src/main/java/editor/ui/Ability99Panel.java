@@ -5,13 +5,12 @@ import editor.data.Stats;
 import editor.util.Colors;
 import editor.util.Resources;
 import editor.util.Strings;
-import editor.util.swing.JTextFieldLimit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -20,7 +19,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class Ability99Panel extends JPanel
-		implements ActionListener, CaretListener, KeyListener {
+		implements ActionListener, ChangeListener, KeyListener {
 	private static final Logger log = LoggerFactory.getLogger(Ability99Panel.class);
 
 	private final OptionFile of;
@@ -54,7 +53,7 @@ public class Ability99Panel extends JPanel
 			fields[i].setActionCommand(Integer.toString(i));
 			fields[i].addActionListener(this);
 			fields[i].setInputVerifier(verifier99);
-			fields[i].addCaretListener(this);
+			fields[i].getDocument().addDocumentListener(new JTextChangeListener(fields[i], this));
 			fields[i].addKeyListener(this);
 
 			grid.anchor = GridBagConstraints.CENTER;
@@ -82,11 +81,11 @@ public class Ability99Panel extends JPanel
 		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
 
 		JTextComponent tf = (JTextComponent) evt.getSource();
-		int f = 0;
-		try {
-			f = Integer.parseInt(evt.getActionCommand());
-			int v = Integer.parseInt(tf.getText());
+		int f = Integer.parseInt(evt.getActionCommand());
 
+		boolean invalid = false;
+		try {
+			int v = Integer.parseInt(tf.getText());
 			if (v > 0 && v <= Stats.MAX_STAT99) {
 				if (f < fields.length - 1) {
 					fields[f + 1].requestFocus();
@@ -96,10 +95,13 @@ public class Ability99Panel extends JPanel
 					fields[0].selectAll();
 				}
 			} else {
-				tf.setText(initValues[f]);
-				tf.selectAll();
+				invalid = true;
 			}
 		} catch (NumberFormatException nfe) {
+			invalid = true;
+		}
+
+		if (invalid) {
 			tf.setText(initValues[f]);
 			tf.selectAll();
 		}
@@ -125,7 +127,7 @@ public class Ability99Panel extends JPanel
 		}
 	}
 
-	public void caretUpdate(CaretEvent evt) {
+	public void stateChanged(ChangeEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
 		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
 
@@ -136,7 +138,6 @@ public class Ability99Panel extends JPanel
 		if (!Strings.isEmpty(text)) {
 			try {
 				int v = Integer.parseInt(text);
-
 				if (v >= 75 && v < 80) {
 					bg = Colors.CHARTREUSE0;
 				} else if (v >= 80 && v < 90) {

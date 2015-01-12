@@ -45,7 +45,8 @@
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifest>
-							<mainClass>editor.Splasher</mainClass>
+							<addClasspath>true</addClasspath>
+							<mainClass>editor.Program</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -58,7 +59,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>editor.Splasher</mainClass>
+							<mainClass>editor.Program</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
@@ -88,22 +89,26 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
 			<version>${logback.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>javax.activation</groupId>
 			<artifactId>activation</artifactId>
 			<version>${activation.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.mail</groupId>
 			<artifactId>javax.mail</artifactId>
 			<version>${mail.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Test -->

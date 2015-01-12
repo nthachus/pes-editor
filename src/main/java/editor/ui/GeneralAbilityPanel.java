@@ -4,8 +4,6 @@ import editor.data.OptionFile;
 import editor.data.Stat;
 import editor.data.Stats;
 import editor.util.Resources;
-import editor.util.swing.JComboBox;
-import editor.util.swing.JTextFieldLimit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
