@@ -1,9 +1,12 @@
 package editor;
 
+import editor.ui.Editor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Program {
+import java.awt.*;
+
+public final class Program implements Thread.UncaughtExceptionHandler {
 	private static final Logger log;
 
 	static {
@@ -14,6 +17,9 @@ public class Program {
 		log = LoggerFactory.getLogger(Program.class);
 	}
 
+	private Program() {
+	}
+
 	/**
 	 * Shows the splash screen, launches the application and then disposes the splash screen.
 	 *
@@ -22,14 +28,25 @@ public class Program {
 	public static void main(String[] args) {
 		log.info("Application is starting...");
 		try {
+			Thread.setDefaultUncaughtExceptionHandler(new Program());
+
 			SplashWindow.splash(Program.class.getResource("/META-INF/images/splash.jpg"));
-			editor.ui.Editor.main(args);
+			EventQueue.invokeLater(new Editor.Runner());
+
 		} catch (Exception e) {
 			log.error("Failed to launch the application:", e);
 			System.exit(-1);
+
 		} finally {
 			SplashWindow.disposeSplash();
 		}
+	}
+
+	public void uncaughtException(Thread t, Throwable e) {
+		log.error("Unhandled exception occurred:", e);
+
+		if (e instanceof ExceptionInInitializerError)
+			System.exit(-1);
 	}
 
 }

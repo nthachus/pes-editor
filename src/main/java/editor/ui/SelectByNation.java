@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class SelectByNation extends JPanel {
+public class SelectByNation extends JPanel implements ActionListener {
 	private final NationalityList freeList;
 	private/* final*/ JComboBox<String> nationBox;
 	private/* final*/ JButton sortButton;
@@ -29,20 +29,14 @@ public class SelectByNation extends JPanel {
 
 	private void initComponents() {
 		sortButton = new JButton(Resources.getMessage("nation.sortAlpha"));
-		sortButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onSort(evt);
-			}
-		});
+		sortButton.setActionCommand("Sort");
+		sortButton.addActionListener(this);
 
 		String[] boxChoice = getAllNations();
 		nationBox = new JComboBox<String>(boxChoice);
-		nationBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onSelectNation(evt);
-			}
-		});
 		nationBox.setMaximumRowCount(Formations.CLUB_TEAM_SIZE);
+		nationBox.setActionCommand("Select");
+		nationBox.addActionListener(this);
 
 		freeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		freeList.setLayoutOrientation(JList.VERTICAL);
@@ -74,7 +68,17 @@ public class SelectByNation extends JPanel {
 		return list.toArray(new String[list.size()]);
 	}
 
-	private void onSort(ActionEvent evt) {
+	public void actionPerformed(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+
+		if ("Sort".equalsIgnoreCase(evt.getActionCommand())) {
+			sortList();
+		} else {
+			selectNation();
+		}
+	}
+
+	private void sortList() {
 		if (isAlphaOrder) {
 			sortButton.setText(Resources.getMessage("nation.sortIndex"));
 			isAlphaOrder = false;
@@ -87,7 +91,7 @@ public class SelectByNation extends JPanel {
 		freeList.refresh(i, isAlphaOrder);
 	}
 
-	private void onSelectNation(ActionEvent evt) {
+	private void selectNation() {
 		int i = nationBox.getSelectedIndex();
 		if (i >= 0) {
 			freeList.refresh(i, isAlphaOrder);

@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.Locale;
 
-public class HelpDialog extends JDialog implements HyperlinkListener {
+public class HelpDialog extends JDialog implements ActionListener, HyperlinkListener {
 	private static final Logger log = LoggerFactory.getLogger(HelpDialog.class);
 	private static final String INDEX_PAGE = "/META-INF/help/index%s.html";
 
@@ -37,17 +37,17 @@ public class HelpDialog extends JDialog implements HyperlinkListener {
 		showPage(helpUrl);
 
 		JButton exitButton = new JButton(Resources.getMessage("help.close"));
-		exitButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				setVisible(false);
-			}
-		});
+		exitButton.addActionListener(this);
 
 		getContentPane().add(scroll, BorderLayout.CENTER);
 		getContentPane().add(exitButton, BorderLayout.SOUTH);
 
 		//setResizable(false);
 		pack();
+	}
+
+	public void actionPerformed(ActionEvent evt) {
+		setVisible(false);
 	}
 
 	private URL getIndexPage() {

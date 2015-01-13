@@ -49,19 +49,16 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 		fileLabel = new JLabel(Resources.getMessage("import.label", ""));
 
 		JButton transButton = new JButton(Resources.getMessage("Transparency"));
-		transButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				updateFlags(evt);
-			}
-		});
+		transButton.setActionCommand("Transparency");
+		transButton.addActionListener(this);
 
-		JPanel topPan = new JPanel(new GridLayout(0, 1));
-		topPan.add(fileLabel);
-		topPan.add(transButton);
+		JPanel topPanel = new JPanel(new GridLayout(0, 1));
+		topPanel.add(fileLabel);
+		topPanel.add(transButton);
 
 		CancelButton cancelButton = new CancelButton(this);
 
-		getContentPane().add(topPan, BorderLayout.NORTH);
+		getContentPane().add(topPanel, BorderLayout.NORTH);
 		getContentPane().add(cancelButton, BorderLayout.SOUTH);
 		getContentPane().add(flagPanel, BorderLayout.CENTER);
 
@@ -73,10 +70,7 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 		return of2.isLoaded();
 	}
 
-	private void updateFlags(ActionEvent evt) {
-		if (null != evt)// toggle transparency
-			isTrans = !isTrans;
-
+	private void updateFlags() {
 		Image logo;
 		for (int f = 0; f < Logos.TOTAL; f++) {
 			logo = Logos.get(of2, f, !isTrans);
@@ -85,7 +79,7 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 	}
 
 	public void refresh() {
-		updateFlags(null);
+		updateFlags();
 
 		slot = 0;
 		replacement = 0;
@@ -101,13 +95,17 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 
-		AbstractButton btn = (AbstractButton) evt.getSource();
-		replacement = Integer.parseInt(btn.getActionCommand());
-		Logos.importData(of2, replacement, of, slot);
+		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
+			isTrans = !isTrans; // toggle transparency
+			updateFlags();
 
-		setVisible(false);
+		} else {
+			replacement = Integer.parseInt(evt.getActionCommand());
+			Logos.importData(of2, replacement, of, slot);
+
+			setVisible(false);
+		}
 	}
 
 }

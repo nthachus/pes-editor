@@ -43,11 +43,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 		}
 
 		regBox = new JComboBox<String>();
-		regBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onRegisterRole(evt);
-			}
-		});
+		regBox.addActionListener(this);
 
 		JLabel regLabel = new JLabel(Resources.getMessage("pos.registered"));
 		JPanel regPanel = new JPanel();
@@ -106,16 +102,18 @@ public class PositionPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
 
-		int box = Integer.parseInt(evt.getActionCommand());
-		if (regRole == box) {
-			roleCheck[box].setSelected(true);
+		if (evt.getSource() == regBox) {
+			registerRole(evt);
+		} else {
+			int box = Integer.parseInt(evt.getActionCommand());
+			if (regRole == box) {
+				roleCheck[box].setSelected(true);
+			}
+			updateRegBox();
 		}
-
-		updateRegBox();
 	}
 
-	private void onRegisterRole(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+	private void registerRole(ActionEvent evt) {
 		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
 			return;
 

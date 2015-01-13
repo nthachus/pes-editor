@@ -22,30 +22,42 @@ public final class OptionFileTest extends BaseTest {
 	}
 
 	@Test
-	public void testEncryptAndDecrypt() throws Exception {
-		for (String fn : OF_ALL) {
-			OptionFile of = loadOptionFile(fn);
-			// DEBUG
-			File fs = createTempFile(fn, "raw" + Files.EXT_SEPARATOR + "bin");
-			of.saveData(fs);
+	public void testEncryptAndDecryptForOriginalOF() throws Exception {
+		testEncryptAndDecrypt(OF_ORIGINAL);
+	}
 
-			fs = createTempFile(fn, "recoded" + Files.EXT_SEPARATOR + of.getFormat());
-			boolean res = of.save(fs);
-			Assert.assertTrue(res);
+	@Test
+	public void testEncryptAndDecryptForLicensedOF() throws Exception {
+		testEncryptAndDecrypt(OF_LICENSED);
+	}
 
-			// compares with original file
-			byte[] recoded = Files.readBytes(fs);
-			byte[] original = Files.readBytes(getResourceFile(fn));
-			Assert.assertNotNull(recoded);
-			Assert.assertNotNull(original);
+	@Test
+	public void testEncryptAndDecryptForLatestOF() throws Exception {
+		testEncryptAndDecrypt(OF_LATEST);
+	}
 
-			if (of.getFormat() == OfFormat.xPort) {
-				int adr = recoded.length - 4;
-				System.arraycopy(recoded, adr, original, adr, 4);
-			}
+	private void testEncryptAndDecrypt(String fn) throws Exception {
+		OptionFile of = loadOptionFile(fn);
+		// DEBUG
+		File fs = createTempFile(fn, "raw" + Files.EXT_SEPARATOR + "bin");
+		of.saveData(fs);
 
-			Assert.assertArrayEquals("Incorrect recoded OF: " + fn, original, recoded);
+		fs = createTempFile(fn, "recoded" + Files.EXT_SEPARATOR + of.getFormat());
+		boolean res = of.save(fs);
+		Assert.assertTrue(res);
+
+		// compares with original file
+		byte[] recoded = Files.readBytes(fs);
+		byte[] original = Files.readBytes(getResourceFile(fn));
+		Assert.assertNotNull(recoded);
+		Assert.assertNotNull(original);
+
+		if (of.getFormat() == OfFormat.xPort) {
+			int adr = recoded.length - 4;
+			System.arraycopy(recoded, adr, original, adr, 4);
 		}
+
+		Assert.assertArrayEquals("Incorrect recoded OF: " + fn, original, recoded);
 	}
 
 	@Test(expected = NullPointerException.class)

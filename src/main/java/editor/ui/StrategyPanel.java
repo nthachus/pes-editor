@@ -59,18 +59,12 @@ public class StrategyPanel extends JPanel implements ActionListener {
 
 		autoButton = new JButton(Resources.getMessage("strategy.manual"));
 		autoButton.setPreferredSize(new Dimension(93, 26));
-		autoButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onAutoStrategy(evt);
-			}
-		});
+		autoButton.setActionCommand("Auto");
+		autoButton.addActionListener(this);
 
 		overlapBox = new JComboBox<SweepItem>();
-		overlapBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onOverlapCB(evt);
-			}
-		});
+		overlapBox.setActionCommand("OverlapCB");
+		overlapBox.addActionListener(this);
 
 		GridBagConstraints c = new GridBagConstraints();
 		//c.anchor = GridBagConstraints.EAST;
@@ -108,24 +102,19 @@ public class StrategyPanel extends JPanel implements ActionListener {
 		add(overlapBox, c);
 	}
 
-	private void onAutoStrategy(ActionEvent evt) {
-		if (!isOk)
-			return;
-
+	private void autoStrategy() {
 		isAuto = !isAuto;
 		if (isAuto) {
 			autoButton.setText(Resources.getMessage("strategy.auto"));
 		} else {
 			autoButton.setText(Resources.getMessage("strategy.manual"));
 		}
-		Formations.setStrategyAuto(of, squad, isAuto);
 
+		Formations.setStrategyAuto(of, squad, isAuto);
 		refresh(squad);
 	}
 
-	private void onOverlapCB(ActionEvent evt) {
-		if (!isOk) return;
-
+	private void overlapCB() {
 		SweepItem item = (SweepItem) overlapBox.getSelectedItem();
 		if (null != item) {
 			Formations.setCBOverlap(of, squad, item.index);
@@ -133,24 +122,32 @@ public class StrategyPanel extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
 		if (!isOk) return;
 
-		int btnId = Integer.parseInt(evt.getActionCommand());
-		int strategy = buttonBoxes[btnId].getSelectedIndex();
-		//log.debug("{}, {}", btnId, strategy);
-		Formations.setStrategy(of, squad, btnId, strategy);
+		if ("Auto".equalsIgnoreCase(evt.getActionCommand())) {
+			autoStrategy();
+		} else if ("OverlapCB".equalsIgnoreCase(evt.getActionCommand())) {
+			overlapCB();
+		} else {
 
-		if (strategy == CB_OVERLAP && Formations.getCBOverlap(of, squad) == 0) {
-			for (int i = 1; i < Formations.PLAYER_COUNT; i++) {
-				int pos = Formations.getPosition(of, squad, 0, i);
-				if (pos > 0 && pos < 8) {
-					Formations.setCBOverlap(of, squad, i);
-					break;
+			int btnId = Integer.parseInt(evt.getActionCommand());
+			int strategy = buttonBoxes[btnId].getSelectedIndex();
+			//log.debug("{}, {}", btnId, strategy);
+			Formations.setStrategy(of, squad, btnId, strategy);
+
+			if (strategy == CB_OVERLAP && Formations.getCBOverlap(of, squad) == 0) {
+				for (int i = 1; i < Formations.PLAYER_COUNT; i++) {
+					int pos = Formations.getPosition(of, squad, 0, i);
+					if (pos > 0 && pos < 8) {
+						Formations.setCBOverlap(of, squad, i);
+						break;
+					}
 				}
 			}
-		}
 
-		refresh(squad);
+			refresh(squad);
+		}
 	}
 
 	public void refresh(int squad) {

@@ -12,13 +12,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.URL;
 
-public final class Editor extends JFrame {
+public class Editor extends JFrame implements ActionListener {
 	private static final Logger log = LoggerFactory.getLogger(Editor.class);
 
 	private final OptionFile of;
@@ -60,12 +60,7 @@ public final class Editor extends JFrame {
 
 	private void initComponents() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-		URL iconUrl = getClass().getResource("/META-INF/images/icon.png");
-		if (iconUrl != null) {
-			ImageIcon icon = new ImageIcon(iconUrl);
-			setIconImage(icon.getImage());
-		}
+		initIcon();
 
 		csvSwitch = new CsvSwitchPanel();
 
@@ -120,7 +115,7 @@ public final class Editor extends JFrame {
 		opFileChooser.addChoosableFileFilter(opFileFilter);
 		opFileChooser.setAccessory(new OptionPreviewPanel(opFileChooser));
 
-		initMenuComponents();
+		buildMenu();
 		getContentPane().add(tabbedPane);
 
 		setResizable(false);
@@ -133,41 +128,26 @@ public final class Editor extends JFrame {
 	private JMenuItem csvItem;
 	private JMenuItem convertItem;
 
-	private void initMenuComponents() {
+	private void buildMenu() {
 		JMenuItem openItem = new JMenuItem(Resources.getMessage("menu.open"));
-		openItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				openFile();
-			}
-		});
+		openItem.setActionCommand("Open");
+		openItem.addActionListener(this);
 
 		open2Item = new JMenuItem(Resources.getMessage("menu.open2"));
-		open2Item.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				openOF2();
-			}
-		});
+		open2Item.setActionCommand("Open2");
+		open2Item.addActionListener(this);
 
 		saveItem = new JMenuItem(Resources.getMessage("menu.save"));
-		saveItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				saveFile();
-			}
-		});
+		saveItem.setActionCommand("Save");
+		saveItem.addActionListener(this);
 
 		saveAsItem = new JMenuItem(Resources.getMessage("menu.saveAs"));
-		saveAsItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				saveFileAs();
-			}
-		});
+		saveAsItem.setActionCommand("SaveAs");
+		saveAsItem.addActionListener(this);
 
 		JMenuItem exitItem = new JMenuItem(Resources.getMessage("menu.exit"));
-		exitItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				System.exit(0);
-			}
-		});
+		exitItem.setActionCommand("Exit");
+		exitItem.addActionListener(this);
 
 		JMenu file = new JMenu(Resources.getMessage("menu.file"));
 		file.add(openItem);
@@ -177,36 +157,24 @@ public final class Editor extends JFrame {
 		file.add(exitItem);
 
 		csvItem = new JMenuItem(Resources.getMessage("menu.makeCsv"));
-		csvItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				exportCsv();
-			}
-		});
+		csvItem.setActionCommand("MakeCsv");
+		csvItem.addActionListener(this);
 
 		convertItem = new JMenuItem(Resources.getMessage("menu.convert"));
-		convertItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				importFromOF2();
-			}
-		});
+		convertItem.setActionCommand("Convert");
+		convertItem.addActionListener(this);
 
 		JMenu tool = new JMenu(Resources.getMessage("menu.tool"));
 		tool.add(csvItem);
 		tool.add(convertItem);
 
 		JMenuItem helpItem = new JMenuItem(Resources.getMessage("menu.helpPage"));
-		helpItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				helpDia.setVisible(true);
-			}
-		});
+		helpItem.setActionCommand("Help");
+		helpItem.addActionListener(this);
 
 		JMenuItem aboutItem = new JMenuItem(Resources.getMessage("menu.about"));
-		aboutItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				about();
-			}
-		});
+		aboutItem.setActionCommand("About");
+		aboutItem.addActionListener(this);
 
 		JMenu help = new JMenu(Resources.getMessage("menu.help"));
 		help.add(helpItem);
@@ -226,6 +194,14 @@ public final class Editor extends JFrame {
 		convertItem.setEnabled(false);
 	}
 
+	private void initIcon() {
+		URL iconUrl = getClass().getResource("/META-INF/images/icon.png");
+		if (iconUrl != null) {
+			ImageIcon icon = new ImageIcon(iconUrl);
+			setIconImage(icon.getImage());
+		}
+	}
+
 	//endregion
 
 	private void refreshTitle(String filename) {
@@ -237,6 +213,30 @@ public final class Editor extends JFrame {
 	}
 
 	//region Event Handlers
+
+	public void actionPerformed(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+
+		if ("Open".equalsIgnoreCase(evt.getActionCommand())) {
+			openFile();
+		} else if ("Open2".equalsIgnoreCase(evt.getActionCommand())) {
+			openOF2();
+		} else if ("Save".equalsIgnoreCase(evt.getActionCommand())) {
+			saveFile();
+		} else if ("SaveAs".equalsIgnoreCase(evt.getActionCommand())) {
+			saveFileAs();
+		} else if ("MakeCsv".equalsIgnoreCase(evt.getActionCommand())) {
+			exportCsv();
+		} else if ("Convert".equalsIgnoreCase(evt.getActionCommand())) {
+			importFromOF2();
+		} else if ("Help".equalsIgnoreCase(evt.getActionCommand())) {
+			helpDia.setVisible(true);
+		} else if ("About".equalsIgnoreCase(evt.getActionCommand())) {
+			about();
+		} else/* if ("Exit".equalsIgnoreCase(evt.getActionCommand()))*/ {
+			processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+		}
+	}
 
 	private volatile File currentFile = null;
 
@@ -544,30 +544,25 @@ public final class Editor extends JFrame {
 				JOptionPane.PLAIN_MESSAGE, new ImageIcon(getIconImage()));
 	}
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				log.info("Main form is initializing...");
-				try {
-					Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-						public void uncaughtException(Thread t, Throwable e) {
-							log.error("Unhandled exception occurred:", e);
-						}
-					});
-					UIUtil.systemUI();
+	public static class Runner implements Runnable {
+		public Runner(/*String[] args*/) {
+		}
 
-					Editor form = new Editor();
-					form.setVisible(true);
-					// DEBUG
-					log.info("Main form has been initialized.");
-					form.openFile();
+		public void run() {
+			log.info("Main form is initializing...");
+			try {
+				UIUtil.systemUI();
 
-				} catch (Exception e) {
-					log.error("Failed to initialize Editor form:", e);
-					System.exit(-1);
-				}
+				Editor form = new Editor();
+				form.setVisible(true);
+				// DEBUG
+				log.info("Main form has been initialized.");
+				form.openFile();
+
+			} catch (Exception e) {
+				throw new ExceptionInInitializerError(e);
 			}
-		});
+		}
 	}
 
 }

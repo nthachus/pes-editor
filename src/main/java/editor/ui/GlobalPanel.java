@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class GlobalPanel extends JPanel {
+public class GlobalPanel extends JPanel implements ActionListener {
 	private final OptionFile of;
 	private final TransferPanel transferPan;
 
@@ -106,11 +106,7 @@ public class GlobalPanel extends JPanel {
 		numField.setDocument(new JTextFieldLimit(2));
 
 		JButton adjustBtn = new JButton(Resources.getMessage("global.adjust"));
-		adjustBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				doAdjust();
-			}
-		});
+		adjustBtn.addActionListener(this);
 
 		JPanel panel99 = new JPanel();
 		panel99.setBorder(BorderFactory.createTitledBorder(Resources.getMessage("global.adjustment")));
@@ -129,7 +125,10 @@ public class GlobalPanel extends JPanel {
 
 	//endregion
 
-	private void doAdjust() {
+	/**
+	 * Do adjust.
+	 */
+	public void actionPerformed(ActionEvent evt) {
 		int statIndex = statBox.getSelectedIndex();
 		if (statIndex < 0) return;
 
@@ -170,7 +169,7 @@ public class GlobalPanel extends JPanel {
 
 	private void adjustStats(int from, int to, int opId, int num, int min, int max) {
 		for (int p = 1; p < Player.TOTAL; p++) {
-			if (isPlayerInScope(p) && !isInExcludedTeam(p)) {
+			if (isPlayerInScope(p) && !inExcludedTeam(p)) {
 				for (int i = from; i < to; i++)
 					setStat(i, p, opId, num, min, max);
 			}
@@ -178,7 +177,7 @@ public class GlobalPanel extends JPanel {
 
 		if (forEditPlayer.isSelected()) {
 			for (int p = Player.FIRST_EDIT; p < Player.END_EDIT; p++) {
-				if (isPlayerInScope(p) && !isInExcludedTeam(p)) {
+				if (isPlayerInScope(p) && !inExcludedTeam(p)) {
 					for (int i = from; i < to; i++)
 						setStat(i, p, opId, num, min, max);
 				}
@@ -266,7 +265,7 @@ public class GlobalPanel extends JPanel {
 	/**
 	 * Determine whether the selected team contains the specified player or not.
 	 */
-	private boolean isInExcludedTeam(int player) {
+	private boolean inExcludedTeam(int player) {
 		int teamId = teamBox.getSelectedIndex();
 		if (teamId > 0) {
 			boolean toExclude = isExcluded.isSelected();

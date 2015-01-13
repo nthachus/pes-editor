@@ -67,11 +67,8 @@ public class LogoPanel extends JPanel implements ActionListener {
 		UIUtil.systemUI();
 
 		JButton transButton = new JButton(Resources.getMessage("Transparency"));
-		transButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onTransparency(evt);
-			}
-		});
+		transButton.setActionCommand("Transparency");
+		transButton.addActionListener(this);
 
 		JPanel contentPane = new JPanel(new BorderLayout());
 		contentPane.add(flagPanel, BorderLayout.CENTER);
@@ -80,38 +77,37 @@ public class LogoPanel extends JPanel implements ActionListener {
 		add(contentPane);
 	}
 
-	private void onTransparency(ActionEvent evt) {
-		isTrans = !isTrans;
-		refresh();
-	}
-
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 
-		AbstractButton btn = (AbstractButton) evt.getSource();
-		int slot = Integer.parseInt(btn.getActionCommand());
-		ImageIcon icon = new ImageIcon(Logos.get(of, slot, !isTrans));
+		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
+			isTrans = !isTrans;
+			refresh();
 
-		Object[] opts = getOptions(logoImportDia.isOf2Loaded());
-		int returnVal = JOptionPane.showOptionDialog(null,
-				Resources.getMessage("logo.title"), Resources.getMessage("logo.label"),
-				JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, icon, opts, opts[0]);
+		} else {
+			int slot = Integer.parseInt(evt.getActionCommand());
+			ImageIcon icon = new ImageIcon(Logos.get(of, slot, !isTrans));
 
-		switch (returnVal) {
-			case JOptionPane.YES_OPTION:
-				importLogo(slot);
-				break;
-			case JOptionPane.NO_OPTION:
-				if (Logos.isUsed(of, slot))
-					saveLogoAsPNG(slot);
-				break;
-			case JOptionPane.CANCEL_OPTION:
-				if (logoImportDia.isOf2Loaded())
-					importFromOF2(slot);
-				break;
-			default:
-				break;
+			Object[] opts = getOptions(logoImportDia.isOf2Loaded());
+			int returnVal = JOptionPane.showOptionDialog(null,
+					Resources.getMessage("logo.title"), Resources.getMessage("logo.label"),
+					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, icon, opts, opts[0]);
+
+			switch (returnVal) {
+				case JOptionPane.YES_OPTION:
+					importLogo(slot);
+					break;
+				case JOptionPane.NO_OPTION:
+					if (Logos.isUsed(of, slot))
+						saveLogoAsPNG(slot);
+					break;
+				case JOptionPane.CANCEL_OPTION:
+					if (logoImportDia.isOf2Loaded())
+						importFromOF2(slot);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 

@@ -83,10 +83,8 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 
-		AbstractButton btn = (AbstractButton) evt.getSource();
-		slot = Integer.parseInt(btn.getActionCommand());
+		slot = Integer.parseInt(evt.getActionCommand());
 		setVisible(false);
 	}
 

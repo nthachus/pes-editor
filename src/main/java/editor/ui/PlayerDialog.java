@@ -11,7 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PlayerDialog extends JDialog {
+public class PlayerDialog extends JDialog implements ActionListener {
 	private final OptionFile of;
 	private final PlayerImportDialog playerImportDia;
 
@@ -35,24 +35,14 @@ public class PlayerDialog extends JDialog {
 
 	private void initComponents() {
 		JButton acceptButton = new JButton(Resources.getMessage("player.accept"));
-		acceptButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				if (isFormValid()) {
-					updateStats();
-					setVisible(false);
-				}
-			}
-		});
+		acceptButton.setActionCommand("Accept");
+		acceptButton.addActionListener(this);
 
 		CancelButton cancelButton = new CancelButton(this);
 
 		importButton = new JButton(Resources.getMessage("player.import"));
-		importButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				playerImportDia.show(index);
-				setVisible(false);
-			}
-		});
+		importButton.setActionCommand("Import");
+		importButton.addActionListener(this);
 
 		generalPan = new GeneralAbilityPanel(of);
 		positionPan = new PositionPanel(of);
@@ -81,6 +71,20 @@ public class PlayerDialog extends JDialog {
 
 	public GeneralAbilityPanel getGeneralPan() {
 		return generalPan;
+	}
+
+	public void actionPerformed(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+
+		if ("Accept".equalsIgnoreCase(evt.getActionCommand())) {
+			if (isFormValid()) {
+				updateStats();
+				setVisible(false);
+			}
+		} else {
+			playerImportDia.show(index);
+			setVisible(false);
+		}
 	}
 
 	public void show(Player player) {

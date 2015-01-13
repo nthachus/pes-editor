@@ -10,20 +10,32 @@ public final class SaveGameInfoTest extends BaseTest {
 	private final SaveGameInfo saveInfo = new SaveGameInfo();
 
 	@Test
-	public void testGetInfo() throws Exception {
-		for (String fn : OF_ALL) {
-			File fs = getResourceFile(fn);
-			boolean res = saveInfo.getInfo(fs);
-			Assert.assertTrue(res);
-			// DEBUG
-			log.debug("SaveGame info: {}", saveInfo);
+	public void testGetInfoForOriginalOF() throws Exception {
+		testGetInfo(OF_ORIGINAL);
+	}
 
-			res = OptionFile.isValidGameId(saveInfo.getGame());
-			Assert.assertTrue(res);
+	@Test
+	public void testGetInfoForLicensedOF() throws Exception {
+		testGetInfo(OF_LICENSED);
+	}
 
-			if (!fn.endsWith(Files.PSU))
-				Assert.assertTrue(saveInfo.getGameName().length() > 0);
-		}
+	@Test
+	public void testGetInfoForLatestOF() throws Exception {
+		testGetInfo(OF_LATEST);
+	}
+
+	private void testGetInfo(String fn) throws Exception {
+		File fs = getResourceFile(fn);
+		boolean res = saveInfo.getInfo(fs);
+		Assert.assertTrue(res);
+		// DEBUG
+		log.debug("SaveGame info: {}", saveInfo);
+
+		res = OptionFile.isValidGameId(saveInfo.getGame());
+		Assert.assertTrue(res);
+
+		if (!fn.endsWith(Files.PSU))
+			Assert.assertTrue(saveInfo.getGameName().length() > 0);
 	}
 
 	@Test(expected = NullPointerException.class)

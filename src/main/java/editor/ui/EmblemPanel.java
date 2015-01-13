@@ -91,11 +91,8 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		contentPane.add(new JLabel(Resources.getMessage("emblem.label128"), SwingConstants.RIGHT), BorderLayout.SOUTH);
 
 		JButton transButton = new JButton(Resources.getMessage("Transparency"));
-		transButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onTransparency(/*evt*/);
-			}
-		});
+		transButton.setActionCommand("Transparency");
+		transButton.addActionListener(this);
 
 		JPanel bottomPane = new JPanel(new BorderLayout());
 		bottomPane.add(contentPane, BorderLayout.CENTER);
@@ -108,18 +105,12 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		free128Label = new JLabel();
 
 		addButton = new JButton(Resources.getMessage("emblem.add"));
-		addButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onAddEmblem();
-			}
-		});
+		addButton.setActionCommand("Add");
+		addButton.addActionListener(this);
 
 		add2Button = new JButton(Resources.getMessage("emblem.add2"));
-		add2Button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onAddEmblemFromOF2();
-			}
-		});
+		add2Button.setActionCommand("Add2");
+		add2Button.addActionListener(this);
 
 		JPanel freePan = new JPanel(new GridLayout(0, 1));
 		freePan.add(free16Label);
@@ -137,12 +128,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 
 	//endregion
 
-	private void onTransparency(/*ActionEvent evt*/) {
-		isTrans = !isTrans;
-		refresh();
-	}
-
-	private void onAddEmblem() {
+	private void addEmblem() {
 		if (Emblems.getFree128(of) <= 0 && Emblems.getFree16(of) <= 0)
 			return;
 
@@ -171,7 +157,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		}
 	}
 
-	private void onAddEmblemFromOF2() {
+	private void addEmblemFromOF2() {
 		int emblem = -1;
 		if (Emblems.getFree128(of) > 0) {
 			emblem = flagImportDia.getEmblem(Resources.getMessage("emblem.import"), null);
@@ -191,12 +177,8 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		}
 	}
 
-	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
-		if (!(evt.getSource() instanceof AbstractButton)) throw new NullPointerException("evt");
-
-		AbstractButton btn = (AbstractButton) evt.getSource();
-		int slot = Integer.parseInt(btn.getActionCommand());
+	private void selectEmblem(ActionEvent evt) {
+		int slot = Integer.parseInt(evt.getActionCommand());
 
 		Image icon;
 		boolean is128 = false;
@@ -229,6 +211,21 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 				break;
 			default:
 				break;
+		}
+	}
+
+	public void actionPerformed(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+
+		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
+			isTrans = !isTrans;
+			refresh();
+		} else if ("Add".equalsIgnoreCase(evt.getActionCommand())) {
+			addEmblem();
+		} else if ("Add2".equalsIgnoreCase(evt.getActionCommand())) {
+			addEmblemFromOF2();
+		} else {
+			selectEmblem(evt);
 		}
 	}
 

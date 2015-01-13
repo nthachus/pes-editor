@@ -10,15 +10,27 @@ public final class CsvMakerTest extends BaseTest {
 	private final CsvMaker csvMaker = new CsvMaker(true);
 
 	@Test
-	public void testExportCSV() throws Exception {
-		for (String fn : OF_ALL) {
-			OptionFile of = loadOptionFile(fn);
+	public void testExportCsvForOriginalOF() throws Exception {
+		testExportCsv(OF_ORIGINAL);
+	}
 
-			File fs = createTempFile(fn, Files.CSV);
-			boolean res = csvMaker.makeFile(of, fs, true/*, true*/, false);
+	@Test
+	public void testExportCsvForLicensedOF() throws Exception {
+		testExportCsv(OF_LICENSED);
+	}
 
-			Assert.assertTrue(res);
-		}
+	@Test
+	public void testExportCsvForLatestOF() throws Exception {
+		testExportCsv(OF_LATEST);
+	}
+
+	private void testExportCsv(String fn) throws Exception {
+		OptionFile of = loadOptionFile(fn);
+
+		File fs = createTempFile(fn, Files.CSV);
+		boolean res = csvMaker.makeFile(of, fs, true/*, true*/, false);
+
+		Assert.assertTrue(res);
 	}
 
 	@Test(expected = NullPointerException.class)

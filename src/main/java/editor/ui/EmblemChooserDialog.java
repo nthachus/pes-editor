@@ -31,8 +31,8 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 		for (int i = 0; i < emblemButtons.length; i++) {
 			emblemButtons[i] = new JButton(new ImageIcon(Emblems.BLANK16));
 			emblemButtons[i].setMargin(new Insets(0, 0, 0, 0));
-			emblemButtons[i].setActionCommand(Integer.toString(i));
 			emblemButtons[i].setPreferredSize(new Dimension(refSize, refSize));
+			emblemButtons[i].setActionCommand(Integer.toString(i));
 			emblemButtons[i].addActionListener(this);
 
 			flagPanel.add(emblemButtons[i]);
@@ -40,11 +40,8 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 		UIUtil.systemUI();
 
 		JButton transButton = new JButton(Resources.getMessage("Transparency"));
-		transButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onTransparency(evt);
-			}
-		});
+		transButton.setActionCommand("Transparency");
+		transButton.addActionListener(this);
 
 		CancelButton cancelButton = new CancelButton(this);
 		getContentPane().add(transButton, BorderLayout.NORTH);
@@ -57,22 +54,21 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 
-		AbstractButton btn = (AbstractButton) evt.getSource();
-		slot = Integer.parseInt(btn.getActionCommand());
-		if (slot >= Emblems.count16(of)) {
-			slot = Emblems.TOTAL16 - slot - 1;
+		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
+			isTrans = !isTrans;
+			refresh();
+
 		} else {
-			slot += Emblems.TOTAL128;
+			slot = Integer.parseInt(evt.getActionCommand());
+			if (slot >= Emblems.count16(of)) {
+				slot = Emblems.TOTAL16 - slot - 1;
+			} else {
+				slot += Emblems.TOTAL128;
+			}
+
+			setVisible(false);
 		}
-
-		setVisible(false);
-	}
-
-	private void onTransparency(ActionEvent evt) {
-		isTrans = !isTrans;
-		refresh();
 	}
 
 	public void refresh() {

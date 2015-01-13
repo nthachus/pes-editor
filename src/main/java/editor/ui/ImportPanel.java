@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ImportPanel extends JPanel {
+public class ImportPanel extends JPanel implements ActionListener {
 	private final OptionFile of;
 	private final OptionFile of2;
 
@@ -54,53 +54,32 @@ public class ImportPanel extends JPanel {
 
 	private void initComponents() {
 		optionsButton = new JButton(Resources.getMessage("import.options"));
-		optionsButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				importOptions();
-			}
-		});
+		optionsButton.setActionCommand("Options");
+		optionsButton.addActionListener(this);
 
 		stadiumButton = new JButton(Resources.getMessage("import.stadiums"));
-		stadiumButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				importStadiums();
-			}
-		});
+		stadiumButton.setActionCommand("Stadiums");
+		stadiumButton.addActionListener(this);
 
 		leagueButton = new JButton(Resources.getMessage("import.leagues"));
-		leagueButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				importLeagues();
-			}
-		});
+		leagueButton.setActionCommand("Leagues");
+		leagueButton.addActionListener(this);
 
 		bootsButton = new JButton(Resources.getMessage("import.boots"));
-		bootsButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				importBoots();
-			}
-		});
+		bootsButton.setActionCommand("Boots");
+		bootsButton.addActionListener(this);
 
 		playerButton = new JButton(Resources.getMessage("import.players"));
-		playerButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				importPlayers();
-			}
-		});
+		playerButton.setActionCommand("Players");
+		playerButton.addActionListener(this);
 
 		clubNameButton = new JButton(Resources.getMessage("import.clubs"));
-		clubNameButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				importClubs();
-			}
-		});
+		clubNameButton.setActionCommand("Clubs");
+		clubNameButton.addActionListener(this);
 
 		allKitButton = new JButton(Resources.getMessage("import.kits"));
-		allKitButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				importKits();
-			}
-		});
+		allKitButton.setActionCommand("Kits");
+		allKitButton.addActionListener(this);
 
 		JPanel buttonsPan = new JPanel(new GridLayout(0, 1));
 		buttonsPan.add(optionsButton);
@@ -119,6 +98,26 @@ public class ImportPanel extends JPanel {
 
 		add(msgLabel, BorderLayout.NORTH);
 		add(contentPane, BorderLayout.CENTER);
+	}
+
+	public void actionPerformed(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+
+		if ("Options".equalsIgnoreCase(evt.getActionCommand())) {
+			importOptions();
+		} else if ("Stadiums".equalsIgnoreCase(evt.getActionCommand())) {
+			importStadiums();
+		} else if ("Leagues".equalsIgnoreCase(evt.getActionCommand())) {
+			importLeagues();
+		} else if ("Boots".equalsIgnoreCase(evt.getActionCommand())) {
+			importBoots();
+		} else if ("Players".equalsIgnoreCase(evt.getActionCommand())) {
+			importPlayers();
+		} else if ("Clubs".equalsIgnoreCase(evt.getActionCommand())) {
+			importClubs();
+		} else/* if ("Kits".equalsIgnoreCase(evt.getActionCommand()))*/ {
+			importKits();
+		}
 	}
 
 	private void importKits() {

@@ -42,11 +42,8 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 		UIUtil.systemUI();
 
 		JButton transButton = new JButton(Resources.getMessage("Transparency"));
-		transButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onTransparency(evt);
-			}
-		});
+		transButton.setActionCommand("Transparency");
+		transButton.addActionListener(this);
 
 		CancelButton cancelButton = new CancelButton(this);
 
@@ -64,18 +61,16 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 		pack();
 	}
 
-	private void onTransparency(ActionEvent evt) {
-		isTrans = !isTrans;
-		refresh();
-	}
-
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 
-		AbstractButton btn = (AbstractButton) evt.getSource();
-		slot = Integer.parseInt(btn.getActionCommand());
-		setVisible(false);
+		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
+			isTrans = !isTrans;
+			refresh();
+		} else {
+			slot = Integer.parseInt(evt.getActionCommand());
+			setVisible(false);
+		}
 	}
 
 	public void refresh() {

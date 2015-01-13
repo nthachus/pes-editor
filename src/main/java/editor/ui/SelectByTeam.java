@@ -1,9 +1,6 @@
 package editor.ui;
 
-import editor.data.Clubs;
-import editor.data.OptionFile;
-import editor.data.Squads;
-import editor.data.Stats;
+import editor.data.*;
 import editor.util.Resources;
 
 import javax.swing.*;
@@ -11,7 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SelectByTeam extends JPanel {
+public class SelectByTeam extends JPanel implements ActionListener {
 	private final OptionFile of;
 	private final boolean isNormal;
 
@@ -31,12 +28,8 @@ public class SelectByTeam extends JPanel {
 
 	private void initComponents() {
 		teamBox = new JComboBox<String>();
-		teamBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onTeamChanged(evt);
-			}
-		});
-		teamBox.setMaximumRowCount(32);
+		teamBox.setMaximumRowCount(Formations.CLUB_TEAM_SIZE);
+		teamBox.addActionListener(this);
 		add(teamBox, BorderLayout.NORTH);
 
 		squadList = new SquadList(of, isNormal);
@@ -81,7 +74,7 @@ public class SelectByTeam extends JPanel {
 		return posList;
 	}
 
-	private void onTeamChanged(ActionEvent evt) {
+	public void actionPerformed(ActionEvent evt) {
 		int teamId = teamBox.getSelectedIndex();
 		if (teamId >= 0) {
 			squadList.refresh(teamId, true);

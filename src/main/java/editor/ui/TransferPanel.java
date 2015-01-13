@@ -17,7 +17,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class TransferPanel extends JPanel
-		implements MouseListener, DropTargetListener, DragSourceListener, DragGestureListener {
+		implements ActionListener, MouseListener, DropTargetListener, DragSourceListener, DragGestureListener {
 	//private static final Logger log = LoggerFactory.getLogger(TransferPanel.class);
 
 	private final OptionFile of;
@@ -70,11 +70,8 @@ public class TransferPanel extends JPanel
 		safeMode.setSelected(true);
 
 		JButton compareBtn = new JButton(Resources.getMessage("transfer.compare"));
-		compareBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				compareStats();
-			}
-		});
+		compareBtn.setActionCommand("Compare");
+		compareBtn.addActionListener(this);
 
 		freeList = new SelectByNation(of);
 		freeList.getFreeList().setToolTipText(Resources.getMessage("transfer.freeList.tip"));
@@ -139,6 +136,11 @@ public class TransferPanel extends JPanel
 	}
 
 	//endregion
+
+	public void actionPerformed(ActionEvent evt) {
+		//if ("Compare".equalsIgnoreCase(evt.getActionCommand()))
+		compareStats();
+	}
 
 	private void compareStats() {
 		if (compareIndex == 0) {

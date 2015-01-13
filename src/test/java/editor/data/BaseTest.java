@@ -24,8 +24,6 @@ public abstract class BaseTest {
 	protected static final String OF_LICENSED = "PES2013_OF_FredPSG_V1.2.max";
 	protected static final String OF_LATEST = "PES2013_VRS_2.0_UK-Dany.xps";
 
-	protected static final String[] OF_ALL = {OF_ORIGINAL, OF_LICENSED, OF_LATEST};
-
 	public static final String IMG_FORMAT = "png";
 
 	public static String getResourcePath(String resourceName) {

@@ -39,9 +39,9 @@ public class JobList extends JList<String> implements ListSelectionListener {
 		addListSelectionListener(this);
 	}
 
-	public int getTeam() {
+	/*public int getTeam() {
 		return team;
-	}
+	}*/
 
 	public void refresh(int team) {
 		isOk = false;
@@ -68,12 +68,11 @@ public class JobList extends JList<String> implements ListSelectionListener {
 
 	public void valueChanged(ListSelectionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+		if (evt.getValueIsAdjusting()) return;
 
-		if (!evt.getValueIsAdjusting()) {
-			if (!isSelectionEmpty() && isOk) {
-				Formations.setJob(of, team, offset, getSelectedIndex());
-				refresh(team);
-			}
+		if (!isSelectionEmpty() && isOk) {
+			Formations.setJob(of, team, offset, getSelectedIndex());
+			refresh(team);
 		}
 	}
 

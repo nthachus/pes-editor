@@ -75,27 +75,18 @@ public class TeamPanel extends JPanel
 
 		backButton = new JButton(new ImageIcon(Emblems.BLANK16));
 		backButton.setBackground(UIUtil.GRAY80);
-		backButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onSelectBackFlag();
-			}
-		});
+		backButton.setActionCommand("BackFlag");
+		backButton.addActionListener(this);
 
 		color1Btn = new JButton();
 		color1Btn.setPreferredSize(new Dimension(20, 20));
-		color1Btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onSelectBgColor(1);
-			}
-		});
+		color1Btn.setActionCommand("Color1");
+		color1Btn.addActionListener(this);
 
 		color2Btn = new JButton();
 		color2Btn.setPreferredSize(new Dimension(20, 20));
-		color2Btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onSelectBgColor(2);
-			}
-		});
+		color2Btn.setActionCommand("Color2");
+		color2Btn.addActionListener(this);
 
 		badgeButton = new JButton(new ImageIcon(Emblems.BLANK16));
 		badgeButton.setBackground(UIUtil.GRAY80);
@@ -107,28 +98,18 @@ public class TeamPanel extends JPanel
 
 		JButton copyBtn = new JButton(new CopySwapIcon(false));
 		copyBtn.setToolTipText(Resources.getMessage("teamPane.copyTip"));
-		copyBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onCopyToBackColor2();
-			}
-		});
+		copyBtn.setActionCommand("CopyColor");
+		copyBtn.addActionListener(this);
 
 		JButton swapBtn = new JButton(new CopySwapIcon(true));
 		swapBtn.setToolTipText(Resources.getMessage("teamPane.swapTip"));
-		swapBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onSwapBackColors();
-			}
-		});
+		swapBtn.setActionCommand("SwapColor");
+		swapBtn.addActionListener(this);
 
 		stadiumBox = new JComboBox<String>();
 		stadiumBox.setAlignmentX(CENTER_ALIGNMENT);
 		stadiumBox.setPreferredSize(new Dimension(375, 25));
-		stadiumBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onSelectStadium(evt);
-			}
-		});
+		stadiumBox.addActionListener(this);
 
 		teamList = new JList<String>();
 		teamList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -206,7 +187,7 @@ public class TeamPanel extends JPanel
 
 	//endregion
 
-	public JList<String> getList() {
+	public JList getList() {
 		return teamList;
 	}
 
@@ -214,7 +195,27 @@ public class TeamPanel extends JPanel
 		this.emblemPan = emblemPan;
 	}
 
-	private void onSelectBackFlag() {
+	public void actionPerformed(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+
+		if ("BackFlag".equalsIgnoreCase(evt.getActionCommand())) {
+			selectBackFlag();
+		} else if ("Color1".equalsIgnoreCase(evt.getActionCommand())) {
+			selectBgColor(1);
+		} else if ("Color2".equalsIgnoreCase(evt.getActionCommand())) {
+			selectBgColor(2);
+		} else if ("CopyColor".equalsIgnoreCase(evt.getActionCommand())) {
+			copyToBackColor2();
+		} else if ("SwapColor".equalsIgnoreCase(evt.getActionCommand())) {
+			swapBackColors();
+		} else if (evt.getSource() == stadiumBox) {
+			stadiumChanged(evt);
+		} else {
+			clubNameChanged(evt);
+		}
+	}
+
+	private void selectBackFlag() {
 		int team = teamList.getSelectedIndex();
 		if (team < 0) return;
 
@@ -226,7 +227,7 @@ public class TeamPanel extends JPanel
 		}
 	}
 
-	private void onSelectBgColor(int colorNo) {
+	private void selectBgColor(int colorNo) {
 		int team = teamList.getSelectedIndex();
 		if (team < 0) return;
 
@@ -245,7 +246,7 @@ public class TeamPanel extends JPanel
 		}
 	}
 
-	private void onCopyToBackColor2() {
+	private void copyToBackColor2() {
 		int team = teamList.getSelectedIndex();
 		if (team < 0) return;
 
@@ -255,7 +256,7 @@ public class TeamPanel extends JPanel
 		updateBackButton(team);
 	}
 
-	private void onSwapBackColors() {
+	private void swapBackColors() {
 		int team = teamList.getSelectedIndex();
 		if (team < 0) return;
 
@@ -269,8 +270,7 @@ public class TeamPanel extends JPanel
 		updateBackButton(team);
 	}
 
-	private void onSelectStadium(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+	private void stadiumChanged(ActionEvent evt) {
 		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
 			return;
 
@@ -320,17 +320,15 @@ public class TeamPanel extends JPanel
 	/**
 	 * On club name / abbreviation name changed.
 	 */
-	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
-		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
-
+	private void clubNameChanged(ActionEvent evt) {
 		int team = teamList.getSelectedIndex();
 		if (team < 0) return;
 
+		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
 		JTextComponent tf = (JTextComponent) evt.getSource();
+
 		String name = tf.getText();
 		boolean updated = false;
-
 		if (null != name) {
 			if (tf == nameField) {
 				if (name.length() <= Clubs.NAME_LEN) {
@@ -425,7 +423,7 @@ public class TeamPanel extends JPanel
 	 */
 	public void mouseClicked(MouseEvent e) {
 		if (null == e) throw new NullPointerException("e");
-		if (null == e.getSource()) throw new IllegalArgumentException("e");
+		if (null == e.getSource()) throw new NullPointerException("e.source");
 
 		int team = teamList.getSelectedIndex();
 		if (team < 0) return;

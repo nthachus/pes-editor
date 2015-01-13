@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class TeamSettingPanel extends JPanel {
+public class TeamSettingPanel extends JPanel implements ActionListener {
 	private static final String[] ITEMS3 = {"A", "B", "C"};
 
 	private final OptionFile of;
@@ -31,15 +31,10 @@ public class TeamSettingPanel extends JPanel {
 	private void initComponents() {
 		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("setting.title")));
 
-		ActionListener listener = new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onBoxChanged(evt);
-			}
-		};
 		for (int i = 0; i < boxes.length; i++) {
 			boxes[i] = new JComboBox<String>(ITEMS3);
 			boxes[i].setActionCommand(Integer.toString(i));
-			boxes[i].addActionListener(listener);
+			boxes[i].addActionListener(this);
 		}
 
 		GridBagConstraints grid = new GridBagConstraints();
@@ -81,7 +76,7 @@ public class TeamSettingPanel extends JPanel {
 		add(boxes[3], grid);
 	}
 
-	private void onBoxChanged(ActionEvent evt) {
+	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
 
 		if (isOk) {
@@ -99,7 +94,8 @@ public class TeamSettingPanel extends JPanel {
 		isOk = false;
 
 		for (int i = 0; i < boxes.length; i++) {
-			boxes[i].setSelectedIndex(Formations.getTeamSetting(of, squad, alt, i));
+			int setting = Formations.getTeamSetting(of, squad, alt, i);
+			boxes[i].setSelectedIndex(setting);
 		}
 
 		isOk = true;

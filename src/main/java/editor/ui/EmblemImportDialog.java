@@ -44,11 +44,8 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 		UIUtil.systemUI();
 
 		JButton transButton = new JButton(Resources.getMessage("Transparency"));
-		transButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onTransparency(evt);
-			}
-		});
+		transButton.setActionCommand("Transparency");
+		transButton.addActionListener(this);
 
 		CancelButton cancelButton = new CancelButton(this);
 
@@ -66,24 +63,23 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 		pack();
 	}
 
-	private void onTransparency(ActionEvent evt) {
-		isTrans = !isTrans;
-		refresh();
-	}
-
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		if (!(evt.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("evt");
 
-		AbstractButton btn = (AbstractButton) evt.getSource();
-		slot = Integer.parseInt(btn.getActionCommand());
-		if (slot >= Emblems.count16(of2)) {
-			slot = Emblems.TOTAL16 - slot - 1;
+		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
+			isTrans = !isTrans;
+			refresh();
+
 		} else {
-			slot += Emblems.TOTAL128;
-		}
+			slot = Integer.parseInt(evt.getActionCommand());
+			if (slot >= Emblems.count16(of2)) {
+				slot = Emblems.TOTAL16 - slot - 1;
+			} else {
+				slot += Emblems.TOTAL128;
+			}
 
-		setVisible(false);
+			setVisible(false);
+		}
 	}
 
 	public boolean isOf2Loaded() {

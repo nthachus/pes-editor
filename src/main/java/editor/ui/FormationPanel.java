@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FormationPanel extends JPanel
-		implements ListSelectionListener, DropTargetListener, DragSourceListener, DragGestureListener {
+		implements ActionListener, ListSelectionListener, DropTargetListener, DragSourceListener, DragGestureListener {
 	private static final Logger log = LoggerFactory.getLogger(FormationPanel.class);
 
 	private final OptionFile of;
@@ -79,19 +79,11 @@ public class FormationPanel extends JPanel
 		numList = new SquadNumberList(of);
 
 		altBox = new JComboBox<String>(Formations.ALT_ITEMS);
-		altBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onAltChanged(evt);
-			}
-		});
+		altBox.addActionListener(this);
 
 		roleBox = new JComboBox<Role>();
 		roleBox.setPreferredSize(new Dimension(56, 25));
-		roleBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onRoleChanged(evt);
-			}
-		});
+		roleBox.addActionListener(this);
 
 		squadList = new SquadList(of, true);
 		//squadList.setToolTipText(Resources.getMessage("formation.squadTip"));
@@ -123,20 +115,13 @@ public class FormationPanel extends JPanel
 		captain.setToolTipText(Resources.getMessage("formation.captain"));
 
 		formNamesBox = new JComboBox<String>();
-		formNamesBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onFormationChanged(evt);
-			}
-		});
 		//formNamesBox.setEnabled(false);
+		formNamesBox.addActionListener(this);
 
 		JButton snapButton = new JButton(Resources.getMessage("formation.snapshot"));
 		snapButton.setToolTipText(Resources.getMessage("formation.snapTip"));
-		snapButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				saveStrategyAsPNG();
-			}
-		});
+		snapButton.setActionCommand("Snapshot");
+		snapButton.addActionListener(this);
 
 		JPanel rolePickPan = new JPanel(new GridLayout(0, 6));
 		rolePickPan.add(lFK);
@@ -188,8 +173,21 @@ public class FormationPanel extends JPanel
 		this.isFromPitch = isFromPitch;
 	}
 
-	private void onAltChanged(ActionEvent evt) {
+	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+
+		if (evt.getSource() == altBox) {
+			altChanged(evt);
+		} else if (evt.getSource() == roleBox) {
+			roleChanged(evt);
+		} else if (evt.getSource() == formNamesBox) {
+			formationChanged(evt);
+		} else/* if ("Snapshot".equalsIgnoreCase(evt.getActionCommand()))*/ {
+			saveStrategyAsPNG();
+		}
+	}
+
+	private void altChanged(ActionEvent evt) {
 		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
 			return;
 
@@ -207,8 +205,7 @@ public class FormationPanel extends JPanel
 		atkDefPanel.repaint();
 	}
 
-	private void onRoleChanged(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+	private void roleChanged(ActionEvent evt) {
 		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
 			return;
 
@@ -286,8 +283,7 @@ public class FormationPanel extends JPanel
 		}
 	}
 
-	private void onFormationChanged(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+	private void formationChanged(ActionEvent evt) {
 		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
 			return;
 
@@ -639,7 +635,7 @@ public class FormationPanel extends JPanel
 
 	public void dragOver(DropTargetDragEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		if (null == evt.getLocation()) throw new IllegalArgumentException("evt");
+		if (null == evt.getLocation()) throw new NullPointerException("evt.location");
 
 		int squadIndex = squadList.locationToIndex(evt.getLocation());
 		squadList.setSelectedIndex(squadIndex);
@@ -655,7 +651,7 @@ public class FormationPanel extends JPanel
 	public void drop(DropTargetDropEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
 		Transferable transferable = evt.getTransferable();
-		if (null == transferable) throw new IllegalArgumentException("evt");
+		if (null == transferable) throw new NullPointerException("evt.transferable");
 
 		if (!transferable.isDataFlavorSupported(PlayerTransferable.getDataFlavor())) {
 			evt.rejectDrop();
@@ -708,7 +704,7 @@ public class FormationPanel extends JPanel
 
 	public void dragGestureRecognized(DragGestureEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		if (null == evt.getDragSource()) throw new IllegalArgumentException("evt");
+		if (null == evt.getDragSource()) throw new NullPointerException("evt.dragSource");
 
 		sourceIndex = squadList.getSelectedIndex();
 		Player p = squadList.getSelectedValue();

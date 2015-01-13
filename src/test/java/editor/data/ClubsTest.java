@@ -90,6 +90,7 @@ public final class ClubsTest extends BaseTest {
 
 	@Test
 	public void testSetEmblem() throws Exception {
+		// TODO: test emblem updating for latestOF
 	}
 
 	@Test

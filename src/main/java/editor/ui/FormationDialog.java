@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-public class FormationDialog extends JDialog implements WindowListener {
+public class FormationDialog extends JDialog implements ActionListener, WindowListener {
 	private final OptionFile of;
 	private final byte[] original = new byte[Formations.SIZE];
 	private volatile int squadIndex;
@@ -30,18 +30,12 @@ public class FormationDialog extends JDialog implements WindowListener {
 		formationPan = new FormationPanel(of);
 
 		JButton acceptButton = new JButton(Resources.getMessage("Accept"));
-		acceptButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				setVisible(false);
-			}
-		});
+		acceptButton.setActionCommand("Accept");
+		acceptButton.addActionListener(this);
 
 		JButton cancelButton = new JButton(Resources.getMessage("Cancel"));
-		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				onCancel(evt);
-			}
-		});
+		cancelButton.setActionCommand("Cancel");
+		cancelButton.addActionListener(this);
 
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.add(acceptButton);
@@ -69,14 +63,23 @@ public class FormationDialog extends JDialog implements WindowListener {
 		setVisible(true);
 	}
 
-	private void onCancel(ActionEvent evt) {
-		windowClosing(null);
+	public void actionPerformed(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+
+		if ("Cancel".equalsIgnoreCase(evt.getActionCommand())) {
+			restoreData();
+		}
+		//else if ("Accept".equalsIgnoreCase(evt.getActionCommand()))
 		setVisible(false);
 	}
 
-	public void windowClosing(WindowEvent e) {
+	private void restoreData() {
 		int adr = Formations.getOffset(squadIndex);
 		System.arraycopy(original, 0, of.getData(), adr, original.length);
+	}
+
+	public void windowClosing(WindowEvent e) {
+		restoreData();
 	}
 
 	public void windowClosed(WindowEvent e) {
