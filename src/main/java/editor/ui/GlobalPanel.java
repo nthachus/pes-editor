@@ -27,9 +27,9 @@ public class GlobalPanel extends JPanel implements ActionListener {
 	//region Initialize the GUI components
 
 	private JTextField numField;
-	private JComboBox<String> statBox;
-	private JComboBox<String> opBox;
-	private JComboBox<String> scopeBox;
+	private JComboBox statBox;
+	private JComboBox opBox;
+	private JComboBox scopeBox;
 	private JComboBox<String> teamBox;
 	private JCheckBox isExcluded;
 	private JCheckBox forEditPlayer;

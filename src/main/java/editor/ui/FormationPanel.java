@@ -63,7 +63,7 @@ public class FormationPanel extends JPanel
 	private PitchPanel pitchPanel;
 	private AtkDefPanel atkDefPanel;
 	private JComboBox<Role> roleBox;
-	private JComboBox<String> altBox;
+	private JComboBox altBox;
 	private SquadNumberList numList;
 	private JFileChooser pngChooser;
 	private TeamSettingPanel teamSettingPan;

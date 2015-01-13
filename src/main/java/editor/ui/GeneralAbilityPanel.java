@@ -23,20 +23,20 @@ public class GeneralAbilityPanel extends JPanel {
 		initComponents();
 	}
 
-	private/* final*/ JComboBox<String> nationBox;
+	private/* final*/ JComboBox nationBox;
 	private/* final*/ JTextField ageField;
 	private/* final*/ JTextField heightField;
 	private/* final*/ JTextField weightField;
-	private/* final*/ JComboBox<String> footBox;
-	private/* final*/ JComboBox<String> weakFootAccBox;
-	private/* final*/ JComboBox<String> weakFootFreqBox;
-	private/* final*/ JComboBox<String> consistencyBox;
-	private/* final*/ JComboBox<String> conditionBox;
-	private/* final*/ JComboBox<String> injuryBox;
-	private/* final*/ JComboBox<String> fkBox;
-	private/* final*/ JComboBox<String> pkBox;
-	private/* final*/ JComboBox<String> dribbleBox;
-	private/* final*/ JComboBox<String> dkBox;
+	private/* final*/ JComboBox footBox;
+	private/* final*/ JComboBox weakFootAccBox;
+	private/* final*/ JComboBox weakFootFreqBox;
+	private/* final*/ JComboBox consistencyBox;
+	private/* final*/ JComboBox conditionBox;
+	private/* final*/ JComboBox injuryBox;
+	private/* final*/ JComboBox fkBox;
+	private/* final*/ JComboBox pkBox;
+	private/* final*/ JComboBox dribbleBox;
+	private/* final*/ JComboBox dkBox;
 
 	private void initComponents() {
 		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("genAbility.title")));

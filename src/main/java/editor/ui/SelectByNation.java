@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class SelectByNation extends JPanel implements ActionListener {
 	private final NationalityList freeList;
-	private/* final*/ JComboBox<String> nationBox;
+	private/* final*/ JComboBox nationBox;
 	private/* final*/ JButton sortButton;
 
 	private volatile boolean isAlphaOrder = true;
