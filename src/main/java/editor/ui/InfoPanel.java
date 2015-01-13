@@ -2,8 +2,8 @@ package editor.ui;
 
 import editor.data.*;
 import editor.util.Bits;
-import editor.util.Colors;
 import editor.util.Resources;
+import editor.util.UIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -229,7 +229,7 @@ public class InfoPanel extends JScrollPane {
 		StyleConstants.setForeground(attr, Color.WHITE);
 		doc.insertString(doc.getLength(), Resources.getMessage("info.squads"), attr);
 
-		ComboBoxModel<String> teams = selector.getTeamBox().getModel();
+		ComboBoxModel teams = selector.getTeamBox().getModel();
 		int adr = Squads.NATION_ADR;
 		while (adr < Squads.END_ADR) {
 			int id = Bits.toInt16(of.getData(), adr);
@@ -385,7 +385,7 @@ public class InfoPanel extends JScrollPane {
 			} else if (val >= 80) {
 				return Color.YELLOW;
 			} else if (val >= 75) {
-				return Colors.CHARTREUSE0;
+				return UIUtil.CHARTREUSE0;
 			}
 		}
 		return Color.WHITE;

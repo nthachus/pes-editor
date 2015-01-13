@@ -66,7 +66,7 @@ public class SelectByTeam extends JPanel {
 		return squadList;
 	}
 
-	public JComboBox<String> getTeamBox() {
+	public JComboBox getTeamBox() {
 		return teamBox;
 	}
 

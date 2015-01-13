@@ -33,7 +33,7 @@ public class JobList extends JList<String> implements ListSelectionListener {
 		setVisibleRowCount(Formations.CLUB_TEAM_SIZE);
 		setSelectionBackground(colour);
 		setSelectionForeground(Color.BLACK);
-		//setBackground(Colors.LIGHT_YELLOW);
+		//setBackground(UIUtil.LIGHT_YELLOW);
 		//setFont(new Font(Font.DIALOG, Font.BOLD, 12));
 
 		addListSelectionListener(this);

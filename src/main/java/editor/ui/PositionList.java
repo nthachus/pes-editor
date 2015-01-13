@@ -1,7 +1,7 @@
 package editor.ui;
 
 import editor.data.*;
-import editor.util.Colors;
+import editor.util.UIUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +25,7 @@ public class PositionList extends JList<String> {
 		setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		setLayoutOrientation(JList.VERTICAL);
 		setVisibleRowCount(Formations.CLUB_TEAM_SIZE);
-		setBackground(Colors.LIGHT_YELLOW);
+		setBackground(UIUtil.LIGHT_YELLOW);
 		setPreferredSize(new Dimension(32, 576));//30
 		//setFont(new Font(Font.DIALOG, Font.BOLD, 12));
 	}

@@ -2,9 +2,9 @@ package editor.ui;
 
 import editor.data.OptionFile;
 import editor.data.Stats;
-import editor.util.Colors;
 import editor.util.Resources;
 import editor.util.Strings;
+import editor.util.UIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -139,7 +139,7 @@ public class Ability99Panel extends JPanel
 			try {
 				int v = Integer.parseInt(text);
 				if (v >= 75 && v < 80) {
-					bg = Colors.CHARTREUSE0;
+					bg = UIUtil.CHARTREUSE0;
 				} else if (v >= 80 && v < 90) {
 					bg = Color.YELLOW;
 				} else if (v >= 90 && v < 95) {

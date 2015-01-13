@@ -4,7 +4,7 @@ import editor.data.EmblemType;
 import editor.data.Emblems;
 import editor.data.OptionFile;
 import editor.util.Resources;
-import editor.util.Systems;
+import editor.util.UIUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +32,7 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 	private void initComponents() {
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
 
-		Systems.javaUI();// fix button background color
+		UIUtil.javaUI();// fix button background color
 		for (int i = 0; i < emblemButtons.length; i++) {
 			emblemButtons[i] = new JButton(new ImageIcon(Emblems.BLANK_SMALL));
 			emblemButtons[i].setMargin(new Insets(0, 0, 0, 0));
@@ -41,7 +41,7 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 
 			flagPanel.add(emblemButtons[i]);
 		}
-		Systems.systemUI();
+		UIUtil.systemUI();
 
 		JButton transButton = new JButton(Resources.getMessage("Transparency"));
 		transButton.addActionListener(new ActionListener() {

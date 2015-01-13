@@ -7,7 +7,7 @@ import editor.data.Squads;
 import editor.util.Files;
 import editor.util.Resources;
 import editor.util.Strings;
-import editor.util.Systems;
+import editor.util.UIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -554,7 +554,7 @@ public final class Editor extends JFrame {
 							log.error("Unhandled exception occurred:", e);
 						}
 					});
-					Systems.systemUI();
+					UIUtil.systemUI();
 
 					Editor form = new Editor();
 					form.setVisible(true);

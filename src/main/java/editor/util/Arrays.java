@@ -1,5 +1,8 @@
 package editor.util;
 
+import java.util.Comparator;
+import java.util.Map;
+
 public final class Arrays {
 	private Arrays() {
 	}
@@ -21,6 +24,14 @@ public final class Arrays {
 				return i;
 		}
 		return -1;
+	}
+
+	public static class EntryValueComparator<K, V extends Comparable<? super V>>
+			implements Comparator<Map.Entry<K, V>> {
+
+		public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+			return o2.getValue().compareTo(o1.getValue());
+		}
 	}
 
 }

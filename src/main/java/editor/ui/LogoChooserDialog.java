@@ -3,7 +3,7 @@ package editor.ui;
 import editor.data.Logos;
 import editor.data.OptionFile;
 import editor.util.Resources;
-import editor.util.Systems;
+import editor.util.UIUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +30,7 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 	private void initComponents() {
 		JPanel flagPanel = new JPanel(new GridLayout(8, 10));
 
-		Systems.javaUI();// fix button background color
+		UIUtil.javaUI();// fix button background color
 		for (int l = 0; l < Logos.TOTAL; l++) {
 			flagButtons[l] = new JButton(new ImageIcon(Logos.BLANK));
 			flagButtons[l].setMargin(new Insets(0, 0, 0, 0));
@@ -39,7 +39,7 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 
 			flagPanel.add(flagButtons[l]);
 		}
-		Systems.systemUI();
+		UIUtil.systemUI();
 
 		JButton transButton = new JButton(Resources.getMessage("Transparency"));
 		transButton.addActionListener(new ActionListener() {

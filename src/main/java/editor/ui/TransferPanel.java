@@ -263,7 +263,7 @@ public class TransferPanel extends JPanel
 
 		int tt = team;
 		if (tt >= Squads.FIRST_CLUB) tt -= Squads.EDIT_TEAM_COUNT;
-		teamDia.show(tt, selectorL.getTeamBox().getItemAt(team));
+		teamDia.show(tt, (String) selectorL.getTeamBox().getItemAt(team));
 
 		Squads.fixFormation(of, team, false);
 		refreshLists();
@@ -283,7 +283,7 @@ public class TransferPanel extends JPanel
 
 		int clicks = e.getClickCount();
 		if (e.getButton() == MouseEvent.BUTTON1 && clicks > 1) {
-			if (e.getSource() instanceof JList<?>) {
+			if (e.getSource() instanceof JList) {
 
 				JList list = (JList) e.getSource();
 				Player p = (Player) list.getSelectedValue();
@@ -432,7 +432,7 @@ public class TransferPanel extends JPanel
 	public void dragOver(DropTargetDragEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
 		if (null == evt.getDropTargetContext()) throw new NullPointerException("evt.context");
-		if (!(evt.getDropTargetContext().getComponent() instanceof JList<?>))
+		if (!(evt.getDropTargetContext().getComponent() instanceof JList))
 			throw new IllegalArgumentException("evt");
 
 		JList targetList = (JList) evt.getDropTargetContext().getComponent();
@@ -466,7 +466,7 @@ public class TransferPanel extends JPanel
 		}
 
 		if (null == evt.getDropTargetContext()) throw new NullPointerException("evt.context");
-		if (!(evt.getDropTargetContext().getComponent() instanceof JList<?>))
+		if (!(evt.getDropTargetContext().getComponent() instanceof JList))
 			throw new IllegalArgumentException("evt");
 
 		JList targetList = (JList) evt.getDropTargetContext().getComponent();
@@ -530,7 +530,7 @@ public class TransferPanel extends JPanel
 
 	public void dragGestureRecognized(DragGestureEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		if (!(evt.getComponent() instanceof JList<?>)) throw new IllegalArgumentException("evt");
+		if (!(evt.getComponent() instanceof JList)) throw new IllegalArgumentException("evt");
 
 		sourceList = (JList) evt.getComponent();
 		sourceIndex = sourceList.getSelectedIndex();
@@ -1026,7 +1026,7 @@ public class TransferPanel extends JPanel
 		public void valueChanged(ListSelectionEvent evt) {
 			if (null == evt) throw new NullPointerException("evt");
 			if (evt.getValueIsAdjusting()) return;
-			if (!(evt.getSource() instanceof JList<?>)) throw new IllegalArgumentException("evt");
+			if (!(evt.getSource() instanceof JList)) throw new IllegalArgumentException("evt");
 
 			JList listS = (JList) evt.getSource();
 			if (listS.isSelectionEmpty()) {
@@ -1105,7 +1105,7 @@ public class TransferPanel extends JPanel
 		public void valueChanged(ListSelectionEvent evt) {
 			if (null == evt) throw new NullPointerException("evt");
 			if (evt.getValueIsAdjusting()) return;
-			if (!(evt.getSource() instanceof JList<?>)) throw new IllegalArgumentException("evt");
+			if (!(evt.getSource() instanceof JList)) throw new IllegalArgumentException("evt");
 
 			JList listS = (JList) evt.getSource();
 			if (listS.isSelectionEmpty()) {
@@ -1176,7 +1176,7 @@ public class TransferPanel extends JPanel
 		public void valueChanged(ListSelectionEvent evt) {
 			if (null == evt) throw new NullPointerException("evt");
 			if (evt.getValueIsAdjusting()) return;
-			if (!(evt.getSource() instanceof JList<?>)) throw new IllegalArgumentException("evt");
+			if (!(evt.getSource() instanceof JList)) throw new IllegalArgumentException("evt");
 
 			JList listS = (JList) evt.getSource();
 			if (listS.isSelectionEmpty()) {

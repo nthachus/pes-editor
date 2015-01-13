@@ -3,7 +3,10 @@ package editor.ui;
 import editor.data.EmblemType;
 import editor.data.Emblems;
 import editor.data.OptionFile;
-import editor.util.*;
+import editor.util.Files;
+import editor.util.Resources;
+import editor.util.Strings;
+import editor.util.UIUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -67,10 +70,10 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
 		int iconSize = Math.round(0.67f * Emblems.IMG_SIZE);
 
-		Systems.javaUI();// fix button background color
+		UIUtil.javaUI();// fix button background color
 		for (int i = 0; i < flagButtons.length; i++) {
 			flagButtons[i] = new JButton();
-			flagButtons[i].setBackground(Colors.GRAY80);
+			flagButtons[i].setBackground(UIUtil.GRAY80);
 			flagButtons[i].setMargin(new Insets(0, 0, 0, 0));
 			flagButtons[i].setPreferredSize(new Dimension(iconSize, iconSize));
 			flagButtons[i].setActionCommand(Integer.toString(i));
@@ -79,7 +82,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 
 			flagPanel.add(flagButtons[i]);
 		}
-		Systems.systemUI();
+		UIUtil.systemUI();
 
 		JPanel contentPane = new JPanel(new BorderLayout());
 		contentPane.setBorder(BorderFactory.createLineBorder(Color.GRAY));

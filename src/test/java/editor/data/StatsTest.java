@@ -1,6 +1,5 @@
 package editor.data;
 
-import editor.util.Systems;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,7 +32,7 @@ public final class StatsTest extends BaseTest {
 	public void testGetAndSetValue() throws Exception {
 		OptionFile of = loadLatestOF();
 
-		List<Stat> fields = Systems.readStaticFields(Stats.class, Stat.class, true, false);
+		List<Stat> fields = readStaticFields(Stats.class, Stat.class, true, false);
 		for (Stat st : fields) {
 			//log.debug("Process Stat: {}", st);
 

@@ -1,9 +1,8 @@
 package editor.ui;
 
 import editor.data.*;
-import editor.util.Colors;
 import editor.util.Resources;
-import editor.util.Systems;
+import editor.util.UIUtil;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -72,10 +71,10 @@ public class TeamPanel extends JPanel
 		defaultIcon = new DefaultIcon();
 		backChooser = new BackChooserDialog(null);
 
-		Systems.javaUI();// fix button background color
+		UIUtil.javaUI();// fix button background color
 
 		backButton = new JButton(new ImageIcon(Emblems.BLANK16));
-		backButton.setBackground(Colors.GRAY80);
+		backButton.setBackground(UIUtil.GRAY80);
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				onSelectBackFlag();
@@ -99,12 +98,12 @@ public class TeamPanel extends JPanel
 		});
 
 		badgeButton = new JButton(new ImageIcon(Emblems.BLANK16));
-		badgeButton.setBackground(Colors.GRAY80);
+		badgeButton.setBackground(UIUtil.GRAY80);
 		badgeButton.setToolTipText(Resources.getMessage("teamPane.badgeTip"));
 		badgeButton.setAlignmentX(CENTER_ALIGNMENT);
 		badgeButton.addMouseListener(this);
 
-		Systems.systemUI();
+		UIUtil.systemUI();
 
 		JButton copyBtn = new JButton(new CopySwapIcon(false));
 		copyBtn.setToolTipText(Resources.getMessage("teamPane.copyTip"));

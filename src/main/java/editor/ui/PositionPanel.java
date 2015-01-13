@@ -61,7 +61,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 	/**
 	 * Registered position.
 	 */
-	public JComboBox<String> getRegBox() {
+	public JComboBox getRegBox() {
 		return regBox;
 	}
 

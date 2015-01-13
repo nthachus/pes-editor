@@ -53,10 +53,10 @@ public class LogoPanel extends JPanel implements ActionListener {
 		JPanel flagPanel = new JPanel(new GridLayout(8, 10));
 		int iconSize = Math.round(1.2f * Logos.IMG_SIZE);
 
-		Systems.javaUI();// fix button background color
+		UIUtil.javaUI();// fix button background color
 		for (int l = 0; l < flagButtons.length; l++) {
 			flagButtons[l] = new JButton();
-			flagButtons[l].setBackground(Colors.GRAY80);
+			flagButtons[l].setBackground(UIUtil.GRAY80);
 			flagButtons[l].setMargin(new Insets(0, 0, 0, 0));
 			flagButtons[l].setPreferredSize(new Dimension(iconSize, iconSize));
 			flagButtons[l].setActionCommand(Integer.toString(l));
@@ -64,7 +64,7 @@ public class LogoPanel extends JPanel implements ActionListener {
 
 			flagPanel.add(flagButtons[l]);
 		}
-		Systems.systemUI();
+		UIUtil.systemUI();
 
 		JButton transButton = new JButton(Resources.getMessage("Transparency"));
 		transButton.addActionListener(new ActionListener() {

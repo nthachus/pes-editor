@@ -253,11 +253,7 @@ public final class Images {
 
 		// sort the palette
 		List<Map.Entry<Integer, Integer>> list = new ArrayList<Map.Entry<Integer, Integer>>(map.entrySet());
-		Collections.sort(list, new Comparator<Map.Entry<Integer, Integer>>() {
-			public int compare(Map.Entry<Integer, Integer> o1, Map.Entry<Integer, Integer> o2) {
-				return o2.getValue().compareTo(o1.getValue());
-			}
-		});
+		Collections.sort(list, new Arrays.EntryValueComparator<Integer, Integer>());
 		log.debug("Sorted palette: {}", list);
 
 		int bitsDepth = bitsPerPixel(list.size());

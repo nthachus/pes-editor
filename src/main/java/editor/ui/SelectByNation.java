@@ -98,7 +98,7 @@ public class SelectByNation extends JPanel {
 		return freeList;
 	}
 
-	public JComboBox<String> getNationBox() {
+	public JComboBox getNationBox() {
 		return nationBox;
 	}
 

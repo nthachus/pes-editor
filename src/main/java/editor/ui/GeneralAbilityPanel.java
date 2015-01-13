@@ -101,7 +101,7 @@ public class GeneralAbilityPanel extends JPanel {
 		add(dkBox);
 	}
 
-	public JComboBox<String> getNationBox() {
+	public JComboBox getNationBox() {
 		return nationBox;
 	}
 
@@ -117,43 +117,43 @@ public class GeneralAbilityPanel extends JPanel {
 		return weightField;
 	}
 
-	public JComboBox<String> getFootBox() {
+	public JComboBox getFootBox() {
 		return footBox;
 	}
 
-	public JComboBox<String> getWeakFootAccBox() {
+	public JComboBox getWeakFootAccBox() {
 		return weakFootAccBox;
 	}
 
-	public JComboBox<String> getWeakFootFreqBox() {
+	public JComboBox getWeakFootFreqBox() {
 		return weakFootFreqBox;
 	}
 
-	public JComboBox<String> getConsistencyBox() {
+	public JComboBox getConsistencyBox() {
 		return consistencyBox;
 	}
 
-	public JComboBox<String> getConditionBox() {
+	public JComboBox getConditionBox() {
 		return conditionBox;
 	}
 
-	public JComboBox<String> getInjuryBox() {
+	public JComboBox getInjuryBox() {
 		return injuryBox;
 	}
 
-	public JComboBox<String> getFreeKickBox() {
+	public JComboBox getFreeKickBox() {
 		return fkBox;
 	}
 
-	public JComboBox<String> getPenaltyBox() {
+	public JComboBox getPenaltyBox() {
 		return pkBox;
 	}
 
-	public JComboBox<String> getDribbleBox() {
+	public JComboBox getDribbleBox() {
 		return dribbleBox;
 	}
 
-	public JComboBox<String> getDropKickBox() {
+	public JComboBox getDropKickBox() {
 		return dkBox;
 	}
 
