@@ -14,7 +14,7 @@ public class LeaguePanel extends JPanel implements ActionListener, ListSelection
 	private final OptionFile of;
 
 	private/* final*/ JTextField editor;
-	private/* final*/ JList<String> list;
+	private/* final*/ JList/*<String>*/ list;
 
 	public LeaguePanel(OptionFile of) {
 		super();
@@ -31,7 +31,7 @@ public class LeaguePanel extends JPanel implements ActionListener, ListSelection
 		editor.setDocument(new JTextFieldLimit(Leagues.NAME_LEN));
 		editor.addActionListener(this);
 
-		list = new JList<String>();
+		list = new JList/*<String>*/();
 		list.setFixedCellHeight(Math.round(1.25f * getFont().getSize()));
 		list.addListSelectionListener(this);
 
@@ -43,6 +43,7 @@ public class LeaguePanel extends JPanel implements ActionListener, ListSelection
 		add(contentPane);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void refresh() {
 		list.setListData(Leagues.get(of));
 	}

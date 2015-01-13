@@ -544,7 +544,7 @@ public class TeamPanel extends JPanel
 		boolean[] logoDelete = new boolean[usedLogos.length];
 		Arrays.fill(logoDelete, true);
 
-		for (int t = 0; t < teamList.getModel().getSize(); t++) {
+		for (int t = 0, sz = teamList.getModel().getSize(); t < sz; t++) {
 			if (t == team) continue;
 
 			for (int l = 0; l < logoDelete.length; l++) {

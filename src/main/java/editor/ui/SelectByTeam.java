@@ -13,7 +13,7 @@ public class SelectByTeam extends JPanel implements ActionListener {
 	private final boolean isNormal;
 
 	private/* final*/ SquadList squadList;
-	private/* final*/ JComboBox<String> teamBox;
+	private/* final*/ JComboBox/*<String>*/ teamBox;
 	private/* final*/ SquadNumberList numList;
 	private/* final*/ PositionList posList;
 
@@ -27,7 +27,7 @@ public class SelectByTeam extends JPanel implements ActionListener {
 	}
 
 	private void initComponents() {
-		teamBox = new JComboBox<String>();
+		teamBox = new JComboBox/*<String>*/();
 		teamBox.setMaximumRowCount(Formations.CLUB_TEAM_SIZE);
 		teamBox.addActionListener(this);
 		add(teamBox, BorderLayout.NORTH);
@@ -107,6 +107,7 @@ public class SelectByTeam extends JPanel implements ActionListener {
 		return squads;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void refresh() {
 		String[] squads = getAllTeams();
 		teamBox.setModel(new DefaultComboBoxModel<String>(squads));

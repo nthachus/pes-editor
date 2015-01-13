@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 
-public class PositionList extends JList<String> {
+public class PositionList extends JList/*<String>*/ {
 	private final OptionFile of;
 	private final boolean inTransfer;
 
@@ -40,6 +40,7 @@ public class PositionList extends JList<String> {
 		this.alt = alt;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void refresh(int team) {
 		String[] posList = new String[Formations.CLUB_TEAM_SIZE];
 		Arrays.fill(posList, " ");

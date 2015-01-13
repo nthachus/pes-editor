@@ -14,7 +14,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 	private volatile int regRole;
 
 	private final JCheckBox[] roleCheck = new JCheckBox[Stats.ROLES.length];
-	private/* final*/ JComboBox<String> regBox;
+	private/* final*/ JComboBox/*<String>*/ regBox;
 
 	public PositionPanel(OptionFile of) {
 		super(new BorderLayout());
@@ -42,7 +42,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 			}
 		}
 
-		regBox = new JComboBox<String>();
+		regBox = new JComboBox/*<String>*/();
 		regBox.addActionListener(this);
 
 		JLabel regLabel = new JLabel(Resources.getMessage("pos.registered"));
@@ -82,6 +82,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 		updateRegBox();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void updateRegBox() {
 		regBox.setActionCommand("n");
 		regBox.removeAllItems();

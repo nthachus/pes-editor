@@ -37,16 +37,16 @@ public class SquadList extends JList<Player> {
 		if (team < 0 || team > Squads.TOTAL)
 			throw new IndexOutOfBoundsException("team#" + team);
 
-		this.team = team;
 		if (!normal) {
-			if (this.team >= Squads.FIRST_EDIT_NATION)
-				this.team += Squads.EDIT_TEAM_COUNT;
+			if (team >= Squads.FIRST_EDIT_NATION)
+				team += Squads.EDIT_TEAM_COUNT;
 		}
 
+		this.team = team;
 		if (team >= Squads.TOTAL) {
 			fetchAllPlayers();
 		} else {
-			fetchPlayers(this.team);
+			fetchPlayers(team);
 		}
 	}
 

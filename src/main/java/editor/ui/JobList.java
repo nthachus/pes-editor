@@ -10,7 +10,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.util.Arrays;
 
-public class JobList extends JList<String> implements ListSelectionListener {
+public class JobList extends JList/*<String>*/ implements ListSelectionListener {
 	private final OptionFile of;
 	private final int offset;
 	private final String job;
@@ -43,6 +43,7 @@ public class JobList extends JList<String> implements ListSelectionListener {
 		return team;
 	}*/
 
+	@SuppressWarnings("unchecked")
 	public void refresh(int team) {
 		isOk = false;
 		this.team = team;

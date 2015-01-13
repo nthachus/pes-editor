@@ -15,7 +15,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 	private volatile int index = 0;
 
 	private JLabel fileLabel;
-	private JList<KitItem> list;
+	private JList/*<KitItem>*/ list;
 
 	public KitImportDialog(Frame owner, OptionFile of2) {
 		super(owner, Resources.getMessage("kitImport.title"), true);
@@ -28,7 +28,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 	private void initComponents() {
 		fileLabel = new JLabel(Resources.getMessage("import.label", ""));
 
-		list = new JList<KitItem>();
+		list = new JList/*<KitItem>*/();
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setLayoutOrientation(JList.VERTICAL);
 		list.setVisibleRowCount(20);
@@ -59,6 +59,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 		return index;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void refresh(int teamId) {
 		DefaultListModel<KitItem> model = new DefaultListModel<KitItem>();
 
@@ -115,7 +116,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 		int clicks = evt.getClickCount();
 		if (clicks > 1) {
 
-			KitItem item = list.getSelectedValue();
+			KitItem item = (KitItem) list.getSelectedValue();
 			if (null != item) {
 				index = item.teamId;
 				setVisible(false);

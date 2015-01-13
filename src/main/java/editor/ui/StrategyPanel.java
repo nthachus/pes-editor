@@ -25,7 +25,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 	private final JComboBox[] buttonBoxes = new JComboBox[ControlButton.size()];
 	private final JLabel[] labels = new JLabel[buttonBoxes.length];
 	private/* final*/ JButton autoButton;
-	private/* final*/ JComboBox<SweepItem> overlapBox;
+	private/* final*/ JComboBox/*<SweepItem>*/ overlapBox;
 
 	public StrategyPanel(OptionFile of, SquadList squadList) {
 		super(new GridBagLayout());
@@ -62,7 +62,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 		autoButton.setActionCommand("Auto");
 		autoButton.addActionListener(this);
 
-		overlapBox = new JComboBox<SweepItem>();
+		overlapBox = new JComboBox/*<SweepItem>*/();
 		overlapBox.setActionCommand("OverlapCB");
 		overlapBox.addActionListener(this);
 
@@ -195,6 +195,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void refreshOverlapBox(boolean olCB) {
 		overlapBox.removeAllItems();
 

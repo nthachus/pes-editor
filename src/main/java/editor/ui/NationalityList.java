@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.util.Collections;
 import java.util.Vector;
 
-public class NationalityList extends JList<Player> {
+public class NationalityList extends JList/*<Player>*/ {
 	private final OptionFile of;
 
 	public NationalityList(OptionFile of) {
@@ -20,6 +20,7 @@ public class NationalityList extends JList<Player> {
 		setVisibleRowCount(Formations.CLUB_TEAM_SIZE);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void refresh(int nation, boolean alphaOrder) {
 		int extraCount = SelectByNation.getExtraNations().length;
 		int total = Stats.NATION.length + extraCount;

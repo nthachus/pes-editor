@@ -15,7 +15,7 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 	private final TeamPanel teamPanel;
 
 	private/* final*/ JTextField editor;
-	private/* final*/ JList<String> list;
+	private/* final*/ JList/*<String>*/ list;
 
 	public StadiumPanel(OptionFile of, TeamPanel tp) {
 		super();
@@ -34,7 +34,7 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 		editor.setDocument(new JTextFieldLimit(Stadiums.NAME_LEN));
 		editor.addActionListener(this);
 
-		list = new JList<String>();
+		list = new JList/*<String>*/();
 		list.setFixedCellHeight(Math.round(4f * getFont().getSize() / 3));
 		list.setVisibleRowCount(Stadiums.TOTAL);
 		list.addListSelectionListener(this);
@@ -52,6 +52,7 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 		add(contentPane);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void refresh() {
 		list.setListData(Stadiums.get(of));
 	}

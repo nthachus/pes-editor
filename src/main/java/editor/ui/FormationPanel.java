@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@SuppressWarnings("unchecked")
 public class FormationPanel extends JPanel
 		implements ActionListener, ListSelectionListener, DropTargetListener, DragSourceListener, DragGestureListener {
 	private static final Logger log = LoggerFactory.getLogger(FormationPanel.class);
@@ -59,10 +60,10 @@ public class FormationPanel extends JPanel
 	private JobList lCorner;
 	private JobList pk;
 	private JobList captain;
-	private JComboBox<String> formNamesBox;
+	private JComboBox/*<String>*/ formNamesBox;
 	private PitchPanel pitchPanel;
 	private AtkDefPanel atkDefPanel;
-	private JComboBox<Role> roleBox;
+	private JComboBox/*<Role>*/ roleBox;
 	private JComboBox altBox;
 	private SquadNumberList numList;
 	private JFileChooser pngChooser;
@@ -81,7 +82,7 @@ public class FormationPanel extends JPanel
 		altBox = new JComboBox<String>(Formations.ALT_ITEMS);
 		altBox.addActionListener(this);
 
-		roleBox = new JComboBox<Role>();
+		roleBox = new JComboBox/*<Role>*/();
 		roleBox.setPreferredSize(new Dimension(56, 25));
 		roleBox.addActionListener(this);
 
@@ -114,7 +115,7 @@ public class FormationPanel extends JPanel
 		captain = new JobList(of, 5, " C ", Color.RED);
 		captain.setToolTipText(Resources.getMessage("formation.captain"));
 
-		formNamesBox = new JComboBox<String>();
+		formNamesBox = new JComboBox/*<String>*/();
 		//formNamesBox.setEnabled(false);
 		formNamesBox.addActionListener(this);
 

@@ -30,7 +30,7 @@ public class GlobalPanel extends JPanel implements ActionListener {
 	private JComboBox statBox;
 	private JComboBox opBox;
 	private JComboBox scopeBox;
-	private JComboBox<String> teamBox;
+	private JComboBox/*<String>*/ teamBox;
 	private JCheckBox isExcluded;
 	private JCheckBox forEditPlayer;
 
@@ -79,7 +79,7 @@ public class GlobalPanel extends JPanel implements ActionListener {
 
 	private void initComponents() {
 		scopeBox = new JComboBox<String>(getScopes());
-		teamBox = new JComboBox<String>();
+		teamBox = new JComboBox/*<String>*/();
 		isExcluded = new JCheckBox();
 		forEditPlayer = new JCheckBox();
 
@@ -284,6 +284,7 @@ public class GlobalPanel extends JPanel implements ActionListener {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void updateTeamBox(String[] teams) {
 		if (null == teams) throw new NullPointerException("teams");
 
