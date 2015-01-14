@@ -593,21 +593,12 @@ public class TransferPanel extends JPanel
 	//endregion
 
 	private boolean checkSafeDrag(boolean safe, JList targetList, Player targetPlayer) {// TODO: !!!
-		boolean tranFL = true;
-		boolean tranFR = true;
-		boolean tranLR = true;
-		boolean tranRL = true;
-		boolean relL = true;
-		boolean relR = true;
-		boolean fEmpty = true;
-		boolean lEmpty = true;
-		boolean rEmpty = true;
-
 		int indexS = ((Player) (sourceList.getModel().getElementAt(sourceIndex))).getIndex();
 		int indexT = targetPlayer.getIndex();
 		int squadS = -1;
 
 		int indexF = 0;
+		boolean fEmpty = true;
 		if (sourceList == freeList.getFreeList()) {
 			indexF = indexS;
 			fEmpty = false;
@@ -615,26 +606,35 @@ public class TransferPanel extends JPanel
 			indexF = indexT;
 			fEmpty = false;
 		}
+
 		int indexL = 0;
+		boolean lEmpty = true;
 		if (sourceList == selectorL.getSquadList()) {
 			indexL = indexS;
 			lEmpty = false;
-			squadS = ((SelectByTeam) (sourceList.getParent())).getTeamBox()
-					.getSelectedIndex();
+			squadS = ((SelectByTeam) (sourceList.getParent())).getTeamBox().getSelectedIndex();
 		} else if (targetList == selectorL.getSquadList()) {
 			indexL = indexT;
 			lEmpty = false;
 		}
+
 		int indexR = 0;
+		boolean rEmpty = true;
 		if (sourceList == selectorR.getSquadList()) {
 			indexR = indexS;
 			rEmpty = false;
-			squadS = ((SelectByTeam) (sourceList.getParent())).getTeamBox()
-					.getSelectedIndex();
+			squadS = ((SelectByTeam) (sourceList.getParent())).getTeamBox().getSelectedIndex();
 		} else if (targetList == selectorR.getSquadList()) {
 			indexR = indexT;
 			rEmpty = false;
 		}
+
+		boolean tranFL = true;
+		boolean tranFR = true;
+		boolean tranLR = true;
+		boolean tranRL = true;
+		boolean relL = true;
+		boolean relR = true;
 
 		int squadL = selectorL.getTeamBox().getSelectedIndex();
 		int squadR = selectorR.getTeamBox().getSelectedIndex();
@@ -734,7 +734,6 @@ public class TransferPanel extends JPanel
 						tranRL = false;
 					}
 				}
-
 			}
 
 			if ((squadR > 59 && squadR < 75) || squadR > 208) {

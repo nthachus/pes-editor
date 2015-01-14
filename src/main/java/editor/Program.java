@@ -7,15 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 
 public final class Program implements Thread.UncaughtExceptionHandler {
-	private static final Logger log;
-
-	static {
-		// fix gateway time-out error
-		System.setProperty("mail.smtp.timeout", "2000");
-		System.setProperty("mail.smtp.connectiontimeout", "3000");
-
-		log = LoggerFactory.getLogger(Program.class);
-	}
+	private static final Logger log = LoggerFactory.getLogger(Program.class);
 
 	private Program() {
 	}

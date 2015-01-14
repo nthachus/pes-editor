@@ -90,7 +90,36 @@ public final class ClubsTest extends BaseTest {
 
 	@Test
 	public void testSetEmblem() throws Exception {
-		// TODO: test emblem updating for latestOF
+		OptionFile of = loadLatestOF();
+
+		int cid = 0;
+		int oldEmblem = Integer.MAX_VALUE;
+		while (oldEmblem >= Clubs.FIRST_EMBLEM) {
+			cid = rand.nextInt(Clubs.TOTAL);
+			oldEmblem = Clubs.getEmblem(of, cid);
+		}
+
+		String name = Clubs.getName(of, cid);
+		Assert.assertThat(name, Matchers.not(Matchers.isEmptyOrNullString()));
+
+		int n128 = Emblems.count128(of);
+		Assert.assertThat(n128, Matchers.greaterThan(0));
+
+		int newEmblem = 0;
+		BufferedImage flag = null;
+		while (flag == null || Images.isBlank(flag)) {
+			newEmblem = rand.nextInt(n128);
+			flag = (BufferedImage) Emblems.getImage(of, newEmblem);
+		}
+		Assert.assertNotNull(flag);
+		Assert.assertFalse(Images.isBlank(flag));
+
+		newEmblem += Clubs.FIRST_EMBLEM;
+		Clubs.setEmblem(of, cid, newEmblem);
+		int emblem = Clubs.getEmblem(of, cid);
+
+		Assert.assertNotEquals(oldEmblem, emblem);
+		Assert.assertEquals(newEmblem, emblem);
 	}
 
 	@Test

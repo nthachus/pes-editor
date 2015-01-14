@@ -8,8 +8,10 @@ import java.awt.*;
 import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class Images {
 	private static final Logger log = LoggerFactory.getLogger(Images.class);
@@ -252,7 +254,7 @@ public final class Images {
 			return image;
 
 		// sort the palette
-		List<Map.Entry<Integer, Integer>> list = new ArrayList<Map.Entry<Integer, Integer>>(map.entrySet());
+		ArrayList<Map.Entry<Integer, Integer>> list = new ArrayList<Map.Entry<Integer, Integer>>(map.entrySet());
 		Collections.sort(list, new Arrays.EntryValueComparator<Integer, Integer>());
 		log.debug("Sorted palette: {}", list);
 
