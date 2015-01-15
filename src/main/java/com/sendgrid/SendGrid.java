@@ -38,7 +38,7 @@ public class SendGrid {
 		return this;
 	}
 
-	public SendGrid setTimeout(Integer timeout) {
+	public SendGrid setTimeout(int timeout) {
 		this.timeout = timeout;
 		return this;
 	}
@@ -49,14 +49,10 @@ public class SendGrid {
 
 	public boolean send(StringBuffer subject, StringBuffer body) throws IOException, GeneralSecurityException {
 		URL url = new URL(endpoint);
-		HttpURLConnection http = (HttpURLConnection) url.openConnection();// TODO: verify connection timeout
+		HttpURLConnection http = (HttpURLConnection) url.openConnection();
 
-		if (http instanceof HttpsURLConnection) {
-			// Tell the url connection object to use our socket factory which bypasses security checks
-			HttpsURLConnection https = (HttpsURLConnection) http;
-			https.setSSLSocketFactory(getSSLSocketFactory());
-			https.setHostnameVerifier(getHostnameVerifier());
-		}
+		if (http instanceof HttpsURLConnection)
+			initHttpsRequest((HttpsURLConnection) http);
 
 		// Add request header
 		initHttpRequest(http);
@@ -99,6 +95,12 @@ public class SendGrid {
 		}
 	}
 
+	private void initHttpsRequest(HttpsURLConnection https) throws GeneralSecurityException {
+		// Tell the url connection object to use our socket factory which bypasses security checks
+		https.setSSLSocketFactory(getSSLSocketFactory());
+		https.setHostnameVerifier(getHostnameVerifier());
+	}
+
 	private String buildPostData(StringBuffer subject, StringBuffer body) throws IOException {
 		if (null != subject && subject.length() > 0)
 			subject = new StringBuffer(URLEncoder.encode(subject.toString(), encoding));
@@ -114,42 +116,43 @@ public class SendGrid {
 
 	private static SSLSocketFactory getSSLSocketFactory() throws GeneralSecurityException {
 		if (null == sslSocketFactory) {
-			// Create a trust manager that does not validate certificate chains
-			TrustManager[] trustAllCerts = new TrustManager[]{
-					new X509TrustManager() {
-						public void checkClientTrusted(X509Certificate[] chain, String authType) {
-						}
-
-						public void checkServerTrusted(X509Certificate[] chain, String authType) {
-						}
-
-						public X509Certificate[] getAcceptedIssuers() {
-							return null;
-						}
-					}
-			};
-
 			// Install the all-trusting trust manager
 			SSLContext sslContext = SSLContext.getInstance("SSL");
-			sslContext.init(null, trustAllCerts, new SecureRandom());
-
+			sslContext.init(null, new TrustManager[]{new TrustAllManager()}, new SecureRandom());
 			// Create an ssl socket factory with our all-trusting manager
 			sslSocketFactory = sslContext.getSocketFactory();
 		}
-
 		return sslSocketFactory;
 	}
 
 	private static HostnameVerifier getHostnameVerifier() {
-		if (null == hostnameVerifier) {
-			// Create all-trusting host name verifier
-			hostnameVerifier = new HostnameVerifier() {
-				public boolean verify(String hostname, SSLSession session) {
-					return true;
-				}
-			};
-		}
+		if (null == hostnameVerifier)
+			hostnameVerifier = new NullHostnameVerifier();
 		return hostnameVerifier;
+	}
+
+	/**
+	 * A trust manager that does not validate certificate chains.
+	 */
+	public static class TrustAllManager implements X509TrustManager {
+		public void checkClientTrusted(X509Certificate[] chain, String authType) {
+		}
+
+		public void checkServerTrusted(X509Certificate[] chain, String authType) {
+		}
+
+		public X509Certificate[] getAcceptedIssuers() {
+			return null;
+		}
+	}
+
+	/**
+	 * A class to trust all hosts, so always returns true.
+	 */
+	public static class NullHostnameVerifier implements HostnameVerifier {
+		public boolean verify(String hostname, SSLSession session) {
+			return true;
+		}
 	}
 
 }

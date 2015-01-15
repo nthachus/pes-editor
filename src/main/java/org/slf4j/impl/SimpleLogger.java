@@ -76,16 +76,16 @@ public class SimpleLogger extends NamedLoggerBase {
 	private static volatile boolean SHOW_LOG_NAME = true;
 	private static volatile boolean SHOW_SHORT_LOG_NAME = false;
 	private static volatile String LOG_FILE = "System.err";
-	private static volatile String CHARSET = Charset.defaultCharset().name();
 	private static volatile PrintStream TARGET_STREAM = null;
 	private static volatile boolean LEVEL_IN_BRACKETS = false;
 
+	private static volatile String CHARSET = Charset.defaultCharset().name();
 	private static volatile SendGrid SMTP_APPENDER = null;
 
 	/**
 	 * All system properties used by <code>SimpleLogger</code> start with this prefix
 	 */
-	private static final String SYSTEM_PREFIX = "org.slf4j.simpleLogger.";
+	protected static final String SYSTEM_PREFIX = "org.slf4j.simpleLogger.";
 
 	private static final String DEFAULT_LOG_LEVEL_KEY = SYSTEM_PREFIX + "defaultLogLevel";
 	private static final String SHOW_DATE_TIME_KEY = SYSTEM_PREFIX + "showDateTime";
@@ -94,15 +94,16 @@ public class SimpleLogger extends NamedLoggerBase {
 	private static final String SHOW_LOG_NAME_KEY = SYSTEM_PREFIX + "showLogName";
 	private static final String SHOW_SHORT_LOG_NAME_KEY = SYSTEM_PREFIX + "showShortLogName";
 	private static final String LOG_FILE_KEY = SYSTEM_PREFIX + "logFile";
-	private static final String CHARSET_KEY = SYSTEM_PREFIX + "charset";
 	private static final String LEVEL_IN_BRACKETS_KEY = SYSTEM_PREFIX + "levelInBrackets";
 
 	private static final String LOG_KEY_PREFIX = SYSTEM_PREFIX + "log.";
 
+	private static final String CHARSET_KEY = SYSTEM_PREFIX + "charset";
 	private static final String SMTP_APPENDER_KEY = SYSTEM_PREFIX + "sendGrid";
 	private static final String SMTP_TIMEOUT_KEY = SMTP_APPENDER_KEY + ".timeout";
 
-	private static String getStringProperty(String name) {
+
+	protected static String getStringProperty(String name) {
 		String prop;
 		try {
 			prop = System.getProperty(name);
@@ -112,12 +113,12 @@ public class SimpleLogger extends NamedLoggerBase {
 		return (prop == null) ? SIMPLE_LOGGER_PROPS.getProperty(name) : prop;
 	}
 
-	private static String getStringProperty(String name, String defaultValue) {
+	protected static String getStringProperty(String name, String defaultValue) {
 		String prop = getStringProperty(name);
 		return (prop == null) ? defaultValue : prop;
 	}
 
-	private static boolean getBooleanProperty(String name, boolean defaultValue) {
+	protected static boolean getBooleanProperty(String name, boolean defaultValue) {
 		String prop = getStringProperty(name);
 		return (prop == null) ? defaultValue : "true".equalsIgnoreCase(prop);
 	}
@@ -175,7 +176,7 @@ public class SimpleLogger extends NamedLoggerBase {
 		} else {
 			try {
 				logFile = replaceSystemProperties(logFile);
-				logFile = formatDatePatterns(logFile);
+				logFile = replaceDatePatterns(logFile);
 
 				FileOutputStream fos = new FileOutputStream(logFile, true);
 				return new PrintStream(fos, true, CHARSET);
@@ -187,7 +188,7 @@ public class SimpleLogger extends NamedLoggerBase {
 		return System.err;
 	}
 
-	private static String replaceSystemProperties(String filename) {
+	protected static String replaceSystemProperties(String filename) {
 		StringBuffer sb = new StringBuffer();
 
 		Matcher m = Pattern.compile("\\$\\{(.+?)\\}").matcher(filename);
@@ -202,7 +203,7 @@ public class SimpleLogger extends NamedLoggerBase {
 		return sb.toString();
 	}
 
-	private static String formatDatePatterns(String filename) {
+	protected static String replaceDatePatterns(String filename) {
 		StringBuffer sb = new StringBuffer();
 
 		Matcher m = Pattern.compile("%[dD]\\{(.+?)\\}").matcher(filename);
@@ -236,7 +237,6 @@ public class SimpleLogger extends NamedLoggerBase {
 			try {
 				try {
 					SIMPLE_LOGGER_PROPS.load(in);
-					importSystemProperties(SIMPLE_LOGGER_PROPS);
 				} finally {
 					in.close();
 				}
@@ -246,20 +246,9 @@ public class SimpleLogger extends NamedLoggerBase {
 		}
 	}
 
-	private static void importSystemProperties(Properties props) {
-		try {
-			Set<String> propNames = props.stringPropertyNames();
-			for (String p : propNames) {
-				if (null != p && !p.startsWith(SYSTEM_PREFIX))
-					System.setProperty(p, props.getProperty(p));
-			}
-		} catch (SecurityException e) {
-			Util.report(e.toString());
+	private static class ConfigFileLoader implements PrivilegedAction<InputStream> {
+		public ConfigFileLoader() {
 		}
-	}
-
-	private static class ConfigFileLoader implements PrivilegedAction<InputStream>, Serializable {
-		private static final long serialVersionUID = 1L;
 
 		public InputStream run() {
 			ClassLoader threadCL = Thread.currentThread().getContextClassLoader();
@@ -298,7 +287,7 @@ public class SimpleLogger extends NamedLoggerBase {
 		}
 	}
 
-	private String recursivelyComputeLevelString() {
+	protected String recursivelyComputeLevelString() {
 		String tempName = name;
 		String levelString = null;
 		int indexOfLastDot = tempName.length();
@@ -310,7 +299,7 @@ public class SimpleLogger extends NamedLoggerBase {
 		return levelString;
 	}
 
-	private static int stringToLevel(String levelStr) {
+	protected static int stringToLevel(String levelStr) {
 		if ("TRACE".equalsIgnoreCase(levelStr)) {
 			return LOG_LEVEL_TRACE;
 		} else if ("DEBUG".equalsIgnoreCase(levelStr)) {
@@ -334,7 +323,7 @@ public class SimpleLogger extends NamedLoggerBase {
 	 * @param message The message itself
 	 * @param t       The exception whose stack trace should be logged
 	 */
-	private void log(int level, String message, Throwable t) {
+	protected void log(int level, String message, Throwable t) {
 		if (!isLevelEnabled(level)) {
 			return;
 		}
@@ -396,54 +385,73 @@ public class SimpleLogger extends NamedLoggerBase {
 
 		write(buf, t);
 
-		if (null != SMTP_APPENDER && level >= LOG_LEVEL_ERROR)
-			sendErrorMail(SHOW_SHORT_LOG_NAME ? shortLogName : name, message);
+		if (null != SMTP_APPENDER && level >= LOG_LEVEL_ERROR) {
+			sendErrorMail(SHOW_SHORT_LOG_NAME ? shortLogName : name,
+					message, t instanceof ExceptionInInitializerError);
+		}
 	}
 
-	private void sendErrorMail(String name, String msg) {
+	protected void write(StringBuffer buf, Throwable t) {
+		TARGET_STREAM.println(buf.toString());
+		if (null != t)
+			t.printStackTrace(TARGET_STREAM);
+
+		if (null != SMTP_APPENDER)
+			cacheMailMessages(buf, t);
+	}
+
+	private static void cacheMailMessages(StringBuffer buf, Throwable t) {
+		if (null != t) {
+			StringWriter sw = new StringWriter();
+			t.printStackTrace(new PrintWriter(sw));
+			buf.append(NEW_LINE).append(sw.toString());
+		}
+
+		if (CACHED_MESSAGES.size() > 3)
+			CACHED_MESSAGES.remove(0);
+		CACHED_MESSAGES.add(buf.toString());
+	}
+
+	private static void sendErrorMail(String name, String msg, boolean immediately) {
 		String[] messages = CACHED_MESSAGES.toArray(new String[CACHED_MESSAGES.size()]);
 		CACHED_MESSAGES.clear();
 
-		final StringBuffer body = new StringBuffer();
+		StringBuffer body = new StringBuffer();
 		for (String s : messages) {
 			body.append(s).append(NEW_LINE);
 		}
+		StringBuffer subject = new StringBuffer(name + " - " + msg);
 
-		final StringBuffer subject = new StringBuffer(name);
-		subject.append(" - ").append(msg);
-
-		new Thread(new Runnable() {
-			public void run() {
-				try {
-					SMTP_APPENDER.send(subject, body);
-				} catch (Exception e) {
-					Util.report("Failed to send error mail.", e);
-				}
-			}
-		}).start();
+		Runnable sender = new MailSender(subject, body);
+		if (immediately)
+			sender.run();
+		else
+			new Thread(sender).start();
 	}
 
 	private static final String NEW_LINE = System.getProperty("line.separator");
 	private static final List<String> CACHED_MESSAGES = Collections.synchronizedList(new ArrayList<String>());
 
-	private void write(StringBuffer buf, Throwable t) {
-		TARGET_STREAM.println(buf.toString());
-		if (null != t)
-			t.printStackTrace(TARGET_STREAM);
+	private static class MailSender implements Runnable {
+		private final StringBuffer subject;
+		private final StringBuffer body;
 
-		if (null != SMTP_APPENDER) {
-			if (null != t) {
-				StringWriter sw = new StringWriter();
-				t.printStackTrace(new PrintWriter(sw));
-				buf.append(NEW_LINE).append(sw.toString());
+		public MailSender(StringBuffer subject, StringBuffer body) {
+			this.subject = subject;
+			this.body = body;
+		}
+
+		public void run() {
+			try {
+				SMTP_APPENDER.send(subject, body);
+			} catch (Exception e) {
+				Util.report("Failed to send error mail.", e);
 			}
-
-			if (CACHED_MESSAGES.size() > 3) CACHED_MESSAGES.remove(0);
-			CACHED_MESSAGES.add(buf.toString());
 		}
 	}
 
-	private String getFormattedDate() {
+	@SuppressWarnings("SynchronizeOnNonFinalField")
+	protected static String getFormattedDate() {
 		Date now = new Date();
 		synchronized (DATE_FORMATTER) {
 			return DATE_FORMATTER.format(now);

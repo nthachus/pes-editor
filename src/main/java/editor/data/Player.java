@@ -6,7 +6,7 @@ import editor.util.Strings;
 import java.io.Serializable;
 import java.util.Arrays;
 
-public class Player implements Serializable, Comparable<Player> {
+public class Player implements Serializable, Comparable<Player>, Runnable {
 	private static final long serialVersionUID = 1L;
 
 	//region Constants
@@ -88,8 +88,12 @@ public class Player implements Serializable, Comparable<Player> {
 	private final int index;
 	private final int slotAdr;
 
-	private volatile String name = null;
-	private volatile String shirtName = null;
+	private volatile transient String name = null;
+	private volatile transient String shirtName = null;
+
+	public Player(OptionFile of, int index) {
+		this(of, index, 0);
+	}
 
 	public Player(OptionFile of, int index, int slotAdr) {
 		if (of == null) throw new NullPointerException();
@@ -104,8 +108,8 @@ public class Player implements Serializable, Comparable<Player> {
 			name = Resources.getMessage("player.empty");
 	}
 
-	public Player(OptionFile of, int index) {
-		this(of, index, 0);
+	public void run() {
+		getName();
 	}
 
 	public int getIndex() {
@@ -144,21 +148,20 @@ public class Player implements Serializable, Comparable<Player> {
 	public String getName() {
 		if (null == name) {
 			int adr = getOffset(index);
+			String nm = new String(of.getData(), adr, NAME_LEN, Strings.UNICODE);
+			nm = Strings.fixCString(nm);
 
-			name = new String(of.getData(), adr, NAME_LEN, Strings.UNICODE);
-			name = Strings.fixCString(name);
-
-			if (Strings.isEmpty(name)) {
+			if (Strings.isEmpty(nm)) {
 				if (index >= FIRST_EDIT) {
-					name = Resources.getMessage("player.edited", index - FIRST_EDIT);
+					nm = Resources.getMessage("player.edited", index - FIRST_EDIT);
 				} else if (index >= FIRST_UNUSED) {
-					name = Resources.getMessage("player.unused", index);
+					nm = Resources.getMessage("player.unused", index);
 				} else {
-					name = Resources.getMessage("player.blank", index);
+					nm = Resources.getMessage("player.blank", index);
 				}
 			}
+			name = nm;
 		}
-
 		return name;
 	}
 
@@ -185,8 +188,8 @@ public class Player implements Serializable, Comparable<Player> {
 	public String getShirtName() {
 		if (null == shirtName) {
 			int adr = getOffset(index) + NAME_LEN;
-			shirtName = new String(of.getData(), adr, SHIRT_NAME_LEN, Strings.ANSI);
-			shirtName = Strings.fixCString(name);
+			String sn = new String(of.getData(), adr, SHIRT_NAME_LEN, Strings.ANSI);
+			shirtName = Strings.fixCString(sn);
 		}
 		return shirtName;
 	}
