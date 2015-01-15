@@ -42,6 +42,7 @@ import java.net.URL;
  * @version 2.2.1 2006-05-27 Abort when splash image can not be loaded.
  */
 public class SplashWindow extends Window implements MouseListener {
+	private static final long serialVersionUID = 854139938473040817L;
 	private static final Logger log = LoggerFactory.getLogger(SplashWindow.class);
 
 	/**

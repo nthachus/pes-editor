@@ -20,6 +20,7 @@ import java.awt.event.KeyListener;
 
 public class Ability99Panel extends JPanel
 		implements ActionListener, ChangeListener, KeyListener {
+	private static final long serialVersionUID = 8544889045993110691L;
 	private static final Logger log = LoggerFactory.getLogger(Ability99Panel.class);
 
 	private final OptionFile of;
@@ -55,6 +56,8 @@ public class Ability99Panel extends JPanel
 			fields[i].setInputVerifier(verifier99);
 			fields[i].getDocument().addDocumentListener(new JTextChangeListener(fields[i], this));
 			fields[i].addKeyListener(this);
+
+			lab.setLabelFor(fields[i]);
 
 			grid.anchor = GridBagConstraints.CENTER;
 			grid.gridx = 1;

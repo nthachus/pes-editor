@@ -12,6 +12,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 public class FormationDialog extends JDialog implements ActionListener, WindowListener {
+	private static final long serialVersionUID = 8519475558888665768L;
+
 	private final OptionFile of;
 	private final byte[] original = new byte[Formations.SIZE];
 	private volatile int squadIndex;

@@ -10,7 +10,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.Serializable;
 
 public class PlayerTransferable implements Serializable, Transferable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 209565230974819915L;
 	private static final Logger log = LoggerFactory.getLogger(Player.class);
 
 	private final Player data;

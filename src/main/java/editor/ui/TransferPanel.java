@@ -18,6 +18,7 @@ import java.awt.event.MouseListener;
 
 public class TransferPanel extends JPanel
 		implements ActionListener, MouseListener, DropTargetListener, DragSourceListener, DragGestureListener {
+	private static final long serialVersionUID = 4733686475112963352L;
 	//private static final Logger log = LoggerFactory.getLogger(TransferPanel.class);
 
 	private final OptionFile of;
@@ -1012,6 +1013,8 @@ public class TransferPanel extends JPanel
 	 * Player name TextBox.
 	 */
 	private static class NameTextField extends JTextField implements ListSelectionListener, ActionListener {
+		private static final long serialVersionUID = 536793465282593280L;
+
 		private final TransferPanel owner;
 		private volatile EventSource source = null;
 
@@ -1091,6 +1094,8 @@ public class TransferPanel extends JPanel
 	}
 
 	private static class NumTextField extends JTextField implements ListSelectionListener, ActionListener {
+		private static final long serialVersionUID = -451173065625033858L;
+
 		private final TransferPanel owner;
 		private volatile EventSource source = null;
 
@@ -1162,6 +1167,8 @@ public class TransferPanel extends JPanel
 	}
 
 	private static class ShirtTextField extends JTextField implements ListSelectionListener, ActionListener {
+		private static final long serialVersionUID = 7108398217879103867L;
+
 		private final TransferPanel owner;
 		private volatile EventSource source = null;
 

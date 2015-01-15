@@ -10,8 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class WenPanel extends JPanel implements ActionListener {
-	public static final int MAX_WEN = 99999;
+	private static final long serialVersionUID = 1283642115923368976L;
 
+	public static final int MAX_WEN = 99999;
 	private static final int START_ADR = 5208;
 	private static final int ALT_ADR = 52;
 

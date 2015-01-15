@@ -15,7 +15,9 @@ import java.net.URL;
 import java.util.Locale;
 
 public class HelpDialog extends JDialog implements ActionListener, HyperlinkListener {
+	private static final long serialVersionUID = -2853334995318291197L;
 	private static final Logger log = LoggerFactory.getLogger(HelpDialog.class);
+
 	private static final String INDEX_PAGE = "/META-INF/help/index%s.html";
 
 	private final JEditorPane editPanel;

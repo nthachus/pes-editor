@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class StadiumPanel extends JPanel implements ActionListener, ListSelectionListener {
+	private static final long serialVersionUID = 5755796824210992527L;
+
 	private final OptionFile of;
 	private final TeamPanel teamPanel;
 

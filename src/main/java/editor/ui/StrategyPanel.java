@@ -13,6 +13,8 @@ import java.awt.event.ActionListener;
 import java.io.Serializable;
 
 public class StrategyPanel extends JPanel implements ActionListener {
+	private static final long serialVersionUID = 3335107620381551627L;
+
 	public static final int CB_OVERLAP = 6;
 
 	private final OptionFile of;
@@ -223,7 +225,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 	}
 
 	private static class SweepItem implements Serializable {
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = -3445292562668385712L;
 
 		private final int index;
 		private final String name;

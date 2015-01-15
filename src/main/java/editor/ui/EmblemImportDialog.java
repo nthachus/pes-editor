@@ -12,8 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class EmblemImportDialog extends JDialog implements ActionListener {
-	private final OptionFile of2;
+	private static final long serialVersionUID = 3904576337391258950L;
 
+	private final OptionFile of2;
 	private volatile boolean isTrans = true;
 	private volatile int slot = -1;
 	private volatile EmblemType type = null;

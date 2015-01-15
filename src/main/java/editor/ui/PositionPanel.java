@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PositionPanel extends JPanel implements ActionListener {
+	private static final long serialVersionUID = 6052934571754116663L;
+
 	private final OptionFile of;
 	private volatile int regRole;
 

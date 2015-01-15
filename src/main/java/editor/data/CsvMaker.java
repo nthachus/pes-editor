@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 
 public class CsvMaker implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4764145193633313484L;
 	private static final Logger log = LoggerFactory.getLogger(CsvMaker.class);
 
 	private final char separator;

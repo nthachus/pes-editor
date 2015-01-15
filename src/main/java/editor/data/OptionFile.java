@@ -11,7 +11,7 @@ import java.io.*;
 import java.util.zip.CRC32;
 
 public class OptionFile implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 7033009945888590265L;
 	private static final Logger log = LoggerFactory.getLogger(OptionFile.class);
 
 	private static final String SHARK_PORT = "\15\0\0\0SharkPortSave";
@@ -388,7 +388,7 @@ public class OptionFile implements Serializable {
 			{1074144, 20752}
 	};
 
-	private final static int[] KEYS = /*446*/{
+	private static final int[] KEYS = /*446*/{
 			0x7ab36882, 0x7ab3689e, 0x7ab368bd, 0x7ab3689f, 0x7ab368a4, 0x7ab368c3, 0x7ab36899, 0x7ab368b9, 0x7ab36894,
 			0x7ab368b5, 0x7ab368af, 0x7ab3687d, 0x7ab368b4, 0x7ab368bf, 0x7ab368b0, 0x7ab36894, 0x7ab368b5, 0x7ab368c5,
 			0x7ab368c3, 0x7ab36897, 0x7ab36890, 0x7ab3687d, 0x7ab3689e, 0x7ab368a5, 0x7ab3688e, 0x7ab368c4, 0x7ab368bd,

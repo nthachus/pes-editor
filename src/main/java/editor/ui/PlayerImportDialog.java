@@ -14,6 +14,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class PlayerImportDialog extends JDialog implements ListSelectionListener, MouseListener {
+	private static final long serialVersionUID = -8875420784069492334L;
+
 	private final OptionFile of;
 	private final OptionFile of2;
 

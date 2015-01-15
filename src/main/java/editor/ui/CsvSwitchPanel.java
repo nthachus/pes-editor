@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CsvSwitchPanel extends JPanel {
+	private static final long serialVersionUID = -841354619971897911L;
+
 	private final JCheckBox head;
 	//private final JCheckBox extra;
 	private final JCheckBox create;

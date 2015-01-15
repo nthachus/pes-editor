@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @SuppressWarnings("unchecked")
 public class FormationPanel extends JPanel
 		implements ActionListener, ListSelectionListener, DropTargetListener, DragSourceListener, DragGestureListener {
+	private static final long serialVersionUID = 8650634277665523195L;
 	private static final Logger log = LoggerFactory.getLogger(FormationPanel.class);
 
 	private final OptionFile of;
@@ -388,7 +389,7 @@ public class FormationPanel extends JPanel
 	}
 
 	private static class Role implements Serializable {
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 3234599033413239419L;
 
 		private final int index;
 		private final String name;

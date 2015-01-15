@@ -8,6 +8,8 @@ import javax.swing.text.PlainDocument;
  * Used to limit {@link javax.swing.JTextField} input to a maximum length.
  */
 public class JTextFieldLimit extends PlainDocument {
+	private static final long serialVersionUID = 7975547751557888705L;
+
 	private final int limit;
 	private final Boolean toUppercase;
 

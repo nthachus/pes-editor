@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 public class Player implements Serializable, Comparable<Player>, Runnable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1536161153505853967L;
 
 	//region Constants
 

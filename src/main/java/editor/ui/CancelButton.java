@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class CancelButton extends JButton implements ActionListener {
+	private static final long serialVersionUID = 5048093651292658111L;
+
 	private final JDialog dialog;
 
 	public CancelButton(JDialog dialog) {

@@ -11,8 +11,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LogoChooserDialog extends JDialog implements ActionListener {
-	private final OptionFile of;
+	private static final long serialVersionUID = 8328193997153067543L;
 
+	private final OptionFile of;
 	private volatile boolean isTrans = true;
 	private volatile int slot = -1;
 

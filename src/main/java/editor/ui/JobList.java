@@ -11,6 +11,8 @@ import java.awt.*;
 import java.util.Arrays;
 
 public class JobList extends JList/*<String>*/ implements ListSelectionListener {
+	private static final long serialVersionUID = 436909804060295023L;
+
 	private final OptionFile of;
 	private final int offset;
 	private final String job;

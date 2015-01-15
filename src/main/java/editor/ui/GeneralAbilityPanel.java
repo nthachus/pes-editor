@@ -12,7 +12,9 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 
 public class GeneralAbilityPanel extends JPanel {
+	private static final long serialVersionUID = -7411807493467061728L;
 	private static final Logger log = LoggerFactory.getLogger(GeneralAbilityPanel.class);
+
 	private final OptionFile of;
 
 	public GeneralAbilityPanel(OptionFile of) {

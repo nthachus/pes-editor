@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class SelectByTeam extends JPanel implements ActionListener {
+	private static final long serialVersionUID = 776055403727356248L;
+
 	private final OptionFile of;
 	private final boolean isNormal;
 

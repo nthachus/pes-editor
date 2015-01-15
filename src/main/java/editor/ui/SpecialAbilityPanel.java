@@ -8,8 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SpecialAbilityPanel extends JPanel {
-	private final OptionFile of;
+	private static final long serialVersionUID = 5396699026145364222L;
 
+	private final OptionFile of;
 	private final JCheckBox[] abilityCheck = new JCheckBox[Stats.ABILITY_SPECIAL.length];
 
 	public SpecialAbilityPanel(OptionFile of) {

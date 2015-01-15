@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LogoImportDialog extends JDialog implements ActionListener {
+	private static final long serialVersionUID = -8784286274094872109L;
+
 	private final OptionFile of;
 	private final OptionFile of2;
 

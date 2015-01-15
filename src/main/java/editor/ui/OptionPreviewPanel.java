@@ -12,6 +12,8 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 
 public class OptionPreviewPanel extends JPanel implements PropertyChangeListener {
+	private static final long serialVersionUID = 2370607914947646769L;
+
 	private final FileFilter filter;
 	private final JTextArea previewText;
 

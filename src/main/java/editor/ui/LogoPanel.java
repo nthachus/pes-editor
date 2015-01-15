@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class LogoPanel extends JPanel implements ActionListener {
+	private static final long serialVersionUID = -2109453947661826598L;
+
 	private final OptionFile of;
 	private final LogoImportDialog logoImportDia;
 

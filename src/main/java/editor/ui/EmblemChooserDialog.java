@@ -12,18 +12,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class EmblemChooserDialog extends JDialog implements ActionListener {
-	private final JButton[] emblemButtons = new JButton[Emblems.TOTAL16];
+	private static final long serialVersionUID = 2638397173587686242L;
 
 	private final OptionFile of;
 	private volatile boolean isTrans = true;
 	private volatile int slot = -1;
 	private volatile EmblemType type = null;
 
+	private final JButton[] emblemButtons = new JButton[Emblems.TOTAL16];
+
 	public EmblemChooserDialog(Frame owner, OptionFile of) {
 		super(owner, true);
 		if (null == of) throw new NullPointerException("of");
 		this.of = of;
 
+		initComponents();
+	}
+
+	private void initComponents() {
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
 		int refSize = Math.round(0.69f * Emblems.IMG_SIZE);
 

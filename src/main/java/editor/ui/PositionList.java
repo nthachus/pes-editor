@@ -8,6 +8,8 @@ import java.awt.*;
 import java.util.Arrays;
 
 public class PositionList extends JList/*<String>*/ {
+	private static final long serialVersionUID = 1293447084620847213L;
+
 	private final OptionFile of;
 	private final boolean inTransfer;
 

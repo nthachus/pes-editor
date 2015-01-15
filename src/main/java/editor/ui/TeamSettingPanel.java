@@ -10,10 +10,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class TeamSettingPanel extends JPanel implements ActionListener {
+	private static final long serialVersionUID = 5663937717103660484L;
+
 	private static final String[] ITEMS3 = {"A", "B", "C"};
 
 	private final OptionFile of;
-
 	private volatile int alt = 0;
 	private volatile int squad = 0;
 	private volatile boolean isOk = false;

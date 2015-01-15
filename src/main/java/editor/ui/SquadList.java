@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.Vector;
 
 public class SquadList extends JList<Player> {
+	private static final long serialVersionUID = 6246402135860985745L;
+
 	private final OptionFile of;
 	private volatile int team;
 

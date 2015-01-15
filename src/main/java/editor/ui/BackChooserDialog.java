@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 
 public class BackChooserDialog extends JDialog implements ActionListener {
+	private static final long serialVersionUID = -6292338671848786819L;
 	private static final Logger log = LoggerFactory.getLogger(BackChooserDialog.class);
 
 	private static final int IMG_WIDTH = 85;

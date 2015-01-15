@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 public class ShopPanel extends JPanel implements ActionListener {
+	private static final long serialVersionUID = -6735593924290315504L;
+
 	private static final int PLAYER_COUNT = Player.TOTAL_SHOP;
 	private static final int START_ADR = 5144;
 

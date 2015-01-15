@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PlayerDialog extends JDialog implements ActionListener {
+	private static final long serialVersionUID = -2775873759488026356L;
+
 	private final OptionFile of;
 	private final PlayerImportDialog playerImportDia;
 

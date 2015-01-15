@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class EmblemPanel extends JPanel implements MouseListener, ActionListener {
+	private static final long serialVersionUID = -3656723954660516377L;
+
 	private final OptionFile of;
 	private final EmblemImportDialog flagImportDia;
 	private final TeamPanel teamPanel;

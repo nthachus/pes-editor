@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ImportPanel extends JPanel implements ActionListener {
+	private static final long serialVersionUID = 2005805172621830625L;
+
 	private final OptionFile of;
 	private final OptionFile of2;
 

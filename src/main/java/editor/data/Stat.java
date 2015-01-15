@@ -3,7 +3,7 @@ package editor.data;
 import java.io.Serializable;
 
 public class Stat implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 7447946182427124435L;
 
 	private final StatType type;
 	private final int offset;

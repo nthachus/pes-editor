@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class WenShopPanel extends JPanel {
+	private static final long serialVersionUID = -3595204138128563538L;
+
 	private final WenPanel wenPanel;
 	private final ShopPanel shopPanel;
 

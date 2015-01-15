@@ -11,6 +11,8 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
 public class AtkDefPanel extends JPanel implements MouseListener {
+	private static final long serialVersionUID = -785512082815155690L;
+
 	private static final int BOX_SIZE = 98;
 	private static final int SQR_LEN = 84;
 	private static final int SQR_SIZE = 14;

@@ -19,6 +19,7 @@ import java.io.*;
 import java.net.URL;
 
 public class Editor extends JFrame implements ActionListener {
+	private static final long serialVersionUID = 212475114885790986L;
 	private static final Logger log = LoggerFactory.getLogger(Editor.class);
 
 	private final OptionFile of;

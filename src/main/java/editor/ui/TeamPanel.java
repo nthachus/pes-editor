@@ -17,6 +17,7 @@ import java.util.Arrays;
 
 public class TeamPanel extends JPanel
 		implements ActionListener, ListSelectionListener, MouseListener {
+	private static final long serialVersionUID = -7358055199745460533L;
 
 	private final OptionFile of;
 	private final OptionFile of2;

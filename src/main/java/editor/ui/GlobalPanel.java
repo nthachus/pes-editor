@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class GlobalPanel extends JPanel implements ActionListener {
+	private static final long serialVersionUID = 2241578478682037679L;
+
 	private final OptionFile of;
 	private final TransferPanel transferPan;
 

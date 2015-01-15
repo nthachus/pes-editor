@@ -14,6 +14,8 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
 public class PitchPanel extends JPanel implements MouseListener, MouseMotionListener {
+	private static final long serialVersionUID = -6469818605753384346L;
+
 	private static final int ADJ = 14;
 	private static final int DIA = 14;
 

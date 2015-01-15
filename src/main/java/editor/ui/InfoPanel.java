@@ -15,6 +15,7 @@ import java.awt.*;
  * Player information panel.
  */
 public class InfoPanel extends JScrollPane {
+	private static final long serialVersionUID = -4953711000070301800L;
 	private static final Logger log = LoggerFactory.getLogger(InfoPanel.class);
 
 	private final OptionFile of;

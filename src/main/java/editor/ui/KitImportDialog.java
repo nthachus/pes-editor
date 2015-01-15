@@ -11,6 +11,8 @@ import java.awt.event.MouseListener;
 import java.io.Serializable;
 
 public class KitImportDialog extends JDialog implements MouseListener {
+	private static final long serialVersionUID = 6176947558253913789L;
+
 	private final OptionFile of2;
 	private volatile int index = 0;
 
@@ -125,7 +127,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 	}
 
 	private static class KitItem implements Serializable {
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 3682840498301996863L;
 
 		private final String team;
 		private final int teamId;

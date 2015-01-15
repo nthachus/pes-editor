@@ -29,7 +29,7 @@ public final class Arrays {
 
 	public static class EntryValueComparator<K, V extends Comparable<? super V>>
 			implements Comparator<Map.Entry<K, V>>, Serializable {
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 1803953350037498756L;
 
 		public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
 			return o2.getValue().compareTo(o1.getValue());

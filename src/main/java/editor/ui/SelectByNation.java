@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SelectByNation extends JPanel implements ActionListener {
+	private static final long serialVersionUID = 228073822479688825L;
+
 	private final NationalityList freeList;
 	private/* final*/ JComboBox nationBox;
 	private/* final*/ JButton sortButton;
