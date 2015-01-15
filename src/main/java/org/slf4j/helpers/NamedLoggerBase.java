@@ -27,7 +27,6 @@ package org.slf4j.helpers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 /**
@@ -61,9 +60,8 @@ public abstract class NamedLoggerBase implements Logger, Serializable {
 	 * this approach would be mostly counterproductive.
 	 *
 	 * @return logger with same name as returned by LoggerFactory
-	 * @throws ObjectStreamException
 	 */
-	protected Object readResolve() throws ObjectStreamException {
+	protected Object readResolve() {
 		// using getName() instead of this.name works even for NOP
 		return LoggerFactory.getLogger(getName());
 	}
