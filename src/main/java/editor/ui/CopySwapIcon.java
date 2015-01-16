@@ -1,10 +1,17 @@
 package editor.ui;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Line2D;
+import java.io.Serializable;
 
-public class CopySwapIcon implements Icon {
+public class CopySwapIcon implements Icon, Serializable {
+	private static final long serialVersionUID = -4081848473723249944L;
+	private static final Logger log = LoggerFactory.getLogger(CopySwapIcon.class);
+
 	private static final int WIDTH = 10;
 	private static final int HEIGHT = 20;
 
@@ -29,6 +36,7 @@ public class CopySwapIcon implements Icon {
 	public void paintIcon(Component c, Graphics g, int x, int y) {
 		if (null == g) throw new NullPointerException("g");
 		if (!(g instanceof Graphics2D)) throw new IllegalArgumentException("g");
+		log.debug("Try to paint swap ({}) icon", isSwap);
 
 		Graphics2D g2 = (Graphics2D) g;
 		g2.translate(x, y);
@@ -45,6 +53,8 @@ public class CopySwapIcon implements Icon {
 		}
 
 		g2.translate(-x, -y);   // restore graphics object
+
+		log.debug("Painting of swap ({}) icon completed", isSwap);
 	}
 
 }

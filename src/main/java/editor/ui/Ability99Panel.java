@@ -33,14 +33,20 @@ public class Ability99Panel extends JPanel
 		if (null == of) throw new NullPointerException("of");
 		this.of = of;
 
+		log.debug("Ability99 panel is initializing..");
+		initComponents();
+	}
+
+	private void initComponents() {
 		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("ability.title")));
 
 		GridBagConstraints grid = new GridBagConstraints();
 		grid.ipadx = 2;
 
 		Verifier99 verifier99 = new Verifier99();
+		JLabel lab;
 		for (int i = 0; i < fields.length; i++) {
-			JLabel lab = new JLabel(Stats.ABILITY99[i].getName());
+			lab = new JLabel(Stats.ABILITY99[i].getName());
 			lab.setToolTipText(Resources.getNullableMessage(lab.getText()));
 			//lab.setHorizontalAlignment(SwingConstants.TRAILING);
 
@@ -57,8 +63,6 @@ public class Ability99Panel extends JPanel
 			fields[i].getDocument().addDocumentListener(new JTextChangeListener(fields[i], this));
 			fields[i].addKeyListener(this);
 
-			lab.setLabelFor(fields[i]);
-
 			grid.anchor = GridBagConstraints.CENTER;
 			grid.gridx = 1;
 			grid.gridy = i;
@@ -73,38 +77,33 @@ public class Ability99Panel extends JPanel
 	}
 
 	public void load(int player) {
+		log.debug("Try to load all abilities for player: {}", player);
+
 		for (int i = 0; i < fields.length; i++) {
 			initValues[i] = Stats.getString(of, player, Stats.ABILITY99[i]);
 			fields[i].setText(initValues[i]);
 		}
+
+		log.debug("Loading of all abilities for player {} succeeded", player);
 	}
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
 		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
+		log.debug("Try to update ability field: {}", evt.getActionCommand());
 
 		JTextComponent tf = (JTextComponent) evt.getSource();
 		int f = Integer.parseInt(evt.getActionCommand());
 
-		boolean invalid = false;
-		try {
-			int v = Integer.parseInt(tf.getText());
-			if (v > 0 && v <= Stats.MAX_STAT99) {
-				if (f < fields.length - 1) {
-					fields[f + 1].requestFocus();
-					fields[f + 1].selectAll();
-				} else {
-					fields[0].requestFocus();
-					fields[0].selectAll();
-				}
+		if (Verifier99.verify(tf)) {
+			if (f < fields.length - 1) {
+				fields[f + 1].requestFocus();
+				fields[f + 1].selectAll();
 			} else {
-				invalid = true;
+				fields[0].requestFocus();
+				fields[0].selectAll();
 			}
-		} catch (NumberFormatException nfe) {
-			invalid = true;
-		}
-
-		if (invalid) {
+		} else {
 			tf.setText(initValues[f]);
 			tf.selectAll();
 		}
@@ -116,16 +115,18 @@ public class Ability99Panel extends JPanel
 			if (null == input) throw new NullPointerException("input");
 			if (!(input instanceof JTextComponent)) throw new IllegalArgumentException("input");
 
-			JTextComponent tf = (JTextComponent) input;
+			return verify((JTextComponent) input);
+		}
+
+		private static boolean verify(JTextComponent tf) {
 			try {
 				int v = Integer.parseInt(tf.getText());
-				if (v >= 1 && v <= Stats.MAX_STAT99) {
+				if (v > 0 && v <= Stats.MAX_STAT99) {
 					return true;
 				}
 			} catch (NumberFormatException nfe) {
-				log.info(nfe.toString());
+				return false;
 			}
-
 			return false;
 		}
 	}
@@ -136,9 +137,10 @@ public class Ability99Panel extends JPanel
 
 		JTextComponent tf = (JTextComponent) evt.getSource();
 		String text = tf.getText();
-		Color bg = Color.WHITE;
 
-		if (!Strings.isEmpty(text)) {
+		Color bg = Color.WHITE;
+		if (!Strings.isBlank(text)) {
+			log.debug("Try to change color for ability: {}", text);
 			try {
 				int v = Integer.parseInt(text);
 				if (v >= 75 && v < 80) {
@@ -155,7 +157,7 @@ public class Ability99Panel extends JPanel
 			}
 		}
 
-		tf.setBackground(bg);
+		tf.setBackground(bg);// TODO: should call UIUtil.javaUI()
 	}
 
 	public void keyTyped(KeyEvent evt) {
@@ -163,16 +165,17 @@ public class Ability99Panel extends JPanel
 
 	public void keyPressed(KeyEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
+		int key = evt.getKeyCode();
+		if (key != KeyEvent.VK_UP && key != KeyEvent.VK_DOWN) return;
 
+		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
 		JTextComponent tf = (JTextComponent) evt.getSource();
 		try {
 			int v = Integer.parseInt(tf.getText());
-			int key = evt.getKeyCode();
-
-			if (key == 38 && v < Stats.MAX_STAT99) {
-				tf.setText(Integer.toString(v + 1));
-			} else if (key == 40 && v > 1) {
+			if (key == KeyEvent.VK_UP) {
+				if (v < Stats.MAX_STAT99)
+					tf.setText(Integer.toString(v + 1));
+			} else if (v > 1) {
 				tf.setText(Integer.toString(v - 1));
 			}
 		} catch (NumberFormatException nfe) {

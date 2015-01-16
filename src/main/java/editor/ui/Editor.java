@@ -337,9 +337,9 @@ public class Editor extends JFrame implements ActionListener {
 		}
 		log.debug("Try to export to CSV file: {}", dest);
 
-		boolean head = csvSwitch.getHead().isSelected();
-		//boolean extra = csvSwitch.getExtra().isSelected();
-		boolean create = csvSwitch.getCreate().isSelected();
+		boolean head = csvSwitch.isHeadChecked();
+		//boolean extra = csvSwitch.isExtraChecked();
+		boolean create = csvSwitch.isEditChecked();
 
 		dest = Files.addExtension(dest, Files.CSV);
 		if (dest.exists()) {

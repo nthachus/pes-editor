@@ -33,13 +33,21 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	public BackChooserDialog(Frame owner) {
 		super(owner, Resources.getMessage("backFlag.title"), true);
 
+		log.debug("Background Flag chooser dialog is initializing..");
+		initComponents();
+	}
+
+	private void initComponents() {
 		JPanel flagPanel = new JPanel(new GridLayout(3, 4));
+
+		URL backUrl;
+		BufferedImage img;
 		for (int i = 0; i < flagButtons.length; i++) {
 			// load each flag background images
-			URL backUrl = getClass().getResource("/META-INF/images/backFlag" + i + ".png");
+			backUrl = getClass().getResource("/META-INF/images/backFlag" + i + ".png");
 			if (null != backUrl) {
 				try {
-					BufferedImage img = ImageIO.read(backUrl);
+					img = ImageIO.read(backUrl);
 					rasterData[i] = img.getRaster();
 				} catch (IOException e) {
 					log.warn("Failed to load back-flag {}: {}", backUrl, e.toString());
@@ -75,10 +83,13 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 		return flagButtons[index];
 	}
 
-	public int getBack(Image image, byte[] red, byte[] green, byte[] blue) {
+	public int getBackFlag(Image image, byte[] red, byte[] green, byte[] blue) {
 		slot = -1;
+
 		refresh(image, red, green, blue);
 		setVisible(true);
+
+		log.debug("Background Flag chooser result: {}", slot);
 		return slot;
 	}
 
@@ -90,9 +101,11 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	}
 
 	private void refresh(Image image, byte[] red, byte[] green, byte[] blue) {
+		log.debug("Try to refresh dialog with image: {}", image);
+
 		ImageIcon flag;
 		for (int i = 0; i < flagButtons.length; i++) {
-			flag = getFlagBackground(image, i, red, green, blue);
+			flag = getBackFlag(image, i, red, green, blue);
 			flagButtons[i].setIcon(flag);
 		}
 	}
@@ -100,19 +113,24 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	private static volatile WritableRaster blankFlagData = null;
 
 	private static WritableRaster getBlankFlagData() {
+		log.warn("Blank Background Flag data should not be called!");
+
 		if (null == blankFlagData) {
 			int rasterSize = Images.rasterDataSize(BITS_DEPTH, IMG_WIDTH, IMG_HEIGHT);
 			DataBuffer buf = new DataBufferByte(rasterSize);
 			SampleModel sampleModel = new MultiPixelPackedSampleModel(
 					DataBuffer.TYPE_BYTE, IMG_WIDTH, IMG_HEIGHT, BITS_DEPTH);
+
 			blankFlagData = Raster.createWritableRaster(sampleModel, buf, null);
 		}
+
 		return blankFlagData;
 	}
 
-	public ImageIcon getFlagBackground(Image image, int bgIndex, byte[] red, byte[] green, byte[] blue) {
+	public ImageIcon getBackFlag(Image image, int bgIndex, byte[] red, byte[] green, byte[] blue) {
 		if (bgIndex < 0 || bgIndex >= rasterData.length)
 			throw new IndexOutOfBoundsException("bgIndex#" + bgIndex);
+		log.debug("Try to build Background Flag with image: {}", image);
 
 		IndexColorModel colorModel = new IndexColorModel(BITS_DEPTH, Images.paletteSize(BITS_DEPTH), red, green, blue);
 		BufferedImage bi = new BufferedImage(colorModel, rasterData[bgIndex], false, null);

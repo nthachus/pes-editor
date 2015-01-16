@@ -220,7 +220,7 @@ public class TeamPanel extends JPanel
 		int team = teamList.getSelectedIndex();
 		if (team < 0) return;
 
-		int flagId = backChooser.getBack(getEmblemImage(team),
+		int flagId = backChooser.getBackFlag(getEmblemImage(team),
 				Clubs.getRed(of, team), Clubs.getGreen(of, team), Clubs.getBlue(of, team));
 		if (flagId >= 0) {
 			Clubs.setBackFlag(of, team, flagId);
@@ -477,7 +477,7 @@ public class TeamPanel extends JPanel
 
 	private void updateBackButton(int team) {
 		int flag = Clubs.getBackFlag(of, team);
-		ImageIcon icon = backChooser.getFlagBackground(getEmblemImage(team), flag,
+		ImageIcon icon = backChooser.getBackFlag(getEmblemImage(team), flag,
 				Clubs.getRed(of, team), Clubs.getGreen(of, team), Clubs.getBlue(of, team));
 		backButton.setIcon(icon);
 	}

@@ -24,15 +24,15 @@ public class CsvSwitchPanel extends JPanel {
 		add(create);
 	}
 
-	public JCheckBox getHead() {
-		return head;
+	public boolean isHeadChecked() {
+		return head.isSelected();
 	}
 
-	/*public JCheckBox getExtra() {
-		return extra;
+	/*public boolean isExtraChecked() {
+		return extra.isSelected();
 	}*/
 
-	public JCheckBox getCreate() {
-		return create;
+	public boolean isEditChecked() {
+		return create.isSelected();
 	}
 }

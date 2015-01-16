@@ -4,8 +4,10 @@ import editor.util.Files;
 
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
+import java.io.Serializable;
 
-public class CsvFilter extends FileFilter {
+public class CsvFilter extends FileFilter implements Serializable {
+	private static final long serialVersionUID = 3471877034296204757L;
 
 	/**
 	 * Accept all directories and all csv files.
