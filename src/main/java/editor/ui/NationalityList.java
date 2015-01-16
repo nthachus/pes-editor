@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.util.Collections;
 import java.util.Vector;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class NationalityList extends JList/*<Player>*/ {
 	private static final long serialVersionUID = -4852231786111601408L;
@@ -50,7 +48,6 @@ public class NationalityList extends JList/*<Player>*/ {
 		} else if (extraCount >= 5 && nation == total - 5) {
 			fetchOldPlayers(model);
 		}
-		lazyLoadPlayerNames(model);
 
 		if (alphaOrder)
 			Collections.sort(model);
@@ -159,18 +156,6 @@ public class NationalityList extends JList/*<Player>*/ {
 			if (score >= 7) return i;
 		}
 		return -1;
-	}
-
-	private static void lazyLoadPlayerNames(Vector<Player> players) {
-		ExecutorService pool = null;
-		try {
-			int numCores = Math.min(Runtime.getRuntime().availableProcessors(), 1);
-			pool = Executors.newFixedThreadPool(numCores * 2);
-			for (Player p : players)
-				pool.execute(p);
-		} finally {
-			if (null != pool) pool.shutdown();
-		}
 	}
 
 }

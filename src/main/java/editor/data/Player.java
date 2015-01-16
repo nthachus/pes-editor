@@ -5,6 +5,8 @@ import editor.util.Strings;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Player implements Serializable, Comparable<Player>, Runnable {
 	private static final long serialVersionUID = 1536161153505853967L;
@@ -104,9 +106,18 @@ public class Player implements Serializable, Comparable<Player>, Runnable {
 		this.index = index;// NOTE: index out of range: <ERROR>
 		this.slotAdr = slotAdr;
 
-		if (index == 0)
+		if (index == 0) {
 			name = Resources.getMessage("player.empty");
+		} else {
+			synchronized (this) {
+				if (null == LOADER)
+					LOADER = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+			}
+			LOADER.execute(this);
+		}
 	}
+
+	private static volatile ExecutorService LOADER = null;
 
 	public void run() {
 		getName();
@@ -146,21 +157,23 @@ public class Player implements Serializable, Comparable<Player>, Runnable {
 	}
 
 	public String getName() {
-		if (null == name) {
-			int adr = getOffset(index);
-			String nm = new String(of.getData(), adr, NAME_LEN, Strings.UNICODE);
-			nm = Strings.fixCString(nm);
+		synchronized (this) {
+			if (null == name) {
+				int adr = getOffset(index);
+				String nm = new String(of.getData(), adr, NAME_LEN, Strings.UNICODE);
+				nm = Strings.fixCString(nm);
 
-			if (Strings.isEmpty(nm)) {
-				if (index >= FIRST_EDIT) {
-					nm = Resources.getMessage("player.edited", index - FIRST_EDIT);
-				} else if (index >= FIRST_UNUSED) {
-					nm = Resources.getMessage("player.unused", index);
-				} else {
-					nm = Resources.getMessage("player.blank", index);
+				if (Strings.isEmpty(nm)) {
+					if (index >= FIRST_EDIT) {
+						nm = Resources.getMessage("player.edited", index - FIRST_EDIT);
+					} else if (index >= FIRST_UNUSED) {
+						nm = Resources.getMessage("player.unused", index);
+					} else {
+						nm = Resources.getMessage("player.blank", index);
+					}
 				}
+				name = nm;
 			}
-			name = nm;
 		}
 		return name;
 	}

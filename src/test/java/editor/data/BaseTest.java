@@ -104,7 +104,8 @@ public abstract class BaseTest {
 		for (Field f : fields) {
 			if ((null == target) == Modifier.isStatic(f.getModifiers())
 					&& (null == isFinal || isFinal == Modifier.isFinal(f.getModifiers()))
-					&& ofType.isAssignableFrom(f.getType())) {
+					&& ofType.isAssignableFrom(f.getType())
+					&& !forceAccess == Modifier.isPublic(f.getModifiers())) {
 
 				if (forceAccess)
 					f.setAccessible(true);
@@ -133,7 +134,7 @@ public abstract class BaseTest {
 				|| (null != isFinal && isFinal != Modifier.isFinal(f.getModifiers())))
 			throw new IllegalAccessException(f.toString());
 
-		if (forceAccess)
+		if (!Modifier.isPublic(f.getModifiers()) && forceAccess)
 			f.setAccessible(true);
 
 		return f.get(target);

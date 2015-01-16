@@ -24,7 +24,7 @@ public final class Stats {
 
 	public static final Stat CALL_NAME = new Stat(StatType.integer, 1, 0, 0xFFFF, "Call Name");
 	public static final Stat HEIGHT = new Stat(StatType.height148, 41, 0, 0x3F, "Height");
-	public static final Stat FOOT = new Stat(StatType.footId, 5, 0, 0x01, "Foot");
+	public static final Stat FOOT = new Stat(StatType.footId, 5, 0, 0x01, "Foot");// Stronger Foot
 	/**
 	 * The favorite side/foot of a player (0: Same side with stronger-foot, 1: Difference stronger-foot, 2: L&R).
 	 */
@@ -40,7 +40,7 @@ public final class Stats {
 	public static final Stat WEIGHT = new Stat(StatType.integer, 41, 8, 0x7F, "Weight");
 	public static final Stat NATIONALITY = new Stat(StatType.nationId, 65, 0, 0xFF, "Nationality");
 	public static final Stat CONSISTENCY = new Stat(StatType.positiveInt, 33, 0, 0x07, "Consistency");
-	public static final Stat CONDITION = new Stat(StatType.positiveInt, 33, 8, 0x07, "Condition");
+	public static final Stat CONDITION = new Stat(StatType.positiveInt, 33, 8, 0x07, "Condition");// Form
 	public static final Stat REG_POS = new Stat(StatType.integer, 6, 4, 0xF, "Registered Position");
 
 	public static final Stat GK = new Stat(StatType.integer, 7, 7, 1, "GK");
@@ -78,7 +78,7 @@ public final class Stats {
 	public static final Stat SPEED = new Stat(StatType.integer, 11, 0, 0x7F, "Speed");
 	public static final Stat ACCELERATION = new Stat(StatType.integer, 12, 0, 0x7F, "Acceleration");
 	public static final Stat RESPONSE = new Stat(StatType.integer, 13, 0, 0x7F, "Response");
-	public static final Stat AGILITY = new Stat(StatType.integer, 14, 0, 0x7F, "Agility");
+	public static final Stat AGILITY = new Stat(StatType.integer, 14, 0, 0x7F, "Agility");// Explosive power
 	public static final Stat DRIBBLE_ACC = new Stat(StatType.integer, 15, 0, 0x7F, "Dribble Accuracy");
 	public static final Stat DRIBBLE_SPEED = new Stat(StatType.integer, 16, 0, 0x7F, "Dribble Speed");
 	public static final Stat S_PASS_ACC = new Stat(StatType.integer, 17, 0, 0x7F, "S-Pass Accuracy");
@@ -88,13 +88,13 @@ public final class Stats {
 	public static final Stat SHOT_ACC = new Stat(StatType.integer, 21, 0, 0x7F, "Shot Accuracy");
 	public static final Stat SHOT_POWER = new Stat(StatType.integer, 22, 0, 0x7F, "Shot Power");
 	public static final Stat SHOT_TEC = new Stat(StatType.integer, 23, 0, 0x7F, "Shot Technique");
-	public static final Stat FK_ACC = new Stat(StatType.integer, 24, 0, 0x7F, "FK Accuracy");
+	public static final Stat FK_ACC = new Stat(StatType.integer, 24, 0, 0x7F, "FK Accuracy");// Place kicking
 	public static final Stat CURLING = new Stat(StatType.integer, 25, 0, 0x7F, "Swerve");
-	public static final Stat HEADING = new Stat(StatType.integer, 26, 0, 0x7F, "Heading");
+	public static final Stat HEADING = new Stat(StatType.integer, 26, 0, 0x7F, "Heading");// Header accuracy
 	public static final Stat JUMP = new Stat(StatType.integer, 27, 0, 0x7F, "Jump");
-	public static final Stat TECH = new Stat(StatType.integer, 29, 0, 0x7F, "Technique");
+	public static final Stat TECH = new Stat(StatType.integer, 29, 0, 0x7F, "Technique");// Ball control
 	public static final Stat AGGRESSION = new Stat(StatType.integer, 30, 0, 0x7F, "Aggression");
-	public static final Stat MENTALITY = new Stat(StatType.integer, 31, 0, 0x7F, "Mentality");
+	public static final Stat MENTALITY = new Stat(StatType.integer, 31, 0, 0x7F, "Mentality");// Tenacity
 	public static final Stat GK_ABILITY = new Stat(StatType.integer, 32, 0, 0x7F, "GK Skills");
 	public static final Stat TEAM_WORK = new Stat(StatType.integer, 28, 0, 0x7F, "Team Work");
 

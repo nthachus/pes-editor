@@ -39,6 +39,8 @@ import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,8 +81,10 @@ public class SimpleLogger extends NamedLoggerBase {
 	private static volatile PrintStream TARGET_STREAM = null;
 	private static volatile boolean LEVEL_IN_BRACKETS = false;
 
-	private static volatile String CHARSET = Charset.defaultCharset().name();
 	private static volatile SendGrid SMTP_APPENDER = null;
+	private static volatile ExecutorService MAIL_POOL = null;
+	private static volatile String NEW_LINE = "\n";
+	private static volatile List<String> CACHED_MESSAGES = null;
 
 	/**
 	 * All system properties used by <code>SimpleLogger</code> start with this prefix
@@ -143,21 +147,7 @@ public class SimpleLogger extends NamedLoggerBase {
 		LEVEL_IN_BRACKETS = getBooleanProperty(LEVEL_IN_BRACKETS_KEY, LEVEL_IN_BRACKETS);
 
 		LOG_FILE = getStringProperty(LOG_FILE_KEY, LOG_FILE);
-		CHARSET = getStringProperty(CHARSET_KEY, CHARSET);
 		TARGET_STREAM = computeTargetStream(LOG_FILE);
-
-		String sendGridForm = getStringProperty(SMTP_APPENDER_KEY);
-		if (null != sendGridForm) {
-			SMTP_APPENDER = new SendGrid(sendGridForm);
-			String timeout = getStringProperty(SMTP_TIMEOUT_KEY);
-			if (null != timeout) {
-				try {
-					SMTP_APPENDER.setTimeout(Integer.parseInt(timeout));
-				} catch (NumberFormatException e) {
-					Util.report("Bad SMTP timeout setting: " + e.toString());
-				}
-			}
-		}
 
 		if (DATE_TIME_FORMAT_STR != null) {
 			try {
@@ -166,6 +156,8 @@ public class SimpleLogger extends NamedLoggerBase {
 				Util.report("Bad date format in " + CONFIG_FILE + "; will output relative time", e);
 			}
 		}
+
+		initSMTPAppender();
 	}
 
 	private static PrintStream computeTargetStream(String logFile) {
@@ -175,17 +167,39 @@ public class SimpleLogger extends NamedLoggerBase {
 			return System.out;
 		} else {
 			try {
+				String encoding = getStringProperty(CHARSET_KEY, Charset.defaultCharset().name());
+
 				logFile = replaceSystemProperties(logFile);
 				logFile = replaceDatePatterns(logFile);
 
 				FileOutputStream fos = new FileOutputStream(logFile, true);
-				return new PrintStream(fos, true, CHARSET);
+				return new PrintStream(fos, true, encoding);
 
 			} catch (Exception e) {
 				Util.report("Could not open [" + logFile + "]. Defaulting to System.err", e);
 			}
 		}
 		return System.err;
+	}
+
+	private static void initSMTPAppender() {
+		String sendGridForm = getStringProperty(SMTP_APPENDER_KEY);
+		if (null != sendGridForm) {
+			SMTP_APPENDER = new SendGrid(sendGridForm);
+
+			String timeout = getStringProperty(SMTP_TIMEOUT_KEY);
+			if (null != timeout) {
+				try {
+					SMTP_APPENDER.setTimeout(Integer.parseInt(timeout));
+				} catch (NumberFormatException e) {
+					Util.report("Bad SMTP timeout setting: " + e.toString());
+				}
+			}
+
+			MAIL_POOL = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+			NEW_LINE = getStringProperty("line.separator", NEW_LINE);
+			CACHED_MESSAGES = Collections.synchronizedList(new ArrayList<String>());
+		}
 	}
 
 	protected static String replaceSystemProperties(String filename) {
@@ -426,11 +440,8 @@ public class SimpleLogger extends NamedLoggerBase {
 		if (immediately)
 			sender.run();
 		else
-			new Thread(sender).start();
+			MAIL_POOL.execute(sender);
 	}
-
-	private static final String NEW_LINE = System.getProperty("line.separator");
-	private static final List<String> CACHED_MESSAGES = Collections.synchronizedList(new ArrayList<String>());
 
 	private static class MailSender implements Runnable {
 		private final StringBuffer subject;

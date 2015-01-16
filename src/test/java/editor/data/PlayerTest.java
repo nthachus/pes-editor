@@ -34,8 +34,13 @@ public final class PlayerTest extends BaseTest {
 	public void testGetAndSetName() throws Exception {
 		OptionFile of = loadOriginalOF();
 
-		int pid = rand.nextInt(Player.TOTAL - 1) + 1;
+		int pid = 2;
 		Player p = new Player(of, pid);
+		Assert.assertEquals("DRAGOVIĆ", p.getName());
+		Assert.assertEquals("DRAGOVIC", p.getShirtName());
+
+		pid = rand.nextInt(Player.TOTAL - 1) + 1;
+		p = new Player(of, pid);
 
 		String name = p.getName();
 		Assert.assertThat(name, Matchers.not(Matchers.isEmptyOrNullString()));
@@ -48,7 +53,7 @@ public final class PlayerTest extends BaseTest {
 		name = p.getName();
 		Assert.assertEquals(newName, name);
 
-		String newShirt = shirtName.substring(1) + "!";
+		String newShirt = shirtName.substring(1) + "_";
 		p.setShirtName(newShirt);
 		shirtName = p.getShirtName();
 		Assert.assertEquals(newShirt, shirtName);
@@ -64,4 +69,5 @@ public final class PlayerTest extends BaseTest {
 	}
 
 	// TODO: More tests here!
+
 }
