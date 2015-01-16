@@ -486,27 +486,18 @@ public class Editor extends JFrame implements ActionListener {
 		if (null == dir)
 			return true;
 
-		FileOutputStream out = null;
 		ObjectOutputStream sw = null;
 		try {
-			out = new FileOutputStream(settingsFile, false);
-			sw = new ObjectOutputStream(out);
-
+			sw = new ObjectOutputStream(new FileOutputStream(settingsFile, false));
 			sw.writeObject(dir);
+
 		} catch (IOException e) {
-			log.error("Failed to save settings:", e);
+			log.warn("Failed to save settings: {}", e.toString());
 			return false;
 		} finally {
 			if (null != sw) {
 				try {
 					sw.close();
-				} catch (IOException e) {
-					log.warn(e.toString());
-				}
-			}
-			if (null != out) {
-				try {
-					out.close();
 				} catch (IOException e) {
 					log.warn(e.toString());
 				}
@@ -522,30 +513,21 @@ public class Editor extends JFrame implements ActionListener {
 		}
 
 		File dir = null;
-		FileInputStream in = null;
 		ObjectInputStream sr = null;
 		try {
-			in = new FileInputStream(settingsFile);
-			sr = new ObjectInputStream(in);
-
+			sr = new ObjectInputStream(new FileInputStream(settingsFile));
 			Object o = sr.readObject();
+
 			if (o instanceof File) {
 				dir = (File) o;
 				if (!dir.exists()) dir = null;
 			}
 		} catch (Exception e) {
-			log.error("Failed to load settings:", e);
+			log.warn("Failed to load settings: {}", e.toString());
 		} finally {
 			if (null != sr) {
 				try {
 					sr.close();
-				} catch (IOException e) {
-					log.warn(e.toString());
-				}
-			}
-			if (null != in) {
-				try {
-					in.close();
 				} catch (IOException e) {
 					log.warn(e.toString());
 				}
