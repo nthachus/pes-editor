@@ -103,8 +103,10 @@ public class OptionFile implements Serializable {
 				if (!isValidGameId(gameId))
 					throw new IllegalStateException("Invalid Game ID: " + gameId);
 
-				if (format != OfFormat.arMax)
-					in.read(data);
+				if (format != OfFormat.arMax) {
+					int len = in.read(data);
+					assert len == LENGTH : "Cannot read " + LENGTH + " bytes of data, actual: " + len;
+				}
 
 				checksum(data, true);
 				decrypt(data);
@@ -134,7 +136,8 @@ public class OptionFile implements Serializable {
 
 	private void loadARMaxFile(RandomAccessFile in) throws IOException {
 		byte[] temp = new byte[(int) in.length()];
-		in.read(temp);
+		int len = in.read(temp);
+		assert len == temp.length : "Failed to read entire ARMax file, expected: " + temp.length + ", actual: " + len;
 
 		int ofs = 0;
 		String magic = new String(temp, ofs, MAGIC_MAX.length(), Strings.ANSI);
@@ -158,17 +161,18 @@ public class OptionFile implements Serializable {
 
 		temp = new byte[32];
 		in.seek(16);
-		in.read(temp);
-		gameId = Strings.fixCString(new String(temp, Strings.ANSI));
+		len = in.read(temp);
+		gameId = Strings.fixCString(new String(temp, 0, len, Strings.ANSI));
 
-		in.read(temp);
-		gameName = Strings.fixCString(new String(temp, Strings.ANSI));
+		len = in.read(temp);
+		gameName = Strings.fixCString(new String(temp, 0, len, Strings.ANSI));
 
 		int codeSize = Bits.swabInt(in.readInt());
 		filesCount = Bits.swabInt(in.readInt());
 
 		temp = new byte[codeSize];
-		in.read(temp);
+		len = in.read(temp);
+		assert len == codeSize : "Cannot read " + codeSize + " bytes of compressed, actual: " + len;
 
 		LZAri lzAri = new LZAri();
 		temp = lzAri.decode(temp, 0, temp.length);
@@ -196,7 +200,8 @@ public class OptionFile implements Serializable {
 
 	private void loadEmsFile(RandomAccessFile in) throws IOException {
 		headerData = new byte[(int) in.length() - data.length];
-		in.read(headerData);
+		int len = in.read(headerData);
+		assert len == headerData.length : "Invalid EMS header length: " + len + ", expected: " + headerData.length;
 
 		gameId = new String(headerData, 64, GAME_LEN, Strings.ANSI);
 
@@ -209,9 +214,9 @@ public class OptionFile implements Serializable {
 		int ofs = 4;
 		in.seek(ofs);
 		byte[] temp = new byte[SHARK_PORT.length() - ofs];
-		in.read(temp);
+		int len = in.read(temp);
 
-		String magic = new String(temp, Strings.ANSI);
+		String magic = new String(temp, 0, len, Strings.ANSI);
 		if (!SHARK_PORT.substring(ofs).equals(magic)) {
 			log.warn("Invalid XPort magic: {}", magic);
 			return;
@@ -223,26 +228,27 @@ public class OptionFile implements Serializable {
 		int size = Bits.swabInt(in.readInt());
 		ofs += 4;
 		temp = new byte[size];
-		in.read(temp);
+		len = in.read(temp);
 		ofs += size;
-		gameName = new String(temp, Strings.ANSI);
+		gameName = new String(temp, 0, len, Strings.ANSI);
 
 		size = Bits.swabInt(in.readInt());
 		ofs += 4;
 		temp = new byte[size];
-		in.read(temp);
+		len = in.read(temp);
 		ofs += size;
-		saveName = new String(temp, Strings.ANSI);
+		saveName = new String(temp, 0, len, Strings.ANSI);
 
 		size = Bits.swabInt(in.readInt());
 		ofs += 4;
 		temp = new byte[size];
-		in.read(temp);
+		len = in.read(temp);
 		ofs += size;
-		notes = new String(temp, Strings.ANSI);
+		notes = new String(temp, 0, len, Strings.ANSI);
 
 		headerData = new byte[(int) endOfs - ofs];
-		in.read(headerData);
+		len = in.read(headerData);
+		assert len == headerData.length : "Invalid XPort header length: " + len + ", expected: " + headerData.length;
 
 		gameId = new String(headerData, 6, GAME_LEN, Strings.ANSI);
 
@@ -256,6 +262,7 @@ public class OptionFile implements Serializable {
 	public boolean save(File file) {
 		if (null == format) return false;
 		if (null == file) throw new NullPointerException("file");
+		log.debug("Try to save OF file to: {}", file);
 
 		//data[49] = 1;
 		//data[50] = 1;
@@ -297,6 +304,7 @@ public class OptionFile implements Serializable {
 			decrypt(data);
 		}
 
+		log.debug("Saving of OF file '{}' completed", file);
 		return true;
 	}
 

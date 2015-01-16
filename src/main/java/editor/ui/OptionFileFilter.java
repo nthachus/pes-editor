@@ -43,8 +43,8 @@ public class OptionFileFilter extends FileFilter {
 
 			rf.seek(64);
 			byte[] identBytes = new byte[19];
-			rf.read(identBytes);
-			String identCheck = new String(identBytes, Strings.ANSI);
+			int len = rf.read(identBytes);
+			String identCheck = new String(identBytes, 0, len, Strings.ANSI);
 
 			return OptionFile.isValidGameId(identCheck);
 
@@ -80,8 +80,8 @@ public class OptionFileFilter extends FileFilter {
 					if (rf.skipBytes(skip) == skip) {
 
 						byte[] identBytes = new byte[19];
-						rf.read(identBytes);
-						String identCheck = new String(identBytes, Strings.ANSI);
+						int len = rf.read(identBytes);
+						String identCheck = new String(identBytes, 0, len, Strings.ANSI);
 						return OptionFile.isValidGameId(identCheck);
 					}
 				}
@@ -111,8 +111,8 @@ public class OptionFileFilter extends FileFilter {
 
 			rf.seek(16);
 			byte[] identBytes = new byte[19];
-			rf.read(identBytes);
-			String identCheck = new String(identBytes, Strings.ANSI);
+			int len = rf.read(identBytes);
+			String identCheck = new String(identBytes, 0, len, Strings.ANSI);
 
 			return OptionFile.isValidGameId(identCheck);
 

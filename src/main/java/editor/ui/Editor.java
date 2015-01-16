@@ -130,6 +130,8 @@ public class Editor extends JFrame implements ActionListener {
 	private JMenuItem convertItem;
 
 	private void buildMenu() {
+		log.debug("Building menu-bar is starting..");
+
 		JMenuItem openItem = new JMenuItem(Resources.getMessage("menu.open"));
 		openItem.setActionCommand("Open");
 		openItem.addActionListener(this);
@@ -193,6 +195,8 @@ public class Editor extends JFrame implements ActionListener {
 		saveItem.setEnabled(false);
 		saveAsItem.setEnabled(false);
 		convertItem.setEnabled(false);
+
+		log.debug("Building of menu-bar succeeded");
 	}
 
 	private void initIcon() {
@@ -217,6 +221,7 @@ public class Editor extends JFrame implements ActionListener {
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+		log.debug("Try to perform action: {}", evt.getActionCommand());
 
 		if ("Open".equalsIgnoreCase(evt.getActionCommand())) {
 			openFile();
@@ -250,6 +255,7 @@ public class Editor extends JFrame implements ActionListener {
 		File fs = opFileChooser.getSelectedFile();
 		if (!opFileFilter.accept(fs))
 			return;
+		log.debug("Try to open file: {}", fs);
 
 		if (fs.isFile() && of.load(fs)) {
 			currentFile = fs;
@@ -274,6 +280,8 @@ public class Editor extends JFrame implements ActionListener {
 
 			refreshTitle(currentFile.getName());
 			tabbedPane.setVisible(true);
+
+			log.debug("Open succeeded on input file: {}", fs);
 		} else {
 			refreshTitle(null);
 			tabbedPane.setVisible(false);
@@ -284,6 +292,7 @@ public class Editor extends JFrame implements ActionListener {
 			saveAsItem.setEnabled(false);
 			convertItem.setEnabled(false);
 
+			log.debug("Failed to open file: {}", fs);
 			showOpenFailMsg();
 		}
 	}
@@ -294,6 +303,7 @@ public class Editor extends JFrame implements ActionListener {
 	private void importFromOF2() {
 		if (null == currentFile)
 			return;
+		log.debug("Try to import all data from OF2: {}", of2.getFilename());
 
 		for (int i = 2; i <= 8; i++) {
 			int adr = OptionFile.blockAddress(i);
@@ -308,6 +318,8 @@ public class Editor extends JFrame implements ActionListener {
 		leaguePan.refresh();
 		importPanel.disableAll();
 		convertItem.setEnabled(false);
+
+		log.debug("Importing of OF2 {} succeeded", of2.getFilename());
 	}
 
 	private void exportCsv() {
@@ -323,6 +335,7 @@ public class Editor extends JFrame implements ActionListener {
 			showIllegalNameMsg();
 			return;
 		}
+		log.debug("Try to export to CSV file: {}", dest);
 
 		boolean head = csvSwitch.getHead().isSelected();
 		//boolean extra = csvSwitch.getExtra().isSelected();
@@ -360,6 +373,7 @@ public class Editor extends JFrame implements ActionListener {
 			showIllegalNameMsg();
 			return;
 		}
+		log.debug("Try to save OF file as: {}", dest);
 
 		if (of.getFormat() == OfFormat.xPort) {
 			dest = Files.addExtension(dest, Files.XPS);
@@ -409,6 +423,7 @@ public class Editor extends JFrame implements ActionListener {
 		File fs2 = opFileChooser.getSelectedFile();
 		if (!opFileFilter.accept(fs2))
 			return;
+		log.debug("Try to open OF2 file: {}", fs2);
 
 		if (fs2.isFile() && of2.load(fs2)) {
 			Squads.fixAll(of2);
@@ -420,12 +435,14 @@ public class Editor extends JFrame implements ActionListener {
 			teamPan.getList().setToolTipText(Resources.getMessage("teamPane.tooltip"));
 			convertItem.setEnabled(of.isLoaded());
 
+			log.debug("Open succeeded on OF2 file: {}", fs2);
 		} else {
 			teamPan.getList().setToolTipText(null);
 			flagPanel.refresh();
 			importPanel.refresh();
 			convertItem.setEnabled(false);
 
+			log.debug("Failed to open OF2 file: {}", fs2);
 			showOpenFailMsg();
 		}
 	}

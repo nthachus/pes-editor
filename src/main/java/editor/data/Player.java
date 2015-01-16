@@ -124,16 +124,30 @@ public class Player implements Serializable, Comparable<Player> {
 		return getName();
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		return (this == o
+				|| (null != o && getClass() == o.getClass() && index == ((Player) o).index));
+	}
+
+	@Override
+	public int hashCode() {
+		return index;
+	}
+
 	@SuppressWarnings("NullableProblems")
 	public int compareTo(Player other) {
-		if (null == other)
-			return 1;
+		if (null == other) return 1;
 
 		int cmp = getName().compareTo(other.getName());
 		if (cmp == 0) {
 			cmp = Integer.valueOf(Stats.getValue(of, index, Stats.AGE)).compareTo(
 					Stats.getValue(of, other.index, Stats.AGE));
+
+			if (cmp == 0)
+				cmp = Integer.valueOf(index).compareTo(other.index);
 		}
+
 		return cmp;
 	}
 

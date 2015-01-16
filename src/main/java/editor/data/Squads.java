@@ -1,10 +1,14 @@
 package editor.data;
 
 import editor.util.Bits;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public final class Squads {
+	private static final Logger log = LoggerFactory.getLogger(Squads.class);
+
 	private Squads() {
 	}
 
@@ -116,6 +120,8 @@ public final class Squads {
 	public static void fixFormation(OptionFile of, int squad, boolean fixJobs) {
 		if (null == of) throw new NullPointerException("of");
 		if (squad < 0 || squad >= TOTAL) throw new IndexOutOfBoundsException("squad#" + squad);
+		if (!fixJobs)
+			log.debug("Try to fix formation for team: {}", squad);
 
 		if ((squad >= FIRST_EDIT_NATION && squad < FIRST_CLUB) || squad >= FIRST_CLUB + Clubs.TOTAL)
 			return;
@@ -152,18 +158,25 @@ public final class Squads {
 		for (int i = 0; i < size; i++) {
 			Formations.setSlot(of, team, i, i);
 		}
+
+		if (!fixJobs)
+			log.debug("Fixing formation for team {} succeeded", squad);
 	}
 
 	public static void fixAll(OptionFile of) {
 		if (null == of) throw new NullPointerException("of");
-		for (int s = 0; s < TOTAL; s++) {
+		log.debug("Try to fix formation for all {} teams", TOTAL);
+
+		for (int s = 0; s < TOTAL; s++)
 			fixFormation(of, s, true);
-		}
+
+		log.debug("Fixing formation for all teams succeeded");
 	}
 
 	public static void tidy(OptionFile of, int team) {
 		if (null == of) throw new NullPointerException("of");
 		if (team < 0 || team >= TOTAL) throw new IndexOutOfBoundsException("team#" + team);
+		log.debug("Try to tidy team: {}", team);
 
 		if ((team >= FIRST_EDIT_NATION && team < FIRST_CLUB) || team >= FIRST_CLUB + Clubs.TOTAL)
 			return;
@@ -195,6 +208,8 @@ public final class Squads {
 
 		System.arraycopy(tempSlot, 0, of.getData(), firstAdr + Formations.PLAYER_COUNT * 2, tempSlot.length);
 		System.arraycopy(tempNum, 0, of.getData(), firstNumAdr + Formations.PLAYER_COUNT, tempNum.length);
+
+		log.debug("Tidy of team {} succeeded", team);
 	}
 
 	private static int getRolePos(Stat role) {
@@ -318,6 +333,7 @@ public final class Squads {
 	public static void tidy11(OptionFile of, int team, int freePos, int selPos) {
 		if (null == of) throw new NullPointerException("of");
 		if (team < 0 || team >= TOTAL) throw new IndexOutOfBoundsException("team#" + team);
+		log.debug("Try to tidy 11 for team: {}, free-position: {}, selected-position: {}", team, freePos, selPos);
 
 		if ((team >= FIRST_EDIT_NATION && team < FIRST_CLUB) || team >= FIRST_CLUB + Clubs.TOTAL)
 			return;

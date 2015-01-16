@@ -81,42 +81,44 @@ public class SaveGameInfo implements Serializable {
 		rf.seek(21);
 		int size = Bits.swabInt(rf.readInt());
 		byte[] temp = new byte[size];
-		rf.read(temp);
-		gameName = new String(temp, Strings.ANSI);
+		int len = rf.read(temp);
+		gameName = new String(temp, 0, len, Strings.ANSI);
 
 		size = Bits.swabInt(rf.readInt());
 		temp = new byte[size];
-		rf.read(temp);
-		saveName = new String(temp, Strings.ANSI);
+		len = rf.read(temp);
+		saveName = new String(temp, 0, len, Strings.ANSI);
 
 		size = Bits.swabInt(rf.readInt());
 		temp = new byte[size];
-		rf.read(temp);
-		notes = new String(temp, Strings.ANSI);
+		len = rf.read(temp);
+		notes = new String(temp, 0, len, Strings.ANSI);
 
-		rf.skipBytes(6);
+		len = rf.skipBytes(6);
+		assert len == 6 : "Cannot skip next 6 bytes in XPort file, result: " + len;
+
 		temp = new byte[OptionFile.GAME_LEN];
-		rf.read(temp);
-		game = new String(temp, Strings.ANSI);
+		len = rf.read(temp);
+		game = new String(temp, 0, len, Strings.ANSI);
 	}
 
 	private void readARMaxFile(RandomAccessFile rf) throws IOException {
 		rf.seek(16);
 		byte[] temp = new byte[OptionFile.GAME_LEN];
-		rf.read(temp);
-		game = new String(temp, Strings.ANSI);
+		int len = rf.read(temp);
+		game = new String(temp, 0, len, Strings.ANSI);
 
 		rf.seek(48);
 		temp = new byte[32];
-		rf.read(temp);
-		gameName = Strings.fixCString(new String(temp, Strings.ANSI));
+		len = rf.read(temp);
+		gameName = Strings.fixCString(new String(temp, 0, len, Strings.ANSI));
 	}
 
 	private void readEmsFile(RandomAccessFile rf) throws IOException {
 		rf.seek(64);
 		byte[] temp = new byte[OptionFile.GAME_LEN];
-		rf.read(temp);
-		game = new String(temp, Strings.ANSI);
+		int len = rf.read(temp);
+		game = new String(temp, 0, len, Strings.ANSI);
 	}
 
 	@Override

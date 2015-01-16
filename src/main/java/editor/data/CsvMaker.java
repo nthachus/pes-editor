@@ -24,6 +24,7 @@ public class CsvMaker implements Serializable {
 	public boolean makeFile(OptionFile of, File dest, boolean headings/*, boolean extra*/, boolean create) {
 		if (null == of) throw new NullPointerException("of");
 		if (null == dest) throw new NullPointerException("dest");
+		log.debug("Try to make CSV file: {}", dest);
 
 		RandomAccessFile out = null;
 		try {
@@ -52,6 +53,7 @@ public class CsvMaker implements Serializable {
 				}
 			}
 
+			log.debug("Making of CSV file '{}' succeeded", dest);
 			return true;
 		} catch (IOException e) {
 			log.error("Failed to make CSV file:", e);
