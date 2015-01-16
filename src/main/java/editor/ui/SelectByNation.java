@@ -4,6 +4,8 @@ import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.data.Stats;
 import editor.util.Resources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +16,7 @@ import java.util.Arrays;
 
 public class SelectByNation extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 228073822479688825L;
+	private static final Logger log = LoggerFactory.getLogger(SelectByNation.class);
 
 	private final NationalityList freeList;
 	private/* final*/ JComboBox nationBox;
@@ -25,6 +28,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 		super(new BorderLayout());
 		freeList = new NationalityList(of);
 
+		log.debug("By Nation dropdown is initializing..");
 		initComponents();
 		//refresh();
 	}
@@ -56,7 +60,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 		setPreferredSize(new Dimension(164, 601));
 	}
 
-	static String[] getExtraNations() {
+	public static String[] getExtraNations() {
 		String s = Resources.getMessage("nation.extras");
 		return s.split("\\s*,\\s*");
 	}
@@ -72,6 +76,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+		log.debug("Try to perform action: {}", evt.getActionCommand());
 
 		if ("Sort".equalsIgnoreCase(evt.getActionCommand())) {
 			sortList();
@@ -89,15 +94,15 @@ public class SelectByNation extends JPanel implements ActionListener {
 			isAlphaOrder = true;
 		}
 
-		int i = nationBox.getSelectedIndex();
-		freeList.refresh(i, isAlphaOrder);
+		selectNation();
 	}
 
 	private void selectNation() {
 		int i = nationBox.getSelectedIndex();
-		if (i >= 0) {
+		if (i >= 0)
 			freeList.refresh(i, isAlphaOrder);
-		}
+
+		log.debug("Selecting by nation {} completed", i);
 	}
 
 	public NationalityList getFreeList() {
@@ -113,8 +118,16 @@ public class SelectByNation extends JPanel implements ActionListener {
 	}
 
 	public void refresh() {
-		nationBox.setSelectedIndex(nationBox.getItemCount() - 1);
-		freeList.refresh(nationBox.getSelectedIndex(), isAlphaOrder);
+		log.debug("By Nation dropdown is reloading..");
+
+		int idx = nationBox.getSelectedIndex();
+		int newIdx = nationBox.getItemCount() - 1;
+		if (newIdx != idx)
+			nationBox.setSelectedIndex(newIdx);
+		else
+			freeList.refresh(idx, isAlphaOrder);
+
+		log.debug("Reloading of By Nation {} dropdown completed", newIdx);
 	}
 
 }

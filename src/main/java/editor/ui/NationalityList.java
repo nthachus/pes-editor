@@ -27,11 +27,11 @@ public class NationalityList extends JList/*<Player>*/ {
 
 	@SuppressWarnings("unchecked")
 	public void refresh(int nation, boolean alphaOrder) {
-		log.info("Nationality list is refreshing..");
-
 		int extraCount = SelectByNation.getExtraNations().length;
 		int total = Stats.NATION.length + extraCount;
 		if (nation < 0 || nation >= total) throw new IndexOutOfBoundsException("nation#" + nation);
+		// DEBUG
+		log.debug("Try to reload Nationality list for country: {}, sort: {}", nation, alphaOrder);
 
 		Vector<Player> model = new Vector<Player>();
 		if (nation < Stats.NATION.length) {
@@ -55,7 +55,7 @@ public class NationalityList extends JList/*<Player>*/ {
 		model.trimToSize();
 		setListData(model);
 		// DEBUG
-		log.info("Refreshing of nationality list succeeded");
+		log.debug("Reloading of nationality list #{} succeeded", hashCode());
 	}
 
 	private void fetchOldPlayers(Vector<Player> model) {
@@ -85,9 +85,8 @@ public class NationalityList extends JList/*<Player>*/ {
 	}
 
 	private boolean isFreeAgent(int player) {
-		for (int adr = Squads.CLUB_ADR, end = Squads.CLUB_ADR + Clubs.TOTAL * Formations.CLUB_TEAM_SIZE * 2;
-		     adr < end; adr += 2) {
-
+		int endAdr = Squads.CLUB_ADR + Clubs.TOTAL * Formations.CLUB_TEAM_SIZE * 2;
+		for (int adr = Squads.CLUB_ADR; adr < endAdr; adr += 2) {
 			if (Bits.toInt16(of.getData(), adr) == player)
 				return false;
 		}

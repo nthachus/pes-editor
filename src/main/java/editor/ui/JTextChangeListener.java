@@ -6,12 +6,15 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Value changed listener to {@link javax.swing.JTextField}.
  */
-public class JTextChangeListener implements DocumentListener, Runnable {
+public class JTextChangeListener implements DocumentListener, Runnable, Serializable {
+	private static final long serialVersionUID = -3804385504201491051L;
+
 	private final JTextComponent textField;
 	private final ChangeListener changeListener;
 	private final AtomicInteger lastNotifiedChange = new AtomicInteger(0);

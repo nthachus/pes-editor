@@ -2,6 +2,8 @@ package editor.ui;
 
 import editor.data.*;
 import editor.util.Resources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +12,7 @@ import java.awt.event.ActionListener;
 
 public class SelectByTeam extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 776055403727356248L;
+	private static final Logger log = LoggerFactory.getLogger(SelectByTeam.class);
 
 	private final OptionFile of;
 	private final boolean isNormal;
@@ -25,6 +28,7 @@ public class SelectByTeam extends JPanel implements ActionListener {
 		this.of = of;
 		this.isNormal = isNormal;
 
+		log.debug("By Team dropdown is initializing..");
 		initComponents();
 	}
 
@@ -78,6 +82,8 @@ public class SelectByTeam extends JPanel implements ActionListener {
 
 	public void actionPerformed(ActionEvent evt) {
 		int teamId = teamBox.getSelectedIndex();
+		log.debug("Try to select by team: {}", teamId);
+
 		if (teamId >= 0) {
 			squadList.refresh(teamId, true);
 
@@ -111,19 +117,26 @@ public class SelectByTeam extends JPanel implements ActionListener {
 
 	@SuppressWarnings("unchecked")
 	public void refresh() {
+		log.debug("By Team dropdown is reloading..");
+
 		String[] squads = getAllTeams();
 		teamBox.setModel(new DefaultComboBoxModel<String>(squads));
 
-		if (isNormal) {
-			teamBox.setSelectedIndex(Squads.NATION_COUNT + Squads.EXTRA_COUNT);
+		int idx = teamBox.getSelectedIndex();
+		int newIdx = (isNormal) ? Squads.NATION_COUNT + Squads.EXTRA_COUNT : squads.length - 1;
 
-			numList.refresh(teamBox.getSelectedIndex());
-			posList.refresh(teamBox.getSelectedIndex());
+		if (newIdx != idx) {
+			teamBox.setSelectedIndex(newIdx);
 		} else {
-			teamBox.setSelectedIndex(squads.length - 1);
+			squadList.refresh(idx, true);
+
+			if (isNormal) {
+				numList.refresh(idx);
+				posList.refresh(idx);
+			}
 		}
 
-		squadList.refresh(teamBox.getSelectedIndex(), true);
+		log.debug("Reloading of By Team {} dropdown completed", newIdx);
 	}
 
 }
