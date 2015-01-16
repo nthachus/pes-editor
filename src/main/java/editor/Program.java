@@ -22,8 +22,9 @@ public final class Program implements Thread.UncaughtExceptionHandler {
 		try {
 			Thread.setDefaultUncaughtExceptionHandler(new Program());
 
-			SplashWindow.splash(Program.class.getResource("/META-INF/images/splash.jpg"));
-			EventQueue.invokeLater(new Editor.Runner());
+			if (!log.isDebugEnabled())
+				SplashWindow.splash(Program.class.getResource("/META-INF/images/splash.jpg"));
+			EventQueue.invokeLater(new Editor.Runner(args));
 
 		} catch (Exception e) {
 			log.error("Failed to launch the application:", e);

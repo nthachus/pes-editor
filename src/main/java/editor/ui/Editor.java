@@ -224,7 +224,7 @@ public class Editor extends JFrame implements ActionListener {
 		log.debug("Try to perform action: {}", evt.getActionCommand());
 
 		if ("Open".equalsIgnoreCase(evt.getActionCommand())) {
-			openFile();
+			openFile(null);
 		} else if ("Open2".equalsIgnoreCase(evt.getActionCommand())) {
 			openOF2();
 		} else if ("Save".equalsIgnoreCase(evt.getActionCommand())) {
@@ -246,19 +246,26 @@ public class Editor extends JFrame implements ActionListener {
 
 	private volatile File currentFile = null;
 
-	private void openFile() {
-		int returnVal = opFileChooser.showOpenDialog(getContentPane());
-		saveSettings();
-		if (returnVal != JFileChooser.APPROVE_OPTION)
-			return;
+	private void openFile(String filePath) {
+		File fs;
+		if (!Strings.isBlank(filePath)) {
+			fs = new File(filePath);
+		} else {
+			int returnVal = opFileChooser.showOpenDialog(getContentPane());
+			saveSettings();
+			if (returnVal != JFileChooser.APPROVE_OPTION)
+				return;
 
-		File fs = opFileChooser.getSelectedFile();
+			fs = opFileChooser.getSelectedFile();
+		}
+
 		if (!opFileFilter.accept(fs))
 			return;
 		log.debug("Try to open file: {}", fs);
 
 		if (fs.isFile() && of.load(fs)) {
 			currentFile = fs;
+			refreshTitle(currentFile.getName());
 
 			Squads.fixAll(of);
 
@@ -270,16 +277,15 @@ public class Editor extends JFrame implements ActionListener {
 			stadiumPan.refresh();
 			teamPan.refresh();
 			leaguePan.refresh();
-
 			importPanel.refresh();
+
+			tabbedPane.setVisible(true);
+
 			csvItem.setEnabled(true);
 			open2Item.setEnabled(true);
 			saveItem.setEnabled(true);
 			saveAsItem.setEnabled(true);
 			convertItem.setEnabled(of2.isLoaded());
-
-			refreshTitle(currentFile.getName());
-			tabbedPane.setVisible(true);
 
 			log.debug("Open succeeded on input file: {}", fs);
 		} else {
@@ -310,16 +316,17 @@ public class Editor extends JFrame implements ActionListener {
 			System.arraycopy(of2.getData(), adr, of.getData(), adr, OptionFile.blockSize(i));
 		}
 
+		importPanel.disableAll();
+		convertItem.setEnabled(false);
+
 		flagPanel.refresh();
 		imagePanel.refresh();
 		transferPan.refresh();
 		stadiumPan.refresh();
 		teamPan.refresh();
 		leaguePan.refresh();
-		importPanel.disableAll();
-		convertItem.setEnabled(false);
 
-		log.debug("Importing of OF2 {} succeeded", of2.getFilename());
+		log.debug("Importing from OF2 {} succeeded", of2.getFilename());
 	}
 
 	private void exportCsv() {
@@ -396,6 +403,7 @@ public class Editor extends JFrame implements ActionListener {
 		if (of.save(dest)) {
 			currentFile = dest;
 			refreshTitle(currentFile.getName());
+
 			showSaveOkMsg(dest);
 			opFileChooser.setSelectedFile(null);
 		} else {
@@ -438,9 +446,9 @@ public class Editor extends JFrame implements ActionListener {
 			log.debug("Open succeeded on OF2 file: {}", fs2);
 		} else {
 			teamPan.getList().setToolTipText(null);
+			convertItem.setEnabled(false);
 			flagPanel.refresh();
 			importPanel.refresh();
-			convertItem.setEnabled(false);
 
 			log.debug("Failed to open OF2 file: {}", fs2);
 			showOpenFailMsg();
@@ -507,10 +515,8 @@ public class Editor extends JFrame implements ActionListener {
 	}
 
 	private File loadSettings() {
-		if (!settingsFile.exists()) {
-			about();
+		if (!settingsFile.exists())
 			return null;
-		}
 
 		File dir = null;
 		ObjectInputStream sr = null;
@@ -545,7 +551,10 @@ public class Editor extends JFrame implements ActionListener {
 	}
 
 	public static class Runner implements Runnable {
-		public Runner(/*String[] args*/) {
+		private final String filePath;
+
+		public Runner(String[] args) {
+			filePath = (null != args && args.length > 0) ? args[0] : null;
 		}
 
 		public void run() {
@@ -554,10 +563,12 @@ public class Editor extends JFrame implements ActionListener {
 				UIUtil.systemUI();
 
 				Editor form = new Editor();
+				if (null == form.opFileChooser.getCurrentDirectory() && !log.isDebugEnabled())
+					form.about();
 				form.setVisible(true);
 				// DEBUG
 				log.info("Main form has been initialized.");
-				form.openFile();
+				form.openFile(filePath);
 
 			} catch (Exception e) {
 				throw new ExceptionInInitializerError(e);

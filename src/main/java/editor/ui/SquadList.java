@@ -62,9 +62,9 @@ public class SquadList extends JList<Player> {
 			model.addElement(new Player(of, p));
 		}
 		Player o;
-		for (int p = 0; p < Player.TOTAL_EDIT; p++) {
-			o = new Player(of, Player.FIRST_EDIT + p);
-			model.addElement(o);
+		for (int p = Player.FIRST_EDIT; p < Player.END_EDIT; p++) {
+			o = new Player(of, p);
+			if (!o.isEmpty()) model.addElement(o);
 		}
 
 		Collections.sort(model);

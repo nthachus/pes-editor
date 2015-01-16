@@ -106,6 +106,8 @@ public class Player implements Serializable, Comparable<Player> {
 
 		if (index == 0)
 			name = Resources.getMessage("player.empty");
+		else
+			name = getName();
 	}
 
 	public int getIndex() {

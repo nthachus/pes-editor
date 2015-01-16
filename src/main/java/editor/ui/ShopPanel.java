@@ -61,18 +61,19 @@ public class ShopPanel extends JPanel implements ActionListener {
 	}
 
 	public void refresh() {
-		if (!of.isLoaded())
+		if (!of.isLoaded()) {
 			status.setText("");
 
-		boolean unlocked = false;
-		for (int adr = START_ADR, end = START_ADR + PLAYER_COUNT / 8 + 6; adr < end; adr++) {
-			if (of.getData()[adr] != 0) {
-				unlocked = true;
-				break;
+		} else {
+			boolean unlocked = false;
+			for (int adr = START_ADR, end = START_ADR + PLAYER_COUNT / 8 + 6; adr < end; adr++) {
+				if (of.getData()[adr] != 0) {
+					unlocked = true;
+					break;
+				}
 			}
+			setStatusText(unlocked);
 		}
-
-		setStatusText(unlocked);
 	}
 
 	private void setStatusText(boolean unlocked) {

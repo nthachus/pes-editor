@@ -16,6 +16,9 @@ public class Stat implements Serializable, Comparable<Stat> {
 	public Stat(StatType type, int offset, int shift, int mask, String name) {
 		if (null == type) throw new NullPointerException("type");
 		if (null == name) throw new NullPointerException("name");
+		if (offset < 0) throw new IllegalArgumentException("offset " + offset);
+		if (shift < 0 || shift >= Short.SIZE) throw new IllegalArgumentException("shift " + shift);
+		if (mask <= 0 || mask > 0xFFFF) throw new IllegalArgumentException("mask " + mask);
 
 		this.type = type;
 		this.offset = offset;

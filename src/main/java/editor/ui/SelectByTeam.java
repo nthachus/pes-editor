@@ -84,13 +84,16 @@ public class SelectByTeam extends JPanel implements ActionListener {
 		int teamId = teamBox.getSelectedIndex();
 		log.debug("Try to select by team: {}", teamId);
 
-		if (teamId >= 0) {
-			squadList.refresh(teamId, true);
+		if (teamId >= 0)
+			refresh(teamId);
+	}
 
-			if (isNormal) {
-				posList.refresh(teamId);
-				numList.refresh(teamId);
-			}
+	private void refresh(int teamId) {
+		squadList.refresh(teamId, true);
+
+		if (isNormal) {
+			posList.refresh(teamId);
+			numList.refresh(teamId);
 		}
 	}
 
@@ -125,16 +128,10 @@ public class SelectByTeam extends JPanel implements ActionListener {
 		int idx = teamBox.getSelectedIndex();
 		int newIdx = (isNormal) ? Squads.NATION_COUNT + Squads.EXTRA_COUNT : squads.length - 1;
 
-		if (newIdx != idx) {
+		if (newIdx != idx)
 			teamBox.setSelectedIndex(newIdx);
-		} else {
-			squadList.refresh(idx, true);
-
-			if (isNormal) {
-				numList.refresh(idx);
-				posList.refresh(idx);
-			}
-		}
+		else
+			refresh(idx);
 
 		log.debug("Reloading of By Team {} dropdown completed", newIdx);
 	}

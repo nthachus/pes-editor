@@ -379,6 +379,8 @@ public class TeamPanel extends JPanel
 			contentPane.setVisible(false);
 
 		} else {
+			contentPane.setVisible(true);
+
 			int flag = Clubs.getEmblem(of, team);
 			if (flag >= Clubs.FIRST_EMBLEM && flag < Clubs.FIRST_EMBLEM + Emblems.TOTAL128 + Emblems.TOTAL16) {
 
@@ -402,8 +404,6 @@ public class TeamPanel extends JPanel
 
 			nameField.setText(teams[team]);
 			abvEditor.setText(Clubs.getAbbrName(of, team));
-
-			contentPane.setVisible(true);
 		}
 	}
 
