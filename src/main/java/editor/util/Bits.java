@@ -103,4 +103,10 @@ public final class Bits {
 				| ((value >> 8) & 0x00FF00);
 	}
 
+	public static int bitLength(int n) {
+		int i = 0;
+		while (n != 0 && i++ < Integer.SIZE) n = n >>> 1;
+		return i;
+	}
+
 }

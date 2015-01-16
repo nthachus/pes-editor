@@ -36,4 +36,19 @@ public final class BitsTest {
 		Bits.toBytes(Short.MIN_VALUE, new byte[0], -1);
 	}
 
+	@Test
+	public void testGetBitLength() throws Exception {
+		Assert.assertEquals(0, Bits.bitLength(0));
+		Assert.assertEquals(1, Bits.bitLength(1));
+		Assert.assertEquals(2, Bits.bitLength(2));
+		Assert.assertEquals(2, Bits.bitLength(3));
+		Assert.assertEquals(3, Bits.bitLength(5));
+		Assert.assertEquals(4, Bits.bitLength(10));
+		Assert.assertEquals(5, Bits.bitLength(26));
+		Assert.assertEquals(6, Bits.bitLength(0x3F));
+		Assert.assertEquals(7, Bits.bitLength(0x7F));
+		Assert.assertEquals(9, Bits.bitLength(0x1FF));
+		Assert.assertEquals(16, Bits.bitLength(0xE1FF));
+	}
+
 }

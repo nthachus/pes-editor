@@ -25,7 +25,7 @@ public final class StringsTest {
 	public void testConstants() throws Exception {
 		Assert.assertNotNull(Strings.ANSI);
 		Assert.assertNotNull(Strings.UTF8);
-		Assert.assertNotNull(Strings.S_JIS);
+		//Assert.assertNotNull(Strings.S_JIS);
 		Assert.assertNotNull(Strings.UNICODE);
 
 		Assert.assertNotNull(Strings.NEW_LINE);

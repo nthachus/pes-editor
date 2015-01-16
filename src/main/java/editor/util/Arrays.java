@@ -32,7 +32,10 @@ public final class Arrays {
 		private static final long serialVersionUID = 1803953350037498756L;
 
 		public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-			return o2.getValue().compareTo(o1.getValue());
+			if (null == o1.getValue())
+				return (null == o2.getValue()) ? 0 : 1;
+
+			return (null == o2.getValue()) ? -1 : o2.getValue().compareTo(o1.getValue());
 		}
 	}
 

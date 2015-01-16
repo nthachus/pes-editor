@@ -3,10 +3,7 @@ package editor.data;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public final class StatsTest extends BaseTest {
 	private static final int FOR_PLAYER = 1;
@@ -29,6 +26,19 @@ public final class StatsTest extends BaseTest {
 	@Test(expected = NullPointerException.class)
 	public void testSetValueWithNullOF() throws Exception {
 		Stats.setValue(null, FOR_PLAYER, Stats.AGE, 1);
+	}
+
+	@Test
+	public void testDuplicatedStats() throws Exception {
+		List<Stat> fields = readStaticFields(Stats.class, Stat.class, true, false);
+		fields.addAll(Arrays.asList(Stats.ABILITY_SPECIAL));
+
+		Collections.sort(fields);
+		log.debug("Sorted Stats: {}", fields);
+
+		for (int i = 1; i < fields.size(); i++) {
+			Assert.assertNotEquals(fields.get(i - 1), fields.get(i));
+		}
 	}
 
 	@Test

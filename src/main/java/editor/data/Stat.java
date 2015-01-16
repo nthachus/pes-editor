@@ -1,8 +1,10 @@
 package editor.data;
 
+import editor.util.Bits;
+
 import java.io.Serializable;
 
-public class Stat implements Serializable {
+public class Stat implements Serializable, Comparable<Stat> {
 	private static final long serialVersionUID = 7447946182427124435L;
 
 	private final StatType type;
@@ -43,7 +45,7 @@ public class Stat implements Serializable {
 	}
 
 	public int getUnmask() {
-		return 0xFFFF & (~(this.getMask() << this.getShift()));
+		return 0xFFFF & (~(getMask() << getShift()));
 	}
 
 	public int getOffset(int player) {
@@ -68,6 +70,40 @@ public class Stat implements Serializable {
 
 	public int maxValue() {
 		return minValue() + getMask();
+	}
+
+	private int getBitOffset() {
+		return getOffset() * Byte.SIZE + getShift();
+	}
+
+	private int getBitLength() {
+		return Bits.bitLength(getMask());
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		return (this == o
+				|| (null != o && getClass() == o.getClass() && compareTo((Stat) o) == 0));
+	}
+
+	@Override
+	public int hashCode() {
+		return (offset << 24) | (shift << 16) | mask;
+	}
+
+	@SuppressWarnings("NullableProblems")
+	@Override
+	public int compareTo(Stat o) {
+		if (null == o) return 1;
+
+		int start = getBitOffset();
+		int end = start + getBitLength() - 1;
+		int startO = o.getBitOffset();
+		int endO = startO + o.getBitLength() - 1;
+
+		if (start > endO) return 1;
+		if (startO > end) return -1;
+		return 0;
 	}
 
 }

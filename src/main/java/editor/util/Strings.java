@@ -15,7 +15,7 @@ public final class Strings {
 	/**
 	 * Shift JIS encoding.
 	 */
-	public static final Charset S_JIS = Charset.forName("Shift_JIS");
+	//public static final Charset S_JIS = Charset.forName("Shift_JIS");
 	public static final Charset UNICODE = Charset.forName("UTF-16LE");
 
 	/**

@@ -37,9 +37,7 @@ public final class Resources {
 			log.error("Message key '{}' not found for '{}'", key, Locale.getDefault());
 		}
 
-		if (null == args || args.length == 0)
-			return msg;
-		return String.format(msg, args);
+		return (null == args || args.length == 0) ? msg : String.format(msg, args);
 	}
 
 	public static String getNullableMessage(String key, Object... args) {
