@@ -7,9 +7,12 @@ import editor.util.Files;
 import editor.util.Resources;
 import editor.util.Strings;
 import editor.util.UIUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,11 +22,11 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class EmblemPanel extends JPanel implements MouseListener, ActionListener {
 	private static final long serialVersionUID = -3656723954660516377L;
+	private static final Logger log = LoggerFactory.getLogger(EmblemPanel.class);
 
 	private final OptionFile of;
 	private final EmblemImportDialog flagImportDia;
@@ -41,7 +44,9 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		flagImportDia = fid;
 		teamPanel = tp;
 
+		log.debug("Emblem panel is initializing..");
 		initComponents();
+
 		refresh();
 	}
 
@@ -57,13 +62,13 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 	private JButton add2Button;
 
 	private void initComponents() {
-		ImageFileFilter filter128 = new ImageFileFilter();
+		FileFilter filter128 = new ImageFileFilter();
 		chooser = new JFileChooser();
 		chooser.addChoosableFileFilter(filter128);
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setDialogTitle(Resources.getMessage("emblem.import"));
 
-		PngFilter pngFilter = new PngFilter();
+		FileFilter pngFilter = new PngFilter();
 		pngChooser = new JFileChooser();
 		pngChooser.addChoosableFileFilter(pngFilter);
 		pngChooser.setAcceptAllFileFilterUsed(false);
@@ -156,6 +161,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 			teamPanel.refresh();
 			refresh();
 
+			log.debug("Adding of emblem {} succeeded", source);
 		} catch (Exception e) {
 			showOpenFailedMsg(e.getLocalizedMessage());
 		}
@@ -178,6 +184,8 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 
 			teamPanel.refresh();
 			refresh();
+
+			log.debug("Adding of emblem from OF2 {} succeeded", emblem);
 		}
 	}
 
@@ -216,10 +224,13 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 			default:
 				break;
 		}
+
+		log.debug("Selecting of emblem slot {} completed", slot);
 	}
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+		log.debug("Try to perform panel action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans;
@@ -249,6 +260,8 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 
 		teamPanel.refresh();
 		refresh();
+
+		log.debug("Importing of emblem (hi-res: {}) slot {} completed", is128, slot);
 	}
 
 	private void importEmblem(boolean is128, int slot) {
@@ -275,6 +288,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 			teamPanel.refresh();
 			refresh();
 
+			log.debug("Adding of emblem (hi-res: {}) slot {} succeeded", is128, slot);
 		} catch (Exception e) {
 			showOpenFailedMsg(e.getLocalizedMessage());
 		}
@@ -289,6 +303,8 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 
 		teamPanel.refresh();
 		refresh();
+
+		log.debug("Deleting of emblem (hi-res: {}) slot {} completed", is128, slot);
 	}
 
 	private static Object[] getOptions(boolean of2Loaded) {
@@ -325,6 +341,8 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		}
 
 		writeFile(dest, is128, slot);
+		// DEBUG
+		log.debug("Saving of emblem (hi-res: {}) slot {} as PNG {} completed", is128, slot, dest.getName());
 	}
 
 	private void writeFile(File dest, boolean is128, int slot) {
@@ -341,12 +359,14 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 						Resources.getMessage("msg.saveSuccess", dest.getName(), dest.getParent()),
 						Resources.getMessage("msg.saveSuccess.title"), JOptionPane.INFORMATION_MESSAGE);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			showAccessFailedMsg(e.getLocalizedMessage());
 		}
 	}
 
 	public void refresh() {
+		log.debug("Try to refresh Emblem panel with transparency: {}", isTrans);
+
 		int n16 = Emblems.count16(of);
 		int n128 = Emblems.count128(of);
 
@@ -389,6 +409,8 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 
 		AbstractButton btn = (AbstractButton) e.getSource();
 		int slot = Integer.parseInt(btn.getActionCommand());
+		// DEBUG
+		log.debug("Try to zoom emblem: {}", slot);
 
 		Image icon;
 		if (slot >= Emblems.count16(of)) {
@@ -403,6 +425,8 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 
 	public void mouseExited(MouseEvent e) {
 		largeFlag.setIcon(new ImageIcon(Emblems.BLANK16));
+		// DEBUG
+		log.debug("Clearing zoomed emblem succeeded");
 	}
 
 	public void mouseClicked(MouseEvent e) {

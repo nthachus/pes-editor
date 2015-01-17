@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
@@ -72,7 +73,7 @@ public class FormationPanel extends JPanel
 	private StrategyPanel strategyPan;
 
 	private void initComponents() {
-		PngFilter pngFilter = new PngFilter();
+		FileFilter pngFilter = new PngFilter();
 		pngChooser = new JFileChooser();
 		pngChooser.addChoosableFileFilter(pngFilter);
 		pngChooser.setAcceptAllFileFilterUsed(false);

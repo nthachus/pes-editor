@@ -6,6 +6,7 @@ import editor.util.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,13 +41,13 @@ public class LogoPanel extends JPanel implements ActionListener {
 	private final JButton[] flagButtons = new JButton[Logos.TOTAL];
 
 	private void initComponents() {
-		ImageFileFilter filter = new ImageFileFilter();
+		FileFilter filter = new ImageFileFilter();
 		chooser = new JFileChooser();
 		chooser.addChoosableFileFilter(filter);
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setDialogTitle(Resources.getMessage("logo.import"));
 
-		PngFilter pngFilter = new PngFilter();
+		FileFilter pngFilter = new PngFilter();
 		pngChooser = new JFileChooser();
 		pngChooser.addChoosableFileFilter(pngFilter);
 		pngChooser.setAcceptAllFileFilterUsed(false);

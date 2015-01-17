@@ -12,8 +12,10 @@ import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.Serializable;
 
-public class OptionFileFilter extends FileFilter {
+public class OptionFileFilter extends FileFilter implements Serializable {
+	private static final long serialVersionUID = 2713989120983395257L;
 	private static final Logger log = LoggerFactory.getLogger(OptionFileFilter.class);
 
 	public boolean accept(File file) {

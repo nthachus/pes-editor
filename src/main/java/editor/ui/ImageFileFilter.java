@@ -4,8 +4,10 @@ import editor.util.Files;
 
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
+import java.io.Serializable;
 
-public class ImageFileFilter extends FileFilter {
+public class ImageFileFilter extends FileFilter implements Serializable {
+	private static final long serialVersionUID = 6289512206928366276L;
 
 	/**
 	 * Accept all directories and all png Flag files.

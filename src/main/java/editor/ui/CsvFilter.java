@@ -15,9 +15,8 @@ public class CsvFilter extends FileFilter implements Serializable {
 	public boolean accept(File file) {
 		if (null == file) throw new NullPointerException("file");
 
-		if (file.isDirectory()) {
+		if (file.isDirectory())
 			return true;
-		}
 
 		String extension = Files.getExtension(file);
 		return Files.CSV.equalsIgnoreCase(extension);

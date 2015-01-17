@@ -41,7 +41,7 @@ public class Editor extends JFrame implements ActionListener {
 	//region Initialize the GUI components
 
 	private/* final*/ JFileChooser opFileChooser;
-	private/* final*/ OptionFileFilter opFileFilter;
+	private/* final*/ javax.swing.filechooser.FileFilter opFileFilter;
 
 	private/* final*/ EmblemPanel flagPanel;
 	private/* final*/ LogoPanel imagePanel;
