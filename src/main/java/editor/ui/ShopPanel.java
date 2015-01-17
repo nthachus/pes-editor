@@ -3,6 +3,8 @@ package editor.ui;
 import editor.data.OptionFile;
 import editor.data.Player;
 import editor.util.Resources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +14,7 @@ import java.util.Arrays;
 
 public class ShopPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -6735593924290315504L;
+	private static final Logger log = LoggerFactory.getLogger(ShopPanel.class);
 
 	private static final int PLAYER_COUNT = Player.TOTAL_SHOP;
 	private static final int START_ADR = 5144;
@@ -24,13 +27,11 @@ public class ShopPanel extends JPanel implements ActionListener {
 		if (null == optionFile) throw new NullPointerException("optionFile");
 		of = optionFile;
 
+		log.debug("Shop panel is initializing..");
 		initComponents();
 	}
 
 	private void initComponents() {
-		status = new JLabel();
-		status.setHorizontalAlignment(SwingConstants.CENTER);
-
 		JButton lock = new JButton(Resources.getMessage("Lock"));
 		lock.setActionCommand("Lock");
 		lock.addActionListener(this);
@@ -43,6 +44,9 @@ public class ShopPanel extends JPanel implements ActionListener {
 		buttonsPane.add(lock);
 		buttonsPane.add(unlock);
 
+		status = new JLabel();
+		status.setHorizontalAlignment(SwingConstants.CENTER);
+
 		JPanel contentPane = new JPanel(new GridLayout(0, 1));
 		contentPane.setBorder(BorderFactory.createTitledBorder(Resources.getMessage("shop.title")));
 		contentPane.add(buttonsPane);
@@ -53,6 +57,7 @@ public class ShopPanel extends JPanel implements ActionListener {
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+		log.debug("Try to perform action: {}", evt.getActionCommand());
 
 		if ("Lock".equalsIgnoreCase(evt.getActionCommand()))
 			lockAll();
@@ -61,12 +66,15 @@ public class ShopPanel extends JPanel implements ActionListener {
 	}
 
 	public void refresh() {
+		log.debug("Shop panel is refreshing..");
+
 		if (!of.isLoaded()) {
 			status.setText("");
-
 		} else {
+
 			boolean unlocked = false;
-			for (int adr = START_ADR, end = START_ADR + PLAYER_COUNT / 8 + 6; adr < end; adr++) {
+			int endAdr = START_ADR + PLAYER_COUNT / 8 + 6;
+			for (int adr = START_ADR; adr < endAdr; adr++) {
 				if (of.getData()[adr] != 0) {
 					unlocked = true;
 					break;
@@ -78,6 +86,8 @@ public class ShopPanel extends JPanel implements ActionListener {
 
 	private void setStatusText(boolean unlocked) {
 		status.setText(Resources.getMessage(unlocked ? "Unlocked" : "Locked"));
+
+		log.debug("Shop status was refreshed with unlock: {}", unlocked);
 	}
 
 	private void lockAll() {

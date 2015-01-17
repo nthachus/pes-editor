@@ -430,13 +430,13 @@ public class SimpleLogger extends NamedLoggerBase {
 		String[] messages = CACHED_MESSAGES.toArray(new String[CACHED_MESSAGES.size()]);
 		CACHED_MESSAGES.clear();
 
-		StringBuffer body = new StringBuffer();
+		StringBuilder body = new StringBuilder();
 		for (String s : messages) {
 			body.append(s).append(NEW_LINE);
 		}
-		StringBuffer subject = new StringBuffer(name + " - " + msg);
+		String subject = name + " - " + msg;
 
-		Runnable sender = new MailSender(subject, body);
+		Runnable sender = new MailSender(subject, body.toString());
 		if (immediately)
 			sender.run();
 		else
@@ -444,10 +444,10 @@ public class SimpleLogger extends NamedLoggerBase {
 	}
 
 	private static class MailSender implements Runnable {
-		private final StringBuffer subject;
-		private final StringBuffer body;
+		private final String subject;
+		private final String body;
 
-		public MailSender(StringBuffer subject, StringBuffer body) {
+		public MailSender(String subject, String body) {
 			this.subject = subject;
 			this.body = body;
 		}

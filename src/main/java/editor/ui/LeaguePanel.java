@@ -28,9 +28,9 @@ public class LeaguePanel extends JPanel implements ActionListener, ListSelection
 	}
 
 	private void initComponents() {
-		editor = new JTextField(15);
+		editor = new JTextField(Math.round(0.25f * Leagues.NAME_LEN));
 		editor.setToolTipText(Resources.getMessage("league.tooltip"));
-		editor.setDocument(new JTextFieldLimit(Leagues.NAME_LEN));
+		editor.setDocument(new JTextFieldLimit(Leagues.NAME_LEN * 2 / 3));
 		editor.addActionListener(this);
 
 		list = new JList/*<String>*/();
@@ -54,7 +54,7 @@ public class LeaguePanel extends JPanel implements ActionListener, ListSelection
 		int id = list.getSelectedIndex();
 		String text = editor.getText();
 
-		if (id >= 0 && null != text && text.length() <= Leagues.NAME_LEN) {
+		if (id >= 0 && null != text && text.length() <= Leagues.NAME_LEN * 2 / 3) {
 			if (!text.equals(Leagues.get(of, id))) {
 				Leagues.set(of, id, text);
 				refresh();

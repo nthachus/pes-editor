@@ -120,7 +120,7 @@ public class TeamPanel extends JPanel
 		teamList.addMouseListener(this);
 
 		nameField = new JTextField(Clubs.NAME_LEN / 3);
-		nameField.setDocument(new JTextFieldLimit(Clubs.NAME_LEN));
+		nameField.setDocument(new JTextFieldLimit(Clubs.NAME_LEN * 2 / 3));
 		nameField.setToolTipText(Resources.getMessage("teamPane.nameTip"));
 		nameField.addActionListener(this);
 
@@ -332,7 +332,7 @@ public class TeamPanel extends JPanel
 		boolean updated = false;
 		if (null != name) {
 			if (tf == nameField) {
-				if (name.length() <= Clubs.NAME_LEN) {
+				if (name.length() <= Clubs.NAME_LEN * 2 / 3) {
 					Clubs.setName(of, team, name);
 					updated = true;
 				}

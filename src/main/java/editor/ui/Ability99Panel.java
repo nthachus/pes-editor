@@ -63,6 +63,8 @@ public class Ability99Panel extends JPanel
 			fields[i].getDocument().addDocumentListener(new JTextChangeListener(fields[i], this));
 			fields[i].addKeyListener(this);
 
+			lab.setLabelFor(fields[i]);
+
 			grid.anchor = GridBagConstraints.CENTER;
 			grid.gridx = 1;
 			grid.gridy = i;
@@ -170,8 +172,11 @@ public class Ability99Panel extends JPanel
 
 		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
 		JTextComponent tf = (JTextComponent) evt.getSource();
+		String text = tf.getText();
+		log.debug("Try to perform key {} on field: {}", key, text);
+
 		try {
-			int v = Integer.parseInt(tf.getText());
+			int v = Integer.parseInt(text);
 			if (key == KeyEvent.VK_UP) {
 				if (v < Stats.MAX_STAT99)
 					tf.setText(Integer.toString(v + 1));

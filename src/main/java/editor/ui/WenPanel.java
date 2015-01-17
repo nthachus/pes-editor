@@ -3,6 +3,8 @@ package editor.ui;
 import editor.data.OptionFile;
 import editor.util.Bits;
 import editor.util.Resources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +13,7 @@ import java.awt.event.ActionListener;
 
 public class WenPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1283642115923368976L;
+	private static final Logger log = LoggerFactory.getLogger(WenPanel.class);
 
 	public static final int MAX_WEN = 99999;
 	private static final int START_ADR = 5208;
@@ -18,20 +21,27 @@ public class WenPanel extends JPanel implements ActionListener {
 
 	private final OptionFile of;
 
-	private final JLabel current;
-	private final JTextField field;
+	private/* final*/ JLabel current;
+	private/* final*/ JTextField field;
 
 	public WenPanel(OptionFile optionFile) {
 		super();
 		if (null == optionFile) throw new NullPointerException("optionFile");
 		of = optionFile;
+		// DEBUG
+		log.debug("WEN panel is initializing..");
 
-		current = new JLabel();
+		initComponents();
+		refresh();
+	}
 
+	private void initComponents() {
 		field = new JTextField(8);
 		field.setToolTipText(Resources.getMessage("wen.tooltip", MAX_WEN));
 		field.setDocument(new JTextFieldLimit(Integer.toString(MAX_WEN).length()));
 		field.addActionListener(this);
+
+		current = new JLabel();
 
 		JPanel contentPane = new JPanel(new GridLayout(0, 1));
 		contentPane.setBorder(BorderFactory.createTitledBorder(Resources.getMessage("wen.title")));
@@ -39,7 +49,6 @@ public class WenPanel extends JPanel implements ActionListener {
 		contentPane.add(current);
 
 		add(contentPane);
-		refresh();
 	}
 
 	public void refresh() {
@@ -49,9 +58,13 @@ public class WenPanel extends JPanel implements ActionListener {
 		current.setText(Resources.getMessage("wen.label", wen2));
 		current.setToolTipText((wen != wen2) ? Long.toString(wen) : null);
 		field.setText("");
+
+		log.debug("WEN panel is refreshed with: {} / {}", wen2, wen);
 	}
 
 	public void setWen(int newWen) {
+		log.debug("Try to set PES: {}", newWen);
+
 		if (newWen >= 0 && newWen <= MAX_WEN) {
 			byte[] temp = Bits.toBytes(newWen);
 			System.arraycopy(temp, 0, of.getData(), ALT_ADR, 3);
@@ -67,12 +80,16 @@ public class WenPanel extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
+		String text = field.getText();
+		log.debug("Try to perform WEN updating: {}", text);
+
+		int newWen;
 		try {
-			setWen(Integer.parseInt(field.getText()));
+			newWen = Integer.parseInt(text);
 		} catch (NumberFormatException nfe) {
-			JOptionPane.showMessageDialog(null,
-					nfe.getLocalizedMessage(), Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
+			newWen = -1;
 		}
+		setWen(newWen);
 	}
 
 }

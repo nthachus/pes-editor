@@ -47,7 +47,7 @@ public class SendGrid {
 		return VERSION;
 	}
 
-	public boolean send(StringBuffer subject, StringBuffer body) throws IOException, GeneralSecurityException {
+	public boolean send(String subject, String body) throws IOException, GeneralSecurityException {
 		URL url = new URL(endpoint);
 		HttpURLConnection http = (HttpURLConnection) url.openConnection();
 
@@ -101,12 +101,12 @@ public class SendGrid {
 		https.setHostnameVerifier(getHostnameVerifier());
 	}
 
-	private String buildPostData(StringBuffer subject, StringBuffer body) throws IOException {
+	private String buildPostData(String subject, String body) throws IOException {
 		if (null != subject && subject.length() > 0)
-			subject = new StringBuffer(URLEncoder.encode(subject.toString(), encoding));
+			subject = URLEncoder.encode(subject, encoding);
 
 		if (null != body && body.length() > 0)
-			body = new StringBuffer(URLEncoder.encode(body.toString(), encoding));
+			body = URLEncoder.encode(body, encoding);
 
 		return String.format(form, subject, body);
 	}

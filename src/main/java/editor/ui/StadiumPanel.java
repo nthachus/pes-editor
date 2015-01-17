@@ -31,9 +31,9 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 	}
 
 	private void initComponents() {
-		editor = new JTextField(15);
+		editor = new JTextField(Math.round(0.25f * Stadiums.NAME_LEN));
 		editor.setToolTipText(Resources.getMessage("stadium.tooltip"));
-		editor.setDocument(new JTextFieldLimit(Stadiums.NAME_LEN));
+		editor.setDocument(new JTextFieldLimit(Stadiums.NAME_LEN * 2 / 3));
 		editor.addActionListener(this);
 
 		list = new JList/*<String>*/();
@@ -63,7 +63,7 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 		int stadiumId = list.getSelectedIndex();
 		String text = editor.getText();
 
-		if (stadiumId >= 0 && null != text && text.length() <= Stadiums.NAME_LEN) {
+		if (stadiumId >= 0 && null != text && text.length() <= Stadiums.NAME_LEN * 2 / 3) {
 			if (!text.equals(Stadiums.get(of, stadiumId))) {
 				Stadiums.set(of, stadiumId, text);
 				teamPanel.refresh();
