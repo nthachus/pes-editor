@@ -32,7 +32,7 @@ public class WenPanel extends JPanel implements ActionListener {
 		log.debug("WEN panel is initializing..");
 
 		initComponents();
-		refresh();
+		//refresh();
 	}
 
 	private void initComponents() {

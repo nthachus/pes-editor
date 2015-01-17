@@ -38,7 +38,10 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -81,10 +84,10 @@ public class SimpleLogger extends NamedLoggerBase {
 	private static volatile PrintStream TARGET_STREAM = null;
 	private static volatile boolean LEVEL_IN_BRACKETS = false;
 
-	private static volatile SendGrid SMTP_APPENDER = null;
-	private static volatile ExecutorService MAIL_POOL = null;
 	private static volatile String NEW_LINE = "\n";
-	private static volatile List<String> CACHED_MESSAGES = null;
+	private static volatile ExecutorService THREAD_POOL = null;
+	private static volatile SendGrid SMTP_APPENDER = null;
+	private static final List<String> CACHED_MESSAGES = new ArrayList<String>(5);
 
 	/**
 	 * All system properties used by <code>SimpleLogger</code> start with this prefix
@@ -183,6 +186,9 @@ public class SimpleLogger extends NamedLoggerBase {
 	}
 
 	private static void initSMTPAppender() {
+		NEW_LINE = getStringProperty("line.separator", NEW_LINE);
+		THREAD_POOL = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+
 		String sendGridForm = getStringProperty(SMTP_APPENDER_KEY);
 		if (null != sendGridForm) {
 			SMTP_APPENDER = new SendGrid(sendGridForm);
@@ -195,10 +201,6 @@ public class SimpleLogger extends NamedLoggerBase {
 					Util.report("Bad SMTP timeout setting: " + e.toString());
 				}
 			}
-
-			MAIL_POOL = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
-			NEW_LINE = getStringProperty("line.separator", NEW_LINE);
-			CACHED_MESSAGES = Collections.synchronizedList(new ArrayList<String>());
 		}
 	}
 
@@ -406,9 +408,11 @@ public class SimpleLogger extends NamedLoggerBase {
 	}
 
 	protected void write(StringBuffer buf, Throwable t) {
-		TARGET_STREAM.println(buf.toString());
-		if (null != t)
-			t.printStackTrace(TARGET_STREAM);
+		MessageWriter writer = new MessageWriter(buf.toString(), t);
+		if (t instanceof ExceptionInInitializerError)
+			writer.run();
+		else
+			THREAD_POOL.execute(writer);
 
 		if (null != SMTP_APPENDER)
 			cacheMailMessages(buf, t);
@@ -421,14 +425,18 @@ public class SimpleLogger extends NamedLoggerBase {
 			buf.append(NEW_LINE).append(sw.toString());
 		}
 
-		if (CACHED_MESSAGES.size() > 3)
-			CACHED_MESSAGES.remove(0);
-		CACHED_MESSAGES.add(buf.toString());
+		synchronized (CACHED_MESSAGES) {
+			if (CACHED_MESSAGES.size() > 3) CACHED_MESSAGES.remove(0);
+			CACHED_MESSAGES.add(buf.toString());
+		}
 	}
 
 	private static void sendErrorMail(String name, String msg, boolean immediately) {
-		String[] messages = CACHED_MESSAGES.toArray(new String[CACHED_MESSAGES.size()]);
-		CACHED_MESSAGES.clear();
+		String[] messages;
+		synchronized (CACHED_MESSAGES) {
+			messages = CACHED_MESSAGES.toArray(new String[CACHED_MESSAGES.size()]);
+			CACHED_MESSAGES.clear();
+		}
 
 		StringBuilder body = new StringBuilder();
 		for (String s : messages) {
@@ -440,7 +448,7 @@ public class SimpleLogger extends NamedLoggerBase {
 		if (immediately)
 			sender.run();
 		else
-			MAIL_POOL.execute(sender);
+			THREAD_POOL.execute(sender);
 	}
 
 	private static class MailSender implements Runnable {
@@ -461,12 +469,26 @@ public class SimpleLogger extends NamedLoggerBase {
 		}
 	}
 
-	@SuppressWarnings("SynchronizeOnNonFinalField")
+	private static class MessageWriter implements Runnable {
+		private final String message;
+		private final Throwable error;
+
+		public MessageWriter(String message, Throwable error) {
+			this.message = message;
+			this.error = error;
+		}
+
+		public void run() {
+			TARGET_STREAM.println(message);
+			if (null != error)
+				error.printStackTrace(TARGET_STREAM);
+		}
+	}
+
 	protected static String getFormattedDate() {
 		Date now = new Date();
-		synchronized (DATE_FORMATTER) {
-			return DATE_FORMATTER.format(now);
-		}
+		//synchronized
+		return DATE_FORMATTER.format(now);
 	}
 
 	private String computeShortName() {

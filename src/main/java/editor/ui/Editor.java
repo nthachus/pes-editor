@@ -554,7 +554,10 @@ public class Editor extends JFrame implements ActionListener {
 		private final String filePath;
 
 		public Runner(String[] args) {
-			filePath = (null != args && args.length > 0) ? args[0] : null;
+			if (null != args && args.length > 0)
+				filePath = args[0];
+			else
+				filePath = null;
 		}
 
 		public void run() {
