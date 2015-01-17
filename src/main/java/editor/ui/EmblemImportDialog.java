@@ -5,6 +5,8 @@ import editor.data.Emblems;
 import editor.data.OptionFile;
 import editor.util.Resources;
 import editor.util.UIUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +15,7 @@ import java.awt.event.ActionListener;
 
 public class EmblemImportDialog extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 3904576337391258950L;
+	private static final Logger log = LoggerFactory.getLogger(EmblemImportDialog.class);
 
 	private final OptionFile of2;
 	private volatile boolean isTrans = true;
@@ -24,6 +27,7 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 		if (null == of2) throw new NullPointerException("of2");
 		this.of2 = of2;
 
+		log.debug("Emblem import dialog is initializing..");
 		initComponents();
 	}
 
@@ -32,11 +36,13 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 
 	private void initComponents() {
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
+		Insets margin = new Insets(0, 0, 0, 0);
+		Icon blankIcon = new ImageIcon(Emblems.BLANK_SMALL);
 
 		UIUtil.javaUI();// fix button background color
 		for (int i = 0; i < emblemButtons.length; i++) {
-			emblemButtons[i] = new JButton(new ImageIcon(Emblems.BLANK_SMALL));
-			emblemButtons[i].setMargin(new Insets(0, 0, 0, 0));
+			emblemButtons[i] = new JButton(blankIcon);
+			emblemButtons[i].setMargin(margin);
 			emblemButtons[i].setActionCommand(Integer.toString(i));
 			emblemButtons[i].addActionListener(this);
 
@@ -48,7 +54,7 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 		transButton.setActionCommand("Transparency");
 		transButton.addActionListener(this);
 
-		CancelButton cancelButton = new CancelButton(this);
+		JButton cancelButton = new CancelButton(this);
 
 		JPanel contentPane = new JPanel(new BorderLayout());
 		contentPane.add(transButton, BorderLayout.NORTH);
@@ -66,6 +72,7 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+		log.debug("Perform emblem import action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans;
@@ -91,6 +98,8 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 	 * @see EmblemChooserDialog#refresh()
 	 */
 	public void refresh() {
+		log.debug("Try to refresh emblem import dialog for type: {}", type);
+
 		Image icon;
 		if (type == null || type == EmblemType.lowRes) {
 			for (int i = 0, n = Emblems.count16(of2); i < n; i++) {
@@ -119,6 +128,8 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 		for (int i = start; i < end; i++) {
 			emblemButtons[i].setVisible(false);
 		}
+
+		log.debug("Refresh completed on emblem importer for type: {}", type);
 	}
 
 	public int getEmblem(String title, EmblemType type) {
@@ -130,14 +141,17 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 		refresh();
 		setVisible(true);
 
+		log.debug("Emblem importer for type {} result: {}", type, slot);
 		return slot;
 	}
 
 	public void import128(OptionFile of, int slot, int replacement) {
+		log.debug("Try to import Emblem128 from OF2: {} -> {}", replacement, slot);
 		Emblems.importData128(of2, replacement, of, slot);
 	}
 
 	public void import16(OptionFile of, int slot, int replacement) {
+		log.debug("Try to import Emblem16 from OF2: {} -> {}", replacement, slot);
 		Emblems.importData16(of2, replacement, of, slot);
 	}
 

@@ -40,7 +40,7 @@ public class PlayerDialog extends JDialog implements ActionListener {
 		acceptButton.setActionCommand("Accept");
 		acceptButton.addActionListener(this);
 
-		CancelButton cancelButton = new CancelButton(this);
+		JButton cancelButton = new CancelButton(this);
 
 		importButton = new JButton(Resources.getMessage("player.import"));
 		importButton.setActionCommand("Import");

@@ -46,7 +46,7 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 		playerList.getSquadList().addMouseListener(this);
 
 		infoPanel = new InfoPanel(of2);
-		CancelButton cancelButton = new CancelButton(this);
+		JButton cancelButton = new CancelButton(this);
 
 		allButton = new JRadioButton(Resources.getMessage("imPlayer.all"));
 		statsButton = new JRadioButton(Resources.getMessage("imPlayer.stats"));

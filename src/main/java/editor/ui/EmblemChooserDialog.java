@@ -5,6 +5,8 @@ import editor.data.Emblems;
 import editor.data.OptionFile;
 import editor.util.Resources;
 import editor.util.UIUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +15,7 @@ import java.awt.event.ActionListener;
 
 public class EmblemChooserDialog extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 2638397173587686242L;
+	private static final Logger log = LoggerFactory.getLogger(EmblemChooserDialog.class);
 
 	private final OptionFile of;
 	private volatile boolean isTrans = true;
@@ -26,18 +29,23 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 		if (null == of) throw new NullPointerException("of");
 		this.of = of;
 
+		log.debug("Emblem chooser dialog is initializing..");
 		initComponents();
 	}
 
 	private void initComponents() {
 		JPanel flagPanel = new JPanel(new GridLayout(6, 10));
-		int refSize = Math.round(0.69f * Emblems.IMG_SIZE);
+
+		int iconSize = Math.round(0.69f * Emblems.IMG_SIZE);
+		Dimension prefSize = new Dimension(iconSize, iconSize);
+		Insets margin = new Insets(0, 0, 0, 0);
+		Icon blankIcon = new ImageIcon(Emblems.BLANK16);
 
 		UIUtil.javaUI();// fix button background color
 		for (int i = 0; i < emblemButtons.length; i++) {
-			emblemButtons[i] = new JButton(new ImageIcon(Emblems.BLANK16));
-			emblemButtons[i].setMargin(new Insets(0, 0, 0, 0));
-			emblemButtons[i].setPreferredSize(new Dimension(refSize, refSize));
+			emblemButtons[i] = new JButton(blankIcon);
+			emblemButtons[i].setMargin(margin);
+			emblemButtons[i].setPreferredSize(prefSize);
 			emblemButtons[i].setActionCommand(Integer.toString(i));
 			emblemButtons[i].addActionListener(this);
 
@@ -49,7 +57,7 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 		transButton.setActionCommand("Transparency");
 		transButton.addActionListener(this);
 
-		CancelButton cancelButton = new CancelButton(this);
+		JButton cancelButton = new CancelButton(this);
 		getContentPane().add(transButton, BorderLayout.NORTH);
 		getContentPane().add(cancelButton, BorderLayout.SOUTH);
 		getContentPane().add(flagPanel, BorderLayout.CENTER);
@@ -60,6 +68,7 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+		log.debug("Try to perform action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans;
@@ -78,6 +87,8 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public void refresh() {
+		log.debug("Try to refresh emblem chooser dialog for type: {}", type);
+
 		Image icon;
 		if (type == null || type == EmblemType.lowRes) {
 			for (int i = 0, n = Emblems.count16(of); i < n; i++) {
@@ -106,14 +117,19 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 		for (int i = start; i < end; i++) {
 			emblemButtons[i].setVisible(false);
 		}
+
+		log.debug("Refresh completed on emblem chooser for type: {}", type);
 	}
 
 	public int getEmblem(String title, EmblemType type) {
 		this.type = type;
 		slot = -1;
+
 		setTitle(title);
 		refresh();
 		setVisible(true);
+
+		log.debug("Emblem chooser for type {} result: {}", type, slot);
 		return slot;
 	}
 

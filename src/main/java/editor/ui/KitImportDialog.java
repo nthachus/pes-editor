@@ -42,7 +42,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setViewportView(list);
 
-		CancelButton cancelButton = new CancelButton(this);
+		JButton cancelButton = new CancelButton(this);
 
 		JPanel contentPane = new JPanel(new BorderLayout());
 		contentPane.add(fileLabel, BorderLayout.NORTH);

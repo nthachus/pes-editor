@@ -30,11 +30,13 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 
 	private void initComponents() {
 		JPanel flagPanel = new JPanel(new GridLayout(8, 10));
+		Insets margin = new Insets(0, 0, 0, 0);
+		Icon blankIcon = new ImageIcon(Logos.BLANK);
 
 		UIUtil.javaUI();// fix button background color
 		for (int l = 0; l < Logos.TOTAL; l++) {
-			flagButtons[l] = new JButton(new ImageIcon(Logos.BLANK));
-			flagButtons[l].setMargin(new Insets(0, 0, 0, 0));
+			flagButtons[l] = new JButton(blankIcon);
+			flagButtons[l].setMargin(margin);
 			flagButtons[l].setActionCommand(Integer.toString(l));
 			flagButtons[l].addActionListener(this);
 
@@ -46,7 +48,7 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 		transButton.setActionCommand("Transparency");
 		transButton.addActionListener(this);
 
-		CancelButton cancelButton = new CancelButton(this);
+		JButton cancelButton = new CancelButton(this);
 
 		repLabel = new JLabel(new ImageIcon(Logos.BLANK));
 

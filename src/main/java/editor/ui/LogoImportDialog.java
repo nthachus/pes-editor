@@ -36,11 +36,13 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 
 	private void initComponents() {
 		JPanel flagPanel = new JPanel(new GridLayout(8, 10));
+		Insets margin = new Insets(0, 0, 0, 0);
+		Icon blankIcon = new ImageIcon(Logos.BLANK);
 
 		UIUtil.javaUI();// fix button background color
 		for (int l = 0; l < flagButtons.length; l++) {
-			flagButtons[l] = new JButton(new ImageIcon(Logos.BLANK));
-			flagButtons[l].setMargin(new Insets(0, 0, 0, 0));
+			flagButtons[l] = new JButton(blankIcon);
+			flagButtons[l].setMargin(margin);
 			flagButtons[l].setActionCommand(Integer.toString(l));
 			flagButtons[l].addActionListener(this);
 
@@ -58,7 +60,7 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 		topPanel.add(fileLabel);
 		topPanel.add(transButton);
 
-		CancelButton cancelButton = new CancelButton(this);
+		JButton cancelButton = new CancelButton(this);
 
 		getContentPane().add(topPanel, BorderLayout.NORTH);
 		getContentPane().add(cancelButton, BorderLayout.SOUTH);
