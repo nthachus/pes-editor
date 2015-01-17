@@ -174,6 +174,25 @@ public final class ClubsTest extends BaseTest {
 		Assert.assertEquals(newC2, c2);
 	}
 
+	@Test
+	public void testGetClubInfo() throws Exception {
+		OptionFile of = loadOriginalOF();
+		int cid = 7;
+
+		Assert.assertEquals("MANCHESTER UNITED", Clubs.getName(of, cid));
+		Assert.assertEquals("MCU", Clubs.getAbbrName(of, cid));
+		Assert.assertEquals(151, Clubs.FIRST_DEF_EMBLEM + cid);
+		Assert.assertEquals(Clubs.FIRST_DEF_EMBLEM + cid, Clubs.getEmblem(of, cid));
+		Assert.assertEquals(0, Clubs.getBackFlag(of, cid));
+		Color bg = new Color(0x8F1016);
+		Assert.assertEquals(bg, Clubs.getColor(of, cid, false));
+		Assert.assertEquals(bg, Clubs.getColor(of, cid, true));
+
+		int sid = 3;
+		Assert.assertEquals(sid, Clubs.getStadium(of, cid));
+		Assert.assertEquals("OLD TRAFFORD", Stadiums.get(of, sid));
+	}
+
 	// TODO: Other test-cases!
 
 }

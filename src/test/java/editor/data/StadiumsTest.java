@@ -85,4 +85,11 @@ public final class StadiumsTest extends BaseTest {
 		Stadiums.importData(new OptionFile(), null);
 	}
 
+	@Test
+	public void testGetName() throws Exception {
+		OptionFile of = loadOriginalOF();
+
+		Assert.assertEquals("STADIO OLIMPICO", Stadiums.get(of, 8));
+		Assert.assertEquals("SANTIAGO BERNABEU", Stadiums.get(of, 11));
+	}
 }
