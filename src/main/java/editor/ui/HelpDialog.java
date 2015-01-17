@@ -18,13 +18,21 @@ public class HelpDialog extends JDialog implements ActionListener, HyperlinkList
 	private static final long serialVersionUID = -2853334995318291197L;
 	private static final Logger log = LoggerFactory.getLogger(HelpDialog.class);
 
-	private static final String INDEX_PAGE = "/META-INF/help/index%s.html";
-
-	private final JEditorPane editPanel;
+	private static final String HOME_PAGE = "/META-INF/help/index%s.html";
+	private final URL homePage;
 
 	public HelpDialog(Frame owner) {
 		super(owner, Resources.getMessage("help.title"), false);
 
+		log.debug("Help dialog is initializing..");
+		initComponents();
+
+		homePage = getIndexPage();
+	}
+
+	private/* final*/ JEditorPane editPanel;
+
+	private void initComponents() {
 		editPanel = new JEditorPane();
 		editPanel.setEditable(false);
 		editPanel.addHyperlinkListener(this);
@@ -34,9 +42,6 @@ public class HelpDialog extends JDialog implements ActionListener, HyperlinkList
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setViewportView(editPanel);
 		scroll.setPreferredSize(new Dimension(645, 550));
-
-		URL helpUrl = getIndexPage();
-		showPage(helpUrl);
 
 		JButton exitButton = new JButton(Resources.getMessage("help.close"));
 		exitButton.addActionListener(this);
@@ -49,26 +54,34 @@ public class HelpDialog extends JDialog implements ActionListener, HyperlinkList
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		setVisible(false);
+		super.setVisible(false);
 	}
 
 	private URL getIndexPage() {
 		Locale loc = Locale.getDefault();
 		String lang = loc.getLanguage() + '-' + loc.getCountry();
 
-		URL helpUrl = getClass().getResource(String.format(INDEX_PAGE, Files.EXT_SEPARATOR + lang));
+		URL helpUrl = getClass().getResource(String.format(HOME_PAGE, Files.EXT_SEPARATOR + lang));
 		if (null == helpUrl) {
 			lang = loc.getLanguage();
-			helpUrl = getClass().getResource(String.format(INDEX_PAGE, Files.EXT_SEPARATOR + lang));
+			helpUrl = getClass().getResource(String.format(HOME_PAGE, Files.EXT_SEPARATOR + lang));
+
+			if (null == helpUrl)
+				helpUrl = getClass().getResource(String.format(HOME_PAGE, ""));
 		}
 
-		if (null == helpUrl)
-			helpUrl = getClass().getResource(String.format(INDEX_PAGE, ""));
+		log.debug("Loaded help index URL: {}", helpUrl);
 		return helpUrl;
 	}
 
+	@Override
+	public void setVisible(boolean b) {
+		if (b) showPage(homePage);
+		super.setVisible(b);
+	}
+
 	private void showPage(URL url) {
-		if (null != url) {
+		if (null != url && !url.equals(editPanel.getPage())) {
 			try {
 				editPanel.setPage(url);
 			} catch (Exception e) {
@@ -79,6 +92,7 @@ public class HelpDialog extends JDialog implements ActionListener, HyperlinkList
 
 	public void hyperlinkUpdate(HyperlinkEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+		log.debug("Try to process hyperlink event: {}", evt);
 
 		if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 			// Show the new page in the editor pane

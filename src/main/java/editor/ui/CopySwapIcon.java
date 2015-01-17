@@ -12,25 +12,22 @@ public class CopySwapIcon implements Icon, Serializable {
 	private static final long serialVersionUID = -4081848473723249944L;
 	private static final Logger log = LoggerFactory.getLogger(CopySwapIcon.class);
 
-	private static final int WIDTH = 10;
-	private static final int HEIGHT = 20;
-
 	private final boolean isSwap;
 
 	public CopySwapIcon(boolean isSwap) {
 		this.isSwap = isSwap;
 	}
 
-	public CopySwapIcon() {
+	/*public CopySwapIcon() {
 		this(false);
+	}*/
+
+	public int getIconWidth() {
+		return 10;
 	}
 
 	public int getIconHeight() {
-		return HEIGHT;
-	}
-
-	public int getIconWidth() {
-		return WIDTH;
+		return 20;
 	}
 
 	public void paintIcon(Component c, Graphics g, int x, int y) {
