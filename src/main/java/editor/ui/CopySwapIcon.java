@@ -6,10 +6,8 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Line2D;
-import java.io.Serializable;
 
-public class CopySwapIcon implements Icon, Serializable {
-	private static final long serialVersionUID = -4081848473723249944L;
+public class CopySwapIcon implements Icon {
 	private static final Logger log = LoggerFactory.getLogger(CopySwapIcon.class);
 
 	private final boolean isSwap;

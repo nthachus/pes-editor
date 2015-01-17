@@ -4,13 +4,11 @@ import editor.util.Files;
 
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
-import java.io.Serializable;
 
-public class ImageFileFilter extends FileFilter implements Serializable {
-	private static final long serialVersionUID = 6289512206928366276L;
+public class ImageFileFilter extends FileFilter {
 
 	/**
-	 * Accept all directories and all png Flag files.
+	 * Accept all directories and all image files.
 	 */
 	public boolean accept(File file) {
 		if (null == file) throw new NullPointerException("file");

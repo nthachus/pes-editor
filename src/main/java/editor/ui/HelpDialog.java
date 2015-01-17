@@ -81,7 +81,7 @@ public class HelpDialog extends JDialog implements ActionListener, HyperlinkList
 	}
 
 	private void showPage(URL url) {
-		if (null != url && !url.equals(editPanel.getPage())) {
+		if (null != url && url != editPanel.getPage()) {
 			try {
 				editPanel.setPage(url);
 			} catch (Exception e) {

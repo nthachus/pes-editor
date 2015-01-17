@@ -12,43 +12,47 @@ import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.io.Serializable;
 
-public class OptionFileFilter extends FileFilter implements Serializable {
-	private static final long serialVersionUID = 2713989120983395257L;
+public class OptionFileFilter extends FileFilter {
 	private static final Logger log = LoggerFactory.getLogger(OptionFileFilter.class);
 
 	public boolean accept(File file) {
-		if (file == null)
-			return false;
+		if (file == null) return false;
+		if (file.isDirectory()) return true;
 
-		if (file.isDirectory())
-			return true;
+		if (!file.canRead()) return false;
 
 		String extension = Files.getExtension(file);
-		return (Files.isXPortFile(extension) && isXPortOptionFile(file))
-				|| (Files.isEmsFile(extension) && isEmsOptionFile(file))
-				|| (Files.isARMaxFile(extension) && isARMaxOptionFile(file));
+
+		String identCheck = null;
+		if (Files.isXPortFile(extension)) {
+			identCheck = readIdentFromXPort(file);
+		} else if (Files.isEmsFile(extension)) {
+			identCheck = readIdentFromEms(file);
+		} else if (Files.isARMaxFile(extension)) {
+			identCheck = readIdentFromARMax(file);
+		}
+
+		return (null != identCheck && OptionFile.isValidGameId(identCheck));
 	}
 
 	public String getDescription() {
 		return Resources.getMessage("of.title");
 	}
 
-	private static boolean isEmsOptionFile(File f) {
-		if (!f.canRead())
-			return false;
-
+	private static String readIdentFromEms(File f) {
 		RandomAccessFile rf = null;
 		try {
 			rf = new RandomAccessFile(f, "r");
 
 			rf.seek(64);
-			byte[] identBytes = new byte[19];
+			byte[] identBytes = new byte[OptionFile.GAME_LEN];
 			int len = rf.read(identBytes);
-			String identCheck = new String(identBytes, 0, len, Strings.ANSI);
 
-			return OptionFile.isValidGameId(identCheck);
+			String identCheck = new String(identBytes, 0, len, Strings.ANSI);
+			// DEBUG
+			log.debug("Retrieved Game ID from EMS OF: {}", identCheck);
+			return identCheck;
 
 		} catch (IOException e) {
 			log.warn("{} is not a Memory Linker file: {}", f, e);
@@ -61,14 +65,10 @@ public class OptionFileFilter extends FileFilter implements Serializable {
 				}
 			}
 		}
-
-		return false;
+		return null;
 	}
 
-	private static boolean isXPortOptionFile(File f) {
-		if (!f.canRead())
-			return false;
-
+	private static String readIdentFromXPort(File f) {
 		RandomAccessFile rf = null;
 		try {
 			rf = new RandomAccessFile(f, "r");
@@ -76,15 +76,20 @@ public class OptionFileFilter extends FileFilter implements Serializable {
 			rf.seek(21);
 			int skip = Bits.swabInt(rf.readInt());
 			if (rf.skipBytes(skip) == skip) {
+
 				skip = Bits.swabInt(rf.readInt());
 				if (rf.skipBytes(skip) == skip) {
+
 					skip = Bits.swabInt(rf.readInt()) + 6;
 					if (rf.skipBytes(skip) == skip) {
 
-						byte[] identBytes = new byte[19];
+						byte[] identBytes = new byte[OptionFile.GAME_LEN];
 						int len = rf.read(identBytes);
+
 						String identCheck = new String(identBytes, 0, len, Strings.ANSI);
-						return OptionFile.isValidGameId(identCheck);
+						// DEBUG
+						log.debug("Retrieved Game ID from XPort OF: {}", identCheck);
+						return identCheck;
 					}
 				}
 			}
@@ -99,24 +104,22 @@ public class OptionFileFilter extends FileFilter implements Serializable {
 				}
 			}
 		}
-
-		return false;
+		return null;
 	}
 
-	private static boolean isARMaxOptionFile(File f) {
-		if (!f.canRead())
-			return false;
-
+	private static String readIdentFromARMax(File f) {
 		RandomAccessFile rf = null;
 		try {
 			rf = new RandomAccessFile(f, "r");
 
 			rf.seek(16);
-			byte[] identBytes = new byte[19];
+			byte[] identBytes = new byte[OptionFile.GAME_LEN];
 			int len = rf.read(identBytes);
 			String identCheck = new String(identBytes, 0, len, Strings.ANSI);
 
-			return OptionFile.isValidGameId(identCheck);
+			// DEBUG
+			log.debug("Retrieved Game ID from ARMax OF: {}", identCheck);
+			return identCheck;
 
 		} catch (IOException e) {
 			log.warn("{} is not an ARMax file: {}", f, e);
@@ -129,8 +132,7 @@ public class OptionFileFilter extends FileFilter implements Serializable {
 				}
 			}
 		}
-
-		return false;
+		return null;
 	}
 
 }

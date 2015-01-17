@@ -261,10 +261,10 @@ public class InfoPanel extends JScrollPane {
 		StyleConstants.setForeground(attr, Color.WHITE);
 
 		if (index1 > 0) {
-			doc.insertString(doc.getLength(), new Player(of, index1).getName(), attr);
+			doc.insertString(doc.getLength(), Player.getName(of, index1), attr);
 		}
 		if (index2 > 0) {
-			doc.insertString(doc.getLength(), "\t" + new Player(of, index2).getName(), attr);
+			doc.insertString(doc.getLength(), "\t" + Player.getName(of, index2), attr);
 		}
 	}
 

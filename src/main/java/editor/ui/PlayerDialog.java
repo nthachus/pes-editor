@@ -108,22 +108,18 @@ public class PlayerDialog extends JDialog implements ActionListener {
 
 	@SuppressWarnings("RedundantIfStatement")
 	private boolean isFormValid() {
-		InputVerifier verifier = new Ability99Panel.Verifier99();
 		for (int i = 0; i < Stats.ABILITY99.length; i++) {
-			if (!verifier.verify(abilityPan.getField(i)))
+			if (!Ability99Panel.Verifier99.verify(abilityPan.getField(i)))
 				return false;
 		}
 
-		verifier = new GeneralAbilityPanel.StatVerifier(Stats.HEIGHT);
-		if (!verifier.verify(generalPan.getHeightField()))
+		if (!GeneralAbilityPanel.StatVerifier.verify(Stats.HEIGHT, generalPan.getHeightField()))
 			return false;
 
-		verifier = new GeneralAbilityPanel.StatVerifier(Stats.WEIGHT);
-		if (!verifier.verify(generalPan.getWeightField()))
+		if (!GeneralAbilityPanel.StatVerifier.verify(Stats.WEIGHT, generalPan.getWeightField()))
 			return false;
 
-		verifier = new GeneralAbilityPanel.StatVerifier(Stats.AGE);
-		if (!verifier.verify(generalPan.getAgeField()))
+		if (!GeneralAbilityPanel.StatVerifier.verify(Stats.AGE, generalPan.getAgeField()))
 			return false;
 
 		return true;

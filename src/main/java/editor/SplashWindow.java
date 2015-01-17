@@ -152,9 +152,9 @@ public class SplashWindow extends Window implements MouseListener {
 
 		// Notify method splash that the window has been painted.
 		// [*] To improve performance we do not enter the synchronized block unless we have to.
-		if (!isPaintCalled) {
-			isPaintCalled = true;
-			synchronized (this) {
+		synchronized (this) {
+			if (!isPaintCalled) {
+				isPaintCalled = true;
 				notifyAll();
 			}
 		}

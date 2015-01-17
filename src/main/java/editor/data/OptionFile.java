@@ -7,11 +7,13 @@ import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.zip.CRC32;
 
-public class OptionFile implements Serializable {
-	private static final long serialVersionUID = 7033009945888590265L;
+public class OptionFile {
 	private static final Logger log = LoggerFactory.getLogger(OptionFile.class);
 
 	private static final String SHARK_PORT = "\15\0\0\0SharkPortSave";
@@ -304,7 +306,7 @@ public class OptionFile implements Serializable {
 			decrypt(data);
 		}
 
-		log.debug("Saving of OF file '{}' completed", file);
+		log.debug("Saving of OF file '{}' completed", file.getName());
 		return true;
 	}
 
@@ -364,6 +366,7 @@ public class OptionFile implements Serializable {
 		try {
 			out = new FileOutputStream(file, false);
 			out.write(data);
+
 		} catch (Exception e) {
 			log.error("Failed to dump raw data:", e);
 			return false;

@@ -7,10 +7,8 @@ import org.slf4j.LoggerFactory;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.Serializable;
 
-public class PlayerTransferable implements Transferable, Serializable {
-	private static final long serialVersionUID = 209565230974819915L;
+public class PlayerTransferable implements Transferable {
 	private static final Logger log = LoggerFactory.getLogger(PlayerTransferable.class);
 
 	private final Player data;

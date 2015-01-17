@@ -120,7 +120,7 @@ public class Ability99Panel extends JPanel
 			return verify((JTextComponent) input);
 		}
 
-		private static boolean verify(JTextComponent tf) {
+		public static boolean verify(JTextComponent tf) {
 			try {
 				int v = Integer.parseInt(tf.getText());
 				if (v > 0 && v <= Stats.MAX_STAT99) {

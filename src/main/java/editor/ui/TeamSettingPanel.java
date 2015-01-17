@@ -3,6 +3,8 @@ package editor.ui;
 import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.util.Resources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +13,7 @@ import java.awt.event.ActionListener;
 
 public class TeamSettingPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 5663937717103660484L;
+	private static final Logger log = LoggerFactory.getLogger(TeamSettingPanel.class);
 
 	private static final String[] ITEMS3 = {"A", "B", "C"};
 
@@ -26,6 +29,7 @@ public class TeamSettingPanel extends JPanel implements ActionListener {
 		if (null == of) throw new NullPointerException("of");
 		this.of = of;
 
+		log.debug("Team Setting panel is initializing..");
 		initComponents();
 	}
 
@@ -79,6 +83,7 @@ public class TeamSettingPanel extends JPanel implements ActionListener {
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+		log.debug("Perform action {} on Team Setting panel", evt.getActionCommand());
 
 		if (isOk) {
 			int i = Integer.parseInt(evt.getActionCommand());
@@ -91,6 +96,8 @@ public class TeamSettingPanel extends JPanel implements ActionListener {
 	}
 
 	public void refresh(int squad) {
+		log.debug("Refresh Team Setting panel for alt: {}, squad: {}", alt, squad);
+
 		isOk = false;
 		this.squad = squad;
 

@@ -73,7 +73,7 @@ public final class StatsTest extends BaseTest {
 		for (String[] ps : playerStats)
 			stats.put(ps[0], ps[1]);
 
-		Assert.assertEquals(stats.get("Name"), new Player(of, pid).getName());
+		Assert.assertEquals(stats.get("Name"), Player.getName(of, pid));
 		stats.remove("Name");
 
 		List<Stat> fields = readStaticFields(Stats.class, Stat.class, true, false);

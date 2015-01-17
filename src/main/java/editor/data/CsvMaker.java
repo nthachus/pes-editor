@@ -5,10 +5,12 @@ import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.DataOutput;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
-public class CsvMaker implements Serializable {
-	private static final long serialVersionUID = -4764145193633313484L;
+public class CsvMaker {
 	private static final Logger log = LoggerFactory.getLogger(CsvMaker.class);
 
 	private final char separator;
@@ -236,8 +238,8 @@ public class CsvMaker implements Serializable {
 	}
 
 	private void writeName(OptionFile of, DataOutput out, int player) throws IOException {
-		Player p = new Player(of, player);
-		String name = p.getName().replace(separator, ' ');
+		String name = Player.getName(of, player);
+		name = name.replace(separator, ' ');
 		out.write(name.getBytes(Strings.UTF8));
 	}
 

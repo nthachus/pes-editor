@@ -22,6 +22,7 @@ public class GeneralAbilityPanel extends JPanel {
 		if (null == of) throw new NullPointerException("of");
 		this.of = of;
 
+		log.debug("General Ability panel is initializing..");
 		initComponents();
 	}
 
@@ -160,6 +161,8 @@ public class GeneralAbilityPanel extends JPanel {
 	}
 
 	public void load(int player) {
+		log.debug("Try to load general abilities for player: {}", player);
+
 		nationBox.setSelectedItem(Stats.getString(of, player, Stats.NATIONALITY));
 		ageField.setText(Stats.getString(of, player, Stats.AGE));
 		heightField.setText(Stats.getString(of, player, Stats.HEIGHT));
@@ -193,9 +196,15 @@ public class GeneralAbilityPanel extends JPanel {
 			if (null == input) throw new NullPointerException("input");
 			if (!(input instanceof JTextComponent)) throw new IllegalArgumentException("input");
 
-			JTextComponent tf = (JTextComponent) input;
+			return verify(stat, (JTextComponent) input);
+		}
+
+		public static boolean verify(Stat stat, JTextComponent tf) {
+			String text = tf.getText();
+			log.debug("Try to verify Stat '{}' value: {}", stat, text);
+
 			try {
-				int v = Integer.parseInt(tf.getText());
+				int v = Integer.parseInt(text);
 				if (v >= stat.minValue() && v <= stat.maxValue()) {
 					return true;
 				}

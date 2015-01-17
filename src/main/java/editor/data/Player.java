@@ -84,30 +84,22 @@ public class Player implements Serializable, Comparable<Player> {
 	public static final int NAME_LEN = 32;
 	public static final int SHIRT_NAME_LEN = 16;
 
-	private final OptionFile of;
+	private final transient OptionFile of;
 	private final int index;
 	private final int slotAdr;
 
 	private volatile String name;
-	private volatile transient String shirtName = null;
+	private volatile String shirtName = null;
 
 	public Player(OptionFile of, int index) {
 		this(of, index, 0);
 	}
 
 	public Player(OptionFile of, int index, int slotAdr) {
-		if (of == null) throw new NullPointerException();
-		if (index < 0 || (index >= TOTAL && index < FIRST_EDIT) || index >= END_EDIT)
-			throw new IndexOutOfBoundsException("index#" + index);
-
+		this.name = getName(of, index);
 		this.of = of;
 		this.index = index;// NOTE: index out of range: <ERROR>
 		this.slotAdr = slotAdr;
-
-		if (index == 0)
-			name = Resources.getMessage("player.empty");
-		else
-			getName();
 	}
 
 	public int getIndex() {
@@ -157,22 +149,28 @@ public class Player implements Serializable, Comparable<Player> {
 		return getName().startsWith("<");
 	}
 
-	public String getName() {
-		if (null == name) {
-			int adr = getOffset(index);
-			String nm = new String(of.getData(), adr, NAME_LEN, Strings.UNICODE);
-			nm = Strings.fixCString(nm);
+	public static String getName(OptionFile of, int index) {
+		if (index == 0)
+			return Resources.getMessage("player.empty");
 
-			if (!Strings.isEmpty(nm)) {
-				name = nm;
-			} else if (index >= FIRST_EDIT) {
-				name = Resources.getMessage("player.edited", index - FIRST_EDIT);
-			} else if (index >= FIRST_UNUSED) {
-				name = Resources.getMessage("player.unused", index);
-			} else {
-				name = Resources.getMessage("player.blank", index);
-			}
+		if (of == null) throw new NullPointerException("of");
+		int adr = getOffset(index);
+
+		String nm = new String(of.getData(), adr, NAME_LEN, Strings.UNICODE);
+		nm = Strings.fixCString(nm);
+
+		if (!Strings.isEmpty(nm)) {
+			return nm;
+		} else if (index >= FIRST_EDIT) {
+			return Resources.getMessage("player.edited", index - FIRST_EDIT);
+		} else if (index >= FIRST_UNUSED) {
+			return Resources.getMessage("player.unused", index);
 		}
+
+		return Resources.getMessage("player.blank", index);
+	}
+
+	public String getName() {
 		return name;
 	}
 
@@ -193,7 +191,7 @@ public class Player implements Serializable, Comparable<Player> {
 		Stats.setValue(of, index, Stats.NAME_EDITED, 1);
 		Stats.setValue(of, index, Stats.CALL_EDITED, 1);
 
-		name = null;
+		name = getName(of, index);
 	}
 
 	public String getShirtName() {

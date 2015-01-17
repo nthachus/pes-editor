@@ -49,6 +49,7 @@ public class FormationPanel extends JPanel
 		if (null == of) throw new NullPointerException("of");
 		this.of = of;
 
+		log.debug("Formation panel is initializing..");
 		initComponents();
 	}
 
@@ -178,6 +179,7 @@ public class FormationPanel extends JPanel
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+		log.debug("Perform Formation action '{}' for: {}", evt.getActionCommand(), evt.getSource());
 
 		if (evt.getSource() == altBox) {
 			altChanged(evt);
@@ -206,6 +208,8 @@ public class FormationPanel extends JPanel
 
 		pitchPanel.repaint();
 		atkDefPanel.repaint();
+
+		log.debug("Alt was changed to {}, for team {}", alt, team);
 	}
 
 	private void roleChanged(ActionEvent evt) {
@@ -241,11 +245,14 @@ public class FormationPanel extends JPanel
 
 		pitchPanel.repaint();
 		atkDefPanel.repaint();
+
+		log.debug("Role was changed to {}, for squad: {}, alt: {}, team: {}", role, squadIndex, alt, team);
 	}
 
 	private void fixCoordinateForNewRole(int alt, int squadIndex, int oldPos, int roleId) {
 		if (oldPos == roleId) return;
-		//log.debug("{}", oldPos);
+		log.debug("Try to fix coordinate for new role {}; with alt: {}, squad: {}, old-pos: {}, team: {}",
+				roleId, alt, squadIndex, oldPos, team);
 
 		if (oldPos < 10) {
 			if (roleId >= 10) {
@@ -313,6 +320,8 @@ public class FormationPanel extends JPanel
 		atkDefPanel.repaint();
 
 		updateRoleBox();
+
+		log.debug("Formation was changed to {}, for alt: {}, team: {}", formId, alt, team);
 	}
 
 	private int getNumTeam() {
@@ -322,6 +331,8 @@ public class FormationPanel extends JPanel
 	}
 
 	public void refresh(int team) {
+		log.debug("Try to refresh Formation panel for team: {}", team);
+
 		isOk = false;
 		this.team = team;
 
@@ -334,7 +345,8 @@ public class FormationPanel extends JPanel
 		int tt = getNumTeam();
 		numList.refresh(tt);
 
-		posList.setAlt(altBox.getSelectedIndex());
+		int alt = altBox.getSelectedIndex();
+		posList.setAlt(alt);
 		posList.refresh(team);
 
 		updateRoleBox();
@@ -346,7 +358,7 @@ public class FormationPanel extends JPanel
 		pk.refresh(team);
 		captain.refresh(team);
 
-		teamSettingPan.setAlt(altBox.getSelectedIndex());
+		teamSettingPan.setAlt(alt);
 		teamSettingPan.refresh(team);
 
 		strategyPan.refresh(team);
@@ -361,6 +373,8 @@ public class FormationPanel extends JPanel
 
 		altBox.setActionCommand("y");
 		isOk = true;
+
+		log.debug("Refresh completed on Formation panel for team: {}, alt: {}", team, alt);
 	}
 
 	/**
@@ -368,13 +382,17 @@ public class FormationPanel extends JPanel
 	 */
 	public void valueChanged(ListSelectionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+		log.debug("On the squad list selection changed, from-pitch: {}, ok: {}", isFromPitch, isOk);
+
 		if (isFromPitch) {
 			isFromPitch = false;
 			updateRoleBox();
-		} else if (!evt.getValueIsAdjusting() && isOk) {
 
+		} else if (!evt.getValueIsAdjusting() && isOk) {
 			int squadIndex = squadList.getSelectedIndex();
+
 			updateRoleBox();
+
 			if (squadIndex >= 0 && squadIndex < Formations.PLAYER_COUNT) {
 				pitchPanel.setSelectedIndex(squadIndex);
 				atkDefPanel.setSelectedIndex(squadIndex);
@@ -386,6 +404,8 @@ public class FormationPanel extends JPanel
 			pitchPanel.repaint();
 			atkDefPanel.repaint();
 			//posList.selectPos(squadList, squadIndex);
+
+			log.debug("Squad list on Formation panel was changed to {}", squadIndex);
 		}
 	}
 
@@ -397,7 +417,7 @@ public class FormationPanel extends JPanel
 
 		public Role(int index) {
 			this.index = index;
-			name = Formations.positionToString(index);
+			this.name = Formations.positionToString(index);
 		}
 
 		public boolean isCB() {
@@ -411,9 +431,11 @@ public class FormationPanel extends JPanel
 	}
 
 	private void updateRoleBox() {
+		log.debug("Try to update Role box for team: {}", team);
+		roleBox.setActionCommand("n");
+
 		countFormations();
 
-		roleBox.setActionCommand("n");
 		roleBox.removeAllItems();
 
 		int squadIndex = squadList.getSelectedIndex();
@@ -430,9 +452,13 @@ public class FormationPanel extends JPanel
 		}
 
 		roleBox.setActionCommand("y");
+		// DEBUG
+		log.debug("Role box was updated for squad: {}", squadIndex);
 	}
 
 	private void addItemsToRoleBox(int alt, int selPos) {
+		log.debug("Add items to Role box with alt: {}, select-pos: {}", alt, selPos);
+
 		Role last = null;
 		Role first = new Role(selPos);
 		roleBox.addItem(first);
@@ -464,10 +490,12 @@ public class FormationPanel extends JPanel
 				isCB = true;
 		}
 		// DEBUG
-		log.debug("{} role items was added", count);
+		log.debug("{} Role items was added", count);
 	}
 
 	private boolean isRoleFree(int alt, int selPos, int r) {
+		log.debug("Check Role free for {}, alt: {}, select-pos: {}", r, alt, selPos);
+
 		if (r == 5) {
 			return false;
 		} else {
@@ -535,6 +563,9 @@ public class FormationPanel extends JPanel
 	}
 
 	private void countFormations() {
+		log.debug("Try to bind data for Formations list");
+		formNamesBox.setActionCommand("n");
+
 		def.set(0);
 		mid.set(0);
 		atk.set(0);
@@ -554,8 +585,6 @@ public class FormationPanel extends JPanel
 			}
 		}
 
-		formNamesBox.setActionCommand("n");
-
 		String myForm;
 		if (mid2 > 0 && mid2 < 3) {
 			if (mid.addAndGet(-mid2) == 0) {
@@ -571,9 +600,7 @@ public class FormationPanel extends JPanel
 
 		ArrayList<String> formNames = new ArrayList<String>(Arrays.asList(Formations.FORM_NAMES));
 		formNames.add(0, myForm);
-		DefaultComboBoxModel<String> model
-				= new DefaultComboBoxModel<String>(formNames.toArray(new String[formNames.size()]));
-		formNamesBox.setModel(model);
+		formNamesBox.setModel(new DefaultComboBoxModel<String>(formNames.toArray(new String[formNames.size()])));
 		formNamesBox.setActionCommand("y");
 	}
 
@@ -609,6 +636,8 @@ public class FormationPanel extends JPanel
 		} catch (IOException e) {
 			showAccessFailedMsg(e.getLocalizedMessage());
 		}
+
+		log.debug("Strategy panel was saved as PNG: {}", dest.getName());
 	}
 
 	private static void showAccessFailedMsg(String msg) {
@@ -639,6 +668,7 @@ public class FormationPanel extends JPanel
 	public void dragOver(DropTargetDragEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
 		if (null == evt.getLocation()) throw new NullPointerException("evt.location");
+		log.debug("Drag over {}", evt.getLocation());
 
 		int squadIndex = squadList.locationToIndex(evt.getLocation());
 		squadList.setSelectedIndex(squadIndex);
@@ -663,6 +693,8 @@ public class FormationPanel extends JPanel
 
 		isOk = false;
 		int squadIndex = squadList.getSelectedIndex();
+		// DEBUG
+		log.debug("Drop Player to squad: {}, team: {}, source-squad: {}", squadIndex, team, sourceIndex);
 
 		evt.acceptDrop(DnDConstants.ACTION_MOVE);
 
@@ -710,6 +742,8 @@ public class FormationPanel extends JPanel
 		if (null == evt.getDragSource()) throw new NullPointerException("evt.dragSource");
 
 		sourceIndex = squadList.getSelectedIndex();
+		// DEBUG
+		log.debug("Drag recognized for source-squad: {}", sourceIndex);
 		Player p = squadList.getSelectedValue();
 
 		if (sourceIndex >= 0 && p.getIndex() > 0) {
@@ -727,13 +761,18 @@ public class FormationPanel extends JPanel
 
 			PlayerTransferable pTransfer = new PlayerTransferable(p);
 			evt.getDragSource().startDrag(evt, null, pTransfer, this);
+
+			log.debug("Drag gesture was recognized for player [{}] {}", p.getIndex(), p.getName());
+		} else {
+			log.debug("Nothing was selected!");
 		}
-		//else log.debug("Nothing was selected");
 	}
 
 	public void dragDropEnd(DragSourceDropEvent evt) {
 		squadList.clearSelection();
 		posList.clearSelection();
+
+		log.debug("Drag-n-drop was ended");
 	}
 
 	public void dragEnter(DragSourceDragEvent evt) {

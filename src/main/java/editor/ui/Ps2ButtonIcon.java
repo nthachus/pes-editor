@@ -9,10 +9,8 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
-import java.io.Serializable;
 
-public class Ps2ButtonIcon implements Icon, Serializable {
-	private static final long serialVersionUID = 5155541330279975158L;
+public class Ps2ButtonIcon implements Icon {
 	private static final Logger log = LoggerFactory.getLogger(Ps2ButtonIcon.class);
 
 	private final ControlButton type;

@@ -487,8 +487,9 @@ public class SimpleLogger extends NamedLoggerBase {
 
 	protected static String getFormattedDate() {
 		Date now = new Date();
-		//synchronized
-		return DATE_FORMATTER.format(now);
+		synchronized (CACHED_MESSAGES) {
+			return DATE_FORMATTER.format(now);
+		}
 	}
 
 	private String computeShortName() {

@@ -49,16 +49,13 @@ public class NationalityList extends JList/*<Player>*/ {
 		} else/* if (extraCount >= 1 && nation == total - 1)*/ {
 			model = getAllPlayers();
 		}
-		log.debug("Loaded {} players for Nationality list #{}", model.length, hashCode());
 
-		if (alphaOrder) {
+		if (alphaOrder)
 			Arrays.sort(model);
-			log.debug("Nationality list #{} was sorted", hashCode());
-		}
 
 		setListData(model);
 		// DEBUG
-		log.debug("Reloading of Nationality list #{} succeeded", hashCode());
+		log.debug("Loaded {} players for Nationality list #{}", model.length, hashCode());
 	}
 
 	private Player[] getOldPlayers() {

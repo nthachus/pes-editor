@@ -7,10 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.Serializable;
 
-public class DefaultIcon implements Icon, Serializable {
-	private static final long serialVersionUID = -8485807162420655130L;
+public class DefaultIcon implements Icon {
 	private static final Logger log = LoggerFactory.getLogger(DefaultIcon.class);
 
 	public int getIconWidth() {
