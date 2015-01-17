@@ -109,15 +109,15 @@ public class Editor extends JFrame implements ActionListener {
 		tabbedPane.addTab(Resources.getMessage("editor.tab8"), null, globalPan, null);
 		tabbedPane.addTab(Resources.getMessage("editor.tab9"), null, importPanel, null);
 
+		buildMenu();
+		getContentPane().add(tabbedPane);
+
 		opFileFilter = new OptionFileFilter();
 		//
 		opFileChooser = new JFileChooser(loadSettings());
 		opFileChooser.setAcceptAllFileFilterUsed(false);
 		opFileChooser.addChoosableFileFilter(opFileFilter);
 		opFileChooser.setAccessory(new OptionPreviewPanel(opFileChooser));
-
-		buildMenu();
-		getContentPane().add(tabbedPane);
 
 		setResizable(false);
 		pack();

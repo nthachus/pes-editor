@@ -26,6 +26,8 @@ public class GeneralAbilityPanel extends JPanel {
 		initComponents();
 	}
 
+	//region Initialize the GUI components
+
 	private/* final*/ JComboBox nationBox;
 	private/* final*/ JTextField ageField;
 	private/* final*/ JTextField heightField;
@@ -74,35 +76,79 @@ public class GeneralAbilityPanel extends JPanel {
 		fkBox = new JComboBox<String>(Stats.MOD_FK);
 		pkBox = new JComboBox<String>(Stats.MOD_PK);
 
-		add(new JLabel(Resources.getMessage("genAbility.nation")));
+		// Register TextBox and Label
+		JLabel lab = new JLabel(Resources.getMessage("genAbility.nation"));
+		lab.setLabelFor(nationBox);
+		add(lab);
 		add(nationBox);
-		add(new JLabel(Resources.getMessage("genAbility.age")));
+
+		lab = new JLabel(Resources.getMessage("genAbility.age"));
+		lab.setLabelFor(ageField);
+		add(lab);
 		add(ageField);
-		add(new JLabel(Resources.getMessage("genAbility.height")));
+
+		lab = new JLabel(Resources.getMessage("genAbility.height"));
+		lab.setLabelFor(heightField);
+		add(lab);
 		add(heightField);
-		add(new JLabel(Resources.getMessage("genAbility.weight")));
+
+		lab = new JLabel(Resources.getMessage("genAbility.weight"));
+		lab.setLabelFor(weightField);
+		add(lab);
 		add(weightField);
-		add(new JLabel(Resources.getMessage("genAbility.footSide")));
+
+		lab = new JLabel(Resources.getMessage("genAbility.footSide"));
+		lab.setLabelFor(footBox);
+		add(lab);
 		add(footBox);
-		add(new JLabel(Resources.getMessage("genAbility.wfAcc")));
+
+		lab = new JLabel(Resources.getMessage("genAbility.wfAcc"));
+		lab.setLabelFor(weakFootAccBox);
+		add(lab);
 		add(weakFootAccBox);
-		add(new JLabel(Resources.getMessage("genAbility.wfFreq")));
+
+		lab = new JLabel(Resources.getMessage("genAbility.wfFreq"));
+		lab.setLabelFor(weakFootFreqBox);
+		add(lab);
 		add(weakFootFreqBox);
-		add(new JLabel(Resources.getMessage("genAbility.cons")));
+
+		lab = new JLabel(Resources.getMessage("genAbility.cons"));
+		lab.setLabelFor(consistencyBox);
+		add(lab);
 		add(consistencyBox);
-		add(new JLabel(Resources.getMessage("genAbility.cond")));
+
+		lab = new JLabel(Resources.getMessage("genAbility.cond"));
+		lab.setLabelFor(conditionBox);
+		add(lab);
 		add(conditionBox);
-		add(new JLabel(Resources.getMessage("genAbility.injuryT")));
+
+		lab = new JLabel(Resources.getMessage("genAbility.injuryT"));
+		lab.setLabelFor(injuryBox);
+		add(lab);
 		add(injuryBox);
-		add(new JLabel(Resources.getMessage("genAbility.dribble")));
+
+		lab = new JLabel(Resources.getMessage("genAbility.dribble"));
+		lab.setLabelFor(dribbleBox);
+		add(lab);
 		add(dribbleBox);
-		add(new JLabel(Resources.getMessage("genAbility.fk")));
+
+		lab = new JLabel(Resources.getMessage("genAbility.fk"));
+		lab.setLabelFor(fkBox);
+		add(lab);
 		add(fkBox);
-		add(new JLabel(Resources.getMessage("genAbility.pk")));
+
+		lab = new JLabel(Resources.getMessage("genAbility.pk"));
+		lab.setLabelFor(pkBox);
+		add(lab);
 		add(pkBox);
-		add(new JLabel(Resources.getMessage("genAbility.dk")));
+
+		lab = new JLabel(Resources.getMessage("genAbility.dk"));
+		lab.setLabelFor(dkBox);
+		add(lab);
 		add(dkBox);
 	}
+
+	//endregion
 
 	public JComboBox getNationBox() {
 		return nationBox;

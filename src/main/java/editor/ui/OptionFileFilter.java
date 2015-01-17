@@ -20,6 +20,7 @@ public class OptionFileFilter extends FileFilter {
 		if (file == null) return false;
 		if (file.isDirectory()) return true;
 
+		//log.debug("Try to filter OF: {}", file);
 		if (!file.canRead()) return false;
 
 		String extension = Files.getExtension(file);
@@ -51,7 +52,7 @@ public class OptionFileFilter extends FileFilter {
 
 			String identCheck = new String(identBytes, 0, len, Strings.ANSI);
 			// DEBUG
-			log.debug("Retrieved Game ID from EMS OF: {}", identCheck);
+			log.debug("Retrieved identity {} from EMS OF: {}", identCheck, f.getName());
 			return identCheck;
 
 		} catch (IOException e) {
@@ -88,7 +89,7 @@ public class OptionFileFilter extends FileFilter {
 
 						String identCheck = new String(identBytes, 0, len, Strings.ANSI);
 						// DEBUG
-						log.debug("Retrieved Game ID from XPort OF: {}", identCheck);
+						log.debug("Retrieved identity {} from XPort OF: {}", identCheck, f.getName());
 						return identCheck;
 					}
 				}
@@ -118,7 +119,7 @@ public class OptionFileFilter extends FileFilter {
 			String identCheck = new String(identBytes, 0, len, Strings.ANSI);
 
 			// DEBUG
-			log.debug("Retrieved Game ID from ARMax OF: {}", identCheck);
+			log.debug("Retrieved identity {} from ARMax OF: {}", identCheck, f.getName());
 			return identCheck;
 
 		} catch (IOException e) {
