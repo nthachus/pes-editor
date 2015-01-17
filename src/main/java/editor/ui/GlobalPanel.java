@@ -3,6 +3,8 @@ package editor.ui;
 import editor.data.*;
 import editor.util.Bits;
 import editor.util.Resources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 
 public class GlobalPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 2241578478682037679L;
+	private static final Logger log = LoggerFactory.getLogger(GlobalPanel.class);
 
 	private final OptionFile of;
 	private final TransferPanel transferPan;
@@ -23,6 +26,7 @@ public class GlobalPanel extends JPanel implements ActionListener {
 		this.of = of;
 		transferPan = tp;
 
+		log.debug("Global panel is initializing..");
 		initComponents();
 	}
 
@@ -104,8 +108,8 @@ public class GlobalPanel extends JPanel implements ActionListener {
 
 		statBox = new JComboBox<String>(getStatNames());
 		opBox = new JComboBox<String>(OPS);
-		numField = new JTextField(2);
-		numField.setDocument(new JTextFieldLimit(2));
+		numField = new JTextField(3);
+		numField.setDocument(new JTextFieldLimit(Integer.toString(Stats.MAX_STAT99).length()));
 
 		JButton adjustBtn = new JButton(Resources.getMessage("global.adjust"));
 		adjustBtn.addActionListener(this);
@@ -133,6 +137,8 @@ public class GlobalPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent evt) {
 		int statIndex = statBox.getSelectedIndex();
 		if (statIndex < 0) return;
+		// DEBUG
+		log.debug("Try to adjust for Stat: {}", statBox.getSelectedItem());
 
 		int min = 1, max = Stats.MAX_STAT99;
 		Stat st = getStat(statIndex);
@@ -163,6 +169,8 @@ public class GlobalPanel extends JPanel implements ActionListener {
 		} else {
 			adjustStats(statIndex, statIndex + 1, opId, num, min, max);
 		}
+		// DEBUG
+		log.debug("Adjust succeeded on Stat {} to {} {}", statIndex, opBox.getSelectedItem(), num);
 
 		JOptionPane.showMessageDialog(null, Resources.getMessage("msg.statsAdj"),
 				Resources.getMessage("msg.statsAdj.title"), JOptionPane.INFORMATION_MESSAGE);
@@ -289,13 +297,13 @@ public class GlobalPanel extends JPanel implements ActionListener {
 	@SuppressWarnings("unchecked")
 	public void updateTeamBox(String[] teams) {
 		if (null == teams) throw new NullPointerException("teams");
+		log.debug("Try to update Team box with {} teams", teams.length);
 
 		String[] clubs = new String[teams.length + 1];
 		clubs[0] = Resources.getMessage("None");
 		System.arraycopy(teams, 0, clubs, 1, teams.length);
 
-		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>(clubs);
-		teamBox.setModel(model);
+		teamBox.setModel(new DefaultComboBoxModel<String>(clubs));
 	}
 
 }

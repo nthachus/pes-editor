@@ -3,6 +3,8 @@ package editor.ui;
 import editor.data.*;
 import editor.util.Resources;
 import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +13,7 @@ import java.awt.event.ActionListener;
 
 public class ImportPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 2005805172621830625L;
+	private static final Logger log = LoggerFactory.getLogger(ImportPanel.class);
 
 	private final OptionFile of;
 	private final OptionFile of2;
@@ -22,16 +25,6 @@ public class ImportPanel extends JPanel implements ActionListener {
 	private final EmblemPanel emblemPan;
 	private final LogoPanel logoPan;
 	private final TransferPanel transferPan;
-
-	private/* final*/ JLabel msgLabel;
-	private/* final*/ JPanel contentPane;
-	private/* final*/ JButton optionsButton;
-	private/* final*/ JButton stadiumButton;
-	private/* final*/ JButton leagueButton;
-	private/* final*/ JButton bootsButton;
-	private/* final*/ JButton clubNameButton;
-	private/* final*/ JButton playerButton;
-	private/* final*/ JButton allKitButton;
 
 	public ImportPanel(
 			OptionFile of, OptionFile of2,
@@ -51,8 +44,21 @@ public class ImportPanel extends JPanel implements ActionListener {
 		this.logoPan = logoPan;
 		this.transferPan = transferPan;
 
+		log.debug("Import panel is initializing..");
 		initComponents();
 	}
+
+	//region Initialize the GUI components
+
+	private/* final*/ JLabel msgLabel;
+	private/* final*/ JPanel contentPane;
+	private/* final*/ JButton optionsButton;
+	private/* final*/ JButton stadiumButton;
+	private/* final*/ JButton leagueButton;
+	private/* final*/ JButton bootsButton;
+	private/* final*/ JButton clubNameButton;
+	private/* final*/ JButton playerButton;
+	private/* final*/ JButton allKitButton;
 
 	private void initComponents() {
 		optionsButton = new JButton(Resources.getMessage("import.options"));
@@ -102,8 +108,11 @@ public class ImportPanel extends JPanel implements ActionListener {
 		add(contentPane, BorderLayout.CENTER);
 	}
 
+	//endregion
+
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+		log.debug("Try to perform Import action: {}", evt.getActionCommand());
 
 		if ("Options".equalsIgnoreCase(evt.getActionCommand())) {
 			importOptions();
@@ -136,6 +145,8 @@ public class ImportPanel extends JPanel implements ActionListener {
 		transferPan.refresh();
 
 		allKitButton.setEnabled(false);
+		// DEBUG
+		log.debug("Kits was imported from OF2");
 	}
 
 	private void importClubs() {
@@ -145,6 +156,8 @@ public class ImportPanel extends JPanel implements ActionListener {
 		transferPan.refresh();
 
 		clubNameButton.setEnabled(false);
+		// DEBUG
+		log.debug("Club names was imported from OF2");
 	}
 
 	private void importPlayers() {
@@ -156,12 +169,16 @@ public class ImportPanel extends JPanel implements ActionListener {
 		transferPan.refresh();
 
 		playerButton.setEnabled(false);
+		// DEBUG
+		log.debug("Players was imported from OF2");
 	}
 
 	private void importBoots() {
 		Boots.importData(of2, of);
 
 		bootsButton.setEnabled(false);
+		// DEBUG
+		log.debug("Boots was imported from OF2");
 	}
 
 	private void importLeagues() {
@@ -170,6 +187,8 @@ public class ImportPanel extends JPanel implements ActionListener {
 		leaguePan.refresh();
 
 		leagueButton.setEnabled(false);
+		// DEBUG
+		log.debug("Leagues was imported from OF2");
 	}
 
 	private void importStadiums() {
@@ -179,6 +198,8 @@ public class ImportPanel extends JPanel implements ActionListener {
 		teamPan.refresh();
 
 		stadiumButton.setEnabled(false);
+		// DEBUG
+		log.debug("Stadiums was imported from OF2");
 	}
 
 	private void importOptions() {
@@ -193,9 +214,13 @@ public class ImportPanel extends JPanel implements ActionListener {
 		wenShop.getShopPanel().refresh();
 
 		optionsButton.setEnabled(false);
+		// DEBUG
+		log.debug("Options was imported from OF2");
 	}
 
 	public void refresh() {
+		log.debug("Try to refresh Import panel for OF2: {}", of2.isLoaded());
+
 		if (!of2.isLoaded()) {
 			contentPane.setVisible(false);
 			msgLabel.setText(Resources.getMessage("import.todo"));
@@ -214,6 +239,8 @@ public class ImportPanel extends JPanel implements ActionListener {
 	}
 
 	public void disableAll() {
+		log.debug("Try to disable all buttons in Import panel..");
+
 		optionsButton.setEnabled(false);
 		stadiumButton.setEnabled(false);
 		leagueButton.setEnabled(false);
