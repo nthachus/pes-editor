@@ -6,8 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.util.Collections;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class NationalityList extends JList/*<Player>*/ {
 	private static final long serialVersionUID = -4852231786111601408L;
@@ -33,55 +34,63 @@ public class NationalityList extends JList/*<Player>*/ {
 		// DEBUG
 		log.debug("Reload Nationality list #{} for country: {}, sort: {}", hashCode(), nation, alphaOrder);
 
-		Vector<Player> model = new Vector<Player>();
+		Player[] model;
 		if (nation < Stats.NATION.length) {
-			fetchNationPlayers(model, nation);
-		} else if (extraCount >= 1 && nation == total - 1) {
-			fetchAllPlayers(model);
-		} else if (extraCount >= 2 && nation == total - 2) {
-			fetchFreeAgents(model);
-		} else if (extraCount >= 3 && nation == total - 3) {
-			fetchDuplicatedPlayers(model);
-			alphaOrder = false;
-		} else if (extraCount >= 4 && nation == total - 4) {
-			fetchYoungPlayers(model);
+			model = getNationPlayers(nation);
 		} else if (extraCount >= 5 && nation == total - 5) {
-			fetchOldPlayers(model);
+			model = getOldPlayers();
+		} else if (extraCount >= 4 && nation == total - 4) {
+			model = getYoungPlayers();
+		} else if (extraCount >= 3 && nation == total - 3) {
+			model = getDuplicatedPlayers();
+			alphaOrder = false;
+		} else if (extraCount >= 2 && nation == total - 2) {
+			model = getFreeAgents();
+		} else/* if (extraCount >= 1 && nation == total - 1)*/ {
+			model = getAllPlayers();
+		}
+		log.debug("Loaded {} players for Nationality list #{}", model.length, hashCode());
+
+		if (alphaOrder) {
+			Arrays.sort(model);
+			log.debug("Nationality list #{} was sorted", hashCode());
 		}
 
-		if (alphaOrder)
-			Collections.sort(model);
-
-		model.trimToSize();
 		setListData(model);
 		// DEBUG
 		log.debug("Reloading of Nationality list #{} succeeded", hashCode());
 	}
 
-	private void fetchOldPlayers(Vector<Player> model) {
-		for (int p = Player.FIRST_OLD; p < Player.FIRST_UNUSED; p++) {
-			model.addElement(new Player(of, p));
+	private Player[] getOldPlayers() {
+		Player[] model = new Player[Player.TOTAL_OLD_PLAYERS];
+		for (int i = 0; i < model.length; i++) {
+			model[i] = new Player(of, Player.FIRST_OLD + i);
 		}
+		return model;
 	}
 
-	private void fetchYoungPlayers(Vector<Player> model) {
-		for (int p = Player.FIRST_YOUNG; p < Player.FIRST_OLD; p++) {
-			model.addElement(new Player(of, p));
+	private Player[] getYoungPlayers() {
+		Player[] model = new Player[Player.TOTAL_YOUNG_PLAYERS];
+		for (int i = 0; i < model.length; i++) {
+			model[i] = new Player(of, Player.FIRST_YOUNG + i);
 		}
+		return model;
 	}
 
-	private void fetchFreeAgents(Vector<Player> model) {
+	private Player[] getFreeAgents() {
+		List<Player> model = new ArrayList<Player>((Player.FIRST_CLASSIC + Player.FIRST_ML - Player.FIRST_CLUB) / 2);
 		for (int p = 1; p < Player.FIRST_CLASSIC; p++) {
 			if (isFreeAgent(p)) {
-				model.addElement(new Player(of, p));
+				model.add(new Player(of, p));
 			}
 		}
 
 		for (int p = Player.FIRST_CLUB; p < Player.FIRST_ML; p++) {
 			if (isFreeAgent(p)) {
-				model.addElement(new Player(of, p));
+				model.add(new Player(of, p));
 			}
 		}
+		return model.toArray(new Player[model.size()]);
 	}
 
 	private boolean isFreeAgent(int player) {
@@ -93,40 +102,46 @@ public class NationalityList extends JList/*<Player>*/ {
 		return true;
 	}
 
-	private void fetchAllPlayers(Vector<Player> model) {
+	private Player[] getAllPlayers() {
+		List<Player> model = new ArrayList<Player>(Player.TOTAL + Player.TOTAL_EDIT - 1);
 		for (int p = 1; p < Player.TOTAL; p++) {
-			model.addElement(new Player(of, p));
+			model.add(new Player(of, p));
 		}
 
 		Player o;
 		for (int p = Player.FIRST_EDIT; p < Player.END_EDIT; p++) {
 			o = new Player(of, p);
-			if (!o.isEmpty()) model.addElement(o);
+			if (!o.isEmpty()) model.add(o);
 		}
+		return model.toArray(new Player[model.size()]);
 	}
 
-	private void fetchNationPlayers(Vector<Player> model, int nation) {
+	private Player[] getNationPlayers(int nation) {
+		List<Player> model = new ArrayList<Player>(Player.TOTAL / 4);
 		for (int p = 1; p < Player.TOTAL; p++) {
 			if (Stats.getValue(of, p, Stats.NATIONALITY) == nation) {
-				model.addElement(new Player(of, p));
+				model.add(new Player(of, p));
 			}
 		}
 
 		for (int p = Player.FIRST_EDIT; p < Player.END_EDIT; p++) {
 			if (Stats.getValue(of, p, Stats.NATIONALITY) == nation) {
-				model.addElement(new Player(of, p));
+				model.add(new Player(of, p));
 			}
 		}
+		return model.toArray(new Player[model.size()]);
 	}
 
-	private void fetchDuplicatedPlayers(Vector<Player> model) {
+	private Player[] getDuplicatedPlayers() {
+		List<Player> model = new ArrayList<Player>(Player.TOTAL_CLUB_PLAYERS / 2);
 		for (int p = Player.FIRST_CLUB; p < Player.FIRST_JAPAN; p++) {
 			int dupe = getDupe(p);
 			if (dupe >= 0) {
-				model.addElement(new Player(of, p));
-				model.addElement(new Player(of, dupe));
+				model.add(new Player(of, p));
+				model.add(new Player(of, dupe));
 			}
 		}
+		return model.toArray(new Player[model.size()]);
 	}
 
 	private int getDupe(int player) {

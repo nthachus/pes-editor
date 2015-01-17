@@ -57,14 +57,15 @@ public class SquadList extends JList<Player> {
 	}
 
 	private void fetchAllPlayers() {
-		Vector<Player> model = new Vector<Player>();
+		Vector<Player> model = new Vector<Player>(Player.TOTAL + Player.TOTAL_EDIT - 1);
 		for (int p = 1; p < Player.TOTAL; p++) {
-			model.addElement(new Player(of, p));
+			model.add(new Player(of, p));
 		}
+
 		Player o;
 		for (int p = Player.FIRST_EDIT; p < Player.END_EDIT; p++) {
 			o = new Player(of, p);
-			if (!o.isEmpty()) model.addElement(o);
+			if (!o.isEmpty()) model.add(o);
 		}
 
 		Collections.sort(model);

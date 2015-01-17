@@ -11,7 +11,7 @@ public class Player implements Serializable, Comparable<Player> {
 
 	//region Constants
 
-	private static final int TOTAL_CLUB_PLAYERS = 3042;
+	public static final int TOTAL_CLUB_PLAYERS = 3042;
 
 	/**
 	 * The first ID of Classic players.
@@ -88,7 +88,7 @@ public class Player implements Serializable, Comparable<Player> {
 	private final int index;
 	private final int slotAdr;
 
-	private volatile transient String name = null;
+	private volatile String name;
 	private volatile transient String shirtName = null;
 
 	public Player(OptionFile of, int index) {
@@ -107,7 +107,7 @@ public class Player implements Serializable, Comparable<Player> {
 		if (index == 0)
 			name = Resources.getMessage("player.empty");
 		else
-			name = getName();
+			getName();
 	}
 
 	public int getIndex() {
@@ -163,16 +163,15 @@ public class Player implements Serializable, Comparable<Player> {
 			String nm = new String(of.getData(), adr, NAME_LEN, Strings.UNICODE);
 			nm = Strings.fixCString(nm);
 
-			if (Strings.isEmpty(nm)) {
-				if (index >= FIRST_EDIT) {
-					nm = Resources.getMessage("player.edited", index - FIRST_EDIT);
-				} else if (index >= FIRST_UNUSED) {
-					nm = Resources.getMessage("player.unused", index);
-				} else {
-					nm = Resources.getMessage("player.blank", index);
-				}
+			if (!Strings.isEmpty(nm)) {
+				name = nm;
+			} else if (index >= FIRST_EDIT) {
+				name = Resources.getMessage("player.edited", index - FIRST_EDIT);
+			} else if (index >= FIRST_UNUSED) {
+				name = Resources.getMessage("player.unused", index);
+			} else {
+				name = Resources.getMessage("player.blank", index);
 			}
-			name = nm;
 		}
 		return name;
 	}

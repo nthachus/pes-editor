@@ -9,6 +9,8 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Vector;
 
 public class KitImportDialog extends JDialog implements MouseListener {
 	private static final long serialVersionUID = 6176947558253913789L;
@@ -63,7 +65,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 
 	@SuppressWarnings("unchecked")
 	public void refresh(int teamId) {
-		DefaultListModel<KitItem> model = new DefaultListModel<KitItem>();
+		Vector<KitItem> model = new Vector<KitItem>(Clubs.TOTAL);
 
 		if (teamId < Clubs.TOTAL) {
 			// Clubs
@@ -84,21 +86,21 @@ public class KitImportDialog extends JDialog implements MouseListener {
 		}
 
 		model.trimToSize();
-		list.setModel(model);
+		list.setListData(model);
 		fileLabel.setText(Resources.getMessage("import.label", of2.getFilename()));
 
 		pack();
 	}
 
-	private void addClubKitItem(DefaultListModel<KitItem> model, int clubId) {
-		model.addElement(new KitItem(Clubs.getName(of2, clubId), clubId));
+	private void addClubKitItem(List<KitItem> model, int clubId) {
+		model.add(new KitItem(Clubs.getName(of2, clubId), clubId));
 	}
 
-	private void addNationKitItem(DefaultListModel<KitItem> model, int teamId) {
+	private void addNationKitItem(List<KitItem> model, int teamId) {
 		if (teamId < Clubs.TOTAL + Squads.NATION_COUNT)
-			model.addElement(new KitItem(Stats.NATION[teamId - Clubs.TOTAL], teamId));
+			model.add(new KitItem(Stats.NATION[teamId - Clubs.TOTAL], teamId));
 		else
-			model.addElement(new KitItem(Squads.EXTRAS[teamId - Clubs.TOTAL - Squads.NATION_COUNT], teamId));
+			model.add(new KitItem(Squads.EXTRAS[teamId - Clubs.TOTAL - Squads.NATION_COUNT], teamId));
 	}
 
 	public void mousePressed(MouseEvent evt) {
