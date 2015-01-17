@@ -86,6 +86,7 @@ public class OptionFile {
 
 		format = null;
 		filename = null;
+		headerData = null;
 
 		RandomAccessFile in = null;
 		log.info("Start loading save game file: {}", file.getName());

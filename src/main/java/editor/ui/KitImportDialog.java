@@ -3,6 +3,8 @@ package editor.ui;
 import editor.data.*;
 import editor.util.Resources;
 import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +16,7 @@ import java.util.Vector;
 
 public class KitImportDialog extends JDialog implements MouseListener {
 	private static final long serialVersionUID = 6176947558253913789L;
+	private static final Logger log = LoggerFactory.getLogger(KitImportDialog.class);
 
 	private final OptionFile of2;
 	private volatile int index = 0;
@@ -26,6 +29,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 		if (null == of2) throw new NullPointerException("of2");
 		this.of2 = of2;
 
+		log.debug("Kit Import dialog is initializing..");
 		initComponents();
 	}
 
@@ -50,23 +54,28 @@ public class KitImportDialog extends JDialog implements MouseListener {
 		contentPane.add(fileLabel, BorderLayout.NORTH);
 		contentPane.add(scroll, BorderLayout.CENTER);
 		contentPane.add(cancelButton, BorderLayout.SOUTH);
-		getContentPane().add(contentPane);
 
+		getContentPane().add(contentPane);
 		//setPreferredSize(new Dimension(462, 677));
 		//setResizable(false);
 	}
 
 	public int show(int teamId) {
+		log.debug("Show Kit Import dialog for team: {}", teamId);
 		index = -1;
+
 		refresh(teamId);
 		setVisible(true);
+
+		log.debug("Team {} was selected to import Kit", index);
 		return index;
 	}
 
 	@SuppressWarnings("unchecked")
 	public void refresh(int teamId) {
-		Vector<KitItem> model = new Vector<KitItem>(Clubs.TOTAL);
+		log.debug("Try to refresh importable Kit teams for team: {}", teamId);
 
+		Vector<KitItem> model = new Vector<KitItem>(Clubs.TOTAL);
 		if (teamId < Clubs.TOTAL) {
 			// Clubs
 			addClubKitItem(model, teamId);
@@ -87,9 +96,11 @@ public class KitImportDialog extends JDialog implements MouseListener {
 
 		model.trimToSize();
 		list.setListData(model);
+
 		fileLabel.setText(Resources.getMessage("import.label", of2.getFilename()));
 
 		pack();
+		log.debug("Refresh completed on {} Kit teams", model.size());
 	}
 
 	private void addClubKitItem(List<KitItem> model, int clubId) {
@@ -117,10 +128,12 @@ public class KitImportDialog extends JDialog implements MouseListener {
 
 	public void mouseClicked(MouseEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+
 		int clicks = evt.getClickCount();
 		if (clicks > 1) {
-
 			KitItem item = (KitItem) list.getSelectedValue();
+			// DEBUG
+			log.debug("Perform double-click on Kit team: {}", item);
 			if (null != item) {
 				index = item.teamId;
 				setVisible(false);

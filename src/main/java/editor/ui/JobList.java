@@ -3,6 +3,8 @@ package editor.ui;
 import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -12,6 +14,7 @@ import java.util.Arrays;
 
 public class JobList extends JList/*<String>*/ implements ListSelectionListener {
 	private static final long serialVersionUID = 436909804060295023L;
+	private static final Logger log = LoggerFactory.getLogger(JobList.class);
 
 	private final OptionFile of;
 	private final int offset;
@@ -28,7 +31,7 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 		this.offset = offset;
 		this.job = job;
 
-		refresh(-1);
+		log.debug("Initialize Job list '{}' at {}, color: {}", job, offset, colour);
 
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setLayoutOrientation(JList.VERTICAL);
@@ -39,6 +42,8 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 		//setFont(new Font(Font.DIALOG, Font.BOLD, 12));
 
 		addListSelectionListener(this);
+
+		refresh(-1);
 	}
 
 	/*public int getTeam() {
@@ -47,6 +52,8 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 
 	@SuppressWarnings("unchecked")
 	public void refresh(int team) {
+		log.debug("Try to refresh Job list '{}' for team: {}", job, team);
+
 		isOk = false;
 		this.team = team;
 
@@ -55,7 +62,7 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 
 		int p = 0;
 		if (team < 0) {
-			posJobs[0] = job;
+			posJobs[p] = job;
 		} else {
 			p = Formations.getJob(of, team, offset);
 			if (p >= 0 && p < posJobs.length) {
@@ -72,6 +79,7 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 	public void valueChanged(ListSelectionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
 		if (evt.getValueIsAdjusting()) return;
+		log.debug("Try to change Job list '{}' for team: {}, ok: {}", job, team, isOk);
 
 		if (!isSelectionEmpty() && isOk) {
 			Formations.setJob(of, team, offset, getSelectedIndex());

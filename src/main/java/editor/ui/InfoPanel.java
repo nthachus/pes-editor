@@ -21,13 +21,14 @@ public class InfoPanel extends JScrollPane {
 	private final OptionFile of;
 	private final SelectByTeam selector;
 
-	public InfoPanel(OptionFile of, SelectByTeam teamSelect) {
+	public InfoPanel(OptionFile of, SelectByTeam teamDropdown) {
 		super(VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_NEVER);
 
 		if (null == of) throw new NullPointerException("of");
 		this.of = of;
-		selector = teamSelect;
+		selector = teamDropdown;
 
+		log.debug("Info panel is initializing..");
 		initComponents();
 	}
 
@@ -53,12 +54,12 @@ public class InfoPanel extends JScrollPane {
 		attr = sek.getInputAttributes();
 		doc = ta.getDocument();
 
-		setPreferredSize(new Dimension(hasListSquads() ? 290 : 145, 493));
+		setPreferredSize(new Dimension(hasSquadList() ? 290 : 145, 493));
 
 		StyleConstants.setFontFamily(attr, Font.SANS_SERIF);
 	}
 
-	private boolean hasListSquads() {
+	private boolean hasSquadList() {
 		return (null != selector);
 	}
 
@@ -67,7 +68,7 @@ public class InfoPanel extends JScrollPane {
 	 * @param index2 Player 2 ID
 	 */
 	public void refresh(int index1, int index2) {
-		//log.debug("index1: {}, index2: {}", index1, index2);
+		log.debug("Refresh Info panel with index1: {}, index2: {}", index1, index2);
 		ta.setText("");
 		if (index1 <= 0 && index2 <= 0) return;
 
@@ -104,8 +105,10 @@ public class InfoPanel extends JScrollPane {
 				doc.insertString(doc.getLength(), "\n\n", attr);
 				insertSquads(index1);
 			}
+
+			log.debug("Refresh info succeeded for player: {} - {}", index1, index2);
 		} catch (BadLocationException e) {
-			log.warn(String.format("Failed to refresh player %d/%d info:", index1, index2), e);
+			log.warn(String.format("Failed to refresh info for player: %d - %d", index1, index2), e);
 		}
 
 		ta.setCaretPosition(0);
@@ -224,7 +227,7 @@ public class InfoPanel extends JScrollPane {
 	}
 
 	private void insertSquads(int index1) throws BadLocationException {
-		if (!hasListSquads())
+		if (!hasSquadList())
 			return;
 
 		StyleConstants.setForeground(attr, Color.WHITE);

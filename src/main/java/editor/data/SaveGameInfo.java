@@ -43,10 +43,10 @@ public class SaveGameInfo {
 		// DEBUG
 		log.debug("Try to get save game info from file: {}", file.getName());
 
+		gameName = saveName = notes = game = "";
 		RandomAccessFile rf = null;
 		try {
 			rf = new RandomAccessFile(file, "r");
-			gameName = saveName = notes = game = "";
 
 			String extension = Files.getExtension(file);
 			if (Files.isXPortFile(extension)) {
@@ -61,6 +61,7 @@ public class SaveGameInfo {
 
 			return true;
 		} catch (IOException e) {
+
 			log.error("I/O error while getting save game info:", e);
 		} finally {
 			if (rf != null) {
@@ -71,7 +72,6 @@ public class SaveGameInfo {
 				}
 			}
 		}
-
 		return false;
 	}
 

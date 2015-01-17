@@ -3,6 +3,8 @@ package editor.ui;
 import editor.data.SaveGameInfo;
 import editor.util.Files;
 import editor.util.Resources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -13,18 +15,22 @@ import java.io.File;
 
 public class OptionPreviewPanel extends JPanel implements PropertyChangeListener {
 	private static final long serialVersionUID = 2370607914947646769L;
+	private static final Logger log = LoggerFactory.getLogger(OptionPreviewPanel.class);
 
 	private final FileFilter filter;
 	private final JTextArea previewText;
 
-	private final SaveGameInfo saveInfo = new SaveGameInfo();
-	private volatile File file = null;
+	private final SaveGameInfo saveInfo;
 
 	public OptionPreviewPanel(JFileChooser fc) {
 		super();
 		if (null == fc) throw new NullPointerException("fc");
+		if (null == fc.getFileFilter()) throw new NullPointerException("fc.fileFilter");
+		// DEBUG
+		log.debug("Initialize OF preview panel for file chooser: {}#{}", fc.getClass().getSimpleName(), fc.hashCode());
 
 		filter = fc.getFileFilter();
+		saveInfo = new SaveGameInfo();
 
 		previewText = new JTextArea(20, 19);//30
 		previewText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -38,7 +44,9 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 		add(previewText);
 	}
 
-	public void loadImage() {
+	private void previewSaveFile(File file) {
+		log.debug("Try to preview info of OF: {}", file);
+
 		String text = "";
 		if (null != file && !file.isDirectory() && filter.accept(file)) {
 			if (saveInfo.getInfo(file)) {
@@ -60,21 +68,23 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+		String prop = evt.getPropertyName();
+		log.debug("On File chooser property '{}' changed", prop);
 
 		boolean isUpdated = false;
-		String prop = evt.getPropertyName();
+		File file = null;
+
 		if (JFileChooser.DIRECTORY_CHANGED_PROPERTY.equalsIgnoreCase(prop)) {
-			file = null;
 			isUpdated = true;
 		} else if (JFileChooser.SELECTED_FILE_CHANGED_PROPERTY.equalsIgnoreCase(prop)) {
-			file = (evt.getNewValue() instanceof File) ? (File) evt.getNewValue() : null;
+			if (evt.getNewValue() instanceof File) file = (File) evt.getNewValue();
 			isUpdated = true;
 		}
 
 		if (isUpdated) {
 			previewText.setText("");
 			if (isShowing()) {
-				loadImage();
+				previewSaveFile(file);
 				repaint();
 			}
 		}
