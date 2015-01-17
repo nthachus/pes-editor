@@ -28,7 +28,7 @@ public class SelectByTeam extends JPanel implements ActionListener {
 		this.of = of;
 		this.isNormal = isNormal;
 
-		log.debug("By Team dropdown is initializing..");
+		log.debug("Initialize By Team dropdown #{}", hashCode());
 		initComponents();
 	}
 
@@ -81,19 +81,24 @@ public class SelectByTeam extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
+		if (null == evt) throw new NullPointerException("evt");
+		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
+			return;
+
 		int teamId = teamBox.getSelectedIndex();
 		log.debug("Try to select by team: {}", teamId);
 
-		if (teamId >= 0)
-			refresh(teamId);
+		refresh(teamId);
 	}
 
 	private void refresh(int teamId) {
-		squadList.refresh(teamId, true);
+		if (teamId >= 0) {
+			squadList.refresh(teamId, true);
 
-		if (isNormal) {
-			posList.refresh(teamId);
-			numList.refresh(teamId);
+			if (isNormal) {
+				posList.refresh(teamId);
+				numList.refresh(teamId);
+			}
 		}
 	}
 
@@ -120,20 +125,20 @@ public class SelectByTeam extends JPanel implements ActionListener {
 
 	@SuppressWarnings("unchecked")
 	public void refresh() {
-		log.debug("By Team dropdown is reloading..");
+		log.debug("Reload By Team dropdown #{}", hashCode());
+		teamBox.setActionCommand("n");
 
 		String[] squads = getAllTeams();
-		teamBox.setModel(new DefaultComboBoxModel<String>(squads));
-
-		int idx = teamBox.getSelectedIndex();
 		int newIdx = (isNormal) ? Squads.NATION_COUNT + Squads.EXTRA_COUNT : squads.length - 1;
 
-		if (newIdx != idx)
-			teamBox.setSelectedIndex(newIdx);
-		else
-			refresh(idx);
+		teamBox.setModel(new DefaultComboBoxModel<String>(squads));
+		teamBox.setSelectedIndex(newIdx);
 
-		log.debug("Reloading of By Team {} dropdown completed", newIdx);
+		refresh(teamBox.getSelectedIndex());
+
+		teamBox.setActionCommand("y");
+		// DEBUG
+		log.debug("Reload completed on By Team dropdown #{}, select {}", hashCode(), newIdx);
 	}
 
 }

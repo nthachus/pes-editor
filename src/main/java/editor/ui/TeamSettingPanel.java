@@ -91,8 +91,8 @@ public class TeamSettingPanel extends JPanel implements ActionListener {
 	}
 
 	public void refresh(int squad) {
-		this.squad = squad;
 		isOk = false;
+		this.squad = squad;
 
 		for (int i = 0; i < boxes.length; i++) {
 			int setting = Formations.getTeamSetting(of, squad, alt, i);

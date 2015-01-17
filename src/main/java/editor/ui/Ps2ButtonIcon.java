@@ -62,8 +62,6 @@ public class Ps2ButtonIcon implements Icon, Serializable {
 		}
 
 		g2.translate(-x, -y);   // restore graphics object
-		// DEBUG
-		log.debug("Paint completed on PS2 button icon: {}", type);
 	}
 
 }

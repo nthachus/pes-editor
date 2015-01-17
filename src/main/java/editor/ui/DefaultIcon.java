@@ -34,8 +34,6 @@ public class DefaultIcon implements Icon, Serializable {
 		g2.drawString(Resources.getMessage("Default"), 0, 38);
 
 		g2.translate(-x, -y);   // restore graphics object
-
-		log.debug("Painting of Default icon succeeded");
 	}
 
 }

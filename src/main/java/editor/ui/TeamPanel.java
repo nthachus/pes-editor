@@ -293,7 +293,6 @@ public class TeamPanel extends JPanel
 			stadiumBox.addItem(name);
 		}
 		stadiumBox.setSelectedIndex(-1);
-		stadiumBox.setActionCommand("y");
 
 		backButton.setIcon(new ImageIcon(Emblems.BLANK16));
 		badgeButton.setIcon(new ImageIcon(Emblems.BLANK16));
@@ -315,6 +314,7 @@ public class TeamPanel extends JPanel
 		teamList.setListData(list);
 		contentPane.setVisible(false);
 
+		stadiumBox.setActionCommand("y");
 		isOk = true;
 	}
 

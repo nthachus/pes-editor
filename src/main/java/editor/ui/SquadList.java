@@ -108,7 +108,7 @@ public class SquadList extends JList<Player> {
 
 		setListData(players);
 		// DEBUG
-		log.debug("Squad list #{} is reloaded for team: {}", hashCode(), team);
+		log.debug("Squad list #{} was reloaded for team: {}", hashCode(), team);
 	}
 
 }

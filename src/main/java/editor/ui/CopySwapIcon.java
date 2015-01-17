@@ -50,8 +50,6 @@ public class CopySwapIcon implements Icon, Serializable {
 		}
 
 		g2.translate(-x, -y);   // restore graphics object
-
-		log.debug("Painting of swap ({}) icon completed", isSwap);
 	}
 
 }

@@ -3,6 +3,8 @@ package editor.ui;
 import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.util.Resources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +15,7 @@ import java.awt.event.WindowListener;
 
 public class FormationDialog extends JDialog implements ActionListener, WindowListener {
 	private static final long serialVersionUID = 8519475558888665768L;
+	private static final Logger log = LoggerFactory.getLogger(FormationDialog.class);
 
 	private final OptionFile of;
 	private final byte[] original = new byte[Formations.SIZE];
@@ -25,6 +28,7 @@ public class FormationDialog extends JDialog implements ActionListener, WindowLi
 		if (null == of) throw new NullPointerException("of");
 		this.of = of;
 
+		log.debug("Formation dialog is initializing..");
 		initComponents();
 	}
 
@@ -46,8 +50,8 @@ public class FormationDialog extends JDialog implements ActionListener, WindowLi
 		JPanel contentPane = new JPanel(new BorderLayout());
 		contentPane.add(formationPan, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
-		getContentPane().add(contentPane);
 
+		getContentPane().add(contentPane);
 		addWindowListener(this);
 
 		setResizable(false);
@@ -55,18 +59,21 @@ public class FormationDialog extends JDialog implements ActionListener, WindowLi
 	}
 
 	public void show(int team, String title) {
-		int adr = Formations.getOffset(team);
-		setTitle(Resources.getMessage("title.format", Resources.getMessage("formation.title"), title));
+		log.debug("Show Formation dialog for team: {}", team);
 
+		int adr = Formations.getOffset(team);
 		squadIndex = team;
 		System.arraycopy(of.getData(), adr, original, 0, original.length);
 
+		setTitle(Resources.getMessage("title.format", Resources.getMessage("formation.title"), title));
 		formationPan.refresh(team);
+
 		setVisible(true);
 	}
 
 	public void actionPerformed(ActionEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
+		log.debug("Perform Formation dialog action: {}", evt.getActionCommand());
 
 		if ("Cancel".equalsIgnoreCase(evt.getActionCommand())) {
 			restoreData();
@@ -81,6 +88,7 @@ public class FormationDialog extends JDialog implements ActionListener, WindowLi
 	}
 
 	public void windowClosing(WindowEvent e) {
+		log.debug("Formation dialog is closing..");
 		restoreData();
 	}
 

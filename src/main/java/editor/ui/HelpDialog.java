@@ -92,7 +92,7 @@ public class HelpDialog extends JDialog implements ActionListener, HyperlinkList
 
 	public void hyperlinkUpdate(HyperlinkEvent evt) {
 		if (null == evt) throw new NullPointerException("evt");
-		log.debug("Try to process hyperlink event: {}", evt);
+		log.debug("Try to process hyperlink event: {} -> {}", evt.getEventType(), evt.getURL());
 
 		if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 			// Show the new page in the editor pane

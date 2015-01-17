@@ -28,7 +28,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 		super(new BorderLayout());
 		freeList = new NationalityList(of);
 
-		log.debug("By Nation dropdown is initializing..");
+		log.debug("Initialize By Nation dropdown #{}", hashCode());
 		initComponents();
 		//refresh();
 	}
@@ -41,7 +41,6 @@ public class SelectByNation extends JPanel implements ActionListener {
 		String[] boxChoice = getAllNations();
 		nationBox = new JComboBox<String>(boxChoice);
 		nationBox.setMaximumRowCount(Formations.CLUB_TEAM_SIZE);
-		nationBox.setActionCommand("Select");
 		nationBox.addActionListener(this);
 
 		freeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -80,7 +79,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 
 		if ("Sort".equalsIgnoreCase(evt.getActionCommand())) {
 			sortList();
-		} else {
+		} else if ("y".equalsIgnoreCase(evt.getActionCommand())) {
 			selectNation();
 		}
 	}
@@ -102,7 +101,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 		if (i >= 0)
 			freeList.refresh(i, isAlphaOrder);
 
-		log.debug("Selecting by nation {} completed", i);
+		log.debug("Select completed By Nation {}", i);
 	}
 
 	public NationalityList getFreeList() {
@@ -118,16 +117,16 @@ public class SelectByNation extends JPanel implements ActionListener {
 	}
 
 	public void refresh() {
-		log.debug("By Nation dropdown is reloading..");
+		log.debug("Reload By Nation dropdown #{}", hashCode());
 
-		int idx = nationBox.getSelectedIndex();
-		int newIdx = nationBox.getItemCount() - 1;
-		if (newIdx != idx)
-			nationBox.setSelectedIndex(newIdx);
-		else
-			freeList.refresh(idx, isAlphaOrder);
+		nationBox.setActionCommand("n");
+		nationBox.setSelectedIndex(nationBox.getItemCount() - 1);
 
-		log.debug("Reloading of By Nation {} dropdown completed", newIdx);
+		freeList.refresh(nationBox.getSelectedIndex(), isAlphaOrder);
+
+		nationBox.setActionCommand("y");
+		// DEBUG
+		log.debug("Refresh completed on By Nation dropdown #{}", hashCode());
 	}
 
 }

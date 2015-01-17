@@ -74,7 +74,7 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 	public void paintComponent(Graphics g) {
 		if (null == g) throw new NullPointerException("g");
 		if (!(g instanceof Graphics2D)) throw new IllegalArgumentException("g");
-		log.debug("Try to paint panel with selected-index: {}, squad: {}", selectedIndex, squad);
+		log.debug("Paint Attack/Defense panel with selected-index: {}, squad: {}", selectedIndex, squad);
 
 		Graphics2D g2 = (Graphics2D) g;
 		Rectangle2D bound = new Rectangle2D.Double(0, 0, BOX_SIZE, BOX_SIZE);
@@ -90,8 +90,6 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 
 			drawDefDirections(g2);
 		}
-
-		log.debug("Painting of Attack/Defense panel completed");
 	}
 
 	private static Color getPositionColor(int pos) {

@@ -153,8 +153,8 @@ public class StrategyPanel extends JPanel implements ActionListener {
 	}
 
 	public void refresh(int squad) {
-		this.squad = squad;
 		isOk = false;
+		this.squad = squad;
 
 		refreshAutoButton();
 

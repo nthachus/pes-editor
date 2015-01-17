@@ -31,7 +31,7 @@ public class NationalityList extends JList/*<Player>*/ {
 		int total = Stats.NATION.length + extraCount;
 		if (nation < 0 || nation >= total) throw new IndexOutOfBoundsException("nation#" + nation);
 		// DEBUG
-		log.debug("Try to reload Nationality list for country: {}, sort: {}", nation, alphaOrder);
+		log.debug("Reload Nationality list #{} for country: {}, sort: {}", hashCode(), nation, alphaOrder);
 
 		Vector<Player> model = new Vector<Player>();
 		if (nation < Stats.NATION.length) {
@@ -55,7 +55,7 @@ public class NationalityList extends JList/*<Player>*/ {
 		model.trimToSize();
 		setListData(model);
 		// DEBUG
-		log.debug("Reloading of nationality list #{} succeeded", hashCode());
+		log.debug("Reloading of Nationality list #{} succeeded", hashCode());
 	}
 
 	private void fetchOldPlayers(Vector<Player> model) {

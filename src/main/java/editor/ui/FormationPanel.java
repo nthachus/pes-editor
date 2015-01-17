@@ -327,7 +327,6 @@ public class FormationPanel extends JPanel
 
 		altBox.setActionCommand("n");
 		altBox.setSelectedIndex(0);
-		altBox.setActionCommand("y");
 
 		//countFormations();
 		squadList.refresh(team, false);
@@ -360,6 +359,7 @@ public class FormationPanel extends JPanel
 		atkDefPanel.setSquad(team);
 		atkDefPanel.repaint();
 
+		altBox.setActionCommand("y");
 		isOk = true;
 	}
 
