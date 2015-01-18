@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.Vector;
 
 public class SquadList extends JList/*<Player>*/ {
 	private static final long serialVersionUID = 6246402135860985745L;
@@ -61,25 +61,24 @@ public class SquadList extends JList/*<Player>*/ {
 	}
 
 	private void fetchAllPlayers() {
-		java.util.List<Player> list = new ArrayList<Player>(Player.TOTAL + Player.TOTAL_EDIT - 1);
+		Vector<Player> model = new Vector<Player>(Player.TOTAL + Player.TOTAL_EDIT - 1);
 		for (int p = 1; p < Player.TOTAL; p++) {
-			list.add(new Player(of, p));
+			model.add(new Player(of, p));
 		}
 
 		Player o;
 		for (int p = Player.FIRST_EDIT; p < Player.END_EDIT; p++) {
 			o = new Player(of, p);
 			if (!o.isEmpty()) {
-				list.add(o);
+				model.add(o);
 			}
 		}
 
-		Player[] model = list.toArray(new Player[list.size()]);
-		Arrays.sort(model);
+		Collections.sort(model);
 
 		setListData(model);
 		// DEBUG
-		log.debug("Squad list #{} is reloaded with all ({}) players", hashCode(), model.length);
+		log.debug("Squad list #{} is reloaded with all ({}) players", hashCode(), model.size());
 	}
 
 	/**
