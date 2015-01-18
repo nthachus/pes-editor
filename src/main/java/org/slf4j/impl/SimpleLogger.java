@@ -34,7 +34,6 @@ import org.slf4j.spi.LocationAwareLogger;
 
 import java.io.*;
 import java.net.MalformedURLException;
-import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.DateFormat;
@@ -172,14 +171,17 @@ public class SimpleLogger extends NamedLoggerBase {
 			return System.out;
 		} else {
 			try {
-				String encoding = getStringProperty(CHARSET_KEY, Charset.defaultCharset().name());
+				String encoding = getStringProperty(CHARSET_KEY);
 
 				logFile = replaceSystemProperties(logFile);
 				logFile = replaceDatePatterns(logFile);
 
 				FileOutputStream fos = new FileOutputStream(logFile, true);
-				return new PrintStream(fos, true, encoding);
-
+				if (null == encoding) {
+					return new PrintStream(fos, true);
+				} else {
+					return new PrintStream(fos, true, encoding);
+				}
 			} catch (Exception e) {
 				Util.report("Could not open [" + logFile + "]. Defaulting to System.err", e);
 			}
