@@ -212,8 +212,9 @@ public class Editor extends JFrame implements ActionListener {
 
 	private void refreshTitle(String filename) {
 		String s = Resources.getMessage("editor.title");
-		if (!Strings.isEmpty(filename))
+		if (!Strings.isEmpty(filename)) {
 			s = Resources.getMessage("title.format", s, filename);
+		}
 
 		setTitle(s);
 	}
@@ -256,14 +257,16 @@ public class Editor extends JFrame implements ActionListener {
 		} else {
 			int returnVal = opFileChooser.showOpenDialog(getContentPane());
 			saveSettings();
-			if (returnVal != JFileChooser.APPROVE_OPTION)
+			if (returnVal != JFileChooser.APPROVE_OPTION) {
 				return;
+			}
 
 			fs = opFileChooser.getSelectedFile();
 		}
 
-		if (!opFileFilter.accept(fs))
+		if (!opFileFilter.accept(fs)) {
 			return;
+		}
 		log.debug("Try to open file: {}", fs);
 
 		if (fs.isFile() && of.load(fs)) {
@@ -274,6 +277,7 @@ public class Editor extends JFrame implements ActionListener {
 
 			flagPanel.refresh();
 			imagePanel.refresh();
+			transferPan.refresh();
 			wenShop.getWenPanel().refresh();
 			wenShop.getShopPanel().refresh();
 			stadiumPan.refresh();
@@ -282,7 +286,6 @@ public class Editor extends JFrame implements ActionListener {
 			importPanel.refresh();
 
 			tabbedPane.setVisible(true);
-			transferPan.refresh();
 
 			csvItem.setEnabled(true);
 			open2Item.setEnabled(true);
@@ -290,7 +293,7 @@ public class Editor extends JFrame implements ActionListener {
 			saveAsItem.setEnabled(true);
 			convertItem.setEnabled(of2.isLoaded());
 
-			log.debug("Open succeeded on input file: {}", fs);
+			log.debug("Open succeeded on input file: {}", fs.getName());
 		} else {
 			refreshTitle(null);
 			tabbedPane.setVisible(false);
@@ -310,8 +313,9 @@ public class Editor extends JFrame implements ActionListener {
 	 * Imports OptionFile from OF2.
 	 */
 	private void importFromOF2() {
-		if (null == currentFile)
+		if (null == currentFile) {
 			return;
+		}
 		log.debug("Try to import all data from OF2: {}", of2.getFilename());
 
 		for (int i = 2; i <= 8; i++) {
@@ -333,12 +337,14 @@ public class Editor extends JFrame implements ActionListener {
 	}
 
 	private void exportCsv() {
-		if (null == currentFile)
+		if (null == currentFile) {
 			return;
+		}
 
 		int returnVal = csvChooser.showSaveDialog(getContentPane());
-		if (returnVal != JFileChooser.APPROVE_OPTION)
+		if (returnVal != JFileChooser.APPROVE_OPTION) {
 			return;
+		}
 
 		File dest = csvChooser.getSelectedFile();
 		if (!Files.isFilenameLegal(dest.getName())) {
@@ -370,13 +376,15 @@ public class Editor extends JFrame implements ActionListener {
 	}
 
 	private void saveFileAs() {
-		if (null == currentFile)
+		if (null == currentFile) {
 			return;
+		}
 
 		int returnVal = opFileChooser.showSaveDialog(getContentPane());
 		saveSettings();
-		if (returnVal != JFileChooser.APPROVE_OPTION)
+		if (returnVal != JFileChooser.APPROVE_OPTION) {
 			return;
+		}
 
 		File dest = opFileChooser.getSelectedFile();
 		if (!Files.isFilenameLegal(dest.getName())) {
@@ -415,8 +423,9 @@ public class Editor extends JFrame implements ActionListener {
 	}
 
 	private void saveFile() {
-		if (null == currentFile)
+		if (null == currentFile) {
 			return;
+		}
 
 		if (currentFile.delete() && of.save(currentFile)) {
 			showSaveOkMsg(currentFile);
@@ -428,12 +437,14 @@ public class Editor extends JFrame implements ActionListener {
 
 	private void openOF2() {
 		int returnVal = opFileChooser.showOpenDialog(getContentPane());
-		if (returnVal != JFileChooser.APPROVE_OPTION)
+		if (returnVal != JFileChooser.APPROVE_OPTION) {
 			return;
+		}
 
 		File fs2 = opFileChooser.getSelectedFile();
-		if (!opFileFilter.accept(fs2))
+		if (!opFileFilter.accept(fs2)) {
 			return;
+		}
 		log.debug("Try to open OF2 file: {}", fs2);
 
 		if (fs2.isFile() && of2.load(fs2)) {
@@ -494,8 +505,9 @@ public class Editor extends JFrame implements ActionListener {
 
 	private boolean saveSettings() {
 		File dir = opFileChooser.getCurrentDirectory();
-		if (null == dir)
+		if (null == dir) {
 			return true;
+		}
 
 		ObjectOutputStream sw = null;
 		try {
@@ -518,8 +530,9 @@ public class Editor extends JFrame implements ActionListener {
 	}
 
 	private File loadSettings() {
-		if (!settingsFile.exists())
+		if (!settingsFile.exists()) {
 			return null;
+		}
 
 		File dir = null;
 		ObjectInputStream sr = null;
@@ -529,7 +542,9 @@ public class Editor extends JFrame implements ActionListener {
 
 			if (o instanceof File) {
 				dir = (File) o;
-				if (!dir.exists()) dir = null;
+				if (!dir.exists()) {
+					dir = null;
+				}
 			}
 		} catch (Exception e) {
 			log.warn("Failed to load settings: {}", e.toString());
@@ -566,8 +581,9 @@ public class Editor extends JFrame implements ActionListener {
 				UIUtil.systemUI();
 
 				Editor form = new Editor();
-				if (null == form.opFileChooser.getCurrentDirectory() && !log.isDebugEnabled())
+				if (null == form.opFileChooser.getCurrentDirectory() && !log.isDebugEnabled()) {
 					form.about();
+				}
 				form.setVisible(true);
 				// DEBUG
 				log.info("Main form has been initialized.");

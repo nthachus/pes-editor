@@ -137,75 +137,115 @@ public class InfoPanel extends JScrollPane {
 	private void insertRole(int index1, int index2) throws BadLocationException {
 		StringBuilder text = new StringBuilder();
 
-		if (index1 > 0 && Stats.getValue(of, index1, Stats.GK) != 0)
+		if (index1 > 0 && Stats.getValue(of, index1, Stats.GK) != 0) {
 			text.append(Stats.GK);
+		}
 		//
-		if (index2 > 0 && Stats.getValue(of, index2, Stats.GK) != 0)
+		if (index2 > 0 && Stats.getValue(of, index2, Stats.GK) != 0) {
 			text.append("\t\t").append(Stats.GK);
+		}
 
 		text.append('\n');
 
-		if (index1 > 0 && Stats.getValue(of, index1, Stats.CWP) != 0)
-			text.append(Stats.CWP).append("  ");
-		if (index1 > 0 && Stats.getValue(of, index1, Stats.CBT) != 0)
-			text.append(Stats.CBT).append("  ");
+		if (index1 > 0) {
+			if (Stats.getValue(of, index1, Stats.CWP) != 0) {
+				text.append(Stats.CWP).append("  ");
+			}
+			if (Stats.getValue(of, index1, Stats.CBT) != 0) {
+				text.append(Stats.CBT).append("  ");
+			}
+		}
 		//
-		if (index2 > 0) text.append("\t\t");
-		if (index2 > 0 && Stats.getValue(of, index2, Stats.CWP) != 0)
-			text.append(Stats.CWP).append("  ");
-		if (index2 > 0 && Stats.getValue(of, index2, Stats.CBT) != 0)
-			text.append(Stats.CBT).append("  ");
+		if (index2 > 0) {
+			text.append("\t\t");
+			if (Stats.getValue(of, index2, Stats.CWP) != 0) {
+				text.append(Stats.CWP).append("  ");
+			}
+			if (Stats.getValue(of, index2, Stats.CBT) != 0) {
+				text.append(Stats.CBT).append("  ");
+			}
+		}
 
 		text.append('\n');
 
-		if (index1 > 0 && Stats.getValue(of, index1, Stats.SB) != 0)
-			text.append(Stats.SB).append("  ");
-		if (index1 > 0 && Stats.getValue(of, index1, Stats.WB) != 0)
-			text.append(Stats.WB).append("  ");
-		if (index1 > 0 && Stats.getValue(of, index1, Stats.DM) != 0)
-			text.append(Stats.DM).append("  ");
+		if (index1 > 0) {
+			if (Stats.getValue(of, index1, Stats.SB) != 0) {
+				text.append(Stats.SB).append("  ");
+			}
+			if (Stats.getValue(of, index1, Stats.WB) != 0) {
+				text.append(Stats.WB).append("  ");
+			}
+			if (Stats.getValue(of, index1, Stats.DM) != 0) {
+				text.append(Stats.DM).append("  ");
+			}
+		}
 		//
-		if (index2 > 0) text.append("\t\t");
-		if (index2 > 0 && Stats.getValue(of, index2, Stats.SB) != 0)
-			text.append(Stats.SB).append("  ");
-		if (index2 > 0 && Stats.getValue(of, index2, Stats.WB) != 0)
-			text.append(Stats.WB).append("  ");
-		if (index2 > 0 && Stats.getValue(of, index2, Stats.DM) != 0)
-			text.append(Stats.DM).append("  ");
+		if (index2 > 0) {
+			text.append("\t\t");
+			if (Stats.getValue(of, index2, Stats.SB) != 0) {
+				text.append(Stats.SB).append("  ");
+			}
+			if (Stats.getValue(of, index2, Stats.WB) != 0) {
+				text.append(Stats.WB).append("  ");
+			}
+			if (Stats.getValue(of, index2, Stats.DM) != 0) {
+				text.append(Stats.DM).append("  ");
+			}
+		}
 
 		text.append('\n');
 
-		if (index1 > 0 && Stats.getValue(of, index1, Stats.CM) != 0)
-			text.append(Stats.CM).append("  ");
-		if (index1 > 0 && Stats.getValue(of, index1, Stats.SM) != 0)
-			text.append(Stats.SM).append("  ");
-		if (index1 > 0 && Stats.getValue(of, index1, Stats.AM) != 0)
-			text.append(Stats.AM).append("  ");
+		if (index1 > 0) {
+			if (Stats.getValue(of, index1, Stats.CM) != 0) {
+				text.append(Stats.CM).append("  ");
+			}
+			if (Stats.getValue(of, index1, Stats.SM) != 0) {
+				text.append(Stats.SM).append("  ");
+			}
+			if (Stats.getValue(of, index1, Stats.AM) != 0) {
+				text.append(Stats.AM).append("  ");
+			}
+		}
 		//
-		if (index2 > 0) text.append("\t\t");
-		if (index2 > 0 && Stats.getValue(of, index2, Stats.CM) != 0)
-			text.append(Stats.CM).append("  ");
-		if (index2 > 0 && Stats.getValue(of, index2, Stats.SM) != 0)
-			text.append(Stats.SM).append("  ");
-		if (index2 > 0 && Stats.getValue(of, index2, Stats.AM) != 0)
-			text.append(Stats.AM).append("  ");
+		if (index2 > 0) {
+			text.append("\t\t");
+			if (Stats.getValue(of, index2, Stats.CM) != 0) {
+				text.append(Stats.CM).append("  ");
+			}
+			if (Stats.getValue(of, index2, Stats.SM) != 0) {
+				text.append(Stats.SM).append("  ");
+			}
+			if (Stats.getValue(of, index2, Stats.AM) != 0) {
+				text.append(Stats.AM).append("  ");
+			}
+		}
 
 		text.append('\n');
 
-		if (index1 > 0 && Stats.getValue(of, index1, Stats.SS) != 0)
-			text.append(Stats.SS).append("  ");
-		if (index1 > 0 && Stats.getValue(of, index1, Stats.CF) != 0)
-			text.append(Stats.CF).append("  ");
-		if (index1 > 0 && Stats.getValue(of, index1, Stats.WG) != 0)
-			text.append(Stats.WG).append("  ");
+		if (index1 > 0) {
+			if (Stats.getValue(of, index1, Stats.SS) != 0) {
+				text.append(Stats.SS).append("  ");
+			}
+			if (Stats.getValue(of, index1, Stats.CF) != 0) {
+				text.append(Stats.CF).append("  ");
+			}
+			if (Stats.getValue(of, index1, Stats.WG) != 0) {
+				text.append(Stats.WG).append("  ");
+			}
+		}
 		//
-		if (index2 > 0) text.append("\t\t");
-		if (index2 > 0 && Stats.getValue(of, index2, Stats.SS) != 0)
-			text.append(Stats.SS).append("  ");
-		if (index2 > 0 && Stats.getValue(of, index2, Stats.CF) != 0)
-			text.append(Stats.CF).append("  ");
-		if (index2 > 0 && Stats.getValue(of, index2, Stats.WG) != 0)
-			text.append(Stats.WG).append("  ");
+		if (index2 > 0) {
+			text.append("\t\t");
+			if (Stats.getValue(of, index2, Stats.SS) != 0) {
+				text.append(Stats.SS).append("  ");
+			}
+			if (Stats.getValue(of, index2, Stats.CF) != 0) {
+				text.append(Stats.CF).append("  ");
+			}
+			if (Stats.getValue(of, index2, Stats.WG) != 0) {
+				text.append(Stats.WG).append("  ");
+			}
+		}
 
 		int fsz = 0;
 		if (index2 > 0) {
@@ -232,8 +272,9 @@ public class InfoPanel extends JScrollPane {
 	}
 
 	private void insertSquads(int index1) throws BadLocationException {
-		if (!hasSquadList())
+		if (!hasSquadList()) {
 			return;
+		}
 
 		StyleConstants.setForeground(attr, Color.WHITE);
 		doc.insertString(doc.getLength(), Resources.getMessage("info.squads"), attr);
@@ -257,8 +298,9 @@ public class InfoPanel extends JScrollPane {
 				}
 				//log.debug("team: {}", team);
 
-				if (team < teams.getSize())
+				if (team < teams.getSize()) {
 					doc.insertString(doc.getLength(), "\n" + teams.getElementAt(team), attr);
+				}
 			}
 
 			adr += 2;

@@ -145,12 +145,14 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 	//endregion
 
 	private void addEmblem() {
-		if (Emblems.getFree128(of) <= 0 && Emblems.getFree16(of) <= 0)
+		if (Emblems.getFree128(of) <= 0 && Emblems.getFree16(of) <= 0) {
 			return;
+		}
 
 		int returnVal = chooser.showOpenDialog(null);
-		if (returnVal != JFileChooser.APPROVE_OPTION)
+		if (returnVal != JFileChooser.APPROVE_OPTION) {
 			return;
+		}
 
 		try {
 			File source = chooser.getSelectedFile();
@@ -225,8 +227,9 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 				saveEmblemAsPNG(is128, slot);
 				break;
 			case 3:
-				if (flagImportDia.isOf2Loaded())
+				if (flagImportDia.isOf2Loaded()) {
 					importEmblemFromOF2(is128, slot);
+				}
 				break;
 			default:
 				break;
@@ -275,8 +278,9 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 
 	private void importEmblem(boolean is128, int slot) {
 		int returnVal = chooser.showOpenDialog(null);
-		if (returnVal != JFileChooser.APPROVE_OPTION)
+		if (returnVal != JFileChooser.APPROVE_OPTION) {
 			return;
+		}
 
 		try {
 			File source = chooser.getSelectedFile();
@@ -319,8 +323,9 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 	private static Object[] getOptions(boolean of2Loaded) {
 		String s = Resources.getMessage("emblem.options");
 		String[] opts = s.split("\\s*,\\s*");
-		if (of2Loaded || opts.length < 2)
+		if (of2Loaded || opts.length < 2) {
 			return opts;
+		}
 
 		ArrayList<String> arr = new ArrayList<String>(java.util.Arrays.asList(opts));
 		arr.remove(arr.size() - 2);
@@ -329,8 +334,9 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 
 	private void saveEmblemAsPNG(boolean is128, int slot) {
 		int returnVal = pngChooser.showSaveDialog(null);
-		if (returnVal != JFileChooser.APPROVE_OPTION)
+		if (returnVal != JFileChooser.APPROVE_OPTION) {
 			return;
+		}
 
 		File dest = pngChooser.getSelectedFile();
 		dest = Files.addExtension(dest, Files.PNG);
@@ -400,8 +406,9 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 
 		addButton.setEnabled(Emblems.getFree16(of) > 0);
 		add2Button.setVisible(flagImportDia.isOf2Loaded());
-		if (add2Button.isVisible())
+		if (add2Button.isVisible()) {
 			add2Button.setEnabled(addButton.isEnabled());
+		}
 	}
 
 	//region Emblem Icon button Mouse Events
@@ -416,7 +423,9 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		if (null == e) {
 			throw new NullArgumentException("e");
 		}
-		if (!(e.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("e");
+		if (!(e.getSource() instanceof AbstractButton)) {
+			throw new IllegalArgumentException("e");
+		}
 
 		AbstractButton btn = (AbstractButton) e.getSource();
 		int slot = Integer.parseInt(btn.getActionCommand());
@@ -450,28 +459,35 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 			throw new NullArgumentException("image");
 		}
 
-		if (image.getWidth() != Emblems.IMG_SIZE || image.getHeight() != Emblems.IMG_SIZE)
+		if (image.getWidth() != Emblems.IMG_SIZE || image.getHeight() != Emblems.IMG_SIZE) {
 			throw new IllegalArgumentException(
 					Resources.getMessage("msg.invalidSize", Emblems.IMG_SIZE, Emblems.IMG_SIZE));
+		}
 
 		ColorModel colorMod = image.getColorModel();
-		if (!(colorMod instanceof IndexColorModel))
+		if (!(colorMod instanceof IndexColorModel)) {
 			throw new IllegalArgumentException(Resources.getMessage("msg.notIndexed"));
+		}
 
 		int colorsCount = ((IndexColorModel) colorMod).getMapSize();
-		if (colorsCount > paletteSize)
+		if (colorsCount > paletteSize) {
 			throw new IllegalArgumentException(Resources.getMessage("msg.manyColors", paletteSize));
+		}
 
 		return colorsCount;
 	}
 
 	private static void showOpenFailedMsg(String msg) {
-		if (Strings.isBlank(msg)) msg = Resources.getMessage("msg.openFailed");
+		if (Strings.isBlank(msg)) {
+			msg = Resources.getMessage("msg.openFailed");
+		}
 		JOptionPane.showMessageDialog(null, msg, Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
 	}
 
 	private static void showAccessFailedMsg(String msg) {
-		if (Strings.isBlank(msg)) msg = Resources.getMessage("msg.accessFailed");
+		if (Strings.isBlank(msg)) {
+			msg = Resources.getMessage("msg.accessFailed");
+		}
 		JOptionPane.showMessageDialog(null, msg, Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
 	}
 

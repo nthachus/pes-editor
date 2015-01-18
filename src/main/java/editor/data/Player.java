@@ -71,11 +71,13 @@ public class Player implements Serializable, Comparable<Player> {
 	 * NOTE: We don't have the player at index 0.
 	 */
 	public static int getOffset(int player) {
-		if (player <= 0 || (player >= TOTAL && player < FIRST_EDIT) || player >= END_EDIT)
+		if (player <= 0 || (player >= TOTAL && player < FIRST_EDIT) || player >= END_EDIT) {
 			throw new IndexOutOfBoundsException("player#" + player);
+		}
 
-		if (player >= FIRST_EDIT)
+		if (player >= FIRST_EDIT) {
 			return START_EDIT_ADR + (player - FIRST_EDIT) * SIZE;
+		}
 
 		return START_ADR + player * SIZE;
 	}
@@ -132,15 +134,18 @@ public class Player implements Serializable, Comparable<Player> {
 
 	@SuppressWarnings("NullableProblems")
 	public int compareTo(Player other) {
-		if (null == other) return 1;
+		if (null == other) {
+			return 1;
+		}
 
 		int cmp = getName().compareTo(other.getName());
 		if (cmp == 0) {
 			cmp = Integer.valueOf(Stats.getValue(of, index, Stats.AGE)).compareTo(
 					Stats.getValue(of, other.index, Stats.AGE));
 
-			if (cmp == 0)
+			if (cmp == 0) {
 				cmp = Integer.valueOf(index).compareTo(other.index);
+			}
 		}
 
 		return cmp;
@@ -239,13 +244,15 @@ public class Player implements Serializable, Comparable<Player> {
 	}
 
 	public static String buildShirtName(String name) {
-		if (Strings.isEmpty(name))
+		if (Strings.isEmpty(name)) {
 			return name;
+		}
 
 		name = name.trim();
 		int len = name.length();
-		if (len <= 0)
+		if (len <= 0) {
 			return name;
+		}
 
 		String spaces = getSpacesForLength(len);
 		name = name.replaceAll("[^a-zA-Z \\._]", "").toUpperCase();
@@ -253,7 +260,9 @@ public class Player implements Serializable, Comparable<Player> {
 		StringBuilder result = new StringBuilder();
 		len = name.length();
 		for (int i = 0; i < len; i++) {
-			if (i > 0) result.append(spaces);
+			if (i > 0) {
+				result.append(spaces);
+			}
 			result.append(name.charAt(i));
 		}
 

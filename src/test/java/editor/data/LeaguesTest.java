@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,8 +22,9 @@ public final class LeaguesTest extends BaseTest {
 		// DEBUG
 		log.debug("Loaded {}: {}", "leagues", list);
 
-		for (String s : list)
+		for (String s : list) {
 			Assert.assertNotNull(s);
+		}
 		Assert.assertEquals(FIRST_LEAGUE, list[0]);
 
 		String ln = FIRST_LEAGUE + " " + getClass().getSimpleName();
@@ -38,8 +40,9 @@ public final class LeaguesTest extends BaseTest {
 		// first difference league name
 		int i = 0;
 		for (; i < Leagues.TOTAL; i++) {
-			if (!Leagues.get(of2, i).equals(Leagues.get(of, i)))
+			if (!Leagues.get(of2, i).equals(Leagues.get(of, i))) {
 				break;
+			}
 		}
 		Assert.assertTrue(i < Leagues.TOTAL);
 
@@ -47,12 +50,12 @@ public final class LeaguesTest extends BaseTest {
 		Assert.assertEquals(Leagues.get(of2, i), Leagues.get(of, i));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testLoadAllWithNullOF() throws Exception {
 		Leagues.get(null);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testLoadWithNullOF() throws Exception {
 		Leagues.get(null, 0);
 	}
@@ -62,7 +65,7 @@ public final class LeaguesTest extends BaseTest {
 		Leagues.get(new OptionFile(), -1);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testSaveWithNullOF() throws Exception {
 		Leagues.set(null, 0, null);
 	}
@@ -72,12 +75,12 @@ public final class LeaguesTest extends BaseTest {
 		Leagues.set(new OptionFile(), -1, null);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testImportWithNullSource() throws Exception {
 		Leagues.importData(null, new OptionFile());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testImportWithNullDest() throws Exception {
 		Leagues.importData(new OptionFile(), null);
 	}

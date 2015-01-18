@@ -198,8 +198,9 @@ public class FormationPanel extends JPanel
 	}
 
 	private void altChanged(ActionEvent evt) {
-		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
+		if (!"y".equalsIgnoreCase(evt.getActionCommand())) {
 			return;
+		}
 
 		int alt = altBox.getSelectedIndex();
 		//countFormations();
@@ -218,16 +219,19 @@ public class FormationPanel extends JPanel
 	}
 
 	private void roleChanged(ActionEvent evt) {
-		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
+		if (!"y".equalsIgnoreCase(evt.getActionCommand())) {
 			return;
+		}
 
 		int squadIndex = squadList.getSelectedIndex();
-		if (squadIndex < 0 || squadIndex >= Formations.PLAYER_COUNT)
+		if (squadIndex < 0 || squadIndex >= Formations.PLAYER_COUNT) {
 			return;
+		}
 
 		Role role = (Role) roleBox.getSelectedItem();
-		if (null == role || role.index < 0)
+		if (null == role || role.index < 0) {
 			return;
+		}
 
 		int alt = altBox.getSelectedIndex();
 		int oldPos = Formations.getPosition(of, team, alt, squadIndex);
@@ -255,7 +259,9 @@ public class FormationPanel extends JPanel
 	}
 
 	private void fixCoordinateForNewRole(int alt, int squadIndex, int oldPos, int roleId) {
-		if (oldPos == roleId) return;
+		if (oldPos == roleId) {
+			return;
+		}
 		log.debug("Try to fix coordinate for new role {}; with alt: {}, squad: {}, old-pos: {}, team: {}",
 				roleId, alt, squadIndex, oldPos, team);
 
@@ -480,10 +486,14 @@ public class FormationPanel extends JPanel
 		Role role;
 		for (int r = 1; r < 41; r++) {
 			boolean isFree = isRoleFree(alt, selPos, r);
-			if (!isFree) continue;
+			if (!isFree) {
+				continue;
+			}
 
 			role = new Role(r);
-			if (first.name.equalsIgnoreCase(role.name)) continue;
+			if (first.name.equalsIgnoreCase(role.name)) {
+				continue;
+			}
 
 			if (last == null) {
 				last = role;
@@ -621,8 +631,9 @@ public class FormationPanel extends JPanel
 
 	private void saveStrategyAsPNG() {
 		int returnVal = pngChooser.showSaveDialog(null);
-		if (returnVal != JFileChooser.APPROVE_OPTION)
+		if (returnVal != JFileChooser.APPROVE_OPTION) {
 			return;
+		}
 
 		File dest = pngChooser.getSelectedFile();
 		dest = Files.addExtension(dest, Files.PNG);
@@ -656,7 +667,9 @@ public class FormationPanel extends JPanel
 	}
 
 	private static void showAccessFailedMsg(String msg) {
-		if (Strings.isBlank(msg)) msg = Resources.getMessage("msg.accessFailed");
+		if (Strings.isBlank(msg)) {
+			msg = Resources.getMessage("msg.accessFailed");
+		}
 		JOptionPane.showMessageDialog(null, msg, Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
 	}
 

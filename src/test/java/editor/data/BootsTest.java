@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,12 +11,12 @@ public final class BootsTest extends BaseTest {
 		Assert.assertEquals(828, Boots.TOTAL * Boots.SIZE);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testImportWithNullSource() throws Exception {
 		Boots.importData(null, new OptionFile());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testImportWithNullDest() throws Exception {
 		Boots.importData(new OptionFile(), null);
 	}

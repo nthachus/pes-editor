@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Files;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,8 +18,9 @@ public final class OptionFileTest extends BaseTest {
 		Assert.assertEquals(1095680, OptionFile.LENGTH);
 		Assert.assertEquals(2058577996, OptionFile.KEY_MASK);
 
-		for (int i = 0; i < BLOCKS.length; i++)
+		for (int i = 0; i < BLOCKS.length; i++) {
 			Assert.assertEquals(BLOCKS[i], OptionFile.blockAddress(i));
+		}
 	}
 
 	@Test
@@ -60,7 +62,7 @@ public final class OptionFileTest extends BaseTest {
 		Assert.assertArrayEquals("Incorrect recoded OF: " + fn, original, recoded);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testLoadWithNullFile() throws Exception {
 		OptionFile of = new OptionFile();
 		of.load(null);
@@ -79,7 +81,7 @@ public final class OptionFileTest extends BaseTest {
 		Assert.assertEquals(false, of.save(null));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testSaveWithNullFile() throws Exception {
 		OptionFile of = loadLatestOF();
 		of.save(null);

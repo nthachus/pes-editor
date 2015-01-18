@@ -103,7 +103,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 		if (null == g) {
 			throw new NullArgumentException("g");
 		}
-		if (!(g instanceof Graphics2D)) throw new IllegalArgumentException("g");
+		if (!(g instanceof Graphics2D)) {
+			throw new IllegalArgumentException("g");
+		}
 
 		Graphics2D g2 = (Graphics2D) g;
 		drawStadiumLayout(g2);
@@ -117,7 +119,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 			//log.debug("x: {}, y: {}", x, y);
 
 			c = getPositionColor(p, pos);
-			if (null != c) g2.setPaint(c);
+			if (null != c) {
+				g2.setPaint(c);
+			}
 			g2.fill(new Ellipse2D.Double(x, y, DIA, DIA));
 			//g2.draw(new Ellipse2D.Double(x, y, DIA, DIA));
 
@@ -162,12 +166,15 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	private void drawPositionLabel(Graphics2D g2, int player, int pos, int x, int y) {
-		if (!roleOn)
+		if (!roleOn) {
 			return;
+		}
 
 		g2.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
 		int adjX = 0;
-		if (pos == 30 || pos == 16 || pos == 4) adjX = -1;
+		if (pos == 30 || pos == 16 || pos == 4) {
+			adjX = -1;
+		}
 
 		int alt = altBox.getSelectedIndex();
 		boolean up = Formations.getAttack(of, squad, alt, player, 2);
@@ -193,15 +200,17 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	private void drawAtkDirections(Graphics2D g2, int player, int x, int y) {
-		if (!showAttack)
+		if (!showAttack) {
 			return;
+		}
 
 		int x1 = x + ADJ / 2;
 		int y1 = y + ADJ / 2;
 		int alt = altBox.getSelectedIndex();
 		for (int i = 0; i < 8; i++) {
-			if (!Formations.getAttack(of, squad, alt, player, i))
+			if (!Formations.getAttack(of, squad, alt, player, i)) {
 				continue;
+			}
 
 			int x2, y2;
 			switch (i) {
@@ -248,15 +257,18 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	private void drawNumbers(Graphics2D g2, int player, int x, int y) {
-		if (!showNumber)
+		if (!showNumber) {
 			return;
+		}
 
 		String numText = numList.getModel().getElementAt(player);
 		int textAdj = 0;
-		if (numText.length() == 1)
+		if (numText.length() == 1) {
 			textAdj = 3;
-		if (numText.startsWith("1"))
+		}
+		if (numText.startsWith("1")) {
 			textAdj--;
+		}
 
 		g2.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
 		g2.setPaint(Color.BLACK);
@@ -264,8 +276,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	private void drawDefDirections(Graphics2D g2, int player, int x, int y) {
-		if (!showDefence)
+		if (!showDefence) {
 			return;
+		}
 
 		g2.setPaint(Color.BLUE);
 
@@ -312,14 +325,18 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	private int getXForPlayer(int index) {
-		if (index <= 0) return ADJ;
+		if (index <= 0) {
+			return ADJ;
+		}
 		int x = Formations.getX(of, squad, altBox.getSelectedIndex(), index);
 		x = (x - 2) * 7 + ADJ;
 		return x;
 	}
 
 	private int getYForPlayer(int index) {
-		if (index <= 0) return 90 + ADJ;
+		if (index <= 0) {
+			return 90 + ADJ;
+		}
 		int y = Formations.getY(of, squad, altBox.getSelectedIndex(), index);
 		y = (y - 6) * 2 + ADJ;
 		return y;
@@ -359,7 +376,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 		if (null == e) {
 			throw new NullArgumentException("e");
 		}
-		if (selectedIdx <= 0) return;
+		if (selectedIdx <= 0) {
+			return;
+		}
 
 		int alt = altBox.getSelectedIndex();
 		int pos = Formations.getPosition(of, squad, alt, selectedIdx);

@@ -1,5 +1,6 @@
 package editor.util;
 
+import editor.lang.NullArgumentException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +21,7 @@ public final class ArraysTest {
 		Assert.assertEquals(2, idx);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testIndexOfWithNullArray() throws Exception {
 		Arrays.indexOf(null, null);
 	}

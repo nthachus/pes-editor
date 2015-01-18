@@ -28,8 +28,9 @@ public abstract class BaseTest {
 	public static final String IMG_FORMAT = "png";
 
 	private static String getResourcePath(String resourceName) {
-		if (!Strings.isEmpty(resourceName) && !resourceName.startsWith("/"))
+		if (!Strings.isEmpty(resourceName) && !resourceName.startsWith("/")) {
 			return "/" + resourceName;
+		}
 		return resourceName;
 	}
 
@@ -117,8 +118,9 @@ public abstract class BaseTest {
 					&& ofType.isAssignableFrom(f.getType())
 					&& !forceAccess == Modifier.isPublic(f.getModifiers())) {
 
-				if (forceAccess)
+				if (forceAccess) {
 					f.setAccessible(true);
+				}
 
 				Object obj = f.get(target);
 				list.add(ofType.cast(obj));
@@ -143,14 +145,16 @@ public abstract class BaseTest {
 		}
 
 		Field f = clazz.getDeclaredField(name);
-		if (null == f) throw new NoSuchFieldException(name);
-
-		if ((null == target) != Modifier.isStatic(f.getModifiers())
-				|| (null != isFinal && isFinal != Modifier.isFinal(f.getModifiers())))
+		if (null == f) {
+			throw new NoSuchFieldException(name);
+		} else if ((null == target) != Modifier.isStatic(f.getModifiers())
+				|| (null != isFinal && isFinal != Modifier.isFinal(f.getModifiers()))) {
 			throw new IllegalAccessException(f.toString());
+		}
 
-		if (!Modifier.isPublic(f.getModifiers()) && forceAccess)
+		if (!Modifier.isPublic(f.getModifiers()) && forceAccess) {
 			f.setAccessible(true);
+		}
 
 		return f.get(target);
 	}

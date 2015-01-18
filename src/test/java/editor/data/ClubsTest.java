@@ -70,9 +70,9 @@ public final class ClubsTest extends BaseTest {
 			int emblem = Clubs.getEmblem(of, c);
 			log.debug("Club [{}] '{}' - '{}': emblem #{}", c, abv, name, emblem);
 
-			if (emblem < Clubs.FIRST_EMBLEM)
+			if (emblem < Clubs.FIRST_EMBLEM) {
 				Assert.assertEquals(Clubs.FIRST_DEF_EMBLEM + c, emblem);
-			else {
+			} else {
 				emblem -= Clubs.FIRST_EMBLEM;
 				Assert.assertThat(emblem, Matchers.greaterThanOrEqualTo(0));
 				Assert.assertThat(emblem, Matchers.lessThan(Emblems.TOTAL16));
@@ -138,8 +138,9 @@ public final class ClubsTest extends BaseTest {
 			Assert.assertThat(backFlag, Matchers.greaterThanOrEqualTo(0));
 			Assert.assertThat(backFlag, Matchers.lessThan(12));
 
-			if (backFlag > 0)
+			if (backFlag > 0) {
 				Assert.assertNotEquals(c1, c2);
+			}
 		}
 	}
 

@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Files;
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,12 +34,12 @@ public final class CsvMakerTest extends BaseTest {
 		Assert.assertTrue(res);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testExportWithNullOF() throws Exception {
 		csvMaker.makeFile(null, new File(getClass().getSimpleName()), true/*, true*/, true);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testExportWithNullDest() throws Exception {
 		csvMaker.makeFile(new OptionFile(), null, true/*, true*/, true);
 	}

@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public final class LogosTest extends BaseTest {
 		Assert.assertThat(list, Matchers.hasItems(true, false));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testSaveWithNullOF() throws Exception {
 		Logos.set(null, 0, null);
 	}

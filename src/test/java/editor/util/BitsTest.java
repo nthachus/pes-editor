@@ -1,5 +1,6 @@
 package editor.util;
 
+import editor.lang.NullArgumentException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,7 +27,7 @@ public final class BitsTest {
 		Assert.assertArrayEquals(a3, Arrays.copyOfRange(arr, a3.length, arr.length));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testToBytesWithNullBuffer() throws Exception {
 		Bits.toBytes(Byte.MIN_VALUE, null, 0);
 	}

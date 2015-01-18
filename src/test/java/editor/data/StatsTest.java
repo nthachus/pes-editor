@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -8,22 +9,22 @@ import java.util.*;
 public final class StatsTest extends BaseTest {
 	private static final int FOR_PLAYER = 1;
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testGetValueWithNullStat() throws Exception {
 		Stats.getValue(new OptionFile(), FOR_PLAYER, null);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testGetValueWithNullOF() throws Exception {
 		Stats.getValue(null, FOR_PLAYER, Stats.AGE);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testSetValueWithNullStat() throws Exception {
 		Stats.setValue(new OptionFile(), FOR_PLAYER, null, 1);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testSetValueWithNullOF() throws Exception {
 		Stats.setValue(null, FOR_PLAYER, Stats.AGE, 1);
 	}
@@ -70,8 +71,9 @@ public final class StatsTest extends BaseTest {
 
 	private void testStatsForPlayer(OptionFile of, int pid, String[][] playerStats) throws Exception {
 		Map<String, String> stats = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-		for (String[] ps : playerStats)
+		for (String[] ps : playerStats) {
 			stats.put(ps[0], ps[1]);
+		}
 
 		Assert.assertEquals(stats.get("Name"), Player.getName(of, pid));
 		stats.remove("Name");
@@ -81,14 +83,16 @@ public final class StatsTest extends BaseTest {
 		for (Stat st : fields) {
 			if (!stats.containsKey(st.getName())) {
 
-				if (!st.getName().matches(".*(?i:Edited|Name|Style|Kick)"))
+				if (!st.getName().matches(".*(?i:Edited|Name|Style|Kick)")) {
 					log.warn("Stat not found: {}", st);
+				}
 			} else {
 
-				if (Stats.REG_POS.getName().equals(st.getName()))
+				if (Stats.REG_POS.getName().equals(st.getName())) {
 					val = Stats.ROLES[Stats.regPosToRole(Stats.getValue(of, pid, st))].getName();
-				else
+				} else {
 					val = Stats.getString(of, pid, st);
+				}
 
 				Assert.assertEquals("Incorrect value for stat: " + st, stats.get(st.getName()), val);
 				stats.remove(st.getName());
@@ -105,8 +109,9 @@ public final class StatsTest extends BaseTest {
 			}
 		}
 
-		if (stats.size() > 0)
+		if (stats.size() > 0) {
 			log.debug("Un-verified stats: {}", stats);
+		}
 		Assert.assertEquals(0, stats.size());
 	}
 

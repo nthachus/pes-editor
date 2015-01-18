@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Files;
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,11 +35,12 @@ public final class SaveGameInfoTest extends BaseTest {
 		res = OptionFile.isValidGameId(saveInfo.getGame());
 		Assert.assertTrue(res);
 
-		if (!fn.endsWith(Files.PSU))
+		if (!fn.endsWith(Files.PSU)) {
 			Assert.assertTrue(saveInfo.getGameName().length() > 0);
+		}
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testGetInfoWithNullFile() throws Exception {
 		saveInfo.getInfo(null);
 	}

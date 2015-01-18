@@ -226,7 +226,9 @@ public class TeamPanel extends JPanel
 
 	private void selectBackFlag() {
 		int team = teamList.getSelectedIndex();
-		if (team < 0) return;
+		if (team < 0) {
+			return;
+		}
 
 		int flagId = backChooser.getBackFlag(getEmblemImage(team),
 				Clubs.getRed(of, team), Clubs.getGreen(of, team), Clubs.getBlue(of, team));
@@ -238,7 +240,9 @@ public class TeamPanel extends JPanel
 
 	private void selectBgColor(int colorNo) {
 		int team = teamList.getSelectedIndex();
-		if (team < 0) return;
+		if (team < 0) {
+			return;
+		}
 
 		boolean isSecond = (colorNo == 2);
 		Color newColor = JColorChooser.showDialog(null,
@@ -258,7 +262,9 @@ public class TeamPanel extends JPanel
 
 	private void copyToBackColor2() {
 		int team = teamList.getSelectedIndex();
-		if (team < 0) return;
+		if (team < 0) {
+			return;
+		}
 
 		Clubs.setColor(of, team, true, Clubs.getColor(of, team, false));
 		color2Btn.setBackground(color1Btn.getBackground());
@@ -268,7 +274,9 @@ public class TeamPanel extends JPanel
 
 	private void swapBackColors() {
 		int team = teamList.getSelectedIndex();
-		if (team < 0) return;
+		if (team < 0) {
+			return;
+		}
 
 		Color c = Clubs.getColor(of, team, false);
 		Clubs.setColor(of, team, false, Clubs.getColor(of, team, true));
@@ -281,8 +289,9 @@ public class TeamPanel extends JPanel
 	}
 
 	private void stadiumChanged(ActionEvent evt) {
-		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
+		if (!"y".equalsIgnoreCase(evt.getActionCommand())) {
 			return;
+		}
 
 		int stadiumId = stadiumBox.getSelectedIndex();
 		int team = teamList.getSelectedIndex();
@@ -332,9 +341,13 @@ public class TeamPanel extends JPanel
 	 */
 	private void clubNameChanged(ActionEvent evt) {
 		int team = teamList.getSelectedIndex();
-		if (team < 0) return;
+		if (team < 0) {
+			return;
+		}
 
-		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
+		if (!(evt.getSource() instanceof JTextComponent)) {
+			throw new IllegalArgumentException("evt");
+		}
 		JTextComponent tf = (JTextComponent) evt.getSource();
 
 		String name = tf.getText();
@@ -375,7 +388,9 @@ public class TeamPanel extends JPanel
 		if (null == e) {
 			throw new NullArgumentException("e");
 		}
-		if (!isOk || e.getValueIsAdjusting()) return;
+		if (!isOk || e.getValueIsAdjusting()) {
+			return;
+		}
 
 		int team = teamList.getSelectedIndex();
 		if (team < 0 || team >= teams.length) {
@@ -442,7 +457,9 @@ public class TeamPanel extends JPanel
 		}
 
 		int team = teamList.getSelectedIndex();
-		if (team < 0) return;
+		if (team < 0) {
+			return;
+		}
 
 		int mBtn = e.getButton();
 		int clicks = e.getClickCount();
@@ -475,7 +492,9 @@ public class TeamPanel extends JPanel
 
 	private void choiceTeamEmblem(int team) {
 		int flag = flagChooser.getEmblem(Resources.getMessage("teamPane.choiceFlag"), null);
-		if (flag < 0) return;
+		if (flag < 0) {
+			return;
+		}
 
 		Image icon;
 		if (flag < Emblems.TOTAL128) {
@@ -511,14 +530,17 @@ public class TeamPanel extends JPanel
 
 		deleteLogos(teamDest);
 
-		if (teamDest < Clubs.TOTAL)
+		if (teamDest < Clubs.TOTAL) {
 			importClubData(teamSource, teamDest);
+		}
 
 		Kits.importData(of2, teamSource, of, teamDest);
 
 		importLogos(teamSource, teamDest);
 
-		if (null != emblemPan) emblemPan.refresh();
+		if (null != emblemPan) {
+			emblemPan.refresh();
+		}
 		logoPan.refresh();
 		transferPan.refresh();
 		refresh();
@@ -561,14 +583,19 @@ public class TeamPanel extends JPanel
 		Arrays.fill(logoDelete, true);
 
 		for (int t = 0, sz = teamList.getModel().getSize(); t < sz; t++) {
-			if (t == team) continue;
+			if (t == team) {
+				continue;
+			}
 
 			for (int l = 0; l < logoDelete.length; l++) {
-				if (usedLogos[l] < 0 || usedLogos[l] >= Logos.TOTAL)
+				if (usedLogos[l] < 0 || usedLogos[l] >= Logos.TOTAL) {
 					continue;
+				}
 
 				for (int k = 0; k < logoDelete.length; k++) {
-					if (Kits.getLogo(of, t, k) != usedLogos[l]) continue;
+					if (Kits.getLogo(of, t, k) != usedLogos[l]) {
+						continue;
+					}
 
 					if (Kits.isLogoUsed(of, t, k)) {
 						logoDelete[l] = false;
@@ -623,8 +650,9 @@ public class TeamPanel extends JPanel
 
 	private void importLogos(int teamSource, int teamDest) {
 		for (int l = 0; l < Kits.TOTAL_LOGO; l++) {
-			if (!Kits.isLogoUsed(of2, teamSource, l))
+			if (!Kits.isLogoUsed(of2, teamSource, l)) {
 				continue;
+			}
 
 			boolean isDupe = false;
 			for (int k = 0; k < l; k++) {
@@ -633,13 +661,16 @@ public class TeamPanel extends JPanel
 					break;
 				}
 			}
-			if (isDupe) continue;
+			if (isDupe) {
+				continue;
+			}
 
 			Image targetIco = Logos.get(of2, Kits.getLogo(of2, teamSource, l), false);
 			int targetLogo = logoChooser.getFlag(Resources.getMessage("teamPane.replaceLogo"), targetIco);
 
-			if (targetLogo >= 0)
+			if (targetLogo >= 0) {
 				Logos.importData(of2, Kits.getLogo(of2, teamSource, l), of, targetLogo);
+			}
 
 			for (int k = l; k < Kits.TOTAL_LOGO; k++) {
 				if (Kits.getLogo(of2, teamSource, l) == Kits.getLogo(of2, teamSource, k)) {

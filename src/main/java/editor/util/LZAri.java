@@ -5,8 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * LZARI.C -- A Data Compression Program.
@@ -30,7 +28,7 @@ public final class LZAri {
 	private volatile OutputStream outFile;
 
 	private volatile long textSize = 0, printCount = 0;
-	private final AtomicLong codeSize = new AtomicLong(0);
+	private/* volatile*/ long codeSize = 0;
 	private volatile int wBuffer = 0, wMask = 128;
 	private volatile int rBuffer, rMask = 0;
 
@@ -47,7 +45,7 @@ public final class LZAri {
 
 			wBuffer = 0;
 			wMask = 128;
-			codeSize.incrementAndGet();
+			codeSize++;
 		}
 	}
 
@@ -265,7 +263,7 @@ public final class LZAri {
 	/**
 	 * Counts for magnifying low and high around {@link #Q2}
 	 */
-	private final AtomicInteger shifts = new AtomicInteger(0);
+	private/* volatile*/ int shifts = 0;
 	private final int[] charToSym = new int[N_CHAR],
 			symToChar = new int[N_CHAR + 1];
 
@@ -346,7 +344,7 @@ public final class LZAri {
 	 */
 	private synchronized void output(int bit) throws IOException {
 		putBit(bit);
-		while (shifts.getAndDecrement() > 0) {
+		for (; shifts > 0; shifts--) {
 			putBit((bit == 0) ? 1 : 0);
 		}
 	}
@@ -367,8 +365,9 @@ public final class LZAri {
 				low -= Q2;
 				high -= Q2;
 			} else if (low >= Q1 && high <= Q3) {
-				//synchronized (log)
-				shifts.incrementAndGet();
+				synchronized (log) {
+					shifts++;
+				}
 
 				low -= Q1;
 				high -= Q1;
@@ -398,8 +397,9 @@ public final class LZAri {
 				low -= Q2;
 				high -= Q2;
 			} else if (low >= Q1 && high <= Q3) {
-				//synchronized (log)
-				shifts.incrementAndGet();
+				synchronized (log) {
+					shifts++;
+				}
 
 				low -= Q1;
 				high -= Q1;
@@ -413,8 +413,9 @@ public final class LZAri {
 	}
 
 	private void encodeEnd() throws IOException {
-		//synchronized (log)
-		shifts.incrementAndGet();
+		synchronized (log) {
+			shifts++;
+		}
 
 		output((low < Q1) ? 0 : 1);
 
@@ -533,14 +534,15 @@ public final class LZAri {
 	//********** Encode and Decode **********//
 
 	public void encode() throws IOException {
-		//synchronized (log)
-		textSize = inFile.available();
-		// output size of text
-		outFile.write(Bits.toBytes((int) textSize));
-		//
-		codeSize.addAndGet(4);
-		if (textSize == 0) {
-			return;
+		synchronized (log) {
+			textSize = inFile.available();
+			// output size of text
+			outFile.write(Bits.toBytes((int) textSize));
+			//
+			codeSize += 4;
+			if (textSize == 0) {
+				return;
+			}
 		}
 
 		textSize = 0;
@@ -610,7 +612,7 @@ public final class LZAri {
 		encodeEnd();
 
 		// DEBUG
-		log.info("In: {} bytes, Out: {} bytes, Out/In: {}%", textSize, codeSize, (double) codeSize.get() / textSize);
+		log.info("In: {} bytes, Out: {} bytes, Out/In: {}%", textSize, codeSize, (double) codeSize / textSize);
 	}
 
 	public void decode() throws IOException {

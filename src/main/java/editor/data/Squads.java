@@ -78,28 +78,32 @@ public final class Squads {
 	}
 
 	private static int getOffset(int team) {
-		if (team < FIRST_EDIT_NATION)
+		if (team < FIRST_EDIT_NATION) {
 			return NATION_ADR + team * Formations.NATION_TEAM_SIZE * 2;
+		}
 		return CLUB_ADR + (team - FIRST_CLUB) * Formations.CLUB_TEAM_SIZE * 2;
 	}
 
 	private static int getNumOffset(int team) {
-		if (team < FIRST_EDIT_NATION)
+		if (team < FIRST_EDIT_NATION) {
 			return NATION_NUM_ADR + team * Formations.NATION_TEAM_SIZE;
+		}
 		return CLUB_NUM_ADR + (team - FIRST_CLUB) * Formations.CLUB_TEAM_SIZE;
 	}
 
 	public static int getClassicNation(String nation) {
 		for (int i = 0; i < CLASSIC_COUNT; i++) {
-			if (EXTRAS[i].substring(8).equalsIgnoreCase(nation))
+			if (EXTRAS[i].substring(8).equalsIgnoreCase(nation)) {
 				return NATION_COUNT + i;
+			}
 		}
 		return -1;
 	}
 
 	public static int getClassicNation(int nation) {
-		if (nation < 0 || nation >= Stats.NATION.length)
+		if (nation < 0 || nation >= Stats.NATION.length) {
 			throw new ArrayIndexOutOfBoundsException("nation#" + nation);
+		}
 
 		int cNat = getClassicNation(Stats.NATION[nation]);
 		return (cNat < 0) ? nation : cNat;
@@ -111,8 +115,9 @@ public final class Squads {
 
 			String cCountry = EXTRAS[idx].substring(8);
 			for (int i = 0; i < NATION_COUNT; i++) {
-				if (cCountry.equalsIgnoreCase(Stats.NATION[i]))
+				if (cCountry.equalsIgnoreCase(Stats.NATION[i])) {
 					return i;
+				}
 			}
 		}
 		return team;
@@ -122,15 +127,21 @@ public final class Squads {
 		if (null == of) {
 			throw new NullArgumentException("of");
 		}
-		if (squad < 0 || squad >= TOTAL) throw new IndexOutOfBoundsException("squad#" + squad);
-		if (!fixJobs)
+		if (squad < 0 || squad >= TOTAL) {
+			throw new IndexOutOfBoundsException("squad#" + squad);
+		}
+		if (!fixJobs) {
 			log.debug("Try to fix formation for team: {}", squad);
+		}
 
-		if ((squad >= FIRST_EDIT_NATION && squad < FIRST_CLUB) || squad >= FIRST_CLUB + Clubs.TOTAL)
+		if ((squad >= FIRST_EDIT_NATION && squad < FIRST_CLUB) || squad >= FIRST_CLUB + Clubs.TOTAL) {
 			return;
+		}
 
 		int team = squad;
-		if (squad >= FIRST_CLUB) team -= EDIT_TEAM_COUNT;
+		if (squad >= FIRST_CLUB) {
+			team -= EDIT_TEAM_COUNT;
+		}
 
 		int size = getTeamSize(squad);
 		int firstAdr = getOffset(squad);
@@ -162,8 +173,9 @@ public final class Squads {
 			Formations.setSlot(of, team, i, i);
 		}
 
-		if (!fixJobs)
+		if (!fixJobs) {
 			log.debug("Fixing formation for team {} succeeded", squad);
+		}
 	}
 
 	public static void fixAll(OptionFile of) {
@@ -183,11 +195,14 @@ public final class Squads {
 		if (null == of) {
 			throw new NullArgumentException("of");
 		}
-		if (team < 0 || team >= TOTAL) throw new IndexOutOfBoundsException("team#" + team);
+		if (team < 0 || team >= TOTAL) {
+			throw new IndexOutOfBoundsException("team#" + team);
+		}
 		log.debug("Try to tidy team: {}", team);
 
-		if ((team >= FIRST_EDIT_NATION && team < FIRST_CLUB) || team >= FIRST_CLUB + Clubs.TOTAL)
+		if ((team >= FIRST_EDIT_NATION && team < FIRST_CLUB) || team >= FIRST_CLUB + Clubs.TOTAL) {
 			return;
+		}
 
 		//fixFormation(of, team);
 
@@ -244,13 +259,15 @@ public final class Squads {
 	}
 
 	private static List<Map.Entry<Integer, Integer>> getPlayerScores(OptionFile of, int size, int pos, int offset) {
-		List<Map.Entry<Integer, Integer>> list
-				= new ArrayList<Map.Entry<Integer, Integer>>(size - Formations.PLAYER_COUNT);
+		List<Map.Entry<Integer, Integer>> list =
+				new ArrayList<Map.Entry<Integer, Integer>>(size - Formations.PLAYER_COUNT);
 
 		for (int i = Formations.PLAYER_COUNT; i < size; i++) {
 			int adr = offset + i * 2;
 			int playerIdx = Bits.toInt16(of.getData(), adr);
-			if (playerIdx == 0) break;
+			if (playerIdx == 0) {
+				break;
+			}
 
 			int score;
 			switch (pos) {
@@ -342,11 +359,14 @@ public final class Squads {
 		if (null == of) {
 			throw new NullArgumentException("of");
 		}
-		if (team < 0 || team >= TOTAL) throw new IndexOutOfBoundsException("team#" + team);
+		if (team < 0 || team >= TOTAL) {
+			throw new IndexOutOfBoundsException("team#" + team);
+		}
 		log.debug("Try to tidy 11 for team: {}, free-position: {}, selected-position: {}", team, freePos, selPos);
 
-		if ((team >= FIRST_EDIT_NATION && team < FIRST_CLUB) || team >= FIRST_CLUB + Clubs.TOTAL)
+		if ((team >= FIRST_EDIT_NATION && team < FIRST_CLUB) || team >= FIRST_CLUB + Clubs.TOTAL) {
 			return;
+		}
 
 		Stat role = Formations.positionToStat(selPos);
 		int rolePos = getRolePos(role);
@@ -363,7 +383,9 @@ public final class Squads {
 
 		for (int i = 0; i < playerScores.size(); i++) {
 			pIdxScore = playerScores.get(i);
-			if (pIdxScore.getKey() == 0) continue;
+			if (pIdxScore.getKey() == 0) {
+				continue;
+			}
 
 			boolean isPos = Stats.getValue(of, pIdxScore.getKey(), role) != 0;
 			if (isPos && pIdxScore.getValue() > bestPosScore) {
@@ -375,8 +397,9 @@ public final class Squads {
 			}
 		}
 
-		if (bestPosScore != 0)
+		if (bestPosScore != 0) {
 			bestPlayer = bestPosPlayer;
+		}
 
 		Bits.toBytes(playerScores.get(bestPlayer).getKey().shortValue(), of.getData(), firstAdr + freePos * 2);
 		bestPlayer += Formations.PLAYER_COUNT;

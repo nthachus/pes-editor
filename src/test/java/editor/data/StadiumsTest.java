@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,8 +22,9 @@ public final class StadiumsTest extends BaseTest {
 		// DEBUG
 		log.debug("Loaded {}: {}", "stadiums", list);
 
-		for (String s : list)
+		for (String s : list) {
 			Assert.assertNotNull(s);
+		}
 		Assert.assertEquals(FIRST_STADIUM, list[0]);
 
 		String sn = FIRST_STADIUM + " " + getClass().getSimpleName();
@@ -41,8 +43,9 @@ public final class StadiumsTest extends BaseTest {
 		// first difference stadium name
 		int i = 0;
 		for (; i < Stadiums.TOTAL; i++) {
-			if (!Stadiums.get(of2, i).equals(Stadiums.get(of, i)))
+			if (!Stadiums.get(of2, i).equals(Stadiums.get(of, i))) {
 				break;
+			}
 		}
 		Assert.assertTrue(i < Stadiums.TOTAL);
 
@@ -50,12 +53,12 @@ public final class StadiumsTest extends BaseTest {
 		Assert.assertEquals(Stadiums.get(of2, i), Stadiums.get(of, i));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testLoadAllWithNullOF() throws Exception {
 		Stadiums.get(null);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testLoadWithNullOF() throws Exception {
 		Stadiums.get(null, 0);
 	}
@@ -65,7 +68,7 @@ public final class StadiumsTest extends BaseTest {
 		Stadiums.get(new OptionFile(), -1);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testSaveWithNullOF() throws Exception {
 		Stadiums.set(null, 0, null);
 	}
@@ -75,12 +78,12 @@ public final class StadiumsTest extends BaseTest {
 		Stadiums.set(new OptionFile(), -1, null);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testImportWithNullSource() throws Exception {
 		Stadiums.importData(null, new OptionFile());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testImportWithNullDest() throws Exception {
 		Stadiums.importData(new OptionFile(), null);
 	}

@@ -33,7 +33,9 @@ public class EmblemsTest extends BaseTest {
 		BufferedImage flag;
 		for (int i = 0, n = Emblems.TOTAL128 + Emblems.TOTAL16; i < n; i++) {
 			flag = (BufferedImage) Emblems.getImage(of, i);
-			if (null != flag && !Images.isBlank(flag)) list.add(flag);
+			if (null != flag && !Images.isBlank(flag)) {
+				list.add(flag);
+			}
 		}
 		Assert.assertThat(list.size(), Matchers.greaterThanOrEqualTo(n16 + n128));
 

@@ -1,5 +1,6 @@
 package editor.util;
 
+import editor.lang.NullArgumentException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ public final class FilesTest {
 		Assert.assertEquals("", ext);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testGetExtensionWithNullFile() throws Exception {
 		Files.getExtension((File) null);
 	}
@@ -93,7 +94,7 @@ public final class FilesTest {
 		Assert.assertNull(data);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = NullArgumentException.class)
 	public void testReadBytesWithNullFile() throws Exception {
 		Files.readBytes(null);
 	}
