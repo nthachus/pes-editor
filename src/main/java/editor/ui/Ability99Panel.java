@@ -2,6 +2,9 @@ package editor.ui;
 
 import editor.data.OptionFile;
 import editor.data.Stats;
+import editor.lang.JTextChangeListener;
+import editor.lang.JTextFieldLimit;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import editor.util.Strings;
 import editor.util.UIUtil;
@@ -30,7 +33,9 @@ public class Ability99Panel extends JPanel
 
 	public Ability99Panel(OptionFile of) {
 		super(new GridBagLayout());
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 
 		log.debug("Ability99 panel is initializing..");
@@ -73,8 +78,9 @@ public class Ability99Panel extends JPanel
 	}
 
 	public JTextField getField(int index) {
-		if (index < 0 || index >= fields.length)
+		if (index < 0 || index >= fields.length) {
 			throw new ArrayIndexOutOfBoundsException(Integer.toString(index));
+		}
 		return fields[index];
 	}
 
@@ -90,8 +96,12 @@ public class Ability99Panel extends JPanel
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
-		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
+		if (!(evt.getSource() instanceof JTextComponent)) {
+			throw new IllegalArgumentException("evt");
+		}
 		log.debug("Try to update ability field: {}", evt.getActionCommand());
 
 		JTextComponent tf = (JTextComponent) evt.getSource();
@@ -114,13 +124,17 @@ public class Ability99Panel extends JPanel
 	public static class Verifier99 extends InputVerifier {
 		@Override
 		public boolean verify(JComponent input) {
-			if (null == input) throw new NullPointerException("input");
-			if (!(input instanceof JTextComponent)) throw new IllegalArgumentException("input");
+			if (!(input instanceof JTextComponent)) {
+				throw new IllegalArgumentException("input");
+			}
 
 			return verify((JTextComponent) input);
 		}
 
 		public static boolean verify(JTextComponent tf) {
+			if (null == tf) {
+				throw new NullArgumentException("tf");
+			}
 			try {
 				int v = Integer.parseInt(tf.getText());
 				if (v > 0 && v <= Stats.MAX_STAT99) {
@@ -134,8 +148,12 @@ public class Ability99Panel extends JPanel
 	}
 
 	public void stateChanged(ChangeEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
-		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
+		if (!(evt.getSource() instanceof JTextComponent)) {
+			throw new IllegalArgumentException("evt");
+		}
 
 		JTextComponent tf = (JTextComponent) evt.getSource();
 		String text = tf.getText();
@@ -166,11 +184,17 @@ public class Ability99Panel extends JPanel
 	}
 
 	public void keyPressed(KeyEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		int key = evt.getKeyCode();
-		if (key != KeyEvent.VK_UP && key != KeyEvent.VK_DOWN) return;
+		if (key != KeyEvent.VK_UP && key != KeyEvent.VK_DOWN) {
+			return;
+		}
 
-		if (!(evt.getSource() instanceof JTextComponent)) throw new IllegalArgumentException("evt");
+		if (!(evt.getSource() instanceof JTextComponent)) {
+			throw new IllegalArgumentException("evt");
+		}
 		JTextComponent tf = (JTextComponent) evt.getSource();
 		String text = tf.getText();
 		log.debug("Try to perform key {} on field: {}", key, text);
@@ -178,8 +202,9 @@ public class Ability99Panel extends JPanel
 		try {
 			int v = Integer.parseInt(text);
 			if (key == KeyEvent.VK_UP) {
-				if (v < Stats.MAX_STAT99)
+				if (v < Stats.MAX_STAT99) {
 					tf.setText(Integer.toString(v + 1));
+				}
 			} else if (v > 1) {
 				tf.setText(Integer.toString(v - 1));
 			}

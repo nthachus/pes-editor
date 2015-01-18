@@ -4,6 +4,7 @@ import editor.data.OptionFile;
 import editor.data.Player;
 import editor.data.Stat;
 import editor.data.Stats;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 
 import javax.swing.*;
@@ -30,8 +31,12 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 
 	public PlayerImportDialog(Frame owner, OptionFile of, OptionFile of2) {
 		super(owner, Resources.getMessage("imPlayer.title"), true);
-		if (null == of) throw new NullPointerException("of");
-		if (null == of2) throw new NullPointerException("of2");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == of2) {
+			throw new NullArgumentException("of2");
+		}
 		this.of = of;
 		this.of2 = of2;
 
@@ -91,9 +96,12 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 	}
 
 	public void valueChanged(ListSelectionEvent e) {
-		if (null == e) throw new NullPointerException("e");
-		if (e.getValueIsAdjusting())
+		if (null == e) {
+			throw new NullArgumentException("e");
+		}
+		if (e.getValueIsAdjusting()) {
 			return;
+		}
 
 		if (!playerList.getSquadList().isSelectionEmpty()) {
 			Player p = playerList.getSquadList().getSelectedValue();
@@ -114,10 +122,16 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		if (null == e) throw new NullPointerException("e");
-		if (e.getClickCount() < 2) return;
+		if (null == e) {
+			throw new NullArgumentException("e");
+		}
+		if (e.getClickCount() < 2) {
+			return;
+		}
 
-		if (!(e.getSource() instanceof JList)) throw new IllegalArgumentException("e");
+		if (!(e.getSource() instanceof JList)) {
+			throw new IllegalArgumentException("e");
+		}
 		JList list = (JList) e.getSource();
 		Player p = (Player) list.getSelectedValue();
 

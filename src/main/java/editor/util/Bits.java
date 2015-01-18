@@ -1,14 +1,12 @@
 package editor.util;
 
+import editor.lang.NullArgumentException;
+
 public final class Bits {
 	private Bits() {
 	}
 
 	public static byte toByte(int value) {
-		return (byte) (value & 0xFF);
-	}
-
-	public static byte toByte(long value) {
 		return (byte) (value & 0xFF);
 	}
 
@@ -40,8 +38,9 @@ public final class Bits {
 	//public static final byte[] ZERO_INT16 = new byte[]{0, 0};
 
 	public static byte[] toBytes(int value) {
-		if (value == 0)
+		if (value == 0) {
 			return ZERO_INT;
+		}
 
 		byte[] temp = new byte[ZERO_INT.length];
 		toBytes(value, temp, 0);
@@ -58,13 +57,17 @@ public final class Bits {
 	}*/
 
 	public static long toInt(byte[] bytes, int index, int count) {
-		if (null == bytes) throw new NullPointerException("bytes");
-		if (index < 0 || index + count > bytes.length)
+		if (null == bytes) {
+			throw new NullArgumentException("bytes");
+		}
+		if (index < 0 || index + count > bytes.length) {
 			throw new IndexOutOfBoundsException(String.format("%d + %d > %d", index, count, bytes.length));
+		}
 
 		long value = 0;
-		for (int i = count - 1; i >= 0; i--)
+		for (int i = count - 1; i >= 0; i--) {
 			value = (value << 8) | toInt(bytes[i + index]);
+		}
 
 		return value;
 	}
@@ -78,12 +81,15 @@ public final class Bits {
 	}
 
 	public static void toBytes(long value, byte[] bytes, int index, int count) {
-		if (null == bytes) throw new NullPointerException("bytes");
-		if (index < 0 || index + count > bytes.length)
+		if (null == bytes) {
+			throw new NullArgumentException("bytes");
+		}
+		if (index < 0 || index + count > bytes.length) {
 			throw new IndexOutOfBoundsException(String.format("%d + %d > %d", index, count, bytes.length));
+		}
 
 		for (int i = 0; i < count; i++) {
-			bytes[i + index] = toByte(value);
+			bytes[i + index] = (byte) (0xFF & value);
 			value >>>= 8;
 		}
 	}
@@ -105,7 +111,9 @@ public final class Bits {
 
 	public static int bitLength(int n) {
 		int i = 0;
-		while (n != 0 && i++ < Integer.SIZE) n = n >>> 1;
+		while (n != 0 && i++ < Integer.SIZE) {
+			n = n >>> 1;
+		}
 		return i;
 	}
 

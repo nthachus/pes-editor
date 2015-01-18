@@ -4,6 +4,7 @@ import editor.data.Clubs;
 import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.data.Squads;
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 
 import javax.swing.*;
@@ -16,7 +17,9 @@ public class SquadNumberList extends JList<String> {
 
 	public SquadNumberList(OptionFile of) {
 		super();
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -31,8 +34,9 @@ public class SquadNumberList extends JList<String> {
 	 * @see SquadList#fetchPlayers(int)
 	 */
 	public void refresh(int team) {
-		if (team < 0 || team >= Squads.TOTAL)
+		if (team < 0 || team >= Squads.TOTAL) {
 			throw new IndexOutOfBoundsException("team#" + team);
+		}
 
 		int size, firstAdr, ft = team;
 		if (team < Squads.LAST_EDIT_NATION) {

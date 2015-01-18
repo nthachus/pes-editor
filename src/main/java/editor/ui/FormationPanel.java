@@ -4,6 +4,7 @@ import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.data.Player;
 import editor.data.Squads;
+import editor.lang.NullArgumentException;
 import editor.util.Files;
 import editor.util.Images;
 import editor.util.Resources;
@@ -46,7 +47,9 @@ public class FormationPanel extends JPanel
 
 	public FormationPanel(OptionFile of) {
 		super();
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 
 		log.debug("Formation panel is initializing..");
@@ -178,7 +181,9 @@ public class FormationPanel extends JPanel
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		log.debug("Perform Formation action '{}' for: {}", evt.getActionCommand(), evt.getSource());
 
 		if (evt.getSource() == altBox) {
@@ -279,26 +284,27 @@ public class FormationPanel extends JPanel
 		}
 
 		if (roleId == 8 || roleId == 15 || roleId == 22 || roleId == 29) {
-			if (oldPos != 8 && oldPos != 15 && oldPos != 22 && oldPos != 29) {
-				if (Formations.getY(of, team, alt, squadIndex) > 50) {
-					Formations.setY(of, team, alt, squadIndex, 28);
-				}
+			if (oldPos != 8 && oldPos != 15 && oldPos != 22 && oldPos != 29
+					&& Formations.getY(of, team, alt, squadIndex) > 50) {
+				Formations.setY(of, team, alt, squadIndex, 28);
 			}
 		} else if (roleId == 9 || roleId == 16 || roleId == 23 || roleId == 30) {
-			if (oldPos != 9 && oldPos != 16 && oldPos != 23 && oldPos != 30) {
-				if (Formations.getY(of, team, alt, squadIndex) < 54) {
-					Formations.setY(of, team, alt, squadIndex, 76);
-				}
+			if (oldPos != 9 && oldPos != 16 && oldPos != 23 && oldPos != 30
+					&& Formations.getY(of, team, alt, squadIndex) < 54) {
+				Formations.setY(of, team, alt, squadIndex, 76);
 			}
 		}
 	}
 
 	private void formationChanged(ActionEvent evt) {
-		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
+		if (!"y".equalsIgnoreCase(evt.getActionCommand())) {
 			return;
+		}
 
 		int formId = formNamesBox.getSelectedIndex();
-		if (formId < 0) return;
+		if (formId < 0) {
+			return;
+		}
 
 		int alt = altBox.getSelectedIndex();
 		if (formId > 0) {
@@ -307,8 +313,9 @@ public class FormationPanel extends JPanel
 
 		if (alt == 0) {
 			int pos = Formations.getPosition(of, team, 0, Formations.getCBOverlap(of, team));
-			if (pos < 1 || pos > 7)
+			if (pos < 1 || pos > 7) {
 				Formations.setCBOverlap(of, team, 0);
+			}
 		}
 
 		//countFormations();
@@ -326,7 +333,9 @@ public class FormationPanel extends JPanel
 
 	private int getNumTeam() {
 		int tt = team;
-		if (tt >= Squads.FIRST_EDIT_NATION) tt += Squads.EDIT_TEAM_COUNT;
+		if (tt >= Squads.FIRST_EDIT_NATION) {
+			tt += Squads.EDIT_TEAM_COUNT;
+		}
 		return tt;
 	}
 
@@ -381,7 +390,9 @@ public class FormationPanel extends JPanel
 	 * On the squad list selection changed.
 	 */
 	public void valueChanged(ListSelectionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		log.debug("On the squad list selection changed, from-pitch: {}, ok: {}", isFromPitch, isOk);
 
 		if (isFromPitch) {
@@ -478,16 +489,16 @@ public class FormationPanel extends JPanel
 				last = role;
 				roleBox.addItem(role);
 				count++;
-			} else if (!last.name.equalsIgnoreCase(role.name)) {
-				if (!role.isCB() || !isCB) {
-					last = role;
-					roleBox.addItem(last);
-					count++;
-				}
+			} else if (!last.name.equalsIgnoreCase(role.name)
+					&& !(role.isCB() && isCB)) {
+				last = role;
+				roleBox.addItem(last);
+				count++;
 			}
 
-			if (role.isCB())
+			if (role.isCB()) {
 				isCB = true;
+			}
 		}
 		// DEBUG
 		log.debug("{} Role items was added", count);
@@ -502,28 +513,30 @@ public class FormationPanel extends JPanel
 			if (r == 15) {
 				for (int p = 0; p < Formations.PLAYER_COUNT; p++) {
 					int pos = Formations.getPosition(of, team, alt, p);
-					if (pos != selPos) {
-						if (pos == 8 || pos == 22)
-							return false;
+					if (pos != selPos && (pos == 8 || pos == 22)) {
+						return false;
 					}
 				}
 			} else if (r == 16) {
 				for (int p = 0; p < Formations.PLAYER_COUNT; p++) {
 					int pos = Formations.getPosition(of, team, alt, p);
-					if (pos != selPos) {
-						if (pos == 9 || pos == 23)
-							return false;
+					if (pos != selPos && (pos == 9 || pos == 23)) {
+						return false;
 					}
 				}
 			} else if ((r == 8 || r == 22) && selPos != 15) {
 				for (int p = 0; p < Formations.PLAYER_COUNT; p++) {
 					int pos = Formations.getPosition(of, team, alt, p);
-					if (pos == 15) return false;
+					if (pos == 15) {
+						return false;
+					}
 				}
 			} else if ((r == 9 || r == 23) && selPos != 16) {
 				for (int p = 0; p < Formations.PLAYER_COUNT; p++) {
 					int pos = Formations.getPosition(of, team, alt, p);
-					if (pos == 16) return false;
+					if (pos == 16) {
+						return false;
+					}
 				}
 			}
 
@@ -556,7 +569,9 @@ public class FormationPanel extends JPanel
 
 		for (int p = 0; p < Formations.PLAYER_COUNT; p++) {
 			int pos = Formations.getPosition(of, team, alt, p);
-			if (pos == r) return false;
+			if (pos == r) {
+				return false;
+			}
 		}
 
 		return true;
@@ -666,8 +681,12 @@ public class FormationPanel extends JPanel
 	}
 
 	public void dragOver(DropTargetDragEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
-		if (null == evt.getLocation()) throw new NullPointerException("evt.location");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
+		if (null == evt.getLocation()) {
+			throw new NullArgumentException("evt.location");
+		}
 		log.debug("Drag over {}", evt.getLocation());
 
 		int squadIndex = squadList.locationToIndex(evt.getLocation());
@@ -682,9 +701,13 @@ public class FormationPanel extends JPanel
 	}
 
 	public void drop(DropTargetDropEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		Transferable transferable = evt.getTransferable();
-		if (null == transferable) throw new NullPointerException("evt.transferable");
+		if (null == transferable) {
+			throw new NullArgumentException("evt.transferable");
+		}
 
 		if (!transferable.isDataFlavorSupported(PlayerTransferable.getDataFlavor())) {
 			evt.rejectDrop();
@@ -738,8 +761,12 @@ public class FormationPanel extends JPanel
 	}
 
 	public void dragGestureRecognized(DragGestureEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
-		if (null == evt.getDragSource()) throw new NullPointerException("evt.dragSource");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
+		if (null == evt.getDragSource()) {
+			throw new NullArgumentException("evt.dragSource");
+		}
 
 		sourceIndex = squadList.getSelectedIndex();
 		// DEBUG

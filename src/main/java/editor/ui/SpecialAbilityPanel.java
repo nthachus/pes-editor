@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.OptionFile;
 import editor.data.Stats;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 
 import javax.swing.*;
@@ -15,7 +16,9 @@ public class SpecialAbilityPanel extends JPanel {
 
 	public SpecialAbilityPanel(OptionFile of) {
 		super(new GridLayout(0, 1));
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 
 		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("specAbility.title")));
@@ -29,8 +32,9 @@ public class SpecialAbilityPanel extends JPanel {
 	}
 
 	public JCheckBox getAbilityCheck(int index) {
-		if (index < 0 || index >= abilityCheck.length)
+		if (index < 0 || index >= abilityCheck.length) {
 			throw new ArrayIndexOutOfBoundsException(Integer.toString(index));
+		}
 		return abilityCheck[index];
 	}
 

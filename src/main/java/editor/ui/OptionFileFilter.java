@@ -17,11 +17,17 @@ public class OptionFileFilter extends FileFilter {
 	private static final Logger log = LoggerFactory.getLogger(OptionFileFilter.class);
 
 	public boolean accept(File file) {
-		if (file == null) return false;
-		if (file.isDirectory()) return true;
+		if (file == null) {
+			return false;
+		}
+		if (file.isDirectory()) {
+			return true;
+		}
 
 		//log.debug("Try to filter OF: {}", file);
-		if (!file.canRead()) return false;
+		if (!file.canRead()) {
+			return false;
+		}
 
 		String extension = Files.getExtension(file);
 

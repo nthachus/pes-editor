@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,7 +119,9 @@ public final class Squads {
 	}
 
 	public static void fixFormation(OptionFile of, int squad, boolean fixJobs) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		if (squad < 0 || squad >= TOTAL) throw new IndexOutOfBoundsException("squad#" + squad);
 		if (!fixJobs)
 			log.debug("Try to fix formation for team: {}", squad);
@@ -164,17 +167,22 @@ public final class Squads {
 	}
 
 	public static void fixAll(OptionFile of) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		log.debug("Try to fix formation for all {} teams", TOTAL);
 
-		for (int s = 0; s < TOTAL; s++)
+		for (int s = 0; s < TOTAL; s++) {
 			fixFormation(of, s, true);
+		}
 
 		log.debug("Fixing formation for all teams succeeded");
 	}
 
 	public static void tidy(OptionFile of, int team) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		if (team < 0 || team >= TOTAL) throw new IndexOutOfBoundsException("team#" + team);
 		log.debug("Try to tidy team: {}", team);
 
@@ -331,7 +339,9 @@ public final class Squads {
 	}
 
 	public static void tidy11(OptionFile of, int team, int freePos, int selPos) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		if (team < 0 || team >= TOTAL) throw new IndexOutOfBoundsException("team#" + team);
 		log.debug("Try to tidy 11 for team: {}, free-position: {}, selected-position: {}", team, freePos, selPos);
 

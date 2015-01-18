@@ -1,5 +1,7 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
+
 public final class Boots {
 	private Boots() {
 	}
@@ -17,8 +19,12 @@ public final class Boots {
 	public static final int START_ADR = Player.END_ADR + 1116;
 
 	public static void importData(OptionFile ofSource, OptionFile ofDest) {
-		if (null == ofSource) throw new NullPointerException("ofSource");
-		if (null == ofDest) throw new NullPointerException("ofDest");
+		if (null == ofSource) {
+			throw new NullArgumentException("ofSource");
+		}
+		if (null == ofDest) {
+			throw new NullArgumentException("ofDest");
+		}
 
 		System.arraycopy(ofSource.getData(), START_ADR, ofDest.getData(), START_ADR, SIZE * TOTAL);
 	}

@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.Formations;
 import editor.data.OptionFile;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,9 @@ public class FormationDialog extends JDialog implements ActionListener, WindowLi
 
 	public FormationDialog(Frame owner, OptionFile of) {
 		super(owner, Resources.getMessage("formation.title"), true);
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 
 		log.debug("Formation dialog is initializing..");
@@ -72,7 +75,9 @@ public class FormationDialog extends JDialog implements ActionListener, WindowLi
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		log.debug("Perform Formation dialog action: {}", evt.getActionCommand());
 
 		if ("Cancel".equalsIgnoreCase(evt.getActionCommand())) {

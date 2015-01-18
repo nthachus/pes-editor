@@ -1,6 +1,7 @@
 package editor.ui;
 
 import editor.data.*;
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,9 @@ public class NationalityList extends JList/*<Player>*/ {
 
 	public NationalityList(OptionFile of) {
 		super();
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -30,7 +33,9 @@ public class NationalityList extends JList/*<Player>*/ {
 	public void refresh(int nation, boolean alphaOrder) {
 		int extraCount = SelectByNation.getExtraNations().length;
 		int total = Stats.NATION.length + extraCount;
-		if (nation < 0 || nation >= total) throw new IndexOutOfBoundsException("nation#" + nation);
+		if (nation < 0 || nation >= total) {
+			throw new IndexOutOfBoundsException("nation#" + nation);
+		}
 		// DEBUG
 		log.debug("Reload Nationality list #{} for country: {}, sort: {}", hashCode(), nation, alphaOrder);
 
@@ -50,8 +55,9 @@ public class NationalityList extends JList/*<Player>*/ {
 			model = getAllPlayers();
 		}
 
-		if (alphaOrder)
+		if (alphaOrder) {
 			Arrays.sort(model);
+		}
 
 		setListData(model);
 		// DEBUG
@@ -93,8 +99,9 @@ public class NationalityList extends JList/*<Player>*/ {
 	private boolean isFreeAgent(int player) {
 		int endAdr = Squads.CLUB_ADR + Clubs.TOTAL * Formations.CLUB_TEAM_SIZE * 2;
 		for (int adr = Squads.CLUB_ADR; adr < endAdr; adr += 2) {
-			if (Bits.toInt16(of.getData(), adr) == player)
+			if (Bits.toInt16(of.getData(), adr) == player) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -108,7 +115,9 @@ public class NationalityList extends JList/*<Player>*/ {
 		Player o;
 		for (int p = Player.FIRST_EDIT; p < Player.END_EDIT; p++) {
 			o = new Player(of, p);
-			if (!o.isEmpty()) model.add(o);
+			if (!o.isEmpty()) {
+				model.add(o);
+			}
 		}
 		return model.toArray(new Player[model.size()]);
 	}
@@ -143,28 +152,39 @@ public class NationalityList extends JList/*<Player>*/ {
 
 	private int getDupe(int player) {
 		for (int i = 1; i < Player.FIRST_CLASSIC; i++) {
-			if (Stats.getValue(of, player, Stats.NATIONALITY) != Stats.getValue(of, i, Stats.NATIONALITY))
+			if (Stats.getValue(of, player, Stats.NATIONALITY) != Stats.getValue(of, i, Stats.NATIONALITY)) {
 				continue;
+			}
 
 			int score = 0;
-			if (Stats.getValue(of, player, Stats.AGE) == Stats.getValue(of, i, Stats.AGE))
+			if (Stats.getValue(of, player, Stats.AGE) == Stats.getValue(of, i, Stats.AGE)) {
 				score++;
-			if (Stats.getValue(of, player, Stats.HEIGHT) == Stats.getValue(of, i, Stats.HEIGHT))
+			}
+			if (Stats.getValue(of, player, Stats.HEIGHT) == Stats.getValue(of, i, Stats.HEIGHT)) {
 				score++;
-			if (Stats.getValue(of, player, Stats.WEIGHT) == Stats.getValue(of, i, Stats.WEIGHT))
+			}
+			if (Stats.getValue(of, player, Stats.WEIGHT) == Stats.getValue(of, i, Stats.WEIGHT)) {
 				score++;
-			if (Stats.getValue(of, player, Stats.FOOT) == Stats.getValue(of, i, Stats.FOOT))
+			}
+			if (Stats.getValue(of, player, Stats.FOOT) == Stats.getValue(of, i, Stats.FOOT)) {
 				score++;
-			if (Stats.getValue(of, player, Stats.FAVORITE_SIDE) == Stats.getValue(of, i, Stats.FAVORITE_SIDE))
+			}
+			if (Stats.getValue(of, player, Stats.FAVORITE_SIDE) == Stats.getValue(of, i, Stats.FAVORITE_SIDE)) {
 				score++;
-			if (Stats.getValue(of, player, Stats.REG_POS) == Stats.getValue(of, i, Stats.REG_POS))
+			}
+			if (Stats.getValue(of, player, Stats.REG_POS) == Stats.getValue(of, i, Stats.REG_POS)) {
 				score++;
-			if (Stats.getValue(of, player, Stats.ATTACK) == Stats.getValue(of, i, Stats.ATTACK))
+			}
+			if (Stats.getValue(of, player, Stats.ATTACK) == Stats.getValue(of, i, Stats.ATTACK)) {
 				score++;
-			if (Stats.getValue(of, player, Stats.ACCELERATION) == Stats.getValue(of, i, Stats.ACCELERATION))
+			}
+			if (Stats.getValue(of, player, Stats.ACCELERATION) == Stats.getValue(of, i, Stats.ACCELERATION)) {
 				score++;
+			}
 
-			if (score >= 7) return i;
+			if (score >= 7) {
+				return i;
+			}
 		}
 		return -1;
 	}

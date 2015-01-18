@@ -1,6 +1,8 @@
 package editor.ui;
 
 import editor.data.OptionFile;
+import editor.lang.JTextFieldLimit;
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import editor.util.Resources;
 import org.slf4j.Logger;
@@ -15,7 +17,7 @@ public class WenPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1283642115923368976L;
 	private static final Logger log = LoggerFactory.getLogger(WenPanel.class);
 
-	public static final int MAX_WEN = 99999;
+	private static final int MAX_WEN = 99999;
 	private static final int START_ADR = 5208;
 	private static final int ALT_ADR = 52;
 
@@ -24,10 +26,12 @@ public class WenPanel extends JPanel implements ActionListener {
 	private/* final*/ JLabel current;
 	private/* final*/ JTextField field;
 
-	public WenPanel(OptionFile optionFile) {
+	public WenPanel(OptionFile of) {
 		super();
-		if (null == optionFile) throw new NullPointerException("optionFile");
-		of = optionFile;
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		this.of = of;
 		// DEBUG
 		log.debug("WEN panel is initializing..");
 

@@ -1,6 +1,7 @@
 package editor.ui;
 
 import editor.data.*;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,9 @@ public class SelectByTeam extends JPanel implements ActionListener {
 
 	public SelectByTeam(OptionFile of, boolean isNormal) {
 		super(new BorderLayout());
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 		this.isNormal = isNormal;
 
@@ -81,17 +84,19 @@ public class SelectByTeam extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
-		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
-			return;
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 
-		int teamId = teamBox.getSelectedIndex();
-		log.debug("Try to select by team: {}", teamId);
-
-		refresh(teamId);
+		if ("y".equalsIgnoreCase(evt.getActionCommand())) {
+			refreshForTeam();
+		}
 	}
 
-	private void refresh(int teamId) {
+	public void refreshForTeam() {
+		int teamId = teamBox.getSelectedIndex();
+		log.debug("Try to refresh for selected team: {}", teamId);
+
 		if (teamId >= 0) {
 			squadList.refresh(teamId, true);
 
@@ -104,7 +109,9 @@ public class SelectByTeam extends JPanel implements ActionListener {
 
 	private String[] getAllTeams() {
 		int len = Squads.NATION_COUNT + Squads.EXTRAS.length + Clubs.TOTAL;
-		if (!isNormal) len++;
+		if (!isNormal) {
+			len++;
+		}
 		String[] squads = new String[len];
 
 		int ofs = 0;
@@ -134,7 +141,7 @@ public class SelectByTeam extends JPanel implements ActionListener {
 		teamBox.setModel(new DefaultComboBoxModel<String>(squads));
 		teamBox.setSelectedIndex(newIdx);
 
-		refresh(teamBox.getSelectedIndex());
+		refreshForTeam();
 
 		teamBox.setActionCommand("y");
 		// DEBUG

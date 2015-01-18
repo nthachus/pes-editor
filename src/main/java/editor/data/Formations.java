@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 
 public final class Formations {
@@ -90,14 +91,18 @@ public final class Formations {
 	}
 
 	public static int getPosition(OptionFile of, int squad, int alt, int index) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getPosOffset(squad, alt, index);
 		return Bits.toInt(of.getData()[adr]);
 	}
 
 	public static void setPosition(OptionFile of, int squad, int alt, int index, int position) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getPosOffset(squad, alt, index);
 		of.getData()[adr] = Bits.toByte(position);
@@ -109,14 +114,18 @@ public final class Formations {
 	}
 
 	public static int getSlot(OptionFile of, int squad, int index) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getSlotOffset(squad, index);
 		return Bits.toInt(of.getData()[adr]);
 	}
 
 	public static void setSlot(OptionFile of, int squad, int index, int player) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getSlotOffset(squad, index);
 		of.getData()[adr] = Bits.toByte(player);
@@ -128,14 +137,18 @@ public final class Formations {
 	}
 
 	public static int getJob(OptionFile of, int squad, int index) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getJobOffset(squad, index);
 		return Bits.toInt(of.getData()[adr]);
 	}
 
 	public static void setJob(OptionFile of, int squad, int index, int job) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getJobOffset(squad, index);
 		of.getData()[adr] = Bits.toByte(job);
@@ -152,28 +165,36 @@ public final class Formations {
 	}
 
 	public static int getX(OptionFile of, int squad, int alt, int index) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getXOffset(squad, alt, index);
 		return Bits.toInt(of.getData()[adr]);
 	}
 
 	public static int getY(OptionFile of, int squad, int alt, int index) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getYOffset(squad, alt, index);
 		return Bits.toInt(of.getData()[adr]);
 	}
 
 	public static void setX(OptionFile of, int squad, int alt, int index, int x) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getXOffset(squad, alt, index);
 		of.getData()[adr] = Bits.toByte(x);
 	}
 
 	public static void setY(OptionFile of, int squad, int alt, int index, int y) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getYOffset(squad, alt, index);
 		of.getData()[adr] = Bits.toByte(y);
@@ -185,7 +206,9 @@ public final class Formations {
 	}
 
 	public static boolean getAttack(OptionFile of, int squad, int alt, int index, int direction) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getAtkOffset(squad, alt, index);
 		int t = Bits.toInt(of.getData()[adr]);
@@ -194,7 +217,9 @@ public final class Formations {
 	}
 
 	public static void setAttack(OptionFile of, int squad, int alt, int index, int direction) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getAtkOffset(squad, alt, index);
 		if (direction < 0) {
@@ -212,14 +237,18 @@ public final class Formations {
 	}
 
 	public static int getDefence(OptionFile of, int squad, int alt, int index) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getDefOffset(squad, alt, index);
 		return Bits.toInt(of.getData()[adr]);
 	}
 
 	public static void setDefence(OptionFile of, int squad, int alt, int index, int defence) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getDefOffset(squad, alt, index);
 		of.getData()[adr] = Bits.toByte(defence);
@@ -232,14 +261,18 @@ public final class Formations {
 	}
 
 	public static int getStrategy(OptionFile of, int squad, int button) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getStrategyOffset(squad, button);
 		return Bits.toInt(of.getData()[adr]);
 	}
 
 	public static void setStrategy(OptionFile of, int squad, int button, int strategy) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getStrategyOffset(squad, button);
 		of.getData()[adr] = Bits.toByte(strategy);
@@ -253,14 +286,18 @@ public final class Formations {
 	 * CB Overlap.
 	 */
 	public static int getCBOverlap(OptionFile of, int squad) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOlCBOffset(squad);
 		return Bits.toInt(of.getData()[adr]);
 	}
 
 	public static void setCBOverlap(OptionFile of, int squad, int cbOverlap) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOlCBOffset(squad);
 		of.getData()[adr] = Bits.toByte(cbOverlap);
@@ -271,14 +308,18 @@ public final class Formations {
 	}
 
 	public static boolean getStrategyAuto(OptionFile of, int squad) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getStAutoOffset(squad);
 		return (of.getData()[adr] != 0);
 	}
 
 	public static void setStrategyAuto(OptionFile of, int squad, boolean auto) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getStAutoOffset(squad);
 		of.getData()[adr] = Bits.toByte(auto);
@@ -291,14 +332,18 @@ public final class Formations {
 	}
 
 	public static int getTeamSetting(OptionFile of, int squad, int alt, int setting) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getTeamSetOffset(squad, alt, setting);
 		return Bits.toInt(of.getData()[adr]);
 	}
 
 	public static void setTeamSetting(OptionFile of, int squad, int alt, int setting, int value) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getTeamSetOffset(squad, alt, setting);
 		of.getData()[adr] = Bits.toByte(value);
@@ -375,7 +420,9 @@ public final class Formations {
 	private static final int FORM_DATA_LEN = FORM_DATA.length / FORM_NAMES.length;
 
 	public static void setFormation(OptionFile of, int team, int alt, int formId) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		if (formId < 0 || formId >= FORM_NAMES.length) throw new IndexOutOfBoundsException("formId#" + formId);
 
 		int adr = getXOffset(team, alt, 1);

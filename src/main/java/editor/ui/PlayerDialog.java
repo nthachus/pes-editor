@@ -3,6 +3,7 @@ package editor.ui;
 import editor.data.OptionFile;
 import editor.data.Player;
 import editor.data.Stats;
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import editor.util.Resources;
 
@@ -27,8 +28,12 @@ public class PlayerDialog extends JDialog implements ActionListener {
 
 	public PlayerDialog(Frame owner, OptionFile of, PlayerImportDialog pid) {
 		super(owner, Resources.getMessage("player.title"), true);
-		if (null == of) throw new NullPointerException("of");
-		if (null == pid) throw new NullPointerException("pid");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == pid) {
+			throw new NullArgumentException("pid");
+		}
 		this.of = of;
 		playerImportDia = pid;
 
@@ -76,7 +81,9 @@ public class PlayerDialog extends JDialog implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 
 		if ("Accept".equalsIgnoreCase(evt.getActionCommand())) {
 			if (isFormValid()) {
@@ -90,7 +97,9 @@ public class PlayerDialog extends JDialog implements ActionListener {
 	}
 
 	public void show(Player player) {
-		if (null == player) throw new NullPointerException("player");
+		if (null == player) {
+			throw new NullArgumentException("player");
+		}
 		index = player.getIndex();
 
 		String tit = String.format("[%d] %s", index, player.getName());
@@ -109,18 +118,22 @@ public class PlayerDialog extends JDialog implements ActionListener {
 	@SuppressWarnings("RedundantIfStatement")
 	private boolean isFormValid() {
 		for (int i = 0; i < Stats.ABILITY99.length; i++) {
-			if (!Ability99Panel.Verifier99.verify(abilityPan.getField(i)))
+			if (!Ability99Panel.Verifier99.verify(abilityPan.getField(i))) {
 				return false;
+			}
 		}
 
-		if (!GeneralAbilityPanel.StatVerifier.verify(Stats.HEIGHT, generalPan.getHeightField()))
+		if (!GeneralAbilityPanel.StatVerifier.verify(Stats.HEIGHT, generalPan.getHeightField())) {
 			return false;
+		}
 
-		if (!GeneralAbilityPanel.StatVerifier.verify(Stats.WEIGHT, generalPan.getWeightField()))
+		if (!GeneralAbilityPanel.StatVerifier.verify(Stats.WEIGHT, generalPan.getWeightField())) {
 			return false;
+		}
 
-		if (!GeneralAbilityPanel.StatVerifier.verify(Stats.AGE, generalPan.getAgeField()))
+		if (!GeneralAbilityPanel.StatVerifier.verify(Stats.AGE, generalPan.getAgeField())) {
 			return false;
+		}
 
 		return true;
 	}

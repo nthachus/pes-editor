@@ -3,6 +3,8 @@ package editor.ui;
 import editor.data.OptionFile;
 import editor.data.Stat;
 import editor.data.Stats;
+import editor.lang.JTextFieldLimit;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +21,9 @@ public class GeneralAbilityPanel extends JPanel {
 
 	public GeneralAbilityPanel(OptionFile of) {
 		super(new GridLayout(0, 2));
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 
 		log.debug("General Ability panel is initializing..");
@@ -233,19 +237,25 @@ public class GeneralAbilityPanel extends JPanel {
 		private final Stat stat;
 
 		public StatVerifier(Stat stat) {
-			if (null == stat) throw new NullPointerException("stat");
 			this.stat = stat;
 		}
 
 		@Override
 		public boolean verify(JComponent input) {
-			if (null == input) throw new NullPointerException("input");
-			if (!(input instanceof JTextComponent)) throw new IllegalArgumentException("input");
+			if (!(input instanceof JTextComponent)) {
+				throw new IllegalArgumentException("input");
+			}
 
 			return verify(stat, (JTextComponent) input);
 		}
 
 		public static boolean verify(Stat stat, JTextComponent tf) {
+			if (null == stat) {
+				throw new NullArgumentException("stat");
+			}
+			if (null == tf) {
+				throw new NullArgumentException("tf");
+			}
 			String text = tf.getText();
 			log.debug("Try to verify Stat '{}' value: {}", stat, text);
 

@@ -2,6 +2,8 @@ package editor.ui;
 
 import editor.data.OptionFile;
 import editor.data.Stadiums;
+import editor.lang.JTextFieldLimit;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 
 import javax.swing.*;
@@ -21,8 +23,12 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 
 	public StadiumPanel(OptionFile of, TeamPanel tp) {
 		super();
-		if (null == of) throw new NullPointerException("of");
-		if (null == tp) throw new NullPointerException("tp");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == tp) {
+			throw new NullArgumentException("tp");
+		}
 		this.of = of;
 		this.teamPanel = tp;
 
@@ -78,7 +84,9 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 	}
 
 	public void valueChanged(ListSelectionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 
 		if (!evt.getValueIsAdjusting()) {
 			int stadiumId = list.getSelectedIndex();

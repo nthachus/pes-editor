@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Strings;
 
 import java.util.Arrays;
@@ -17,12 +18,16 @@ public final class Leagues {
 	public static final int START_ADR = Stadiums.END_ADR + (Stadiums.SIZE + 1);
 
 	private static int getOffset(int league) {
-		if (league < 0 || league >= TOTAL) throw new IndexOutOfBoundsException("league#" + league);
+		if (league < 0 || league >= TOTAL) {
+			throw new IndexOutOfBoundsException("league#" + league);
+		}
 		return START_ADR + league * SIZE;
 	}
 
 	public static String get(OptionFile of, int league) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int ofs = getOffset(league);
 		int adr = ofs + BASE_NAME_LEN + 1;  // the modified league name
@@ -39,17 +44,22 @@ public final class Leagues {
 	}
 
 	public static String[] get(OptionFile of) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		String[] leagues = new String[TOTAL];
-		for (int i = 0; i < TOTAL; i++)
+		for (int i = 0; i < TOTAL; i++) {
 			leagues[i] = get(of, i);
+		}
 
 		return leagues;
 	}
 
 	public static void set(OptionFile of, int league, String name) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int ofs = getOffset(league) + BASE_NAME_LEN + 1;
 		byte[] temp = new byte[NAME_LEN + 2];
@@ -65,8 +75,12 @@ public final class Leagues {
 	}
 
 	public static void importData(OptionFile ofSource, OptionFile ofDest) {
-		if (null == ofSource) throw new NullPointerException("ofSource");
-		if (null == ofDest) throw new NullPointerException("ofDest");
+		if (null == ofSource) {
+			throw new NullArgumentException("ofSource");
+		}
+		if (null == ofDest) {
+			throw new NullArgumentException("ofDest");
+		}
 
 		int ofs = START_ADR + BASE_NAME_LEN + 1;
 		for (int i = 0; i < TOTAL; i++) {

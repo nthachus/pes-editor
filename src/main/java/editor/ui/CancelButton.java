@@ -1,5 +1,6 @@
 package editor.ui;
 
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 
 import javax.swing.*;
@@ -14,7 +15,9 @@ public class CancelButton extends JButton implements ActionListener {
 
 	public CancelButton(Component dialog) {
 		super(Resources.getMessage("Cancel"));
-		if (null == dialog) throw new NullPointerException("dialog");
+		if (null == dialog) {
+			throw new NullArgumentException("dialog");
+		}
 		this.dialog = dialog;
 
 		addActionListener(this);

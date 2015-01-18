@@ -1,4 +1,4 @@
-package editor.ui;
+package editor.lang;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -25,12 +25,17 @@ public class JTextFieldLimit extends PlainDocument {
 
 	@Override
 	public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
-		if (null == str) return;
+		if (null == str) {
+			return;
+		}
 
 		if (getLength() + str.length() <= limit) {
 			if (null != toUppercase && str.length() > 0) {
-				if (toUppercase) str = str.toUpperCase();
-				else str = str.toLowerCase();
+				if (toUppercase) {
+					str = str.toUpperCase();
+				} else {
+					str = str.toLowerCase();
+				}
 			}
 
 			super.insertString(offset, str, attr);

@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import editor.util.Files;
 import editor.util.LZAri;
@@ -82,7 +83,9 @@ public class OptionFile {
 	//region Load Game File
 
 	public boolean load(File file) {
-		if (null == file) throw new NullPointerException("file");
+		if (null == file) {
+			throw new NullArgumentException("file");
+		}
 
 		format = null;
 		filename = null;
@@ -103,8 +106,9 @@ public class OptionFile {
 			}
 
 			if (null != format) {
-				if (!isValidGameId(gameId))
+				if (!isValidGameId(gameId)) {
 					throw new IllegalStateException("Invalid Game ID: " + gameId);
+				}
 
 				if (format != OfFormat.arMax) {
 					int len = in.read(data);
@@ -263,8 +267,12 @@ public class OptionFile {
 	//region Save Game File
 
 	public boolean save(File file) {
-		if (null == format) return false;
-		if (null == file) throw new NullPointerException("file");
+		if (null == format) {
+			return false;
+		}
+		if (null == file) {
+			throw new NullArgumentException("file");
+		}
 		log.debug("Try to save OF file to: {}", file);
 
 		//data[49] = 1;
@@ -289,8 +297,9 @@ public class OptionFile {
 
 				out.write(data);
 
-				if (format == OfFormat.xPort)
+				if (format == OfFormat.xPort) {
 					out.write(Bits.ZERO_INT);// skip the last CRC32 of XPort file
+				}
 			}
 		} catch (Exception e) {
 			log.error("Failed to save game file:", e);
@@ -360,8 +369,12 @@ public class OptionFile {
 	//endregion
 
 	public boolean saveData(File file) {
-		if (!isLoaded()) return false;
-		if (null == file) throw new NullPointerException("file");
+		if (!isLoaded()) {
+			return false;
+		}
+		if (null == file) {
+			throw new NullArgumentException("file");
+		}
 
 		FileOutputStream out = null;
 		try {
@@ -473,7 +486,9 @@ public class OptionFile {
 
 				Bits.toBytes(p, data, ofs);
 
-				if (++k >= KEYS.length) k = 0;
+				if (++k >= KEYS.length) {
+					k = 0;
+				}
 			}
 		}
 	}
@@ -488,7 +503,9 @@ public class OptionFile {
 
 				Bits.toBytes(v, data, ofs);
 
-				if (++k >= KEYS.length) k = 0;
+				if (++k >= KEYS.length) {
+					k = 0;
+				}
 			}
 		}
 	}
@@ -497,7 +514,9 @@ public class OptionFile {
 		int adr, chk;
 		for (int[] block : BLOCKS) {
 			adr = block[0] - 8;
-			if (adr < 0) continue;
+			if (adr < 0) {
+				continue;
+			}
 
 			// calculates simple checksum for each blocks
 			chk = 0;
@@ -508,8 +527,9 @@ public class OptionFile {
 			// 4 bytes checksum before each blocks
 			if (validate) {
 				int crc = Bits.toInt(data, adr);
-				if (crc != chk)
+				if (crc != chk) {
 					throw new IllegalStateException(String.format("Invalid checksum 0x%X, expected: 0x%X", crc, chk));
+				}
 			} else {
 				Bits.toBytes(chk, data, adr);
 			}

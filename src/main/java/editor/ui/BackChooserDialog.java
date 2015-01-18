@@ -1,5 +1,6 @@
 package editor.ui;
 
+import editor.lang.NullArgumentException;
 import editor.util.Images;
 import editor.util.Resources;
 import org.slf4j.Logger;
@@ -58,8 +59,9 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 					log.warn("Failed to load back-flag {}: {}", backUrl, e.toString());
 				}
 			}
-			if (null == rasterData[i])
+			if (null == rasterData[i]) {
 				rasterData[i] = getBlankFlagData();
+			}
 
 			flagButtons[i] = new JButton();
 			flagButtons[i].setMargin(margin);
@@ -78,8 +80,9 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public JButton getFlagButton(int index) {
-		if (index < 0 || index >= flagButtons.length)
+		if (index < 0 || index >= flagButtons.length) {
 			throw new ArrayIndexOutOfBoundsException(Integer.toString(index));
+		}
 		return flagButtons[index];
 	}
 
@@ -94,7 +97,9 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 
 		slot = Integer.parseInt(evt.getActionCommand());
 		setVisible(false);
@@ -128,10 +133,12 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public ImageIcon getBackFlag(Image image, int bgIndex, byte[] red, byte[] green, byte[] blue) {
-		if (bgIndex < 0 || bgIndex >= rasterData.length)
+		if (bgIndex < 0 || bgIndex >= rasterData.length) {
 			throw new IndexOutOfBoundsException("bgIndex#" + bgIndex);
-		if (null != image)
+		}
+		if (null != image) {
 			log.debug("Try to build Background Flag with image: {}", image);
+		}
 
 		IndexColorModel colorModel = new IndexColorModel(BITS_DEPTH, Images.paletteSize(BITS_DEPTH), red, green, blue);
 		BufferedImage bi = new BufferedImage(colorModel, rasterData[bgIndex], false, null);
@@ -147,7 +154,9 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 				g2.drawImage(image, x, y, null);
 			}
 		} finally {
-			if (null != g2) g2.dispose();
+			if (null != g2) {
+				g2.dispose();
+			}
 		}
 
 		return new ImageIcon(img);

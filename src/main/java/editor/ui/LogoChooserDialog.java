@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.Logos;
 import editor.data.OptionFile;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import editor.util.UIUtil;
 
@@ -19,7 +20,9 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 
 	public LogoChooserDialog(Frame owner, OptionFile of) {
 		super(owner, true);
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 
 		initComponents();
@@ -65,7 +68,9 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans;

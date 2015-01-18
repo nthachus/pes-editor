@@ -3,6 +3,7 @@ package editor.ui;
 import editor.data.EmblemType;
 import editor.data.Emblems;
 import editor.data.OptionFile;
+import editor.lang.NullArgumentException;
 import editor.util.Files;
 import editor.util.Resources;
 import editor.util.Strings;
@@ -37,9 +38,15 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 	public EmblemPanel(OptionFile of, EmblemImportDialog fid, TeamPanel tp) {
 		super();
 
-		if (null == of) throw new NullPointerException("of");
-		if (null == fid) throw new NullPointerException("fid");
-		if (null == tp) throw new NullPointerException("tp");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == fid) {
+			throw new NullArgumentException("fid");
+		}
+		if (null == tp) {
+			throw new NullArgumentException("tp");
+		}
 		this.of = of;
 		flagImportDia = fid;
 		teamPanel = tp;
@@ -229,7 +236,9 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		log.debug("Try to perform panel action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
@@ -404,7 +413,9 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 	}
 
 	public void mouseEntered(MouseEvent e) {
-		if (null == e) throw new NullPointerException("e");
+		if (null == e) {
+			throw new NullArgumentException("e");
+		}
 		if (!(e.getSource() instanceof AbstractButton)) throw new IllegalArgumentException("e");
 
 		AbstractButton btn = (AbstractButton) e.getSource();
@@ -435,14 +446,16 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 	//endregion
 
 	private static int validateImage(BufferedImage image, int paletteSize) {
-		if (null == image) throw new NullPointerException("image");
+		if (null == image) {
+			throw new NullArgumentException("image");
+		}
 
 		if (image.getWidth() != Emblems.IMG_SIZE || image.getHeight() != Emblems.IMG_SIZE)
 			throw new IllegalArgumentException(
 					Resources.getMessage("msg.invalidSize", Emblems.IMG_SIZE, Emblems.IMG_SIZE));
 
 		ColorModel colorMod = image.getColorModel();
-		if (null == colorMod || !(colorMod instanceof IndexColorModel))
+		if (!(colorMod instanceof IndexColorModel))
 			throw new IllegalArgumentException(Resources.getMessage("msg.notIndexed"));
 
 		int colorsCount = ((IndexColorModel) colorMod).getMapSize();

@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import editor.util.Strings;
 
@@ -150,10 +151,13 @@ public class Player implements Serializable, Comparable<Player> {
 	}
 
 	public static String getName(OptionFile of, int index) {
-		if (index == 0)
+		if (index == 0) {
 			return Resources.getMessage("player.empty");
+		}
 
-		if (of == null) throw new NullPointerException("of");
+		if (of == null) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(index);
 
 		String nm = new String(of.getData(), adr, NAME_LEN, Strings.UNICODE);

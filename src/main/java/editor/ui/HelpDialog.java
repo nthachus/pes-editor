@@ -1,5 +1,6 @@
 package editor.ui;
 
+import editor.lang.NullArgumentException;
 import editor.util.Files;
 import editor.util.Resources;
 import org.slf4j.Logger;
@@ -66,8 +67,9 @@ public class HelpDialog extends JDialog implements ActionListener, HyperlinkList
 			lang = loc.getLanguage();
 			helpUrl = getClass().getResource(String.format(HOME_PAGE, Files.EXT_SEPARATOR + lang));
 
-			if (null == helpUrl)
+			if (null == helpUrl) {
 				helpUrl = getClass().getResource(String.format(HOME_PAGE, ""));
+			}
 		}
 
 		log.debug("Loaded help index URL: {}", helpUrl);
@@ -76,7 +78,9 @@ public class HelpDialog extends JDialog implements ActionListener, HyperlinkList
 
 	@Override
 	public void setVisible(boolean b) {
-		if (b) showPage(homePage);
+		if (b) {
+			showPage(homePage);
+		}
 		super.setVisible(b);
 	}
 
@@ -91,7 +95,9 @@ public class HelpDialog extends JDialog implements ActionListener, HyperlinkList
 	}
 
 	public void hyperlinkUpdate(HyperlinkEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		log.debug("Try to process hyperlink event: {} -> {}", evt.getEventType(), evt.getURL());
 
 		if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {

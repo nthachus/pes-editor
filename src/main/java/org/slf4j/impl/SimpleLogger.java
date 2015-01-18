@@ -38,8 +38,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -87,7 +87,7 @@ public class SimpleLogger extends NamedLoggerBase {
 	private static volatile String NEW_LINE = "\n";
 	private static volatile ExecutorService THREAD_POOL = null;
 	private static volatile SendGrid SMTP_APPENDER = null;
-	private static final List<String> CACHED_MESSAGES = new ArrayList<String>(5);
+	private static final List<String> CACHED_MESSAGES = new LinkedList<String>();
 
 	/**
 	 * All system properties used by <code>SimpleLogger</code> start with this prefix
@@ -139,8 +139,9 @@ public class SimpleLogger extends NamedLoggerBase {
 		loadProperties();
 
 		String defaultLogLevelString = getStringProperty(DEFAULT_LOG_LEVEL_KEY, null);
-		if (defaultLogLevelString != null)
+		if (defaultLogLevelString != null) {
 			DEFAULT_LOG_LEVEL = stringToLevel(defaultLogLevelString);
+		}
 
 		SHOW_LOG_NAME = getBooleanProperty(SHOW_LOG_NAME_KEY, SHOW_LOG_NAME);
 		SHOW_SHORT_LOG_NAME = getBooleanProperty(SHOW_SHORT_LOG_NAME_KEY, SHOW_SHORT_LOG_NAME);
@@ -164,9 +165,9 @@ public class SimpleLogger extends NamedLoggerBase {
 	}
 
 	private static PrintStream computeTargetStream(String logFile) {
-		if ("System.err".equalsIgnoreCase(logFile))
+		if ("System.err".equalsIgnoreCase(logFile)) {
 			return System.err;
-		else if ("System.out".equalsIgnoreCase(logFile)) {
+		} else if ("System.out".equalsIgnoreCase(logFile)) {
 			return System.out;
 		} else {
 			try {
@@ -364,7 +365,9 @@ public class SimpleLogger extends NamedLoggerBase {
 			buf.append("] ");
 		}
 
-		if (LEVEL_IN_BRACKETS) buf.append('[');
+		if (LEVEL_IN_BRACKETS) {
+			buf.append('[');
+		}
 
 		// Append a readable representation of the log level
 		switch (level) {
@@ -384,13 +387,16 @@ public class SimpleLogger extends NamedLoggerBase {
 				buf.append("ERROR");
 				break;
 		}
-		if (LEVEL_IN_BRACKETS) buf.append(']');
+		if (LEVEL_IN_BRACKETS) {
+			buf.append(']');
+		}
 		buf.append(' ');
 
 		// Append the name of the log instance if so configured
 		if (SHOW_SHORT_LOG_NAME) {
-			if (shortLogName == null)
+			if (shortLogName == null) {
 				shortLogName = computeShortName();
+			}
 			buf.append(String.valueOf(shortLogName)).append(" - ");
 		} else if (SHOW_LOG_NAME) {
 			buf.append(String.valueOf(name)).append(" - ");
@@ -409,13 +415,15 @@ public class SimpleLogger extends NamedLoggerBase {
 
 	protected void write(StringBuffer buf, Throwable t) {
 		MessageWriter writer = new MessageWriter(buf.toString(), t);
-		if (t instanceof ExceptionInInitializerError)
+		if (t instanceof ExceptionInInitializerError) {
 			writer.run();
-		else
+		} else {
 			THREAD_POOL.execute(writer);
+		}
 
-		if (null != SMTP_APPENDER)
+		if (null != SMTP_APPENDER) {
 			cacheMailMessages(buf, t);
+		}
 	}
 
 	private static void cacheMailMessages(StringBuffer buf, Throwable t) {
@@ -426,7 +434,9 @@ public class SimpleLogger extends NamedLoggerBase {
 		}
 
 		synchronized (CACHED_MESSAGES) {
-			if (CACHED_MESSAGES.size() > 3) CACHED_MESSAGES.remove(0);
+			if (CACHED_MESSAGES.size() > 3) {
+				CACHED_MESSAGES.remove(0);
+			}
 			CACHED_MESSAGES.add(buf.toString());
 		}
 	}
@@ -445,10 +455,11 @@ public class SimpleLogger extends NamedLoggerBase {
 		String subject = name + " - " + msg;
 
 		Runnable sender = new MailSender(subject, body.toString());
-		if (immediately)
+		if (immediately) {
 			sender.run();
-		else
+		} else {
 			THREAD_POOL.execute(sender);
+		}
 	}
 
 	private static class MailSender implements Runnable {
@@ -480,8 +491,9 @@ public class SimpleLogger extends NamedLoggerBase {
 
 		public void run() {
 			TARGET_STREAM.println(message);
-			if (null != error)
+			if (null != error) {
 				error.printStackTrace(TARGET_STREAM);
+			}
 		}
 	}
 

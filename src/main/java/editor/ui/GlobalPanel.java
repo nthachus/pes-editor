@@ -1,6 +1,8 @@
 package editor.ui;
 
 import editor.data.*;
+import editor.lang.JTextFieldLimit;
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import editor.util.Resources;
 import org.slf4j.Logger;
@@ -21,8 +23,12 @@ public class GlobalPanel extends JPanel implements ActionListener {
 
 	public GlobalPanel(OptionFile of, TransferPanel tp) {
 		super();
-		if (null == of) throw new NullPointerException("of");
-		if (null == tp) throw new NullPointerException("tp");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == tp) {
+			throw new NullArgumentException("tp");
+		}
 		this.of = of;
 		transferPan = tp;
 
@@ -43,8 +49,9 @@ public class GlobalPanel extends JPanel implements ActionListener {
 	private static String[] getScopes() {
 		ArrayList<String> scopes = new ArrayList<String>();
 		scopes.add(Resources.getMessage("All Players"));
-		for (Stat st : Stats.ROLES)
+		for (Stat st : Stats.ROLES) {
 			scopes.add(st.getName());
+		}
 
 		return scopes.toArray(new String[scopes.size()]);
 	}
@@ -60,23 +67,27 @@ public class GlobalPanel extends JPanel implements ActionListener {
 	private static String[] getStatNames() {
 		ArrayList<String> names = new ArrayList<String>();
 		names.add(Resources.getMessage("1-99 Stats"));
-		for (Stat st : Stats.ABILITY99)
+		for (Stat st : Stats.ABILITY99) {
 			names.add(Resources.getMessage(st.getName()).toUpperCase());
+		}
 
 		names.add(Resources.getMessage("1-8 Stats"));
-		for (Stat st : STAT_NAMES)
+		for (Stat st : STAT_NAMES) {
 			names.add(Resources.getMessage(st.getName()).toUpperCase());
+		}
 
 		return names.toArray(new String[names.size()]);
 	}
 
 	private static Stat getStat(int nameIndex) {
 		int len = Stats.ABILITY99.length;
-		if (nameIndex > 0 && nameIndex <= len)
+		if (nameIndex > 0 && nameIndex <= len) {
 			return Stats.ABILITY99[nameIndex - 1];
+		}
 
-		if (nameIndex > len + 1)
+		if (nameIndex > len + 1) {
 			return STAT_NAMES[nameIndex - len - 2];
+		}
 
 		return null;
 	}
@@ -136,7 +147,9 @@ public class GlobalPanel extends JPanel implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent evt) {
 		int statIndex = statBox.getSelectedIndex();
-		if (statIndex < 0) return;
+		if (statIndex < 0) {
+			return;
+		}
 		// DEBUG
 		log.debug("Try to adjust for Stat: {}", statBox.getSelectedItem());
 
@@ -180,16 +193,18 @@ public class GlobalPanel extends JPanel implements ActionListener {
 	private void adjustStats(int from, int to, int opId, int num, int min, int max) {
 		for (int p = 1; p < Player.TOTAL; p++) {
 			if (isPlayerInScope(p) && !inExcludedTeam(p)) {
-				for (int i = from; i < to; i++)
+				for (int i = from; i < to; i++) {
 					setStat(i, p, opId, num, min, max);
+				}
 			}
 		}
 
 		if (forEditPlayer.isSelected()) {
 			for (int p = Player.FIRST_EDIT; p < Player.END_EDIT; p++) {
 				if (isPlayerInScope(p) && !inExcludedTeam(p)) {
-					for (int i = from; i < to; i++)
+					for (int i = from; i < to; i++) {
 						setStat(i, p, opId, num, min, max);
+					}
 				}
 			}
 		}
@@ -213,8 +228,9 @@ public class GlobalPanel extends JPanel implements ActionListener {
 
 	private void setStat(int statIndex, int player, int opId, int num, int min, int max) {
 		int v = 0;
-		if (opId != 2)
+		if (opId != 2) {
 			v = getStat(statIndex, player);
+		}
 
 		switch (opId) {
 			case 0:
@@ -234,8 +250,11 @@ public class GlobalPanel extends JPanel implements ActionListener {
 				break;
 		}
 
-		if (v > max) v = max;
-		else if (v < min) v = min;
+		if (v > max) {
+			v = max;
+		} else if (v < min) {
+			v = min;
+		}
 
 		setStat(statIndex, player, v);
 	}
@@ -262,12 +281,13 @@ public class GlobalPanel extends JPanel implements ActionListener {
 
 	private boolean isPlayerInScope(int player) {
 		int scopeId = scopeBox.getSelectedIndex();
-		if (scopeId == 0)
+		if (scopeId == 0) {
 			return true;
-		else if (scopeId > 0) {
+		} else if (scopeId > 0) {
 			int v = Stats.getValue(of, player, Stats.REG_POS);
-			if (Stats.regPosToRole(v) == scopeId - 1)
+			if (Stats.regPosToRole(v) == scopeId - 1) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -283,8 +303,9 @@ public class GlobalPanel extends JPanel implements ActionListener {
 			int adr = Squads.CLUB_ADR + (teamId - 1) * Formations.CLUB_TEAM_SIZE * 2;
 			for (int sp = 0; sp < Formations.CLUB_TEAM_SIZE; sp++) {
 				int id = Bits.toInt16(of.getData(), adr);
-				if (id == player)
+				if (id == player) {
 					return toExclude;
+				}
 				adr += 2;
 			}
 
@@ -296,7 +317,9 @@ public class GlobalPanel extends JPanel implements ActionListener {
 
 	@SuppressWarnings("unchecked")
 	public void updateTeamBox(String[] teams) {
-		if (null == teams) throw new NullPointerException("teams");
+		if (null == teams) {
+			throw new NullArgumentException("teams");
+		}
 		log.debug("Try to update Team box with {} teams", teams.length);
 
 		String[] clubs = new String[teams.length + 1];

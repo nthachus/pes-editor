@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import editor.util.Images;
 import org.slf4j.Logger;
@@ -18,9 +19,9 @@ public final class Emblems {
 	public static final int TOTAL16 = 60;
 	public static final int TOTAL128 = 30;
 
-	public static final int START_IDX_TABLE_ADR = OptionFile.blockAddress(8) + 4;
-	public static final int SIZE_IDX_TABLE = 2 + TOTAL128 + TOTAL16 + 8;
-	public static final byte UNUSED_IDX_VALUE = 0x5D;
+	private static final int START_IDX_TABLE_ADR = OptionFile.blockAddress(8) + 4;
+	private static final int SIZE_IDX_TABLE = 2 + TOTAL128 + TOTAL16 + 8;
+	private static final byte UNUSED_IDX_VALUE = 0x5D;
 
 	public static final int START_ADR = START_IDX_TABLE_ADR + SIZE_IDX_TABLE;
 
@@ -31,11 +32,11 @@ public final class Emblems {
 	/**
 	 * The hi-res indexed-color image format (8 bits-per-pixel).
 	 */
-	public static final int BPP128 = 8;
+	private static final int BPP128 = 8;
 	/**
 	 * The low-res indexed-color image format (4 bits-per-pixel).
 	 */
-	public static final int BPP16 = 4;
+	private static final int BPP16 = 4;
 
 	/**
 	 * A hi-res club emblem data record length (5184 bytes).
@@ -55,23 +56,29 @@ public final class Emblems {
 
 
 	private static int getOffset(boolean hiRes, int slot) {
-		if (slot < 0 || (hiRes && slot >= TOTAL128) || (!hiRes && slot >= TOTAL16))
+		if (slot < 0 || (hiRes && slot >= TOTAL128) || (!hiRes && slot >= TOTAL16)) {
 			throw new IndexOutOfBoundsException("slot#" + slot);
+		}
 
-		if (!hiRes)
+		if (!hiRes) {
 			return START_ADR + (TOTAL128 - 1) * SIZE128 - (slot / 2) * SIZE128 + (slot % 2) * SIZE16;
+		}
 		return START_ADR + slot * SIZE128;
 	}
 
 	public static Image get128(OptionFile of, int slot, boolean opaque, boolean small) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOffset(true, slot) + IMG_SIZE;
 		return Images.read(of.getData(), IMG_SIZE, BPP128, adr, opaque, small ? 0.58f : 0f);
 	}
 
 	public static Image get16(OptionFile of, int slot, boolean opaque, boolean small) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOffset(false, slot) + IMG_SIZE;
 		return Images.read(of.getData(), IMG_SIZE, BPP16, adr, opaque, small ? 0.58f : 0f);
@@ -80,12 +87,16 @@ public final class Emblems {
 	// emblem index table: [hiCount] [lowCount] [..HighResTotal] [..LowResTotal]
 	private static int getIndexOffset(boolean hiRes, int slot) {
 		int ofs = START_IDX_TABLE_ADR + 2 + slot;
-		if (!hiRes) ofs += TOTAL128;
+		if (!hiRes) {
+			ofs += TOTAL128;
+		}
 		return ofs;
 	}
 
 	public static boolean set128(OptionFile of, int slot, BufferedImage image) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOffset(true, slot);
 		try {
@@ -115,7 +126,9 @@ public final class Emblems {
 	}
 
 	public static boolean set16(OptionFile of, int slot, BufferedImage image) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOffset(false, slot);
 		try {
@@ -145,22 +158,26 @@ public final class Emblems {
 	}
 
 	public static int count128(OptionFile of) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		return Bits.toInt(of.getData()[START_IDX_TABLE_ADR]);
 	}
 
-	public static void setCount128(OptionFile of, int count) {
-		if (null == of) throw new NullPointerException("of");
+	private static void setCount128(OptionFile of, int count) {
+		//if (null == of) { throw new NullArgumentException("of"); }
 		of.getData()[START_IDX_TABLE_ADR] = Bits.toByte(count);
 	}
 
 	public static int count16(OptionFile of) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		return Bits.toInt(of.getData()[START_IDX_TABLE_ADR + 1]);
 	}
 
-	public static void setCount16(OptionFile of, int count) {
-		if (null == of) throw new NullPointerException("of");
+	private static void setCount16(OptionFile of, int count) {
+		//if (null == of) { throw new NullArgumentException("of"); }
 		of.getData()[START_IDX_TABLE_ADR + 1] = Bits.toByte(count);
 	}
 
@@ -174,19 +191,24 @@ public final class Emblems {
 
 	public static Image getImage(OptionFile of, int emblem) {
 		int slot = getLocation(of, emblem);
-		if (slot < 0)
+		if (slot < 0) {
 			return BLANK16;
+		}
 
-		if (emblem < TOTAL128)
+		if (emblem < TOTAL128) {
 			return get128(of, slot, false, false);
+		}
 
 		return get16(of, slot - TOTAL128, false, false);
 	}
 
 	public static int getLocation(OptionFile of, int emblem) {
-		if (null == of) throw new NullPointerException("of");
-		if (emblem < 0 || emblem >= TOTAL128 + TOTAL16)
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (emblem < 0 || emblem >= TOTAL128 + TOTAL16) {
 			throw new IndexOutOfBoundsException("emblem#" + emblem);
+		}
 
 		int adr = getIndexOffset(true, emblem);
 		byte idx = of.getData()[adr];
@@ -195,7 +217,9 @@ public final class Emblems {
 
 	public static void deleteImage(OptionFile of, int emblem) {
 		int slot = getLocation(of, emblem);
-		if (slot < 0) return;
+		if (slot < 0) {
+			return;
+		}
 
 		if (emblem < TOTAL128) {
 			delete128(of, slot);
@@ -205,8 +229,12 @@ public final class Emblems {
 	}
 
 	public static int getIndex(OptionFile of, int slot) {
-		if (null == of) throw new NullPointerException("of");
-		if (slot < 0 || slot >= TOTAL128 + TOTAL16) throw new IndexOutOfBoundsException("slot#" + slot);
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (slot < 0 || slot >= TOTAL128 + TOTAL16) {
+			throw new IndexOutOfBoundsException("slot#" + slot);
+		}
 
 		int adr = (slot < TOTAL128) ? getOffset(true, slot) : getOffset(false, slot - TOTAL128);
 		return Bits.toInt16(of.getData(), adr + 4);
@@ -263,8 +291,12 @@ public final class Emblems {
 	}
 
 	public static void importData16(OptionFile ofSource, int slotSource, OptionFile ofDest, int slotDest) {
-		if (null == ofSource) throw new NullPointerException("ofSource");
-		if (null == ofDest) throw new NullPointerException("ofDest");
+		if (null == ofSource) {
+			throw new NullArgumentException("ofSource");
+		}
+		if (null == ofDest) {
+			throw new NullArgumentException("ofDest");
+		}
 
 		int adrSource = getOffset(false, slotSource);
 		int adrDest = getOffset(false, slotDest);
@@ -290,8 +322,12 @@ public final class Emblems {
 	}
 
 	public static void importData128(OptionFile ofSource, int slotSource, OptionFile ofDest, int slotDest) {
-		if (null == ofSource) throw new NullPointerException("ofSource");
-		if (null == ofDest) throw new NullPointerException("ofDest");
+		if (null == ofSource) {
+			throw new NullArgumentException("ofSource");
+		}
+		if (null == ofDest) {
+			throw new NullArgumentException("ofDest");
+		}
 
 		int adrSource = getOffset(true, slotSource);
 		int adrDest = getOffset(true, slotDest);

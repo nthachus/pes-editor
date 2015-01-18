@@ -1,5 +1,6 @@
 package editor.util;
 
+import editor.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,9 @@ public final class LZAri {
 	 * Output one bit (bit = 0,1).
 	 */
 	private synchronized void putBit(int bit) throws IOException {
-		if (bit != 0) wBuffer |= wMask;
+		if (bit != 0) {
+			wBuffer |= wMask;
+		}
 		if ((wMask >>>= 1) == 0) {
 			// writes the specified byte to the output stream
 			outFile.write(wBuffer);
@@ -52,7 +55,9 @@ public final class LZAri {
 	 * Send remaining bits.
 	 */
 	private void flushBitBuffer() throws IOException {
-		for (int i = 0; i < 7; i++) putBit(0);
+		for (int i = 0; i < 7; i++) {
+			putBit(0);
+		}
 	}
 
 	/**
@@ -111,8 +116,12 @@ public final class LZAri {
 	 * </p>
 	 */
 	private void initTree() {
-		for (int i = N + 1; i <= N + 256; i++) rightSon[i] = NIL;   // root
-		for (int i = 0; i < N; i++) dad[i] = NIL;   // node
+		for (int i = N + 1; i <= N + 256; i++) {
+			rightSon[i] = NIL;  // root
+		}
+		for (int i = 0; i < N; i++) {
+			dad[i] = NIL;   // node
+		}
 	}
 
 	/**
@@ -133,15 +142,17 @@ public final class LZAri {
 		int i, temp;
 		for (; ; ) {
 			if (cmp >= 0) {
-				if (rightSon[p] != NIL) p = rightSon[p];
-				else {
+				if (rightSon[p] != NIL) {
+					p = rightSon[p];
+				} else {
 					rightSon[p] = r;
 					dad[r] = p;
 					return;
 				}
 			} else {
-				if (leftSon[p] != NIL) p = leftSon[p];
-				else {
+				if (leftSon[p] != NIL) {
+					p = leftSon[p];
+				} else {
 					leftSon[p] = r;
 					dad[r] = p;
 					return;
@@ -149,16 +160,22 @@ public final class LZAri {
 			}
 
 			for (i = 1; i < F; i++) {
-				if ((cmp = textBuffer[r + i] - textBuffer[p + i]) != 0) break;
+				if ((cmp = textBuffer[r + i] - textBuffer[p + i]) != 0) {
+					break;
+				}
 			}
 
 			if (i > THRESHOLD) {
 				if (i > matchLength) {
 					matchPosition = (r - p) & (N - 1);
-					if ((matchLength = i) >= F) break;
+					if ((matchLength = i) >= F) {
+						break;
+					}
 				} else if (i == matchLength) {
-					if ((temp = (r - p) & (N - 1)) < matchPosition)
+					temp = (r - p) & (N - 1);
+					if (temp < matchPosition) {
 						matchPosition = temp;
+					}
 				}
 			}
 		}
@@ -169,8 +186,11 @@ public final class LZAri {
 
 		dad[leftSon[p]] = r;
 		dad[rightSon[p]] = r;
-		if (rightSon[dad[p]] == p) rightSon[dad[p]] = r;
-		else leftSon[dad[p]] = r;
+		if (rightSon[dad[p]] == p) {
+			rightSon[dad[p]] = r;
+		} else {
+			leftSon[dad[p]] = r;
+		}
 
 		dad[p] = NIL;   // remove p
 	}
@@ -179,12 +199,16 @@ public final class LZAri {
 	 * Delete node <code>p</code> from tree.
 	 */
 	private void deleteNode(int p) {
-		if (dad[p] == NIL) return;  // not in tree
+		if (dad[p] == NIL) {
+			return; // not in tree
+		}
 
 		int q;
-		if (rightSon[p] == NIL) q = leftSon[p];
-		else if (leftSon[p] == NIL) q = rightSon[p];
-		else {
+		if (rightSon[p] == NIL) {
+			q = leftSon[p];
+		} else if (leftSon[p] == NIL) {
+			q = rightSon[p];
+		} else {
 			q = leftSon[p];
 			if (rightSon[q] != NIL) {
 				do {
@@ -203,8 +227,11 @@ public final class LZAri {
 		}
 
 		dad[q] = dad[p];
-		if (rightSon[dad[p]] == p) rightSon[dad[p]] = q;
-		else leftSon[dad[p]] = q;
+		if (rightSon[dad[p]] == p) {
+			rightSon[dad[p]] = q;
+		} else {
+			leftSon[dad[p]] = q;
+		}
 
 		dad[p] = NIL;
 	}
@@ -293,7 +320,9 @@ public final class LZAri {
 		}
 
 		int i = sym;
-		while (symFreq[i] == symFreq[i - 1]) i--;
+		while (symFreq[i] == symFreq[i - 1]) {
+			i--;
+		}
 
 		if (i < sym) {
 			int chIdx = symToChar[i];
@@ -307,7 +336,9 @@ public final class LZAri {
 		}
 
 		symFreq[i]++;
-		while (--i >= 0) symCum[i]++;
+		while (--i >= 0) {
+			symCum[i]++;
+		}
 	}
 
 	/**
@@ -315,8 +346,9 @@ public final class LZAri {
 	 */
 	private synchronized void output(int bit) throws IOException {
 		putBit(bit);
-		for (; shifts.get() > 0; shifts.decrementAndGet())
+		while (shifts.getAndDecrement() > 0) {
 			putBit((bit == 0) ? 1 : 0);
+		}
 	}
 
 	private void encodeChar(int ch) throws IOException {
@@ -327,8 +359,9 @@ public final class LZAri {
 		low += (range * symCum[sym]) / symCum[0];
 
 		for (; ; ) {
-			if (high <= Q2) output(0);
-			else if (low >= Q2) {
+			if (high <= Q2) {
+				output(0);
+			} else if (low >= Q2) {
 				output(1);
 
 				low -= Q2;
@@ -339,7 +372,9 @@ public final class LZAri {
 
 				low -= Q1;
 				high -= Q1;
-			} else break;
+			} else {
+				break;
+			}
 
 			low *= 2;
 			high *= 2;
@@ -355,8 +390,9 @@ public final class LZAri {
 		low += (range * positionCum[position + 1]) / positionCum[0];
 
 		for (; ; ) {
-			if (high <= Q2) output(0);
-			else if (low >= Q2) {
+			if (high <= Q2) {
+				output(0);
+			} else if (low >= Q2) {
 				output(1);
 
 				low -= Q2;
@@ -367,7 +403,9 @@ public final class LZAri {
 
 				low -= Q1;
 				high -= Q1;
-			} else break;
+			} else {
+				break;
+			}
 
 			low *= 2;
 			high *= 2;
@@ -378,8 +416,7 @@ public final class LZAri {
 		//synchronized (log)
 		shifts.incrementAndGet();
 
-		if (low < Q1) output(0);
-		else output(1);
+		output((low < Q1) ? 0 : 1);
 
 		flushBitBuffer();   // flush bits remaining in buffer
 	}
@@ -396,8 +433,11 @@ public final class LZAri {
 		int k;
 		while (i < j) {
 			k = (i + j) >>> 1;// average / 2
-			if (symCum[k] > x) i = k + 1;
-			else j = k;
+			if (symCum[k] > x) {
+				i = k + 1;
+			} else {
+				j = k;
+			}
 		}
 
 		return i;
@@ -415,16 +455,20 @@ public final class LZAri {
 		int k;
 		while (i < j) {
 			k = (i + j) >>> 1;// average / 2
-			if (positionCum[k] > x) i = k + 1;
-			else j = k;
+			if (positionCum[k] > x) {
+				i = k + 1;
+			} else {
+				j = k;
+			}
 		}
 
 		return i - 1;
 	}
 
 	private void startDecode() throws IOException {
-		for (int i = 0; i < M + 2; i++)
+		for (int i = 0; i < M + 2; i++) {
 			value = 2 * value + getBit();
+		}
 	}
 
 	private int decodeChar() throws IOException {
@@ -443,7 +487,9 @@ public final class LZAri {
 				value -= Q1;
 				low -= Q1;
 				high -= Q1;
-			} else if (high > Q2) break;
+			} else if (high > Q2) {
+				break;
+			}
 
 			low *= 2;
 			high *= 2;
@@ -472,7 +518,9 @@ public final class LZAri {
 				value -= Q1;
 				low -= Q1;
 				high -= Q1;
-			} else if (high > Q2) break;
+			} else if (high > Q2) {
+				break;
+			}
 
 			low *= 2;
 			high *= 2;
@@ -491,7 +539,9 @@ public final class LZAri {
 		outFile.write(Bits.toBytes((int) textSize));
 		//
 		codeSize.addAndGet(4);
-		if (textSize == 0) return;
+		if (textSize == 0) {
+			return;
+		}
 
 		textSize = 0;
 		startModel();
@@ -499,19 +549,26 @@ public final class LZAri {
 
 		int s = 0;
 		int r = N - F;
-		for (int i = s; i < r; i++) textBuffer[i] = ' ';
+		for (int i = s; i < r; i++) {
+			textBuffer[i] = ' ';
+		}
 
 		int c, len;
-		for (len = 0; len < F && (c = inFile.read()) != -1/*EOF*/; len++)
+		for (len = 0; len < F && (c = inFile.read()) != -1/*EOF*/; len++) {
 			textBuffer[r + len] = c;
+		}
 
 		textSize = len;
-		for (int i = 1; i <= F; i++) insertNode(r - i);
+		for (int i = 1; i <= F; i++) {
+			insertNode(r - i);
+		}
 		insertNode(r);
 
 		int i, lastMatchLength;
 		do {
-			if (matchLength > len) matchLength = len;
+			if (matchLength > len) {
+				matchLength = len;
+			}
 			if (matchLength <= THRESHOLD) {
 				matchLength = 1;
 				encodeChar(textBuffer[r]);
@@ -525,7 +582,9 @@ public final class LZAri {
 				deleteNode(s);
 
 				textBuffer[s] = c;
-				if (s < F - 1) textBuffer[s + N] = c;
+				if (s < F - 1) {
+					textBuffer[s + N] = c;
+				}
 				s = (s + 1) & (N - 1);
 				r = (r + 1) & (N - 1);
 
@@ -542,7 +601,9 @@ public final class LZAri {
 				s = (s + 1) & (N - 1);
 				r = (r + 1) & (N - 1);
 
-				if (--len != 0) insertNode(r);
+				if (--len != 0) {
+					insertNode(r);
+				}
 			}
 		} while (len > 0);
 
@@ -555,14 +616,20 @@ public final class LZAri {
 	public void decode() throws IOException {
 		// read size of text
 		byte[] buffer = new byte[4];
-		if (inFile.read(buffer) < 0) throw new EOFException("Failed to read TextSize.");
+		if (inFile.read(buffer) < 0) {
+			throw new EOFException("Failed to read TextSize.");
+		}
 		textSize = Bits.toInt(buffer, 0);
-		if (textSize == 0) return;
+		if (textSize == 0) {
+			return;
+		}
 
 		startDecode();
 		startModel();
 
-		for (int i = 0; i < N - F; i++) textBuffer[i] = ' ';
+		for (int i = 0; i < N - F; i++) {
+			textBuffer[i] = ' ';
+		}
 		int r = N - F;
 
 		long count;// uint
@@ -600,21 +667,33 @@ public final class LZAri {
 	}
 
 	public void setInput(InputStream file) {
-		if (null == file) throw new NullPointerException("file");
+		if (null == file) {
+			throw new NullArgumentException("file");
+		}
 		inFile = file;
 	}
 
 	public void setOutput(OutputStream file) {
-		if (null == file) throw new NullPointerException("file");
+		if (null == file) {
+			throw new NullArgumentException("file");
+		}
 		outFile = file;
 	}
 
 	public byte[] encode(byte[] data, int offset, int length) throws IOException {
-		if (null == data) throw new NullPointerException("data");
-		if (offset < 0) throw new NullPointerException("offset");
-		if (length < 0 || data.length < offset + length) throw new IndexOutOfBoundsException(offset + " : " + length);
+		if (null == data) {
+			throw new NullArgumentException("data");
+		}
+		if (offset < 0) {
+			throw new NullArgumentException("offset");
+		}
+		if (length < 0 || data.length < offset + length) {
+			throw new IndexOutOfBoundsException(offset + " : " + length);
+		}
 
-		if (length == 0) return new byte[0];
+		if (length == 0) {
+			return new byte[0];
+		}
 
 		ByteArrayInputStream sr = null;
 		ByteArrayOutputStream sw = null;
@@ -624,17 +703,29 @@ public final class LZAri {
 			encode();
 			return sw.toByteArray();
 		} finally {
-			if (null != sr) sr.close();
-			if (null != sw) sw.close();
+			if (null != sr) {
+				sr.close();
+			}
+			if (null != sw) {
+				sw.close();
+			}
 		}
 	}
 
 	public byte[] decode(byte[] data, int offset, int length) throws IOException {
-		if (null == data) throw new NullPointerException("data");
-		if (offset < 0) throw new NullPointerException("offset");
-		if (length < 0 || data.length < offset + length) throw new IndexOutOfBoundsException(offset + " : " + length);
+		if (null == data) {
+			throw new NullArgumentException("data");
+		}
+		if (offset < 0) {
+			throw new NullArgumentException("offset");
+		}
+		if (length < 0 || data.length < offset + length) {
+			throw new IndexOutOfBoundsException(offset + " : " + length);
+		}
 
-		if (length == 0) return new byte[0];
+		if (length == 0) {
+			return new byte[0];
+		}
 
 		ByteArrayInputStream sr = null;
 		ByteArrayOutputStream sw = null;
@@ -644,8 +735,12 @@ public final class LZAri {
 			decode();
 			return sw.toByteArray();
 		} finally {
-			if (null != sr) sr.close();
-			if (null != sw) sw.close();
+			if (null != sr) {
+				sr.close();
+			}
+			if (null != sw) {
+				sw.close();
+			}
 		}
 	}
 

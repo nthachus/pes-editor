@@ -1,6 +1,7 @@
 package editor.ui;
 
 import editor.data.*;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import editor.util.Strings;
 import org.slf4j.Logger;
@@ -11,8 +12,8 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class KitImportDialog extends JDialog implements MouseListener {
 	private static final long serialVersionUID = 6176947558253913789L;
@@ -26,7 +27,9 @@ public class KitImportDialog extends JDialog implements MouseListener {
 
 	public KitImportDialog(Frame owner, OptionFile of2) {
 		super(owner, Resources.getMessage("kitImport.title"), true);
-		if (null == of2) throw new NullPointerException("of2");
+		if (null == of2) {
+			throw new NullArgumentException("of2");
+		}
 		this.of2 = of2;
 
 		log.debug("Kit Import dialog is initializing..");
@@ -75,32 +78,34 @@ public class KitImportDialog extends JDialog implements MouseListener {
 	public void refresh(int teamId) {
 		log.debug("Try to refresh importable Kit teams for team: {}", teamId);
 
-		Vector<KitItem> model = new Vector<KitItem>(Clubs.TOTAL);
+		List<KitItem> model = new ArrayList<KitItem>(Clubs.TOTAL);
 		if (teamId < Clubs.TOTAL) {
 			// Clubs
 			addClubKitItem(model, teamId);
 
 			for (int c = 0; c < Clubs.TOTAL; c++) {
-				if (c != teamId && !Kits.isLicensed(of2, c))
+				if (c != teamId && !Kits.isLicensed(of2, c)) {
 					addClubKitItem(model, c);
+				}
 			}
 		} else {
 			// National teams
 			addNationKitItem(model, teamId);
 
 			for (int n = Clubs.TOTAL, e = Clubs.TOTAL + Squads.NATION_COUNT + Squads.CLASSIC_COUNT; n < e; n++) {
-				if (n != teamId && !Kits.isLicensed(of2, n))
+				if (n != teamId && !Kits.isLicensed(of2, n)) {
 					addNationKitItem(model, n);
+				}
 			}
 		}
 
-		model.trimToSize();
-		list.setListData(model);
+		KitItem[] listData = model.toArray(new KitItem[model.size()]);
+		list.setListData(listData);
 
 		fileLabel.setText(Resources.getMessage("import.label", of2.getFilename()));
 
 		pack();
-		log.debug("Refresh completed on {} Kit teams", model.size());
+		log.debug("Refresh completed on {} Kit teams", listData.length);
 	}
 
 	private void addClubKitItem(List<KitItem> model, int clubId) {
@@ -108,10 +113,11 @@ public class KitImportDialog extends JDialog implements MouseListener {
 	}
 
 	private void addNationKitItem(List<KitItem> model, int teamId) {
-		if (teamId < Clubs.TOTAL + Squads.NATION_COUNT)
+		if (teamId < Clubs.TOTAL + Squads.NATION_COUNT) {
 			model.add(new KitItem(Stats.NATION[teamId - Clubs.TOTAL], teamId));
-		else
+		} else {
 			model.add(new KitItem(Squads.EXTRAS[teamId - Clubs.TOTAL - Squads.NATION_COUNT], teamId));
+		}
 	}
 
 	public void mousePressed(MouseEvent evt) {
@@ -127,7 +133,9 @@ public class KitImportDialog extends JDialog implements MouseListener {
 	}
 
 	public void mouseClicked(MouseEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 
 		int clicks = evt.getClickCount();
 		if (clicks > 1) {

@@ -1,5 +1,6 @@
 package editor.util;
 
+import editor.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,21 +21,26 @@ public final class Images {
 	}
 
 	public static int paletteSize(int bitsPerPixel) {
-		if (bitsPerPixel < 0 || bitsPerPixel == 3 || (bitsPerPixel > 4 && (bitsPerPixel % 8) != 0))
+		if (bitsPerPixel < 0 || bitsPerPixel == 3 || (bitsPerPixel > 4 && (bitsPerPixel % 8) != 0)) {
 			throw new IllegalArgumentException("bitsPerPixel");
+		}
 
 		return (1 << bitsPerPixel);
 	}
 
 	public static int bitsPerPixel(int colorsCount) {
 		int bpp = (int) Math.ceil(Math.log(colorsCount) / Math.log(2));
-		if (bpp <= 0) bpp = 1;
-		else if (bpp == 3) bpp = 4;
-		else if (bpp > 4 && (bpp % 8) != 0) bpp = (bpp + 7) / 8;
+		if (bpp <= 0) {
+			bpp = 1;
+		} else if (bpp == 3) {
+			bpp = 4;
+		} else if (bpp > 4 && (bpp % 8) != 0) {
+			bpp = (bpp + 7) / 8;
+		}
 		return bpp;
 	}
 
-	public static int rasterDataSize(int bitsPerPixel, int imgSize) {
+	private static int rasterDataSize(int bitsPerPixel, int imgSize) {
 		return rasterDataSize(bitsPerPixel, imgSize, imgSize);
 	}
 
@@ -48,7 +54,9 @@ public final class Images {
 	}
 
 	public static Image read(byte[] data, int imgSize, int bitsDepth, int offset, boolean opaque, float scale) {
-		if (offset >= 0 && null == data) throw new NullPointerException("data");
+		if (offset >= 0 && null == data) {
+			throw new NullArgumentException("data");
+		}
 
 		byte[] red = new byte[paletteSize(bitsDepth)];
 		byte[] green = new byte[red.length];
@@ -68,8 +76,9 @@ public final class Images {
 
 			System.arraycopy(data, adr, pixel, 0, pixel.length);
 			if (opaque) {
-				for (int i = 0; i < alpha.length; i++)
+				for (int i = 0; i < alpha.length; i++) {
 					alpha[i] = -1;
+				}
 			}
 		}
 
@@ -89,7 +98,9 @@ public final class Images {
 	}
 
 	public static void write(byte[] data, int imgSize, int bitsDepth, int offset, BufferedImage image) {
-		if (null == data) throw new NullPointerException("data");
+		if (null == data) {
+			throw new NullArgumentException("data");
+		}
 		int paletteSize = paletteSize(bitsDepth);
 		int rasterSize = rasterDataSize(bitsDepth, imgSize);
 
@@ -98,18 +109,24 @@ public final class Images {
 			return;
 		}
 
-		if (image.getWidth() < imgSize || image.getHeight() < imgSize)
-			throw new IllegalArgumentException("image");
+		if (image.getWidth() < imgSize || image.getHeight() < imgSize) {
+			throw new IllegalArgumentException("image.size " + image.getWidth() + "x" + image.getHeight());
+		}
 
 		WritableRaster raster = image.getRaster();
-		if (null == raster) throw new NullPointerException("raster");
+		if (null == raster) {
+			throw new NullArgumentException("image.raster");
+		}
 
 		ColorModel colorModel = image.getColorModel();
-		if (null == colorModel || !(colorModel instanceof IndexColorModel))
-			throw new NullPointerException("palette");
+		if (!(colorModel instanceof IndexColorModel)) {
+			throw new NullArgumentException("image.palette");
+		}
 		// colors palette
 		IndexColorModel palette = (IndexColorModel) colorModel;
-		if (palette.getMapSize() > paletteSize) throw new IllegalArgumentException("palette");
+		if (palette.getMapSize() > paletteSize) {
+			throw new IllegalArgumentException("palette.size " + palette.getMapSize());
+		}
 
 		byte[] red = new byte[paletteSize];
 		byte[] green = new byte[red.length];
@@ -145,8 +162,9 @@ public final class Images {
 
 	private static void fixColorsPalette(byte[] red, byte[] green, byte[] blue, byte[] alpha, int[] pix) {
 		// move transparent to the first of the colors palette
-		if (alpha[0] == 0)
+		if (alpha[0] == 0) {
 			return;
+		}
 
 		int swap = 0;
 		for (int i = 1; i < alpha.length; i++) {
@@ -156,8 +174,9 @@ public final class Images {
 			}
 		}
 
-		if (swap <= 0)
+		if (swap <= 0) {
 			return;
+		}
 
 		byte tr = red[0];
 		byte tg = green[0];
@@ -184,29 +203,45 @@ public final class Images {
 	}
 
 	public static boolean isBlank(BufferedImage image) {
-		if (null == image) return true;
+		if (null == image) {
+			return true;
+		}
 
 		ColorModel colorModel = image.getColorModel();
-		if (null == colorModel) return true;
-		if (!(colorModel instanceof IndexColorModel)) return false;
+		if (null == colorModel) {
+			return true;
+		}
+		if (!(colorModel instanceof IndexColorModel)) {
+			return false;
+		}
 
 		// colors palette
 		IndexColorModel palette = (IndexColorModel) colorModel;
 		int pSize = palette.getMapSize();
-		if (pSize <= 0) return true;
+		if (pSize <= 0) {
+			return true;
+		}
 
 		for (int i = 0, n = Math.min(pSize, 2); i < n; i++) {
-			if (palette.getRGB(i) != 0) return false;
+			if (palette.getRGB(i) != 0) {
+				return false;
+			}
 		}
 
 		return true;
 	}
 
 	public static boolean saveComponentAsImage(Component comp, File out) throws IOException {
-		if (null == comp) throw new NullPointerException("comp");
-		if (null == out) throw new NullPointerException("out");
+		if (null == comp) {
+			throw new NullArgumentException("comp");
+		}
+		if (null == out) {
+			throw new NullArgumentException("out");
+		}
 		String format = Files.getExtension(out);
-		if (Strings.isBlank(format)) throw new IllegalArgumentException("out");
+		if (Strings.isBlank(format)) {
+			throw new IllegalArgumentException("out.name " + out.getName());
+		}
 
 		Graphics2D g2 = null;
 		try {
@@ -216,8 +251,9 @@ public final class Images {
 			g2 = img.createGraphics();
 			comp.paint(g2);
 
-			if (Files.PNG.equalsIgnoreCase(format))
+			if (Files.PNG.equalsIgnoreCase(format)) {
 				img = rgbToIndexedColor(img);
+			}
 
 			return ImageIO.write(img, format.toLowerCase(), out);
 
@@ -226,7 +262,9 @@ public final class Images {
 		} catch (Exception e) {
 			log.error("Failed to save Component " + comp + " as image: " + out, e);
 		} finally {
-			if (null != g2) g2.dispose();
+			if (null != g2) {
+				g2.dispose();
+			}
 		}
 
 		return false;
@@ -234,11 +272,13 @@ public final class Images {
 
 	// NOTE: Optimize PNG with pngtastic before saving
 	public static BufferedImage rgbToIndexedColor(BufferedImage image) {
-		if (null == image)
+		if (null == image) {
 			return null;
+		}
 
-		if (image.getType() != BufferedImage.TYPE_INT_RGB && image.getType() != BufferedImage.TYPE_INT_ARGB)
+		if (image.getType() != BufferedImage.TYPE_INT_RGB && image.getType() != BufferedImage.TYPE_INT_ARGB) {
 			return image;
+		}
 
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 		for (int y = 0; y < image.getHeight(); y++) {
@@ -250,8 +290,9 @@ public final class Images {
 			}
 		}
 
-		if (map.size() > 256)
+		if (map.size() > 256) {
 			return image;
+		}
 
 		// sort the palette
 		ArrayList<Map.Entry<Integer, Integer>> list = new ArrayList<Map.Entry<Integer, Integer>>(map.entrySet());
@@ -262,8 +303,9 @@ public final class Images {
 		int paletteSize = paletteSize(bitsDepth);
 
 		int[] palette = new int[paletteSize];
-		for (int i = 0; i < list.size(); i++)
+		for (int i = 0; i < list.size(); i++) {
 			palette[i] = list.get(i).getKey();
+		}
 
 		int rasterSize = rasterDataSize(bitsDepth, image.getWidth(), image.getHeight());
 		DataBuffer buf = new DataBufferByte(rasterSize);
@@ -278,10 +320,13 @@ public final class Images {
 		Graphics2D g2 = null;
 		try {
 			g2 = img.createGraphics();
-			if (g2.drawImage(image, 0, 0, null))
+			if (g2.drawImage(image, 0, 0, null)) {
 				return img;
+			}
 		} finally {
-			if (null != g2) g2.dispose();
+			if (null != g2) {
+				g2.dispose();
+			}
 		}
 
 		return image;

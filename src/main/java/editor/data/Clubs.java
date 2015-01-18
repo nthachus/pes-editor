@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import editor.util.Strings;
 
@@ -25,18 +26,24 @@ public final class Clubs {
 	public static final int FIRST_EMBLEM = FIRST_DEF_EMBLEM + Squads.FIRST_CLUB + TOTAL;
 
 	private static int getOffset(int club) {
-		if (club < 0 || club >= TOTAL) throw new IndexOutOfBoundsException("club#" + club);
+		if (club < 0 || club >= TOTAL) {
+			throw new IndexOutOfBoundsException("club#" + club);
+		}
 		return START_ADR + club * SIZE;
 	}
 
 	public static int getEmblem(OptionFile of, int club) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + 60;
 		return Bits.toInt16(of.getData(), adr);
 	}
 
 	public static void setEmblem(OptionFile of, int club, int index) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + 60;
 
 		boolean edited = true;
@@ -53,7 +60,9 @@ public final class Clubs {
 	}
 
 	public static void setEmblemEdited(OptionFile of, int club, boolean edited) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + 68;
 
 		byte sw = Bits.toByte(edited);
@@ -62,7 +71,9 @@ public final class Clubs {
 	}
 
 	public static void unlinkEmblem(OptionFile of, int emblem) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		for (int i = 0; i < TOTAL; i++) {
 			if (emblem == getEmblem(of, i) - FIRST_EMBLEM) {
@@ -72,7 +83,9 @@ public final class Clubs {
 	}
 
 	public static String[] getNames(OptionFile of) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		String[] clubs = new String[TOTAL];
 		for (int c = 0; c < clubs.length; c++) {
@@ -82,7 +95,9 @@ public final class Clubs {
 	}
 
 	public static String getName(OptionFile of, int club) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club);
 
 		String name = new String(of.getData(), adr, NAME_LEN, Strings.UTF8);
@@ -93,7 +108,9 @@ public final class Clubs {
 	}
 
 	public static void setName(OptionFile of, int club, String name) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club);
 
 		byte[] temp = new byte[NAME_LEN + 1];
@@ -109,13 +126,17 @@ public final class Clubs {
 	}
 
 	public static void setNameEdited(OptionFile of, int club) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + 56;
 		of.getData()[adr] = 1;
 	}
 
 	public static String getAbbrName(OptionFile of, int club) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + NAME_LEN + 1;
 
 		String abv = new String(of.getData(), adr, ABBR_NAME_LEN, Strings.ANSI);
@@ -125,7 +146,9 @@ public final class Clubs {
 	}
 
 	public static void setAbbrName(OptionFile of, int club, String name) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + NAME_LEN + 1;
 
 		byte[] temp = new byte[ABBR_NAME_LEN];
@@ -141,14 +164,18 @@ public final class Clubs {
 	}
 
 	public static int getStadium(OptionFile of, int club) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + 81;
 
 		return Bits.toInt(of.getData()[adr]);
 	}
 
 	public static void setStadium(OptionFile of, int club, int stadium) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + 81;
 
 		of.getData()[adr] = Bits.toByte(stadium);
@@ -156,20 +183,26 @@ public final class Clubs {
 	}
 
 	public static void setStadiumEdited(OptionFile of, int club) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + 83;
 		of.getData()[adr] = 1;
 	}
 
 	public static int getBackFlag(OptionFile of, int club) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + 70;
 
 		return Bits.toInt(of.getData()[adr]);
 	}
 
 	public static void setBackFlag(OptionFile of, int club, int backFlag) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + 70;
 
 		of.getData()[adr] = Bits.toByte(backFlag);
@@ -179,27 +212,37 @@ public final class Clubs {
 	 * Background flag colors.
 	 */
 	public static byte[] getRed(OptionFile of, int club) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + 72;
 		return new byte[]{of.getData()[adr], of.getData()[adr + 4]};
 	}
 
 	public static byte[] getGreen(OptionFile of, int club) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + 73;
 		return new byte[]{of.getData()[adr], of.getData()[adr + 4]};
 	}
 
 	public static byte[] getBlue(OptionFile of, int club) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + 74;
 		return new byte[]{of.getData()[adr], of.getData()[adr + 4]};
 	}
 
 	public static Color getColor(OptionFile of, int club, boolean second) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + 72;
-		if (second) adr += 4;
+		if (second) {
+			adr += 4;
+		}
 
 		int r = Bits.toInt(of.getData()[adr]);
 		int g = Bits.toInt(of.getData()[adr + 1]);
@@ -209,9 +252,13 @@ public final class Clubs {
 	}
 
 	public static void setColor(OptionFile of, int club, boolean second, Color color) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		int adr = getOffset(club) + 72;
-		if (second) adr += 4;
+		if (second) {
+			adr += 4;
+		}
 
 		byte r = (byte) color.getRed();
 		byte g = (byte) color.getGreen();
@@ -223,8 +270,12 @@ public final class Clubs {
 	}
 
 	public static void importNames(OptionFile ofSource, OptionFile ofDest) {
-		if (null == ofSource) throw new NullPointerException("ofSource");
-		if (null == ofDest) throw new NullPointerException("ofDest");
+		if (null == ofSource) {
+			throw new NullArgumentException("ofSource");
+		}
+		if (null == ofDest) {
+			throw new NullArgumentException("ofDest");
+		}
 
 		int adr = START_ADR;
 		int len = NAME_LEN + 1 + ABBR_NAME_LEN + 4 + 1;
@@ -236,8 +287,12 @@ public final class Clubs {
 	}
 
 	public static void importData(OptionFile ofSource, OptionFile ofDest) {
-		if (null == ofSource) throw new NullPointerException("ofSource");
-		if (null == ofDest) throw new NullPointerException("ofDest");
+		if (null == ofSource) {
+			throw new NullArgumentException("ofSource");
+		}
+		if (null == ofDest) {
+			throw new NullArgumentException("ofDest");
+		}
 
 		int ofs = NAME_LEN + 1 + ABBR_NAME_LEN + 4 + 1;
 		int adr = START_ADR + ofs;
@@ -250,8 +305,12 @@ public final class Clubs {
 	}
 
 	public static void importClub(OptionFile ofSource, int clubSource, OptionFile ofDest, int clubDest) {
-		if (null == ofSource) throw new NullPointerException("ofSource");
-		if (null == ofDest) throw new NullPointerException("ofDest");
+		if (null == ofSource) {
+			throw new NullArgumentException("ofSource");
+		}
+		if (null == ofDest) {
+			throw new NullArgumentException("ofDest");
+		}
 
 		int aS = getOffset(clubSource);
 		int aD = getOffset(clubDest);

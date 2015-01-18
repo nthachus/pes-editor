@@ -177,7 +177,7 @@ public final class LoggerFactory {
 			// compatibility, we cannot cry here. Only for implementations
 			// which willingly declare a REQUESTED_API_VERSION field do we
 			// emit compatibility warnings.
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			// we should never reach here
 			Util.report("Unexpected problem occurred during version sanity check", e);
 		}

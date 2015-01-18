@@ -1,14 +1,15 @@
 package editor.ui;
 
 import editor.data.*;
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Collections;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SquadList extends JList<Player> {
 	private static final long serialVersionUID = 6246402135860985745L;
@@ -19,7 +20,9 @@ public class SquadList extends JList<Player> {
 
 	public SquadList(OptionFile of, boolean setSize) {
 		super();
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 
 		//refresh(team);
@@ -39,13 +42,14 @@ public class SquadList extends JList<Player> {
 	}
 
 	public void refresh(int team, boolean isNormal) {
-		if (team < 0 || team > Squads.TOTAL)
+		if (team < 0 || team > Squads.TOTAL) {
 			throw new IndexOutOfBoundsException("team#" + team);
+		}
 		log.debug("Try to reload Squad list #{} for team: {}, normal-mode: {}", hashCode(), team, isNormal);
 
-		if (!isNormal) {
-			if (team >= Squads.FIRST_EDIT_NATION)
-				team += Squads.EDIT_TEAM_COUNT;
+		if (!isNormal
+				&& team >= Squads.FIRST_EDIT_NATION) {
+			team += Squads.EDIT_TEAM_COUNT;
 		}
 
 		this.team = team;
@@ -57,23 +61,25 @@ public class SquadList extends JList<Player> {
 	}
 
 	private void fetchAllPlayers() {
-		Vector<Player> model = new Vector<Player>(Player.TOTAL + Player.TOTAL_EDIT - 1);
+		java.util.List<Player> list = new ArrayList<Player>(Player.TOTAL + Player.TOTAL_EDIT - 1);
 		for (int p = 1; p < Player.TOTAL; p++) {
-			model.add(new Player(of, p));
+			list.add(new Player(of, p));
 		}
 
 		Player o;
 		for (int p = Player.FIRST_EDIT; p < Player.END_EDIT; p++) {
 			o = new Player(of, p);
-			if (!o.isEmpty()) model.add(o);
+			if (!o.isEmpty()) {
+				list.add(o);
+			}
 		}
 
-		Collections.sort(model);
+		Player[] model = list.toArray(new Player[list.size()]);
+		Arrays.sort(model);
 
-		model.trimToSize();
 		setListData(model);
 		// DEBUG
-		log.debug("Squad list #{} is reloaded with all ({}) players", hashCode(), model.size());
+		log.debug("Squad list #{} is reloaded with all ({}) players", hashCode(), model.length);
 	}
 
 	/**

@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.Formations;
 import editor.data.OptionFile;
+import editor.lang.NullArgumentException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,12 +42,24 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 			SquadList squadList, AtkDefPanel adp, JComboBox altBox, SquadNumberList numList) {
 		super();
 
-		if (null == of) throw new NullPointerException("of");
-		if (null == parent) throw new NullPointerException("parent");
-		if (null == squadList) throw new NullPointerException("squadList");
-		if (null == adp) throw new NullPointerException("adp");
-		if (null == altBox) throw new NullPointerException("altBox");
-		if (null == numList) throw new NullPointerException("numList");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == parent) {
+			throw new NullArgumentException("parent");
+		}
+		if (null == squadList) {
+			throw new NullArgumentException("squadList");
+		}
+		if (null == adp) {
+			throw new NullArgumentException("adp");
+		}
+		if (null == altBox) {
+			throw new NullArgumentException("altBox");
+		}
+		if (null == numList) {
+			throw new NullArgumentException("numList");
+		}
 		this.of = of;
 		this.parent = parent;
 		this.squadList = squadList;
@@ -87,7 +100,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 
 	@Override
 	public void paintComponent(Graphics g) {
-		if (null == g) throw new NullPointerException("g");
+		if (null == g) {
+			throw new NullArgumentException("g");
+		}
 		if (!(g instanceof Graphics2D)) throw new IllegalArgumentException("g");
 
 		Graphics2D g2 = (Graphics2D) g;
@@ -269,7 +284,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	public void mousePressed(MouseEvent e) {
-		if (null == e) throw new NullPointerException("e");
+		if (null == e) {
+			throw new NullArgumentException("e");
+		}
 
 		selectedIdx = -1;
 		findPressedIndex(e);
@@ -339,7 +356,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	public void mouseDragged(MouseEvent e) {
-		if (null == e) throw new NullPointerException("e");
+		if (null == e) {
+			throw new NullArgumentException("e");
+		}
 		if (selectedIdx <= 0) return;
 
 		int alt = altBox.getSelectedIndex();

@@ -1,4 +1,4 @@
-package editor.ui;
+package editor.lang;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -16,8 +16,12 @@ public class JTextChangeListener implements DocumentListener, Runnable {
 	private final ChangeListener changeListener;
 
 	public JTextChangeListener(JTextComponent textField, ChangeListener changeListener) {
-		if (null == textField) throw new NullPointerException("textField");
-		if (null == changeListener) throw new NullPointerException("changeListener");
+		if (null == textField) {
+			throw new NullArgumentException("textField");
+		}
+		if (null == changeListener) {
+			throw new NullArgumentException("changeListener");
+		}
 		this.textField = textField;
 		this.changeListener = changeListener;
 	}

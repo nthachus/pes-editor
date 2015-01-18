@@ -3,6 +3,7 @@ package editor.ui;
 import editor.data.EmblemType;
 import editor.data.Emblems;
 import editor.data.OptionFile;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import editor.util.UIUtil;
 import org.slf4j.Logger;
@@ -24,7 +25,9 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 
 	public EmblemImportDialog(Frame owner, OptionFile of2) {
 		super(owner, true);
-		if (null == of2) throw new NullPointerException("of2");
+		if (null == of2) {
+			throw new NullArgumentException("of2");
+		}
 		this.of2 = of2;
 
 		log.debug("Emblem import dialog is initializing..");
@@ -71,7 +74,9 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		log.debug("Perform emblem import action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {

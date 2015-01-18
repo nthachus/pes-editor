@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.Logos;
 import editor.data.OptionFile;
+import editor.lang.NullArgumentException;
 import editor.util.*;
 
 import javax.imageio.ImageIO;
@@ -27,8 +28,12 @@ public class LogoPanel extends JPanel implements ActionListener {
 
 	public LogoPanel(OptionFile of, LogoImportDialog lid) {
 		super();
-		if (null == of) throw new NullPointerException("of");
-		if (null == lid) throw new NullPointerException("lid");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == lid) {
+			throw new NullArgumentException("lid");
+		}
 		this.of = of;
 		logoImportDia = lid;
 
@@ -83,7 +88,9 @@ public class LogoPanel extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans;
@@ -103,12 +110,14 @@ public class LogoPanel extends JPanel implements ActionListener {
 					importLogo(slot);
 					break;
 				case JOptionPane.NO_OPTION:
-					if (Logos.isUsed(of, slot))
+					if (Logos.isUsed(of, slot)) {
 						saveLogoAsPNG(slot);
+					}
 					break;
 				case JOptionPane.CANCEL_OPTION:
-					if (logoImportDia.isOf2Loaded())
+					if (logoImportDia.isOf2Loaded()) {
 						importFromOF2(slot);
+					}
 					break;
 				default:
 					break;
@@ -119,8 +128,9 @@ public class LogoPanel extends JPanel implements ActionListener {
 	private static Object[] getOptions(boolean of2Loaded) {
 		String s = Resources.getMessage("logo.options");
 		String[] opts = s.split("\\s*,\\s*");
-		if (of2Loaded || opts.length < 2)
+		if (of2Loaded || opts.length < 2) {
 			return opts;
+		}
 
 		ArrayList<String> arr = new ArrayList<String>(Arrays.asList(opts));
 		arr.remove(arr.size() - 2);
@@ -134,8 +144,9 @@ public class LogoPanel extends JPanel implements ActionListener {
 
 	private void importLogo(int slot) {
 		int returnVal = chooser.showOpenDialog(null);
-		if (returnVal != JFileChooser.APPROVE_OPTION)
+		if (returnVal != JFileChooser.APPROVE_OPTION) {
 			return;
+		}
 
 		try {
 			File source = chooser.getSelectedFile();
@@ -151,8 +162,9 @@ public class LogoPanel extends JPanel implements ActionListener {
 
 	private void saveLogoAsPNG(int slot) {
 		int returnVal = pngChooser.showSaveDialog(null);
-		if (returnVal != JFileChooser.APPROVE_OPTION)
+		if (returnVal != JFileChooser.APPROVE_OPTION) {
 			return;
+		}
 
 		File dest = pngChooser.getSelectedFile();
 		dest = Files.addExtension(dest, Files.PNG);
@@ -199,22 +211,29 @@ public class LogoPanel extends JPanel implements ActionListener {
 	}
 
 	private static void validateImage(BufferedImage image) {
-		if (null == image) throw new NullPointerException("image");
+		if (null == image) {
+			throw new NullArgumentException("image");
+		}
 
-		if (image.getWidth() != Logos.IMG_SIZE || image.getHeight() != Logos.IMG_SIZE)
+		if (image.getWidth() != Logos.IMG_SIZE || image.getHeight() != Logos.IMG_SIZE) {
 			throw new IllegalArgumentException(Resources.getMessage("msg.invalidSize", Logos.IMG_SIZE, Logos.IMG_SIZE));
+		}
 
 		ColorModel colorMod = image.getColorModel();
-		if (null == colorMod || !(colorMod instanceof IndexColorModel))
+		if (!(colorMod instanceof IndexColorModel)) {
 			throw new IllegalArgumentException(Resources.getMessage("msg.notIndexed"));
+		}
 
 		int paletteSize = Images.paletteSize(Logos.BITS_DEPTH);
-		if (((IndexColorModel) colorMod).getMapSize() > paletteSize)
+		if (((IndexColorModel) colorMod).getMapSize() > paletteSize) {
 			throw new IllegalArgumentException(Resources.getMessage("msg.manyColors", paletteSize));
+		}
 	}
 
 	private static void showAccessFailedMsg(String msg) {
-		if (Strings.isBlank(msg)) msg = Resources.getMessage("msg.accessFailed");
+		if (Strings.isBlank(msg)) {
+			msg = Resources.getMessage("msg.accessFailed");
+		}
 		JOptionPane.showMessageDialog(null, msg, Resources.getMessage("Error"), JOptionPane.ERROR_MESSAGE);
 	}
 

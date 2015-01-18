@@ -216,7 +216,7 @@ public final class MessageFormatter {
 		try {
 			String oAsString = o.toString();
 			sb.append(oAsString);
-		} catch (Throwable t) {
+		} catch (Exception t) {
 			Util.report("Failed toString() invocation on an object of type [" + o.getClass().getName() + "]", t);
 			sb.append("[FAILED toString()]");
 		}
@@ -227,7 +227,9 @@ public final class MessageFormatter {
 		if (!seenMap.containsKey(a)) {
 			seenMap.put(a, null);
 			for (int i = 0; i < a.length; i++) {
-				if (i > 0) sb.append(", ");
+				if (i > 0) {
+					sb.append(", ");
+				}
 				deeplyAppendParameter(sb, a[i], seenMap);
 			}
 			// allow repeats in siblings
@@ -241,7 +243,9 @@ public final class MessageFormatter {
 	private static void booleanArrayAppend(StringBuffer sb, boolean[] a) {
 		sb.append('[');
 		for (int i = 0; i < a.length; i++) {
-			if (i > 0) sb.append(", ");
+			if (i > 0) {
+				sb.append(", ");
+			}
 			sb.append(a[i]);
 		}
 		sb.append(']');
@@ -250,7 +254,9 @@ public final class MessageFormatter {
 	private static void byteArrayAppend(StringBuffer sb, byte[] a) {
 		sb.append('[');
 		for (int i = 0; i < a.length; i++) {
-			if (i > 0) sb.append(", ");
+			if (i > 0) {
+				sb.append(", ");
+			}
 			sb.append(a[i]);
 		}
 		sb.append(']');
@@ -259,7 +265,9 @@ public final class MessageFormatter {
 	private static void charArrayAppend(StringBuffer sb, char[] a) {
 		sb.append('[');
 		for (int i = 0; i < a.length; i++) {
-			if (i > 0) sb.append(", ");
+			if (i > 0) {
+				sb.append(", ");
+			}
 			sb.append(a[i]);
 		}
 		sb.append(']');
@@ -268,7 +276,9 @@ public final class MessageFormatter {
 	private static void shortArrayAppend(StringBuffer sb, short[] a) {
 		sb.append('[');
 		for (int i = 0; i < a.length; i++) {
-			if (i > 0) sb.append(", ");
+			if (i > 0) {
+				sb.append(", ");
+			}
 			sb.append(a[i]);
 		}
 		sb.append(']');
@@ -277,7 +287,9 @@ public final class MessageFormatter {
 	private static void intArrayAppend(StringBuffer sb, int[] a) {
 		sb.append('[');
 		for (int i = 0; i < a.length; i++) {
-			if (i > 0) sb.append(", ");
+			if (i > 0) {
+				sb.append(", ");
+			}
 			sb.append(a[i]);
 		}
 		sb.append(']');
@@ -287,7 +299,9 @@ public final class MessageFormatter {
 		sb.append('[');
 		for (int i = 0; i < a.length; i++) {
 			sb.append(a[i]);
-			if (i > 0) sb.append(", ");
+			if (i > 0) {
+				sb.append(", ");
+			}
 		}
 		sb.append(']');
 	}
@@ -295,7 +309,9 @@ public final class MessageFormatter {
 	private static void floatArrayAppend(StringBuffer sb, float[] a) {
 		sb.append('[');
 		for (int i = 0; i < a.length; i++) {
-			if (i > 0) sb.append(", ");
+			if (i > 0) {
+				sb.append(", ");
+			}
 			sb.append(a[i]);
 		}
 		sb.append(']');
@@ -304,7 +320,9 @@ public final class MessageFormatter {
 	private static void doubleArrayAppend(StringBuffer sb, double[] a) {
 		sb.append('[');
 		for (int i = 0; i < a.length; i++) {
-			if (i > 0) sb.append(", ");
+			if (i > 0) {
+				sb.append(", ");
+			}
 			sb.append(a[i]);
 		}
 		sb.append(']');

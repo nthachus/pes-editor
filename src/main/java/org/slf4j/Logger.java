@@ -37,7 +37,7 @@ public interface Logger {
 	 *
 	 * @since 1.3
 	 */
-	public static final String ROOT_LOGGER_NAME = "ROOT";
+	String ROOT_LOGGER_NAME = "ROOT";
 
 	/**
 	 * Return the name of this <code>Logger</code> instance.

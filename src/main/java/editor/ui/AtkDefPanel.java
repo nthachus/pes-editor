@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.Formations;
 import editor.data.OptionFile;
+import editor.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,8 +34,12 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 
 	public AtkDefPanel(OptionFile of, JComboBox altBox) {
 		super();
-		if (null == of) throw new NullPointerException("of");
-		if (null == altBox) throw new NullPointerException("altBox");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == altBox) {
+			throw new NullArgumentException("altBox");
+		}
 		this.of = of;
 		this.altBox = altBox;
 
@@ -72,8 +77,12 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 
 	@Override
 	public void paintComponent(Graphics g) {
-		if (null == g) throw new NullPointerException("g");
-		if (!(g instanceof Graphics2D)) throw new IllegalArgumentException("g");
+		if (null == g) {
+			throw new NullArgumentException("g");
+		}
+		if (!(g instanceof Graphics2D)) {
+			throw new IllegalArgumentException("g");
+		}
 		log.debug("Paint Attack/Defense panel with selected-index: {}, squad: {}", selectedIndex, squad);
 
 		Graphics2D g2 = (Graphics2D) g;
@@ -145,7 +154,9 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 	}
 
 	public void mousePressed(MouseEvent e) {
-		if (null == e) throw new NullPointerException("e");
+		if (null == e) {
+			throw new NullArgumentException("e");
+		}
 		log.debug("Perform mouse pressed with selected-index: {}, squad: {}", selectedIndex, squad);
 
 		int alt = Integer.MIN_VALUE;
@@ -182,7 +193,9 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 
 		if (alt > Integer.MIN_VALUE) {
 			repaint();
-			if (null != pitch) pitch.repaint();
+			if (null != pitch) {
+				pitch.repaint();
+			}
 
 			log.debug("Setting Attack/Defense on click succeeded");
 		}

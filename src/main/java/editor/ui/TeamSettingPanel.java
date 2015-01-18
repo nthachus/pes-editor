@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.Formations;
 import editor.data.OptionFile;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,9 @@ public class TeamSettingPanel extends JPanel implements ActionListener {
 
 	public TeamSettingPanel(OptionFile of) {
 		super(new GridBagLayout());
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 
 		log.debug("Team Setting panel is initializing..");
@@ -82,7 +85,9 @@ public class TeamSettingPanel extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		log.debug("Perform action {} on Team Setting panel", evt.getActionCommand());
 
 		if (isOk) {

@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.Logos;
 import editor.data.OptionFile;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import editor.util.UIUtil;
 
@@ -26,8 +27,12 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 	public LogoImportDialog(Frame owner, OptionFile of, OptionFile of2) {
 		super(owner, true);
 
-		if (null == of) throw new NullPointerException("of");
-		if (null == of2) throw new NullPointerException("of2");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == of2) {
+			throw new NullArgumentException("of2");
+		}
 		this.of = of;
 		this.of2 = of2;
 
@@ -98,7 +103,9 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans; // toggle transparency

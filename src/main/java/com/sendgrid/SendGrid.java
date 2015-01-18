@@ -1,5 +1,9 @@
 package com.sendgrid;
 
+import editor.lang.NullArgumentException;
+import editor.lang.NullHostnameVerifier;
+import editor.lang.TrustAllManager;
+
 import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -8,7 +12,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
 
 /**
  * This allows you to quickly and easily send emails through SendGrid using Java.
@@ -23,7 +26,9 @@ public class SendGrid {
 	private volatile Integer timeout = null;
 
 	public SendGrid(String form, String encoding) {
-		if (null == form) throw new NullPointerException("form");
+		if (null == form) {
+			throw new NullArgumentException("form");
+		}
 		this.form = form;
 		this.encoding = (null != encoding && encoding.length() > 0) ? encoding : "UTF-8";
 	}
@@ -33,7 +38,9 @@ public class SendGrid {
 	}
 
 	public SendGrid setEndpoint(String endpoint) {
-		if (null == endpoint) throw new NullPointerException("endpoint");
+		if (null == endpoint) {
+			throw new NullArgumentException("endpoint");
+		}
 		this.endpoint = endpoint;
 		return this;
 	}
@@ -51,8 +58,9 @@ public class SendGrid {
 		URL url = new URL(endpoint);
 		HttpURLConnection http = (HttpURLConnection) url.openConnection();
 
-		if (http instanceof HttpsURLConnection)
+		if (http instanceof HttpsURLConnection) {
 			initHttpsRequest((HttpsURLConnection) http);
+		}
 
 		// Add request header
 		initHttpRequest(http);
@@ -65,7 +73,9 @@ public class SendGrid {
 			sw = new OutputStreamWriter(http.getOutputStream(), encoding);
 			sw.write(postData);
 		} finally {
-			if (null != sw) sw.close();
+			if (null != sw) {
+				sw.close();
+			}
 		}
 
 		// Get response
@@ -102,11 +112,13 @@ public class SendGrid {
 	}
 
 	private String buildPostData(String subject, String body) throws IOException {
-		if (null != subject && subject.length() > 0)
+		if (null != subject && subject.length() > 0) {
 			subject = URLEncoder.encode(subject, encoding);
+		}
 
-		if (null != body && body.length() > 0)
+		if (null != body && body.length() > 0) {
 			body = URLEncoder.encode(body, encoding);
+		}
 
 		return String.format(form, subject, body);
 	}
@@ -126,33 +138,10 @@ public class SendGrid {
 	}
 
 	private static HostnameVerifier getHostnameVerifier() {
-		if (null == hostnameVerifier)
+		if (null == hostnameVerifier) {
 			hostnameVerifier = new NullHostnameVerifier();
+		}
 		return hostnameVerifier;
-	}
-
-	/**
-	 * A trust manager that does not validate certificate chains.
-	 */
-	public static class TrustAllManager implements X509TrustManager {
-		public void checkClientTrusted(X509Certificate[] chain, String authType) {
-		}
-
-		public void checkServerTrusted(X509Certificate[] chain, String authType) {
-		}
-
-		public X509Certificate[] getAcceptedIssuers() {
-			return null;
-		}
-	}
-
-	/**
-	 * A class to trust all hosts, so always returns true.
-	 */
-	public static class NullHostnameVerifier implements HostnameVerifier {
-		public boolean verify(String hostname, SSLSession session) {
-			return true;
-		}
 	}
 
 }

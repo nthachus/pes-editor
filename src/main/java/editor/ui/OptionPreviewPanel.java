@@ -1,6 +1,7 @@
 package editor.ui;
 
 import editor.data.SaveGameInfo;
+import editor.lang.NullArgumentException;
 import editor.util.Files;
 import editor.util.Resources;
 import org.slf4j.Logger;
@@ -24,8 +25,12 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 
 	public OptionPreviewPanel(JFileChooser fc) {
 		super();
-		if (null == fc) throw new NullPointerException("fc");
-		if (null == fc.getFileFilter()) throw new NullPointerException("fc.fileFilter");
+		if (null == fc) {
+			throw new NullArgumentException("fc");
+		}
+		if (null == fc.getFileFilter()) {
+			throw new NullArgumentException("fc.fileFilter");
+		}
 		// DEBUG
 		log.debug("Initialize OF preview panel for file chooser: {}#{}", fc.getClass().getSimpleName(), fc.hashCode());
 
@@ -48,18 +53,17 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 		log.debug("Try to preview info of OF: {}", file);
 
 		String text = "";
-		if (null != file && !file.isDirectory() && filter.accept(file)) {
-			if (saveInfo.getInfo(file)) {
-				String extension = Files.getExtension(file);
+		if (null != file && !file.isDirectory() && filter.accept(file)
+				&& saveInfo.getInfo(file)) {
 
-				if (Files.isXPortFile(extension)) {
-					text = Resources.getMessage("preview.xPort",
-							saveInfo.getGame(), saveInfo.getGameName(), saveInfo.getSaveName(), saveInfo.getNotes());
-				} else if (Files.isARMaxFile(extension)) {
-					text = Resources.getMessage("preview.arMax", saveInfo.getGame(), saveInfo.getGameName());
-				} else if (Files.isEmsFile(extension)) {
-					text = Resources.getMessage("preview.ems", saveInfo.getGame());
-				}
+			String extension = Files.getExtension(file);
+			if (Files.isXPortFile(extension)) {
+				text = Resources.getMessage("preview.xPort",
+						saveInfo.getGame(), saveInfo.getGameName(), saveInfo.getSaveName(), saveInfo.getNotes());
+			} else if (Files.isARMaxFile(extension)) {
+				text = Resources.getMessage("preview.arMax", saveInfo.getGame(), saveInfo.getGameName());
+			} else if (Files.isEmsFile(extension)) {
+				text = Resources.getMessage("preview.ems", saveInfo.getGame());
 			}
 		}
 
@@ -67,7 +71,9 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		String prop = evt.getPropertyName();
 		log.debug("On File chooser property '{}' changed", prop);
 
@@ -77,7 +83,9 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 		if (JFileChooser.DIRECTORY_CHANGED_PROPERTY.equalsIgnoreCase(prop)) {
 			isUpdated = true;
 		} else if (JFileChooser.SELECTED_FILE_CHANGED_PROPERTY.equalsIgnoreCase(prop)) {
-			if (evt.getNewValue() instanceof File) file = (File) evt.getNewValue();
+			if (evt.getNewValue() instanceof File) {
+				file = (File) evt.getNewValue();
+			}
 			isUpdated = true;
 		}
 

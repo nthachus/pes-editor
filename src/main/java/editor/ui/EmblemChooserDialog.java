@@ -3,6 +3,7 @@ package editor.ui;
 import editor.data.EmblemType;
 import editor.data.Emblems;
 import editor.data.OptionFile;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import editor.util.UIUtil;
 import org.slf4j.Logger;
@@ -26,7 +27,9 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 
 	public EmblemChooserDialog(Frame owner, OptionFile of) {
 		super(owner, true);
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 
 		log.debug("Emblem chooser dialog is initializing..");
@@ -67,7 +70,9 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		log.debug("Try to perform action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {

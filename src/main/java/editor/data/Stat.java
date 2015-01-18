@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 
 import java.io.Serializable;
@@ -14,11 +15,21 @@ public class Stat implements Serializable, Comparable<Stat> {
 	private final String name;
 
 	public Stat(StatType type, int offset, int shift, int mask, String name) {
-		if (null == type) throw new NullPointerException("type");
-		if (null == name) throw new NullPointerException("name");
-		if (offset < 0) throw new IllegalArgumentException("offset " + offset);
-		if (shift < 0 || shift >= Short.SIZE) throw new IllegalArgumentException("shift " + shift);
-		if (mask <= 0 || mask > 0xFFFF) throw new IllegalArgumentException("mask " + mask);
+		if (null == type) {
+			throw new NullArgumentException("type");
+		}
+		if (null == name) {
+			throw new NullArgumentException("name");
+		}
+		if (offset < 0) {
+			throw new IllegalArgumentException("offset " + offset);
+		}
+		if (shift < 0 || shift >= Short.SIZE) {
+			throw new IllegalArgumentException("shift " + shift);
+		}
+		if (mask <= 0 || mask > 0xFFFF) {
+			throw new IllegalArgumentException("mask " + mask);
+		}
 
 		this.type = type;
 		this.offset = offset;
@@ -62,12 +73,13 @@ public class Stat implements Serializable, Comparable<Stat> {
 	}
 
 	public int minValue() {
-		if (type == StatType.positiveInt)
+		if (type == StatType.positiveInt) {
 			return 1;
-		if (type == StatType.age15)
+		} else if (type == StatType.age15) {
 			return 15;
-		if (type == StatType.height148)
+		} else if (type == StatType.height148) {
 			return 148;
+		}
 		return 0;
 	}
 
@@ -97,15 +109,20 @@ public class Stat implements Serializable, Comparable<Stat> {
 	@SuppressWarnings("NullableProblems")
 	@Override
 	public int compareTo(Stat o) {
-		if (null == o) return 1;
+		if (null == o) {
+			return 1;
+		}
 
 		int start = getBitOffset();
 		int end = start + getBitLength() - 1;
 		int startO = o.getBitOffset();
 		int endO = startO + o.getBitLength() - 1;
 
-		if (start > endO) return 1;
-		if (startO > end) return -1;
+		if (start > endO) {
+			return 1;
+		} else if (startO > end) {
+			return -1;
+		}
 		return 0;
 	}
 

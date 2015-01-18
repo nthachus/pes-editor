@@ -4,6 +4,7 @@ import editor.data.ControlButton;
 import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.data.Player;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ import java.io.Serializable;
 public class StrategyPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 3335107620381551627L;
 
-	public static final int CB_OVERLAP = 6;
+	private static final int CB_OVERLAP = 6;
 
 	private final OptionFile of;
 	private final SquadList list;
@@ -31,8 +32,12 @@ public class StrategyPanel extends JPanel implements ActionListener {
 
 	public StrategyPanel(OptionFile of, SquadList squadList) {
 		super(new GridBagLayout());
-		if (null == of) throw new NullPointerException("of");
-		if (null == squadList) throw new NullPointerException("squadList");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == squadList) {
+			throw new NullArgumentException("squadList");
+		}
 		this.of = of;
 		list = squadList;
 
@@ -124,8 +129,12 @@ public class StrategyPanel extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
-		if (!isOk) return;
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
+		if (!isOk) {
+			return;
+		}
 
 		if ("Auto".equalsIgnoreCase(evt.getActionCommand())) {
 			autoStrategy();
@@ -206,8 +215,9 @@ public class StrategyPanel extends JPanel implements ActionListener {
 		for (int i = 1; i < Formations.PLAYER_COUNT; i++) {
 			int pos = Formations.getPosition(of, squad, 0, i);
 			if (pos > 0 && pos < 8) {
-				if (i == Formations.getCBOverlap(of, squad))
+				if (i == Formations.getCBOverlap(of, squad)) {
 					sel = count;
+				}
 
 				p = list.getModel().getElementAt(i);
 				overlapBox.addItem(new SweepItem(i, p.getName()));

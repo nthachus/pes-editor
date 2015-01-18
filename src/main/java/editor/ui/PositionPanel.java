@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.OptionFile;
 import editor.data.Stats;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 
 import javax.swing.*;
@@ -20,7 +21,9 @@ public class PositionPanel extends JPanel implements ActionListener {
 
 	public PositionPanel(OptionFile of) {
 		super(new BorderLayout());
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 
 		initComponents();
@@ -64,8 +67,9 @@ public class PositionPanel extends JPanel implements ActionListener {
 	}
 
 	public JCheckBox getRoleCheck(int index) {
-		if (index < 0 || index >= roleCheck.length)
+		if (index < 0 || index >= roleCheck.length) {
 			throw new ArrayIndexOutOfBoundsException(Integer.toString(index));
+		}
 		return roleCheck[index];
 	}
 
@@ -103,7 +107,9 @@ public class PositionPanel extends JPanel implements ActionListener {
 	 * On a role checkbox was changed.
 	 */
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 
 		if (evt.getSource() == regBox) {
 			registerRole(evt);
@@ -117,8 +123,9 @@ public class PositionPanel extends JPanel implements ActionListener {
 	}
 
 	private void registerRole(ActionEvent evt) {
-		if (!"y".equalsIgnoreCase(evt.getActionCommand()))
+		if (!"y".equalsIgnoreCase(evt.getActionCommand())) {
 			return;
+		}
 
 		String roleName = (String) regBox.getSelectedItem();
 		for (int i = 0; i < Stats.ROLES.length; i++) {

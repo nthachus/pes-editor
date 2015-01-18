@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Arrays;
 import editor.util.Bits;
 
@@ -329,8 +330,12 @@ public final class Stats {
 	//endregion
 
 	public static int getValue(OptionFile of, int player, Stat stat) {
-		if (null == of) throw new NullPointerException("of");
-		if (null == stat) throw new NullPointerException("stat");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == stat) {
+			throw new NullArgumentException("stat");
+		}
 
 		int ofs = stat.getOffset(player);
 		int val = Bits.toInt16(of.getData(), ofs - 1);
@@ -348,8 +353,12 @@ public final class Stats {
 	}
 
 	public static void setValue(OptionFile of, int player, Stat stat, int value) {
-		if (null == of) throw new NullPointerException("of");
-		if (null == stat) throw new NullPointerException("stat");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == stat) {
+			throw new NullArgumentException("stat");
+		}
 
 		int ofs = stat.getOffset(player);
 
@@ -371,7 +380,9 @@ public final class Stats {
 	}
 
 	public static void setValue(OptionFile of, int player, Stat stat, String value) throws NumberFormatException {
-		if (null == stat) throw new NullPointerException("stat");
+		if (null == stat) {
+			throw new NullArgumentException("stat");
+		}
 
 		int val;
 		if (stat.getType() == StatType.nationId) {

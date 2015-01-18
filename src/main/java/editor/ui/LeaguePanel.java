@@ -2,6 +2,8 @@ package editor.ui;
 
 import editor.data.Leagues;
 import editor.data.OptionFile;
+import editor.lang.JTextFieldLimit;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +25,9 @@ public class LeaguePanel extends JPanel implements ActionListener, ListSelection
 
 	public LeaguePanel(OptionFile of) {
 		super();
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 
 		log.debug("League panel is initializing..");
@@ -76,8 +80,12 @@ public class LeaguePanel extends JPanel implements ActionListener, ListSelection
 	}
 
 	public void valueChanged(ListSelectionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
-		if (evt.getValueIsAdjusting()) return;
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
+		if (evt.getValueIsAdjusting()) {
+			return;
+		}
 
 		int id = list.getSelectedIndex();
 		// DEBUG

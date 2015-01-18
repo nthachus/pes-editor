@@ -3,6 +3,7 @@ package editor.ui;
 import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.data.Stats;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,13 +75,15 @@ public class SelectByNation extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		log.debug("Try to perform action: {}", evt.getActionCommand());
 
 		if ("Sort".equalsIgnoreCase(evt.getActionCommand())) {
 			sortList();
 		} else if ("y".equalsIgnoreCase(evt.getActionCommand())) {
-			selectNation();
+			refreshForNation();
 		}
 	}
 
@@ -93,23 +96,20 @@ public class SelectByNation extends JPanel implements ActionListener {
 			isAlphaOrder = true;
 		}
 
-		selectNation();
+		refreshForNation();
 	}
 
-	private void selectNation() {
+	public void refreshForNation() {
 		int i = nationBox.getSelectedIndex();
-		if (i >= 0)
+		if (i >= 0) {
 			freeList.refresh(i, isAlphaOrder);
+		}
 
 		log.debug("Select completed By Nation {}", i);
 	}
 
 	public NationalityList getFreeList() {
 		return freeList;
-	}
-
-	public JComboBox getNationBox() {
-		return nationBox;
 	}
 
 	public boolean isAlphaOrder() {
@@ -122,7 +122,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 		nationBox.setActionCommand("n");
 		nationBox.setSelectedIndex(nationBox.getItemCount() - 1);
 
-		freeList.refresh(nationBox.getSelectedIndex(), isAlphaOrder);
+		refreshForNation();
 
 		nationBox.setActionCommand("y");
 		// DEBUG

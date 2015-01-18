@@ -1,6 +1,7 @@
 package editor.ui;
 
 import editor.data.*;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import editor.util.Strings;
 import org.slf4j.Logger;
@@ -32,8 +33,12 @@ public class ImportPanel extends JPanel implements ActionListener {
 			EmblemPanel emblemPan, LogoPanel logoPan, TransferPanel transferPan) {
 		super(new BorderLayout());
 
-		if (null == of) throw new NullPointerException("of");
-		if (null == of2) throw new NullPointerException("of2");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == of2) {
+			throw new NullArgumentException("of2");
+		}
 		this.of = of;
 		this.of2 = of2;
 		this.wenShop = wenShop;
@@ -111,7 +116,9 @@ public class ImportPanel extends JPanel implements ActionListener {
 	//endregion
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		log.debug("Try to perform Import action: {}", evt.getActionCommand());
 
 		if ("Options".equalsIgnoreCase(evt.getActionCommand())) {
@@ -204,7 +211,9 @@ public class ImportPanel extends JPanel implements ActionListener {
 
 	private void importOptions() {
 		for (int i = 0; i <= 10; i++) {
-			if (i > 1 && i < 9) continue;
+			if (i > 1 && i < 9) {
+				continue;
+			}
 
 			int adr = OptionFile.blockAddress(i);
 			System.arraycopy(of2.getData(), adr, of.getData(), adr, OptionFile.blockSize(i));

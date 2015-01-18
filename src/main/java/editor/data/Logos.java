@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import editor.util.Images;
 import org.slf4j.Logger;
@@ -33,26 +34,34 @@ public final class Logos {
 
 
 	private static int getOffset(int slot) {
-		if (slot < 0 || slot >= TOTAL) throw new IndexOutOfBoundsException("slot#" + slot);
+		if (slot < 0 || slot >= TOTAL) {
+			throw new IndexOutOfBoundsException("slot#" + slot);
+		}
 		return START_ADR + slot * SIZE;
 	}
 
 	public static boolean isUsed(OptionFile of, int slot) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOffset(slot);
 		return (of.getData()[adr] != 0);
 	}
 
 	public static BufferedImage get(OptionFile of, int slot, boolean opaque) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOffset(slot) + IMG_SIZE;
 		return (BufferedImage) Images.read(of.getData(), IMG_SIZE, BITS_DEPTH, adr, opaque, 0f);
 	}
 
 	public static boolean set(OptionFile of, int slot, BufferedImage image) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOffset(slot);
 		try {
@@ -68,15 +77,21 @@ public final class Logos {
 	}
 
 	public static void delete(OptionFile of, int slot) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOffset(slot);
 		Arrays.fill(of.getData(), adr, adr + SIZE, (byte) 0);
 	}
 
 	public static void importData(OptionFile ofSource, int slotSource, OptionFile ofDest, int slotDest) {
-		if (null == ofSource) throw new NullPointerException("ofSource");
-		if (null == ofDest) throw new NullPointerException("ofDest");
+		if (null == ofSource) {
+			throw new NullArgumentException("ofSource");
+		}
+		if (null == ofDest) {
+			throw new NullArgumentException("ofDest");
+		}
 
 		int aS = getOffset(slotSource);
 		int aD = getOffset(slotDest);

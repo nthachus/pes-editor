@@ -22,8 +22,9 @@ public final class Program implements Thread.UncaughtExceptionHandler {
 		try {
 			Thread.setDefaultUncaughtExceptionHandler(new Program());
 
-			if (!log.isDebugEnabled())
+			if (!log.isDebugEnabled()) {
 				SplashWindow.splash(Program.class.getResource("/META-INF/images/splash.jpg"));
+			}
 			EventQueue.invokeLater(new Editor.Runner(args));
 
 		} catch (Exception e) {
@@ -38,8 +39,9 @@ public final class Program implements Thread.UncaughtExceptionHandler {
 	public void uncaughtException(Thread t, Throwable e) {
 		log.error("Unhandled exception occurred:", e);
 
-		if (e instanceof ExceptionInInitializerError)
+		if (e instanceof ExceptionInInitializerError) {
 			System.exit(-1);
+		}
 	}
 
 }

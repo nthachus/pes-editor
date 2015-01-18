@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Files;
 import editor.util.Strings;
 import org.junit.Assert;
@@ -26,7 +27,7 @@ public abstract class BaseTest {
 
 	public static final String IMG_FORMAT = "png";
 
-	public static String getResourcePath(String resourceName) {
+	private static String getResourcePath(String resourceName) {
 		if (!Strings.isEmpty(resourceName) && !resourceName.startsWith("/"))
 			return "/" + resourceName;
 		return resourceName;
@@ -45,12 +46,16 @@ public abstract class BaseTest {
 	}
 
 	public static File createTempFile(File file, String extension) throws IOException {
-		if (null == file) throw new NullPointerException("file");
+		if (null == file) {
+			throw new NullArgumentException("file");
+		}
 		return createTempFile(file.getName(), extension);
 	}
 
 	public static File createTempFile(String filename, String extension) throws IOException {
-		if (null == filename) throw new NullPointerException("filename");
+		if (null == filename) {
+			throw new NullArgumentException("filename");
+		}
 		return File.createTempFile(Files.removeExtension(filename) + '_', Files.EXT_SEPARATOR + extension);
 	}
 
@@ -95,14 +100,19 @@ public abstract class BaseTest {
 
 	public static <T> java.util.List<T> readFields(
 			Class<?> clazz, Object target, Class<T> ofType, Boolean isFinal, boolean forceAccess) throws Exception {
-		if (null == clazz) throw new NullPointerException("clazz");
-		if (null == ofType) throw new NullPointerException("ofType");
+		if (null == clazz) {
+			throw new NullArgumentException("clazz");
+		}
+		if (null == ofType) {
+			throw new NullArgumentException("ofType");
+		}
 
 		java.util.List<T> list = new ArrayList<T>();
 
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field f : fields) {
-			if ((null == target) == Modifier.isStatic(f.getModifiers())
+			if (null != f
+					&& (null == target) == Modifier.isStatic(f.getModifiers())
 					&& (null == isFinal || isFinal == Modifier.isFinal(f.getModifiers()))
 					&& ofType.isAssignableFrom(f.getType())
 					&& !forceAccess == Modifier.isPublic(f.getModifiers())) {
@@ -125,10 +135,15 @@ public abstract class BaseTest {
 
 	public static Object readField(Class<?> clazz, Object target, String name, Boolean isFinal, boolean forceAccess)
 			throws Exception {
-		if (null == clazz) throw new NullPointerException("clazz");
-		if (Strings.isBlank(name)) throw new NullPointerException("name");
+		if (null == clazz) {
+			throw new NullArgumentException("clazz");
+		}
+		if (Strings.isBlank(name)) {
+			throw new NullArgumentException("name");
+		}
 
 		Field f = clazz.getDeclaredField(name);
+		if (null == f) throw new NoSuchFieldException(name);
 
 		if ((null == target) != Modifier.isStatic(f.getModifiers())
 				|| (null != isFinal && isFinal != Modifier.isFinal(f.getModifiers())))

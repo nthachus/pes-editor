@@ -1,5 +1,6 @@
 package editor.util;
 
+import editor.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,9 @@ public final class Resources {
 	public static ResourceBundle getMessages(boolean reload) {
 		if (null == messages || reload) {
 			messages = ResourceBundle.getBundle("META-INF/i18n/messages");
-			if (null == messages) throw new NullPointerException("messages");
+			if (null == messages) {
+				throw new IllegalStateException("messages must not be null.");
+			}
 		}
 		return messages;
 	}
@@ -27,12 +30,14 @@ public final class Resources {
 	}
 
 	public static String getMessage(String key, Object... args) {
-		if (null == key) throw new NullPointerException("key");
+		if (null == key) {
+			throw new NullArgumentException("key");
+		}
 
 		String msg;
-		if (getMessages().containsKey(key))
+		if (getMessages().containsKey(key)) {
 			msg = messages.getString(key);
-		else {
+		} else {
 			msg = key;
 			log.error("Message key '{}' not found for '{}'", key, Locale.getDefault());
 		}

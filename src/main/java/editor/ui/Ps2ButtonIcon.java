@@ -1,6 +1,7 @@
 package editor.ui;
 
 import editor.data.ControlButton;
+import editor.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,9 @@ public class Ps2ButtonIcon implements Icon {
 	private final ControlButton type;
 
 	public Ps2ButtonIcon(ControlButton type) {
-		if (null == type) throw new NullPointerException("type");
+		if (null == type) {
+			throw new NullArgumentException("type");
+		}
 		this.type = type;
 	}
 
@@ -29,8 +32,12 @@ public class Ps2ButtonIcon implements Icon {
 	}
 
 	public void paintIcon(Component c, Graphics g, int x, int y) {
-		if (null == g) throw new NullPointerException("g");
-		if (!(g instanceof Graphics2D)) throw new IllegalArgumentException("g");
+		if (null == g) {
+			throw new NullArgumentException("g");
+		}
+		if (!(g instanceof Graphics2D)) {
+			throw new IllegalArgumentException("g");
+		}
 		log.debug("Try to paint PS2 button icon: {}", type);
 
 		Graphics2D g2 = (Graphics2D) g;

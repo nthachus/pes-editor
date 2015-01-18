@@ -1,6 +1,7 @@
 package editor.ui;
 
 import editor.data.*;
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import editor.util.Resources;
 import editor.util.UIUtil;
@@ -24,7 +25,9 @@ public class InfoPanel extends JScrollPane {
 	public InfoPanel(OptionFile of, SelectByTeam teamDropdown) {
 		super(VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_NEVER);
 
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 		selector = teamDropdown;
 
@@ -70,7 +73,9 @@ public class InfoPanel extends JScrollPane {
 	public void refresh(int index1, int index2) {
 		log.debug("Refresh Info panel with index1: {}, index2: {}", index1, index2);
 		ta.setText("");
-		if (index1 <= 0 && index2 <= 0) return;
+		if (index1 <= 0 && index2 <= 0) {
+			return;
+		}
 
 		try {
 			if (index2 > 0) {
@@ -356,8 +361,9 @@ public class InfoPanel extends JScrollPane {
 
 	private static String getDifferenceStar(int diff) {
 		StringBuilder sb = new StringBuilder(" ");
-		for (int i = 0, n = Math.min(diff, 10); i < n; i++)
+		for (int i = 0, n = Math.min(diff, 10); i < n; i++) {
 			sb.append('*');
+		}
 		return sb.toString();
 	}
 

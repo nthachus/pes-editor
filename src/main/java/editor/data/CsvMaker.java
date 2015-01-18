@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import editor.util.Strings;
 import org.slf4j.Logger;
@@ -24,8 +25,12 @@ public class CsvMaker {
 	}
 
 	public boolean makeFile(OptionFile of, File dest, boolean headings/*, boolean extra*/, boolean create) {
-		if (null == of) throw new NullPointerException("of");
-		if (null == dest) throw new NullPointerException("dest");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == dest) {
+			throw new NullArgumentException("dest");
+		}
 		log.debug("Try to make CSV file: {}", dest);
 
 		RandomAccessFile out = null;
@@ -162,7 +167,9 @@ public class CsvMaker {
 
 	private void writeHeadings(DataOutput out) throws IOException {
 		for (int i = 0; i < HEADINGS.length; i++) {
-			if (i > 0) out.write(separator);
+			if (i > 0) {
+				out.write(separator);
+			}
 			out.writeBytes(HEADINGS[i]);
 		}
 	}
@@ -314,14 +321,12 @@ public class CsvMaker {
 
 	private static String getSide(OptionFile of, int player) {
 		int side = Stats.getValue(of, player, Stats.FAVORITE_SIDE);
-
 		// same side with stronger-foot
-		if (side == 0)
+		if (side == 0) {
 			return Stats.getString(of, player, Stats.FOOT);
-
-		if (side == 1)
+		} else if (side == 1) {
 			return Stats.MOD_FOOT[1 - Stats.getValue(of, player, Stats.FOOT)];
-
+		}
 		return Stats.MOD_FOOT[1] + "&" + Stats.MOD_FOOT[0];
 	}
 

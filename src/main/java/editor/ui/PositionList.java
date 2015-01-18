@@ -1,6 +1,7 @@
 package editor.ui;
 
 import editor.data.*;
+import editor.lang.NullArgumentException;
 import editor.util.UIUtil;
 
 import javax.swing.*;
@@ -18,7 +19,9 @@ public class PositionList extends JList/*<String>*/ {
 
 	public PositionList(OptionFile of, boolean inTransfer) {
 		super();
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 		this.of = of;
 		this.inTransfer = inTransfer;
 
@@ -33,8 +36,9 @@ public class PositionList extends JList/*<String>*/ {
 	}
 
 	public int getPosNum(int index) {
-		if (index < 0 || index >= posNum.length)
+		if (index < 0 || index >= posNum.length) {
 			throw new ArrayIndexOutOfBoundsException(Integer.toString(index));
+		}
 		return posNum[index];
 	}
 
@@ -68,11 +72,14 @@ public class PositionList extends JList/*<String>*/ {
 	}
 
 	public void selectPos(JList<Player> squadList, int listIndex) {
-		if (null == squadList) throw new NullPointerException("squadList");
+		if (null == squadList) {
+			throw new NullArgumentException("squadList");
+		}
 		clearSelection();
 
-		if (listIndex < 0 || listIndex >= Formations.PLAYER_COUNT)
+		if (listIndex < 0 || listIndex >= Formations.PLAYER_COUNT) {
 			return;
+		}
 
 		int selPos = posNum[listIndex];
 		Stat stat = Formations.positionToStat(selPos);

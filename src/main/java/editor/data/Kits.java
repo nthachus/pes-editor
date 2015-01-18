@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 
 public final class Kits {
@@ -29,9 +30,12 @@ public final class Kits {
 	private static final byte UNLICENSED_VAL = (byte) 0xFF;
 
 	private static int getOffset(int teamId) {
-		if (teamId < 0 || teamId >= TOTAL) throw new IndexOutOfBoundsException("teamId#" + teamId);
-		if (teamId < Clubs.TOTAL)
+		if (teamId < 0 || teamId >= TOTAL) {
+			throw new IndexOutOfBoundsException("teamId#" + teamId);
+		}
+		if (teamId < Clubs.TOTAL) {
 			return START_CLUB_ADR + teamId * SIZE_CLUB;
+		}
 		return START_ADR + (teamId - Clubs.TOTAL) * SIZE_NATION;
 	}
 
@@ -40,19 +44,25 @@ public final class Kits {
 	}
 
 	private static int getOffset(int teamId, int logo) {
-		if (logo < 0 || logo >= TOTAL_LOGO) throw new IndexOutOfBoundsException("logo#" + logo);
+		if (logo < 0 || logo >= TOTAL_LOGO) {
+			throw new IndexOutOfBoundsException("logo#" + logo);
+		}
 		return getOffset(teamId) + USED_LOGO_OFS + logo * 24;
 	}
 
 	public static boolean isLogoUsed(OptionFile of, int team, int logo) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOffset(team, logo) + 2;
 		return (of.getData()[adr] != 0);
 	}
 
 	public static int getLogo(OptionFile of, int team, int logo) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOffset(team, logo) + 3;
 		return Bits.toInt(of.getData()[adr]);
@@ -62,14 +72,18 @@ public final class Kits {
 	 * @param slot Logo index.
 	 */
 	public static void setLogo(OptionFile of, int team, int logo, int slot) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOffset(team, logo) + 3;
 		of.getData()[adr] = Bits.toByte(slot);
 	}
 
 	public static void setLogoUnused(OptionFile of, int team, int logo) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOffset(team, logo) + 2;
 		of.getData()[adr] = 0;
@@ -77,15 +91,21 @@ public final class Kits {
 	}
 
 	public static boolean isLicensed(OptionFile of, int team) {
-		if (null == of) throw new NullPointerException("of");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
 
 		int adr = getOffset(team) + IS_LICENSED_OFS;
 		return (of.getData()[adr] != UNLICENSED_VAL && of.getData()[adr + 1] != UNLICENSED_VAL);
 	}
 
 	public static void importData(OptionFile ofSource, int teamSource, OptionFile ofDest, int teamDest) {
-		if (null == ofSource) throw new NullPointerException("ofSource");
-		if (null == ofDest) throw new NullPointerException("ofDest");
+		if (null == ofSource) {
+			throw new NullArgumentException("ofSource");
+		}
+		if (null == ofDest) {
+			throw new NullArgumentException("ofDest");
+		}
 
 		int srcAdr = getOffset(teamSource);
 		int destAdr = getOffset(teamDest);

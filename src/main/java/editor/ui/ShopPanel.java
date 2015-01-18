@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.OptionFile;
 import editor.data.Player;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +23,12 @@ public class ShopPanel extends JPanel implements ActionListener {
 	private final OptionFile of;
 	private/* final*/ JLabel status;
 
-	public ShopPanel(OptionFile optionFile) {
+	public ShopPanel(OptionFile of) {
 		super();
-		if (null == optionFile) throw new NullPointerException("optionFile");
-		of = optionFile;
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		this.of = of;
 
 		log.debug("Shop panel is initializing..");
 		initComponents();
@@ -56,13 +59,16 @@ public class ShopPanel extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		log.debug("Try to perform action: {}", evt.getActionCommand());
 
-		if ("Lock".equalsIgnoreCase(evt.getActionCommand()))
+		if ("Lock".equalsIgnoreCase(evt.getActionCommand())) {
 			lockAll();
-		else
+		} else {
 			unlockAll();
+		}
 	}
 
 	public void refresh() {

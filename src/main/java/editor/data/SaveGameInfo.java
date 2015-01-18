@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import editor.util.Files;
 import editor.util.Strings;
@@ -38,8 +39,12 @@ public class SaveGameInfo {
 	}
 
 	public boolean getInfo(File file) {
-		if (null == file) throw new NullPointerException("file");
-		if (!file.isFile()) return false;
+		if (null == file) {
+			throw new NullArgumentException("file");
+		}
+		if (!file.isFile()) {
+			return false;
+		}
 		// DEBUG
 		log.debug("Try to get save game info from file: {}", file.getName());
 

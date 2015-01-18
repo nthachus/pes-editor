@@ -1,6 +1,8 @@
 package editor.ui;
 
 import editor.data.*;
+import editor.lang.JTextFieldLimit;
+import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import editor.util.UIUtil;
 
@@ -39,8 +41,12 @@ public class TeamPanel extends JPanel
 			LogoPanel imgPan, GlobalPanel gp, KitImportDialog kid, LogoChooserDialog lc) {
 		super(new BorderLayout());
 
-		if (null == of) throw new NullPointerException("of");
-		if (null == of2) throw new NullPointerException("of2");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (null == of2) {
+			throw new NullArgumentException("of2");
+		}
 		this.of = of;
 		this.of2 = of2;
 		transferPan = tran;
@@ -197,7 +203,9 @@ public class TeamPanel extends JPanel
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 
 		if ("BackFlag".equalsIgnoreCase(evt.getActionCommand())) {
 			selectBackFlag();
@@ -238,10 +246,11 @@ public class TeamPanel extends JPanel
 
 		if (newColor != null) {
 			Clubs.setColor(of, team, isSecond, newColor);
-			if (isSecond)
+			if (isSecond) {
 				color2Btn.setBackground(newColor);
-			else
+			} else {
 				color1Btn.setBackground(newColor);
+			}
 
 			updateBackButton(team);
 		}
@@ -363,7 +372,9 @@ public class TeamPanel extends JPanel
 	 * On team selected.
 	 */
 	public void valueChanged(ListSelectionEvent e) {
-		if (null == e) throw new NullPointerException("e");
+		if (null == e) {
+			throw new NullArgumentException("e");
+		}
 		if (!isOk || e.getValueIsAdjusting()) return;
 
 		int team = teamList.getSelectedIndex();
@@ -423,8 +434,12 @@ public class TeamPanel extends JPanel
 	 * On teams list / emblem button clicked.
 	 */
 	public void mouseClicked(MouseEvent e) {
-		if (null == e) throw new NullPointerException("e");
-		if (null == e.getSource()) throw new NullPointerException("e.source");
+		if (null == e) {
+			throw new NullArgumentException("e");
+		}
+		if (null == e.getSource()) {
+			throw new NullArgumentException("e.source");
+		}
 
 		int team = teamList.getSelectedIndex();
 		if (team < 0) return;
@@ -629,10 +644,11 @@ public class TeamPanel extends JPanel
 			for (int k = l; k < Kits.TOTAL_LOGO; k++) {
 				if (Kits.getLogo(of2, teamSource, l) == Kits.getLogo(of2, teamSource, k)) {
 
-					if (targetLogo >= 0)
+					if (targetLogo >= 0) {
 						Kits.setLogo(of, teamDest, k, targetLogo);
-					else
+					} else {
 						Kits.setLogoUnused(of, teamDest, k);
+					}
 				}
 			}
 		}

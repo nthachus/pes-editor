@@ -10,6 +10,7 @@
 
 package editor;
 
+import editor.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,7 +148,9 @@ public class SplashWindow extends Window implements MouseListener {
 	 * Paints the image on the window.
 	 */
 	public void paint(Graphics g) {
-		if (null == g) throw new NullPointerException("g");
+		if (null == g) {
+			throw new NullArgumentException("g");
+		}
 		g.drawImage(image, 0, 0, this);
 
 		// Notify method splash that the window has been painted.
@@ -167,8 +170,9 @@ public class SplashWindow extends Window implements MouseListener {
 	 */
 	@SuppressWarnings("SynchronizeOnNonFinalField")
 	public static void splash(Image image) {
-		if (instance != null || image == null)
+		if (instance != null || image == null) {
 			return;
+		}
 
 		// Create the splash image
 		instance = new SplashWindow(new Frame(), image);

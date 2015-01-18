@@ -2,6 +2,7 @@ package editor.ui;
 
 import editor.data.Formations;
 import editor.data.OptionFile;
+import editor.lang.NullArgumentException;
 import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +26,12 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 
 	public JobList(OptionFile of, int offset, String job, Color colour) {
 		super();
-		if (null == of) throw new NullPointerException("of");
-		if (Strings.isEmpty(job)) throw new NullPointerException("job");
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (Strings.isEmpty(job)) {
+			throw new NullArgumentException("job");
+		}
 		this.of = of;
 		this.offset = offset;
 		this.job = job;
@@ -77,8 +82,12 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 	}
 
 	public void valueChanged(ListSelectionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
-		if (evt.getValueIsAdjusting()) return;
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
+		if (evt.getValueIsAdjusting()) {
+			return;
+		}
 		log.debug("Try to change Job list '{}' for team: {}, ok: {}", job, team, isOk);
 
 		if (!isSelectionEmpty() && isOk) {

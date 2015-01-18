@@ -4,6 +4,7 @@ import editor.data.CsvMaker;
 import editor.data.OfFormat;
 import editor.data.OptionFile;
 import editor.data.Squads;
+import editor.lang.NullArgumentException;
 import editor.util.Files;
 import editor.util.Resources;
 import editor.util.Strings;
@@ -220,7 +221,9 @@ public class Editor extends JFrame implements ActionListener {
 	//region Event Handlers
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) throw new NullPointerException("evt");
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
 		log.debug("Try to perform action: {}", evt.getActionCommand());
 
 		if ("Open".equalsIgnoreCase(evt.getActionCommand())) {
@@ -271,7 +274,6 @@ public class Editor extends JFrame implements ActionListener {
 
 			flagPanel.refresh();
 			imagePanel.refresh();
-			transferPan.refresh();
 			wenShop.getWenPanel().refresh();
 			wenShop.getShopPanel().refresh();
 			stadiumPan.refresh();
@@ -280,6 +282,7 @@ public class Editor extends JFrame implements ActionListener {
 			importPanel.refresh();
 
 			tabbedPane.setVisible(true);
+			transferPan.refresh();
 
 			csvItem.setEnabled(true);
 			open2Item.setEnabled(true);
@@ -321,10 +324,10 @@ public class Editor extends JFrame implements ActionListener {
 
 		flagPanel.refresh();
 		imagePanel.refresh();
-		transferPan.refresh();
 		stadiumPan.refresh();
 		teamPan.refresh();
 		leaguePan.refresh();
+		transferPan.refresh();
 
 		log.debug("Importing from OF2 {} succeeded", of2.getFilename());
 	}

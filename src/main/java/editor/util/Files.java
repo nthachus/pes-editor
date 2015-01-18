@@ -1,5 +1,6 @@
 package editor.util;
 
+import editor.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,9 @@ public final class Files {
 	 * Get the extension of a file.
 	 */
 	public static String getExtension(File file) {
-		if (null == file) throw new NullPointerException("file");
+		if (null == file) {
+			throw new NullArgumentException("file");
+		}
 		return getExtension(file.getName());
 	}
 
@@ -48,12 +51,14 @@ public final class Files {
 	 * Get the extension of a filename.
 	 */
 	public static String getExtension(String filename) {
-		if (Strings.isEmpty(filename))
+		if (Strings.isEmpty(filename)) {
 			return filename;
+		}
 
 		int i = filename.lastIndexOf(EXT_SEPARATOR);
-		if (i > 0 && i < filename.length() - 1)
+		if (i > 0 && i < filename.length() - 1) {
 			return filename.substring(i + 1);
+		}
 
 		return "";
 	}
@@ -75,8 +80,9 @@ public final class Files {
 	public static String removeExtension(String filename) {
 		if (!Strings.isEmpty(filename)) {
 			int i = filename.lastIndexOf(EXT_SEPARATOR);
-			if (i >= 0)
+			if (i >= 0) {
 				return filename.substring(0, i);
+			}
 		}
 		return filename;
 	}
@@ -98,7 +104,9 @@ public final class Files {
 	}
 
 	public static byte[] readBytes(File file) {
-		if (null == file) throw new NullPointerException("file");
+		if (null == file) {
+			throw new NullArgumentException("file");
+		}
 
 		FileInputStream fs = null;
 		try {

@@ -26,7 +26,9 @@ public final class Strings {
 	public static String fixCString(String s) {
 		if (null != s && s.length() > 0) {
 			int p = s.indexOf('\0');
-			if (p >= 0) return s.substring(0, p);
+			if (p >= 0) {
+				return s.substring(0, p);
+			}
 		}
 		return s;
 	}
@@ -42,12 +44,14 @@ public final class Strings {
 
 	public static boolean isBlank(String s) {
 		int len;
-		if (s == null || (len = s.length()) == 0)
+		if (s == null || (len = s.length()) == 0) {
 			return true;
+		}
 
 		for (int i = 0; i < len; i++) {
-			if (!Character.isWhitespace(s.charAt(i)))
+			if (!Character.isWhitespace(s.charAt(i))) {
 				return false;
+			}
 		}
 		return true;
 	}

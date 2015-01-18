@@ -1,5 +1,6 @@
 package editor.ui;
 
+import editor.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +30,12 @@ public class CopySwapIcon implements Icon {
 	}
 
 	public void paintIcon(Component c, Graphics g, int x, int y) {
-		if (null == g) throw new NullPointerException("g");
-		if (!(g instanceof Graphics2D)) throw new IllegalArgumentException("g");
+		if (null == g) {
+			throw new NullArgumentException("g");
+		}
+		if (!(g instanceof Graphics2D)) {
+			throw new IllegalArgumentException("g");
+		}
 		log.debug("Try to paint swap ({}) icon", isSwap);
 
 		Graphics2D g2 = (Graphics2D) g;
