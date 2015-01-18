@@ -6,6 +6,8 @@ import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import editor.util.Resources;
 import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -17,11 +19,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TransferPanel extends JPanel
 		implements ActionListener, MouseListener, DropTargetListener, DragSourceListener, DragGestureListener {
 	private static final long serialVersionUID = 4733686475112963352L;
-	//private static final Logger log = LoggerFactory.getLogger(TransferPanel.class);
+	private static final Logger log = LoggerFactory.getLogger(TransferPanel.class);
 
 	private final OptionFile of;
 	private final PlayerDialog playerDia;
@@ -35,7 +38,6 @@ public class TransferPanel extends JPanel
 
 	public TransferPanel(OptionFile of, PlayerDialog pd, FormationDialog td) {
 		super();
-
 		if (null == of) {
 			throw new NullArgumentException("of");
 		}
@@ -49,6 +51,7 @@ public class TransferPanel extends JPanel
 		this.playerDia = pd;
 		this.teamDia = td;
 
+		log.debug("Transfer panel is initializing..");
 		initComponents();
 	}
 
@@ -147,6 +150,8 @@ public class TransferPanel extends JPanel
 	//endregion
 
 	public void actionPerformed(ActionEvent evt) {
+		log.debug("Try to perform action: {}", (null == evt) ? null : evt.getActionCommand());
+
 		//if ("Compare".equalsIgnoreCase(evt.getActionCommand()))
 		compareStats();
 	}
@@ -186,6 +191,10 @@ public class TransferPanel extends JPanel
 		selectorL.refresh();
 		selectorR.refresh();
 
+		clearForm();
+	}
+
+	private void clearForm() {
 		nameEditor.setText("");
 		numEditor.setText("");
 		shirtEditor.setText("");
@@ -200,13 +209,7 @@ public class TransferPanel extends JPanel
 		selectorL.refreshForTeam();
 		selectorR.refreshForTeam();
 
-		nameEditor.setText("");
-		numEditor.setText("");
-		shirtEditor.setText("");
-
-		compareIndex = 0;
-		lastIndex = 0;
-		infoPanel.refresh(lastIndex, compareIndex);
+		clearForm();
 	}
 
 	private static int getNumberAdr(int adr) {
@@ -481,7 +484,7 @@ public class TransferPanel extends JPanel
 			p = (Player) targetList.getModel().getElementAt(idx);
 		}
 
-		boolean safety = checkSafeDrag(safeMode.isSelected(), targetList, p);
+		boolean safety = isDragSafety(safeMode.isSelected(), targetList, p);
 		targetList.setSelectedIndex(idx);
 
 		if (safety) {
@@ -644,258 +647,240 @@ public class TransferPanel extends JPanel
 
 	//endregion
 
-	private boolean checkSafeDrag(boolean safe, JList targetList, Player targetPlayer) {// TODO: !!!
-		Player playerS = (Player) sourceList.getModel().getElementAt(sourceIndex);
-		int indexS = playerS.getIndex();
-		int indexT = targetPlayer.getIndex();
+	private boolean isDragSafety(boolean safeMode, JList targetList, Player targetPlayer) {
+		Player sourcePlayer = (Player) sourceList.getModel().getElementAt(sourceIndex);
+		int playerS = sourcePlayer.getIndex();
+		int playerT = targetPlayer.getIndex();
+
 		int squadS = -1;
-
-		int indexF = 0;
-		boolean fEmpty = true;
-		if (sourceList == freeList.getFreeList()) {
-			indexF = indexS;
-			fEmpty = false;
-		} else if (targetList == freeList.getFreeList()) {
-			indexF = indexT;
-			fEmpty = false;
-		}
-
-		int indexL = 0;
-		boolean lEmpty = true;
 		if (sourceList == selectorL.getSquadList()) {
-			indexL = indexS;
-			lEmpty = false;
-			squadS = ((SelectByTeam) (sourceList.getParent())).getTeamBox().getSelectedIndex();
-		} else if (targetList == selectorL.getSquadList()) {
-			indexL = indexT;
-			lEmpty = false;
+			squadS = selectorL.getTeamBox().getSelectedIndex();
+		} else if (sourceList == selectorR.getSquadList()) {
+			squadS = selectorR.getTeamBox().getSelectedIndex();
 		}
 
-		int indexR = 0;
-		boolean rEmpty = true;
-		if (sourceList == selectorR.getSquadList()) {
-			indexR = indexS;
-			rEmpty = false;
-			squadS = ((SelectByTeam) (sourceList.getParent())).getTeamBox().getSelectedIndex();
-		} else if (targetList == selectorR.getSquadList()) {
-			indexR = indexT;
-			rEmpty = false;
+		AtomicBoolean transferFL = new AtomicBoolean(true);
+		AtomicBoolean transferFR = new AtomicBoolean(true);
+		AtomicBoolean transferLR = new AtomicBoolean(true);
+		AtomicBoolean transferRL = new AtomicBoolean(true);
+		AtomicBoolean releaseL = new AtomicBoolean(true);
+		AtomicBoolean releaseR = new AtomicBoolean(true);
+
+		if (safeMode) {
+			int indexF = 0;
+			boolean fEmpty = true;
+			if (sourceList == freeList.getFreeList()) {
+				indexF = playerS;
+				fEmpty = false;
+			} else if (targetList == freeList.getFreeList()) {
+				indexF = playerT;
+				fEmpty = false;
+			}
+
+			int indexL = 0;
+			boolean lEmpty = true;
+			if (sourceList == selectorL.getSquadList()) {
+				indexL = playerS;
+				lEmpty = false;
+			} else if (targetList == selectorL.getSquadList()) {
+				indexL = playerT;
+				lEmpty = false;
+			}
+
+			int indexR = 0;
+			boolean rEmpty = true;
+			if (sourceList == selectorR.getSquadList()) {
+				indexR = playerS;
+				rEmpty = false;
+			} else if (targetList == selectorR.getSquadList()) {
+				indexR = playerT;
+				rEmpty = false;
+			}
+
+			int squadL = selectorL.getTeamBox().getSelectedIndex();
+			int squadR = selectorR.getTeamBox().getSelectedIndex();
+
+			detectSafeTransfer(
+					indexF, fEmpty, indexL, lEmpty, indexR, rEmpty, squadL, squadR,
+					transferFL, transferFR, transferLR, transferRL, releaseL, releaseR);
 		}
 
-		boolean tranFL = true;
-		boolean tranFR = true;
-		boolean tranLR = true;
-		boolean tranRL = true;
-		boolean relL = true;
-		boolean relR = true;
+		return isDragSafety(targetList, squadS, playerS, playerT,
+				transferFL.get(), transferFR.get(), transferLR.get(), transferRL.get(), releaseL.get(), releaseR.get());
+	}
 
-		int squadL = selectorL.getTeamBox().getSelectedIndex();
-		int squadR = selectorR.getTeamBox().getSelectedIndex();
-		if (safe) {
-			int minSizeL = 16;
-			int minSizeR = 16;
-			if (squadL < 75) {
-				minSizeL = 23;
+	private void detectSafeTransfer(
+			int indexF, boolean fEmpty,
+			int indexL, boolean lEmpty,
+			int indexR, boolean rEmpty,
+			int squadL, int squadR,
+			AtomicBoolean transferFL, AtomicBoolean transferFR,
+			AtomicBoolean transferLR, AtomicBoolean transferRL,
+			AtomicBoolean releaseL, AtomicBoolean releaseR) {
+
+		if ((indexF >= Player.FIRST_YOUNG && indexF < Player.FIRST_UNUSED)
+				|| (indexF >= Player.FIRST_ML && indexF < Player.FIRST_SHOP)) {
+			transferFL.set(false);
+			transferFR.set(false);
+
+		} else if (indexF >= Player.FIRST_EDIT && indexF < Player.END_EDIT - Formations.CLUB_TEAM_SIZE) {
+			if (squadL >= Squads.NATION_COUNT) {
+				transferFL.set(false);
 			}
-			if (squadR < 75) {
-				minSizeR = 23;
-			}
-
-			if (indexF >= Player.FIRST_YOUNG && indexF < Player.FIRST_EDIT) {
-				tranFL = false;
-				tranFR = false;
-			}
-
-			if (indexF >= Player.FIRST_ML && indexF < Player.FIRST_SHOP) {
-				tranFL = false;
-				tranFR = false;
-			}
-
-			if (indexF >= Player.FIRST_EDIT && indexF < 32920 && squadL > 59) {
-				tranFL = false;
-			}
-
-			if (indexF >= Player.FIRST_EDIT && indexF < 32920 && squadR > 59) {
-				tranFR = false;
-			}
-
-			if (squadL > 74 && squadL < 213) {
-				int s = clubRelease(indexF, false);
-				if (autoRelease.isSelected()) {
-					if (s != -1) {
-						int c = countPlayers(s);
-						if (c <= 16) {
-							tranFL = false;
-						}
-					}
-				} else {
-					if (s != -1) {
-						tranFL = false;
-					}
-				}
-			}
-
-			if (squadR > 74 && squadR < 213) {
-				int s = clubRelease(indexF, false);
-				if (autoRelease.isSelected()) {
-					if (s != -1) {
-						int c = countPlayers(s);
-						if (c <= 16) {
-							tranFR = false;
-						}
-					}
-				} else {
-					if (s != -1) {
-						tranFR = false;
-					}
-				}
-			}
-
-			if ((squadL > 59 && squadL < 75) || squadL > 208) {
-				tranFL = false;
-				if (squadL > 208 && squadL < 212) {
-					tranLR = false;
-				} else {
-					if (squadL > 66 && squadL < 74 && squadR > 66) {
-						tranLR = false;
-					}
-				}
-				tranRL = false;
-				relL = false;
-			} else {
-				int countL = countPlayers(squadL);
-				if (countL <= minSizeL) {
-					relL = false;
-					//if (indexR == 0) {}
-					if (autoRelease.isSelected() && squadL > 74) {
-						tranLR = false;
-					}
-				}
-				if (inSquad(squadL, indexR)) {
-					tranRL = false;
-					//if (squadL != squadR) {}
-				}
-				if (inSquad(squadL, indexF)) {
-					tranFL = false;
-				}
-
-				if (!autoRelease.isSelected() && squadL > 74 && squadL < 213) {
-					int s = clubRelease(indexR, false);
-					if (s != -1) {
-						tranRL = false;
-					}
-				}
-			}
-
-			if ((squadR > 59 && squadR < 75) || squadR > 208) {
-				tranLR = false;
-				tranFR = false;
-				if (squadR > 208 && squadR < 212) {
-					tranRL = false;
-				} else {
-					if (squadR > 66 && squadR < 74 && squadL > 66) {
-						tranRL = false;
-					}
-				}
-				relR = false;
-			} else {
-				int countR = countPlayers(squadR);
-				if (countR <= minSizeR) {
-					relR = false;
-					//if (indexL == 0) {}
-					if (autoRelease.isSelected() && squadR > 74) {
-						tranRL = false;
-					}
-				}
-				if (inSquad(squadR, indexL)) {
-					tranLR = false;
-					//if (squadL != squadR) {}
-				}
-
-				if (inSquad(squadR, indexF)) {
-					tranFR = false;
-				}
-
-				if (!autoRelease.isSelected() && squadR > 74 && squadR < 213) {
-					int s = clubRelease(indexL, false);
-					if (s != -1) {
-						tranLR = false;
-					}
-				}
-			}
-
-			if (squadR == squadL) {
-				tranLR = false;
-				tranRL = false;
-			}
-
-			if (squadL < 67) {
-				int squadNat = Squads.getNationForTeam(squadL);
-				int nat;
-				if (!fEmpty) {
-					nat = Stats.getValue(of, indexF, Stats.NATIONALITY);
-					if (nat != (Stats.NATION.length - 1) && nat != squadNat) {
-						tranFL = false;
-					}
-				}
-				if (!rEmpty) {
-					nat = Stats.getValue(of, indexR, Stats.NATIONALITY);
-					if (nat != (Stats.NATION.length - 1) && nat != squadNat) {
-						tranRL = false;
-					}
-				}
-			}
-
-			if (squadR < 67) {
-				int squadNat = Squads.getNationForTeam(squadR);
-				int nat;
-				if (!fEmpty) {
-					nat = Stats.getValue(of, indexF, Stats.NATIONALITY);
-					if (nat != (Stats.NATION.length - 1) && nat != squadNat) {
-						tranFR = false;
-					}
-				}
-				if (!lEmpty) {
-					nat = Stats.getValue(of, indexL, Stats.NATIONALITY);
-					if (nat != (Stats.NATION.length - 1) && nat != squadNat) {
-						tranLR = false;
-					}
-				}
+			if (squadR >= Squads.NATION_COUNT) {
+				transferFR.set(false);
 			}
 		}
 
-		boolean result = false;
+		detectSafeTransferFree(squadL, indexF, transferFL);
+		detectSafeTransferFree(squadR, indexF, transferFR);
+
+		detectSafeTransferSide(squadL, indexF, squadR, indexR, transferFL, transferRL, transferLR, releaseL);
+		detectSafeTransferSide(squadR, indexF, squadL, indexL, transferFR, transferLR, transferRL, releaseR);
+
+		if (squadR == squadL && (transferLR.get() || transferRL.get())) {
+			transferLR.set(false);
+			transferRL.set(false);
+		}
+
+		detectSafeTransferNation(squadL, fEmpty, indexF, transferFL, rEmpty, indexR, transferRL);
+		detectSafeTransferNation(squadR, fEmpty, indexF, transferFR, lEmpty, indexL, transferLR);
+	}
+
+	private void detectSafeTransferFree(int squad, int freePlayer, AtomicBoolean freeTransfer) {
+		if (freeTransfer.get() && squad >= Squads.FIRST_CLUB && squad <= Squads.TOTAL) {
+			int s = clubRelease(freePlayer, false);
+			if (autoRelease.isSelected()) {
+				if (s >= 0) {
+					int c = countPlayers(s);
+					if (c <= Formations.MIN_CLUB_SIZE) {
+						freeTransfer.set(false);
+					}
+				}
+			} else if (s >= 0) {
+				freeTransfer.set(false);
+			}
+		}
+	}
+
+	private void detectSafeTransferSide(
+			int squadFrom, int indexFree, int squadTo, int indexTo,
+			AtomicBoolean transferFree, AtomicBoolean transferTo, AtomicBoolean transferFrom, AtomicBoolean release) {
+
+		if ((squadFrom >= Squads.NATION_COUNT && squadFrom < Squads.FIRST_CLUB) || squadFrom >= Squads.TOTAL - 3) {
+			transferFree.set(false);
+			transferTo.set(false);
+
+			if (squadFrom >= Squads.TOTAL - 3 && squadFrom < Squads.TOTAL) {
+				transferFrom.set(false);
+			} else if (squadFrom >= Squads.FIRST_EDIT_NATION && squadFrom < Squads.FIRST_CLUB - 1
+					&& squadTo >= Squads.FIRST_EDIT_NATION) {
+				transferFrom.set(false);
+			}
+
+			release.set(false);
+		} else {
+			int count = countPlayers(squadFrom);
+			int minSize = (squadFrom < Squads.FIRST_CLUB)
+					? Formations.NATION_TEAM_SIZE : Formations.MIN_CLUB_SIZE;
+
+			if (count <= minSize) {
+				release.set(false);
+				//if (indexTo == 0) {}
+				if (autoRelease.isSelected() && squadFrom >= Squads.FIRST_CLUB) {
+					transferFrom.set(false);
+				}
+			}
+
+			if (inSquad(squadFrom, indexTo)) {
+				transferTo.set(false);
+				//if (squadFrom != squadTo) {}
+			}
+			if (inSquad(squadFrom, indexFree)) {
+				transferFree.set(false);
+			}
+
+			if (!autoRelease.isSelected() && squadFrom >= Squads.FIRST_CLUB && squadFrom <= Squads.TOTAL) {
+				int s = clubRelease(indexTo, false);
+				if (s >= 0) {
+					transferTo.set(false);
+				}
+			}
+		}
+	}
+
+	private void detectSafeTransferNation(
+			int squad, boolean fEmpty, int indexF, AtomicBoolean transferF,
+			boolean sideEmpty, int indexSide, AtomicBoolean transferSide) {
+
+		if (squad >= Squads.FIRST_EDIT_NATION) {
+			return;
+		}
+
+		boolean isF = (!fEmpty && transferF.get());
+		boolean isS = (!sideEmpty && transferSide.get());
+
+		if (isF || isS) {
+			int squadNat = Squads.getNationForTeam(squad);
+
+			if (isF) {
+				int nat = Stats.getValue(of, indexF, Stats.NATIONALITY);
+				if (nat != squadNat && nat != (Stats.NATION.length - 1)) {
+					transferF.set(false);
+				}
+			}
+
+			if (isS) {
+				int nat = Stats.getValue(of, indexSide, Stats.NATIONALITY);
+				if (nat != squadNat && nat != (Stats.NATION.length - 1)) {
+					transferSide.set(false);
+				}
+			}
+		}
+	}
+
+	private boolean isDragSafety(
+			JList targetList, int squadS,
+			int playerS, int playerT,
+			boolean transferFL, boolean transferFR,
+			boolean transferLR, boolean transferRL,
+			boolean releaseL, boolean releaseR) {
 
 		if (sourceList != freeList.getFreeList() && targetList != freeList.getFreeList()) {
 			if (sourceList == targetList) {
-				if (isValidSquad(squadS) || squadS == Squads.TOTAL) {
-					if (indexS != indexT) {
-						result = true;
-					}
+				if ((isValidSquad(squadS) || squadS == Squads.TOTAL) && playerS != playerT) {
+					return true;
 				}
 			} else if (sourceList == selectorL.getSquadList()
-					&& targetList == selectorR.getSquadList() && tranLR
-					&& indexS != 0) {
-				result = true;
+					&& targetList == selectorR.getSquadList()
+					&& transferLR
+					&& playerS != 0) {
+				return true;
 			} else if (sourceList == selectorR.getSquadList()
-					&& targetList == selectorL.getSquadList() && tranRL
-					&& indexS != 0) {
-				result = true;
+					&& targetList == selectorL.getSquadList()
+					&& transferRL
+					&& playerS != 0) {
+				return true;
 			}
 		} else if (sourceList == freeList.getFreeList()
-				&& targetList == selectorL.getSquadList() && tranFL) {
-			result = true;
+				&& targetList == selectorL.getSquadList()
+				&& transferFL) {
+			return true;
 		} else if (sourceList == freeList.getFreeList()
-				&& targetList == selectorR.getSquadList() && tranFR) {
-			result = true;
+				&& targetList == selectorR.getSquadList()
+				&& transferFR) {
+			return true;
 		} else if (sourceList == selectorL.getSquadList()
-				&& targetList == freeList.getFreeList() && relL) {
-			result = true;
+				&& targetList == freeList.getFreeList()
+				&& releaseL) {
+			return true;
 		} else if (sourceList == selectorR.getSquadList()
-				&& targetList == freeList.getFreeList() && relR) {
-			result = true;
+				&& targetList == freeList.getFreeList()
+				&& releaseR) {
+			return true;
 		}
-		return result;
+
+		return false;
 	}
 
 	private void transferFromFree(SelectByTeam selector, int player) {

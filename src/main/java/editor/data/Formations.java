@@ -24,6 +24,7 @@ public final class Formations {
 	public static final int JOBS_COUNT = 6;
 	public static final int SETTING_COUNT = 4;
 	public static final int PLAYER_COUNT = 11;
+	public static final int MIN_CLUB_SIZE = PLAYER_COUNT + 5;
 
 	public static final String[] ALT_ITEMS = {
 			"Normal",
