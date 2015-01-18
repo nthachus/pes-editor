@@ -99,9 +99,9 @@ public class HelpDialog extends JDialog implements ActionListener, HyperlinkList
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Try to process hyperlink event: {} -> {}", evt.getEventType(), evt.getURL());
 
 		if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+			log.debug("Try to process hyperlink event: {}", evt.getURL());
 			// Show the new page in the editor pane
 			showPage(evt.getURL());
 		}

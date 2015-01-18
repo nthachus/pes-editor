@@ -6,6 +6,8 @@ import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import editor.util.Strings;
 import editor.util.UIUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +16,7 @@ import java.awt.event.ActionListener;
 
 public class LogoImportDialog extends JDialog implements ActionListener {
 	private static final long serialVersionUID = -8784286274094872109L;
+	private static final Logger log = LoggerFactory.getLogger(LogoImportDialog.class);
 
 	private final OptionFile of;
 	private final OptionFile of2;
@@ -22,7 +25,7 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 	private volatile int slot = 0;
 	private volatile int replacement = 0;
 
-	private final JButton[] flagButtons = new JButton[Logos.TOTAL];
+	private final JButton[] logoButtons = new JButton[Logos.TOTAL];
 	private/* final*/ JLabel fileLabel;
 
 	public LogoImportDialog(Frame owner, OptionFile of, OptionFile of2) {
@@ -37,6 +40,7 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 		this.of = of;
 		this.of2 = of2;
 
+		log.debug("Logo Import dialog is initializing..");
 		initComponents();
 	}
 
@@ -46,13 +50,13 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 		Icon blankIcon = new ImageIcon(Logos.BLANK);
 
 		UIUtil.javaUI();// fix button background color
-		for (int l = 0; l < flagButtons.length; l++) {
-			flagButtons[l] = new JButton(blankIcon);
-			flagButtons[l].setMargin(margin);
-			flagButtons[l].setActionCommand(Integer.toString(l));
-			flagButtons[l].addActionListener(this);
+		for (int l = 0; l < logoButtons.length; l++) {
+			logoButtons[l] = new JButton(blankIcon);
+			logoButtons[l].setMargin(margin);
+			logoButtons[l].setActionCommand(Integer.toString(l));
+			logoButtons[l].addActionListener(this);
 
-			flagPanel.add(flagButtons[l]);
+			flagPanel.add(logoButtons[l]);
 		}
 		UIUtil.systemUI();
 
@@ -80,16 +84,20 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 		return of2.isLoaded();
 	}
 
-	private void updateFlags() {
+	private void reloadLogos() {
 		Image logo;
-		for (int f = 0; f < Logos.TOTAL; f++) {
+		for (int f = 0; f < logoButtons.length; f++) {
 			logo = Logos.get(of2, f, !isTrans);
-			flagButtons[f].setIcon(new ImageIcon(logo));
+			logoButtons[f].setIcon(new ImageIcon(logo));
 		}
+
+		log.debug("Reload completed on {} Logos with transparency: {}", logoButtons.length, isTrans);
 	}
 
 	public void refresh() {
-		updateFlags();
+		log.debug("Try to refresh dialog with OF2: {}", of2.getFilename());
+
+		reloadLogos();
 
 		slot = 0;
 		replacement = 0;
@@ -98,8 +106,11 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 	}
 
 	public void show(int slot, String title) {
+		log.debug("Show Logo dialog to import to {}", slot);
+
 		setTitle(title);
 		this.slot = slot;
+
 		setVisible(true);
 	}
 
@@ -107,10 +118,11 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
+		log.debug("Perform Logo import action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans; // toggle transparency
-			updateFlags();
+			reloadLogos();
 
 		} else {
 			replacement = Integer.parseInt(evt.getActionCommand());

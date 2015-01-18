@@ -29,7 +29,7 @@ public class PositionList extends JList/*<String>*/ {
 
 		setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		setLayoutOrientation(JList.VERTICAL);
-		setVisibleRowCount(Formations.CLUB_TEAM_SIZE);
+		setVisibleRowCount(posNum.length);
 		setBackground(UIUtil.LIGHT_YELLOW);
 		setPreferredSize(new Dimension(32, 576));//30
 		//setFont(new Font(Font.DIALOG, Font.BOLD, 12));
@@ -48,7 +48,7 @@ public class PositionList extends JList/*<String>*/ {
 
 	@SuppressWarnings("unchecked")
 	public void refresh(int team) {
-		String[] posList = new String[Formations.CLUB_TEAM_SIZE];
+		String[] posList = new String[posNum.length];
 		Arrays.fill(posList, " ");
 
 		if (!inTransfer
@@ -84,7 +84,7 @@ public class PositionList extends JList/*<String>*/ {
 		int selPos = posNum[listIndex];
 		Stat stat = Formations.positionToStat(selPos);
 
-		int[] temp = new int[Formations.CLUB_TEAM_SIZE];
+		int[] temp = new int[posNum.length];
 		int count = 0;
 		for (int i = 0, size = squadList.getModel().getSize(); i < size; i++) {
 

@@ -105,18 +105,18 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 		if (type == null || type == EmblemType.highRes) {
 			for (int i = 0, n = Emblems.count128(of); i < n; i++) {
 				icon = Emblems.get128(of, i, !isTrans, true);
-				emblemButtons[Emblems.TOTAL16 - i - 1].setIcon(new ImageIcon(icon));
-				emblemButtons[Emblems.TOTAL16 - i - 1].setVisible(true);
+				emblemButtons[emblemButtons.length - i - 1].setIcon(new ImageIcon(icon));
+				emblemButtons[emblemButtons.length - i - 1].setVisible(true);
 			}
 		}
 
 		int start = 0, end = 0;
 		if (type == EmblemType.lowRes) {
 			start = Emblems.count16(of);
-			end = Emblems.TOTAL16;
+			end = emblemButtons.length;
 		} else if (type == EmblemType.highRes) {
 			start = 0;
-			end = Emblems.TOTAL16 - Emblems.count128(of);
+			end = emblemButtons.length - Emblems.count128(of);
 		}
 
 		for (int i = start; i < end; i++) {

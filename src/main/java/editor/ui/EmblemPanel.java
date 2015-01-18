@@ -61,7 +61,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 
 	private JFileChooser chooser;
 	private JFileChooser pngChooser;
-	private final JButton[] flagButtons = new JButton[Emblems.TOTAL16];
+	private final JButton[] emblemButtons = new JButton[Emblems.TOTAL16];
 	private JLabel largeFlag;
 	private JLabel free16Label;
 	private JLabel free128Label;
@@ -87,16 +87,16 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		Insets margin = new Insets(0, 0, 0, 0);
 
 		UIUtil.javaUI();// fix button background color
-		for (int i = 0; i < flagButtons.length; i++) {
-			flagButtons[i] = new JButton();
-			flagButtons[i].setBackground(UIUtil.GRAY80);
-			flagButtons[i].setMargin(margin);
-			flagButtons[i].setPreferredSize(prefSize);
-			flagButtons[i].setActionCommand(Integer.toString(i));
-			flagButtons[i].addMouseListener(this);
-			flagButtons[i].addActionListener(this);
+		for (int i = 0; i < emblemButtons.length; i++) {
+			emblemButtons[i] = new JButton();
+			emblemButtons[i].setBackground(UIUtil.GRAY80);
+			emblemButtons[i].setMargin(margin);
+			emblemButtons[i].setPreferredSize(prefSize);
+			emblemButtons[i].setActionCommand(Integer.toString(i));
+			emblemButtons[i].addMouseListener(this);
+			emblemButtons[i].addActionListener(this);
 
-			flagPanel.add(flagButtons[i]);
+			flagPanel.add(emblemButtons[i]);
 		}
 		UIUtil.systemUI();
 
@@ -388,17 +388,17 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		Image icon;
 		for (int i = 0; i < n16; i++) {
 			icon = Emblems.get16(of, i, !isTrans, true);
-			flagButtons[i].setIcon(new ImageIcon(icon));
-			flagButtons[i].setVisible(true);
+			emblemButtons[i].setIcon(new ImageIcon(icon));
+			emblemButtons[i].setVisible(true);
 		}
 		for (int i = 0; i < n128; i++) {
 			icon = Emblems.get128(of, i, !isTrans, true);
-			flagButtons[Emblems.TOTAL16 - i - 1].setIcon(new ImageIcon(icon));
-			flagButtons[Emblems.TOTAL16 - i - 1].setVisible(true);
+			emblemButtons[emblemButtons.length - i - 1].setIcon(new ImageIcon(icon));
+			emblemButtons[emblemButtons.length - i - 1].setVisible(true);
 		}
 
-		for (int i = n16; i < Emblems.TOTAL16 - n128; i++) {
-			flagButtons[i].setVisible(false);
+		for (int i = n16; i < emblemButtons.length - n128; i++) {
+			emblemButtons[i].setVisible(false);
 		}
 
 		free16Label.setText(Resources.getMessage("emblem.free16", Emblems.getFree16(of)));
@@ -430,7 +430,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		AbstractButton btn = (AbstractButton) e.getSource();
 		int slot = Integer.parseInt(btn.getActionCommand());
 		// DEBUG
-		log.debug("Try to zoom emblem: {}", slot);
+		//log.debug("Try to zoom emblem: {}", slot);
 
 		Image icon;
 		if (slot >= Emblems.count16(of)) {
@@ -446,7 +446,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 	public void mouseExited(MouseEvent e) {
 		largeFlag.setIcon(new ImageIcon(Emblems.BLANK16));
 		// DEBUG
-		log.debug("Clearing zoomed emblem succeeded");
+		//log.debug("Clearing zoomed emblem succeeded");
 	}
 
 	public void mouseClicked(MouseEvent e) {

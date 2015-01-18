@@ -667,7 +667,7 @@ public class TeamPanel extends JPanel
 			}
 
 			Image targetIco = Logos.get(of2, Kits.getLogo(of2, teamSource, l), false);
-			int targetLogo = logoChooser.getFlag(Resources.getMessage("teamPane.replaceLogo"), targetIco);
+			int targetLogo = logoChooser.getLogo(Resources.getMessage("teamPane.replaceLogo"), targetIco);
 
 			if (targetLogo >= 0) {
 				Logos.importData(of2, Kits.getLogo(of2, teamSource, l), of, targetLogo);

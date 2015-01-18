@@ -5,6 +5,8 @@ import editor.data.OptionFile;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import editor.util.UIUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +15,7 @@ import java.awt.event.ActionListener;
 
 public class LogoChooserDialog extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 8328193997153067543L;
+	private static final Logger log = LoggerFactory.getLogger(LogoChooserDialog.class);
 
 	private final OptionFile of;
 	private volatile boolean isTrans = true;
@@ -25,10 +28,11 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 		}
 		this.of = of;
 
+		log.debug("Logo chooser dialog is initializing..");
 		initComponents();
 	}
 
-	private final JButton[] flagButtons = new JButton[Logos.TOTAL];
+	private final JButton[] logoButtons = new JButton[Logos.TOTAL];
 	private/* final*/ JLabel repLabel;
 
 	private void initComponents() {
@@ -37,13 +41,13 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 		Icon blankIcon = new ImageIcon(Logos.BLANK);
 
 		UIUtil.javaUI();// fix button background color
-		for (int l = 0; l < Logos.TOTAL; l++) {
-			flagButtons[l] = new JButton(blankIcon);
-			flagButtons[l].setMargin(margin);
-			flagButtons[l].setActionCommand(Integer.toString(l));
-			flagButtons[l].addActionListener(this);
+		for (int l = 0; l < logoButtons.length; l++) {
+			logoButtons[l] = new JButton(blankIcon);
+			logoButtons[l].setMargin(margin);
+			logoButtons[l].setActionCommand(Integer.toString(l));
+			logoButtons[l].addActionListener(this);
 
-			flagPanel.add(flagButtons[l]);
+			flagPanel.add(logoButtons[l]);
 		}
 		UIUtil.systemUI();
 
@@ -71,6 +75,7 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
+		log.debug("Perform Logo chooser action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans;
@@ -82,20 +87,24 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public void refresh() {
+		log.debug("Try to reload all Logos with transparency: {}", isTrans);
+
 		Image logo;
-		for (int f = 0; f < Logos.TOTAL; f++) {
+		for (int f = 0; f < logoButtons.length; f++) {
 			logo = Logos.get(of, f, !isTrans);
-			flagButtons[f].setIcon(new ImageIcon(logo));
+			logoButtons[f].setIcon(new ImageIcon(logo));
 		}
 	}
 
-	public int getFlag(String title, Image image) {
+	public int getLogo(String title, Image image) {
 		slot = -1;
+
 		setTitle(title);
 		repLabel.setIcon(new ImageIcon(image));
 		refresh();
 		setVisible(true);
 
+		log.debug("Logo chooser dialog result: {}", slot);
 		return slot;
 	}
 

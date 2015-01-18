@@ -4,6 +4,8 @@ import editor.data.Logos;
 import editor.data.OptionFile;
 import editor.lang.NullArgumentException;
 import editor.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -20,6 +22,7 @@ import java.util.Arrays;
 
 public class LogoPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -2109453947661826598L;
+	private static final Logger log = LoggerFactory.getLogger(LogoPanel.class);
 
 	private final OptionFile of;
 	private final LogoImportDialog logoImportDia;
@@ -37,13 +40,15 @@ public class LogoPanel extends JPanel implements ActionListener {
 		this.of = of;
 		logoImportDia = lid;
 
+		log.debug("Logo panel is initializing..");
 		initComponents();
+
 		refresh();
 	}
 
 	private JFileChooser chooser;
 	private JFileChooser pngChooser;
-	private final JButton[] flagButtons = new JButton[Logos.TOTAL];
+	private final JButton[] logoButtons = new JButton[Logos.TOTAL];
 
 	private void initComponents() {
 		FileFilter filter = new ImageFileFilter();
@@ -64,15 +69,15 @@ public class LogoPanel extends JPanel implements ActionListener {
 		Insets margin = new Insets(0, 0, 0, 0);
 
 		UIUtil.javaUI();// fix button background color
-		for (int l = 0; l < flagButtons.length; l++) {
-			flagButtons[l] = new JButton();
-			flagButtons[l].setBackground(UIUtil.GRAY80);
-			flagButtons[l].setMargin(margin);
-			flagButtons[l].setPreferredSize(prefSize);
-			flagButtons[l].setActionCommand(Integer.toString(l));
-			flagButtons[l].addActionListener(this);
+		for (int l = 0; l < logoButtons.length; l++) {
+			logoButtons[l] = new JButton();
+			logoButtons[l].setBackground(UIUtil.GRAY80);
+			logoButtons[l].setMargin(margin);
+			logoButtons[l].setPreferredSize(prefSize);
+			logoButtons[l].setActionCommand(Integer.toString(l));
+			logoButtons[l].addActionListener(this);
 
-			flagPanel.add(flagButtons[l]);
+			flagPanel.add(logoButtons[l]);
 		}
 		UIUtil.systemUI();
 
@@ -91,6 +96,7 @@ public class LogoPanel extends JPanel implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
+		log.debug("Try to perform panel action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans;
@@ -140,6 +146,8 @@ public class LogoPanel extends JPanel implements ActionListener {
 	private void importFromOF2(int slot) {
 		logoImportDia.show(slot, Resources.getMessage("logo.import"));
 		refresh(slot);
+
+		log.debug("Importing of logo {} from OF2 completed", slot);
 	}
 
 	private void importLogo(int slot) {
@@ -155,6 +163,8 @@ public class LogoPanel extends JPanel implements ActionListener {
 			validateImage(image);
 			Logos.set(of, slot, image);
 			refresh(slot);
+
+			log.debug("");// TODO: log !!!
 		} catch (Exception e) {
 			showAccessFailedMsg(e.getLocalizedMessage());
 		}
@@ -201,11 +211,11 @@ public class LogoPanel extends JPanel implements ActionListener {
 
 	private void refresh(int slot) {
 		Image icon = Logos.get(of, slot, !isTrans);
-		flagButtons[slot].setIcon(new ImageIcon(icon));
+		logoButtons[slot].setIcon(new ImageIcon(icon));
 	}
 
 	public void refresh() {
-		for (int l = 0; l < Logos.TOTAL; l++) {
+		for (int l = 0; l < logoButtons.length; l++) {
 			refresh(l);
 		}
 	}
