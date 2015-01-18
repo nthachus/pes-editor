@@ -169,10 +169,10 @@ public class OptionFile {
 		temp = new byte[32];
 		in.seek(16);
 		len = in.read(temp);
-		gameId = Strings.fixCString(new String(temp, 0, len, Strings.ANSI));
+		gameId = Strings.readANSI(temp, 0, len);
 
 		len = in.read(temp);
-		gameName = Strings.fixCString(new String(temp, 0, len, Strings.ANSI));
+		gameName = Strings.readANSI(temp, 0, len);
 
 		int codeSize = Bits.swabInt(in.readInt());
 		filesCount = Bits.swabInt(in.readInt());

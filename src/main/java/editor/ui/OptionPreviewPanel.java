@@ -4,6 +4,7 @@ import editor.data.SaveGameInfo;
 import editor.lang.NullArgumentException;
 import editor.util.Files;
 import editor.util.Resources;
+import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +53,7 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 	private void previewSaveFile(File file) {
 		log.debug("Try to preview info of OF: {}", file);
 
-		String text = "";
+		String text = Strings.EMPTY;
 		if (null != file && !file.isDirectory() && filter.accept(file)
 				&& saveInfo.getInfo(file)) {
 
@@ -90,7 +91,7 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 		}
 
 		if (isUpdated) {
-			previewText.setText("");
+			previewText.setText(Strings.EMPTY);
 			if (isShowing()) {
 				previewSaveFile(file);
 				repaint();

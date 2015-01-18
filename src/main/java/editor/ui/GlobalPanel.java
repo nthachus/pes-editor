@@ -95,7 +95,7 @@ public class GlobalPanel extends JPanel implements ActionListener {
 	private static final String[] OPS = {"+", "-", "=", "+ %", "- %"};
 
 	private void initComponents() {
-		scopeBox = new JComboBox<String>(getScopes());
+		scopeBox = new JComboBox/*<String>*/(getScopes());
 		teamBox = new JComboBox/*<String>*/();
 		isExcluded = new JCheckBox();
 		forEditPlayer = new JCheckBox();
@@ -117,8 +117,8 @@ public class GlobalPanel extends JPanel implements ActionListener {
 		scopePanel.add(scopeLeft);
 		scopePanel.add(scopeRight);
 
-		statBox = new JComboBox<String>(getStatNames());
-		opBox = new JComboBox<String>(OPS);
+		statBox = new JComboBox/*<String>*/(getStatNames());
+		opBox = new JComboBox/*<String>*/(OPS);
 		numField = new JTextField(3);
 		numField.setDocument(new JTextFieldLimit(Integer.toString(Stats.MAX_STAT99).length()));
 
@@ -326,7 +326,7 @@ public class GlobalPanel extends JPanel implements ActionListener {
 		clubs[0] = Resources.getMessage("None");
 		System.arraycopy(teams, 0, clubs, 1, teams.length);
 
-		teamBox.setModel(new DefaultComboBoxModel<String>(clubs));
+		teamBox.setModel(new DefaultComboBoxModel/*<String>*/(clubs));
 	}
 
 }

@@ -71,7 +71,7 @@ public class PositionList extends JList/*<String>*/ {
 		setListData(posList);
 	}
 
-	public void selectPos(JList<Player> squadList, int listIndex) {
+	public void selectPos(JList/*<Player>*/ squadList, int listIndex) {
 		if (null == squadList) {
 			throw new NullArgumentException("squadList");
 		}
@@ -88,8 +88,8 @@ public class PositionList extends JList/*<String>*/ {
 		int count = 0;
 		for (int i = 0, size = squadList.getModel().getSize(); i < size; i++) {
 
-			int playerId = squadList.getModel().getElementAt(i).getIndex();
-			if (playerId > 0 && Stats.getValue(of, playerId, stat) != 0) {
+			Player p = (Player) squadList.getModel().getElementAt(i);
+			if (p.getIndex() > 0 && Stats.getValue(of, p.getIndex(), stat) != 0) {
 				temp[count] = i;
 				count++;
 			}

@@ -5,6 +5,7 @@ import editor.data.OptionFile;
 import editor.lang.JTextFieldLimit;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
+import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +92,7 @@ public class LeaguePanel extends JPanel implements ActionListener, ListSelection
 		// DEBUG
 		log.debug("League list selection was changed to: {}", id);
 		if (id < 0) {
-			editor.setText("");
+			editor.setText(Strings.EMPTY);
 		} else {
 			editor.setText(Leagues.get(of, id));
 			editor.selectAll();

@@ -40,7 +40,7 @@ public class TeamSettingPanel extends JPanel implements ActionListener {
 		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("setting.title")));
 
 		for (int i = 0; i < boxes.length; i++) {
-			boxes[i] = new JComboBox<String>(ITEMS3);
+			boxes[i] = new JComboBox/*<String>*/(ITEMS3);
 			boxes[i].setActionCommand(Integer.toString(i));
 			boxes[i].addActionListener(this);
 		}

@@ -3,7 +3,7 @@ package editor.data;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class SquadsTest extends BaseTest {
+public final class SquadsTest extends BaseTest {
 	@Test
 	public void testAddresses() throws Exception {
 		Assert.assertEquals(649560, Squads.NATION_NUM_ADR);

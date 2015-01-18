@@ -40,7 +40,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 		sortButton.addActionListener(this);
 
 		String[] boxChoice = getAllNations();
-		nationBox = new JComboBox<String>(boxChoice);
+		nationBox = new JComboBox/*<String>*/(boxChoice);
 		nationBox.setMaximumRowCount(Formations.CLUB_TEAM_SIZE);
 		nationBox.addActionListener(this);
 

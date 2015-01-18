@@ -5,6 +5,7 @@ import editor.lang.JTextFieldLimit;
 import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import editor.util.Resources;
+import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +62,7 @@ public class WenPanel extends JPanel implements ActionListener {
 
 		current.setText(Resources.getMessage("wen.label", wen2));
 		current.setToolTipText((wen != wen2) ? Long.toString(wen) : null);
-		field.setText("");
+		field.setText(Strings.EMPTY);
 
 		log.debug("WEN panel is refreshed with: {} / {}", wen2, wen);
 	}
@@ -76,7 +77,7 @@ public class WenPanel extends JPanel implements ActionListener {
 
 			refresh();
 		} else {
-			field.setText("");
+			field.setText(Strings.EMPTY);
 			JOptionPane.showMessageDialog(null,
 					Resources.getMessage("msg.invalidWen", MAX_WEN), Resources.getMessage("Error"),
 					JOptionPane.ERROR_MESSAGE);

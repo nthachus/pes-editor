@@ -1,5 +1,6 @@
 package editor.util;
 
+import editor.lang.NullArgumentException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,27 +24,70 @@ public final class StringsTest {
 
 	@Test
 	public void testConstants() throws Exception {
-		Assert.assertNotNull(Strings.ANSI);
-		Assert.assertNotNull(Strings.UTF8);
+		//Assert.assertNotNull(Strings.ANSI);
+		//Assert.assertNotNull(Strings.UTF8);
 		//Assert.assertNotNull(Strings.S_JIS);
-		Assert.assertNotNull(Strings.UNICODE);
+		//Assert.assertNotNull(Strings.UNICODE);
 
 		Assert.assertNotNull(Strings.NEW_LINE);
 		Assert.assertTrue(Strings.NEW_LINE.contains("\n"));
 	}
 
 	@Test
-	public void testFixCString() throws Exception {
-		String s = Strings.fixCString(null);
-		Assert.assertNull(s);
+	public void testReadANSI() throws Exception {
+		String s = Strings.readANSI(new byte[0]);
+		Assert.assertEquals(0, s.length());
 
-		s = Strings.fixCString("");
-		Assert.assertTrue(s.length() == 0);
-
-		s = Strings.fixCString("Con cho!\0la\0\0");
+		s = Strings.readANSI("Con cho!\0la\0\0".getBytes(Strings.ANSI));
 		Assert.assertEquals("Con cho!", s);
 
-		s = Strings.fixCString("\0");
+		s = Strings.readANSI("Con chó!\0la\0\0".getBytes(Strings.ANSI), 0, 7);
+		Assert.assertEquals("Con chó", s);
+
+		s = Strings.readANSI(new byte[]{0});
+		Assert.assertEquals("", s);
+	}
+
+	@Test(expected = NullArgumentException.class)
+	public void testReadNullANSIString() throws Exception {
+		Strings.readANSI(null);
+	}
+
+	@Test
+	public void testReadUnicode() throws Exception {
+		String s = Strings.readUNICODE(new byte[0]);
+		Assert.assertEquals(0, s.length());
+
+		s = Strings.readUNICODE("Con chó chết!\0là thế\0\0".getBytes(Strings.UNICODE));
+		Assert.assertEquals("Con chó chết!", s);
+
+		s = Strings.readUNICODE("Con chó chết!\0là thế\0\0".getBytes(Strings.UNICODE), 0, 14);
+		Assert.assertEquals("Con chó", s);
+
+		s = Strings.readUNICODE(new byte[]{0});
+		Assert.assertEquals(1, s.length());
+
+		s = Strings.readUNICODE(new byte[]{0, 0});
+		Assert.assertEquals("", s);
+	}
+
+	@Test(expected = NullArgumentException.class)
+	public void testReadNullUnicodeString() throws Exception {
+		Strings.readUNICODE(null);
+	}
+
+	@Test
+	public void testReadUtf8() throws Exception {
+		String s = Strings.readUTF8(new byte[0]);
+		Assert.assertEquals(0, s.length());
+
+		s = Strings.readUTF8("Con chó chết!\0là thế\0\0".getBytes(Strings.UTF8));
+		Assert.assertEquals("Con chó chết!", s);
+
+		s = Strings.readUTF8("Cồn chó chết!\0là thế\0\0".getBytes(Strings.UTF8), 0, 10);
+		Assert.assertEquals("Cồn chó", s);
+
+		s = Strings.readUTF8(new byte[]{0});
 		Assert.assertEquals("", s);
 	}
 

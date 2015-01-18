@@ -4,6 +4,7 @@ import editor.data.Logos;
 import editor.data.OptionFile;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
+import editor.util.Strings;
 import editor.util.UIUtil;
 
 import javax.swing.*;
@@ -55,7 +56,7 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 		}
 		UIUtil.systemUI();
 
-		fileLabel = new JLabel(Resources.getMessage("import.label", ""));
+		fileLabel = new JLabel(Resources.getMessage("import.label", Strings.EMPTY));
 
 		JButton transButton = new JButton(Resources.getMessage("Transparency"));
 		transButton.setActionCommand("Transparency");

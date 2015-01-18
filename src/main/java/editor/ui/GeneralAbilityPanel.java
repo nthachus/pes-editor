@@ -50,7 +50,7 @@ public class GeneralAbilityPanel extends JPanel {
 	private void initComponents() {
 		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("genAbility.title")));
 
-		nationBox = new JComboBox<String>(Stats.NATION);
+		nationBox = new JComboBox/*<String>*/(Stats.NATION);
 
 		ageField = new JTextField(2);
 		ageField.setDocument(new JTextFieldLimit(Integer.toString(Stats.AGE.maxValue()).length()));
@@ -64,21 +64,21 @@ public class GeneralAbilityPanel extends JPanel {
 		weightField.setDocument(new JTextFieldLimit(Integer.toString(Stats.WEIGHT.maxValue()).length()));
 		weightField.setInputVerifier(new StatVerifier(Stats.WEIGHT));
 
-		footBox = new JComboBox<String>(Stats.MOD_FOOT_SIDE);
+		footBox = new JComboBox/*<String>*/(Stats.MOD_FOOT_SIDE);
 
-		weakFootAccBox = new JComboBox<String>(Stats.MOD_1_8);
-		weakFootFreqBox = new JComboBox<String>(Stats.MOD_1_8);
+		weakFootAccBox = new JComboBox/*<String>*/(Stats.MOD_1_8);
+		weakFootFreqBox = new JComboBox/*<String>*/(Stats.MOD_1_8);
 
-		consistencyBox = new JComboBox<String>(Stats.MOD_1_8);
-		conditionBox = new JComboBox<String>(Stats.MOD_1_8);
+		consistencyBox = new JComboBox/*<String>*/(Stats.MOD_1_8);
+		conditionBox = new JComboBox/*<String>*/(Stats.MOD_1_8);
 
-		injuryBox = new JComboBox<String>(Stats.MOD_INJURY);
+		injuryBox = new JComboBox/*<String>*/(Stats.MOD_INJURY);
 
-		dribbleBox = new JComboBox<String>(Stats.MOD_1_4);
-		dkBox = new JComboBox<String>(Stats.MOD_1_4);
+		dribbleBox = new JComboBox/*<String>*/(Stats.MOD_1_4);
+		dkBox = new JComboBox/*<String>*/(Stats.MOD_1_4);
 
-		fkBox = new JComboBox<String>(Stats.MOD_FK);
-		pkBox = new JComboBox<String>(Stats.MOD_PK);
+		fkBox = new JComboBox/*<String>*/(Stats.MOD_FK);
+		pkBox = new JComboBox/*<String>*/(Stats.MOD_PK);
 
 		// Register TextBox and Label
 		JLabel lab = new JLabel(Resources.getMessage("genAbility.nation"));

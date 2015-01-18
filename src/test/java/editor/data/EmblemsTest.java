@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmblemsTest extends BaseTest {
+public final class EmblemsTest extends BaseTest {
 	@Test
 	public void testAddresses() throws Exception {
 		Assert.assertEquals(914800, Emblems.START_ADR);

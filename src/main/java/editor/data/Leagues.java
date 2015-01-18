@@ -3,6 +3,7 @@ package editor.data;
 import editor.lang.NullArgumentException;
 import editor.util.Strings;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 public final class Leagues {
@@ -32,14 +33,10 @@ public final class Leagues {
 		int ofs = getOffset(league);
 		int adr = ofs + BASE_NAME_LEN + 1;  // the modified league name
 
-		String name = new String(of.getData(), adr, NAME_LEN, Strings.UTF8);
-		name = Strings.fixCString(name);
-
+		String name = Strings.readUTF8(of.getData(), adr, NAME_LEN);
 		if (Strings.isEmpty(name)) {
-			name = new String(of.getData(), ofs, BASE_NAME_LEN, Strings.UTF8);
-			name = Strings.fixCString(name);
+			name = Strings.readUTF8(of.getData(), ofs, BASE_NAME_LEN);
 		}
-
 		return name;
 	}
 
@@ -66,8 +63,12 @@ public final class Leagues {
 		Arrays.fill(temp, (byte) 0);
 
 		if (!Strings.isEmpty(name)) {
-			byte[] sb = name.getBytes(Strings.UTF8);
-			System.arraycopy(sb, 0, temp, 0, Math.min(sb.length, NAME_LEN));
+			try {
+				byte[] sb = name.getBytes(Strings.UTF8);
+				System.arraycopy(sb, 0, temp, 0, Math.min(sb.length, NAME_LEN));
+			} catch (UnsupportedEncodingException e) {
+				throw new IllegalStateException(e);
+			}
 		}
 
 		temp[temp.length - 1] = 1;

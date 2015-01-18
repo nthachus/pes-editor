@@ -171,17 +171,14 @@ public class SimpleLogger extends NamedLoggerBase {
 			return System.out;
 		} else {
 			try {
-				String encoding = getStringProperty(CHARSET_KEY);
+				String encoding = getStringProperty(CHARSET_KEY, "ISO-8859-1");
 
 				logFile = replaceSystemProperties(logFile);
 				logFile = replaceDatePatterns(logFile);
 
 				FileOutputStream fos = new FileOutputStream(logFile, true);
-				if (null == encoding) {
-					return new PrintStream(fos, true);
-				} else {
-					return new PrintStream(fos, true, encoding);
-				}
+				return new PrintStream(fos, true, encoding);
+
 			} catch (Exception e) {
 				Util.report("Could not open [" + logFile + "]. Defaulting to System.err", e);
 			}

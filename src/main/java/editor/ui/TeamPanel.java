@@ -4,6 +4,7 @@ import editor.data.*;
 import editor.lang.JTextFieldLimit;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
+import editor.util.Strings;
 import editor.util.UIUtil;
 
 import javax.swing.*;
@@ -64,12 +65,12 @@ public class TeamPanel extends JPanel
 	private/* final*/ DefaultIcon defaultIcon;
 	private/* final*/ BackChooserDialog backChooser;
 
-	private/* final*/ JList<String> teamList;
+	private/* final*/ JList/*<String>*/ teamList;
 	private/* final*/ JTextField nameField;
 	private/* final*/ JTextField abvEditor;
 	private/* final*/ JButton badgeButton;
 	private/* final*/ JButton backButton;
-	private/* final*/ JComboBox<String> stadiumBox;
+	private/* final*/ JComboBox/*<String>*/ stadiumBox;
 	private/* final*/ JPanel contentPane;
 	private/* final*/ JButton color1Btn;
 	private/* final*/ JButton color2Btn;
@@ -113,12 +114,12 @@ public class TeamPanel extends JPanel
 		swapBtn.setActionCommand("SwapColor");
 		swapBtn.addActionListener(this);
 
-		stadiumBox = new JComboBox<String>();
+		stadiumBox = new JComboBox/*<String>*/();
 		stadiumBox.setAlignmentX(CENTER_ALIGNMENT);
 		stadiumBox.setPreferredSize(new Dimension(375, 25));
 		stadiumBox.addActionListener(this);
 
-		teamList = new JList<String>();
+		teamList = new JList/*<String>*/();
 		teamList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		teamList.setLayoutOrientation(JList.VERTICAL);
 		teamList.setVisibleRowCount(Formations.PLAYER_COUNT);
@@ -394,8 +395,8 @@ public class TeamPanel extends JPanel
 
 		int team = teamList.getSelectedIndex();
 		if (team < 0 || team >= teams.length) {
-			nameField.setText("");
-			abvEditor.setText("");
+			nameField.setText(Strings.EMPTY);
+			abvEditor.setText(Strings.EMPTY);
 
 			stadiumBox.setActionCommand("n");
 			stadiumBox.setSelectedIndex(-1);

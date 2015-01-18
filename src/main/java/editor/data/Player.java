@@ -5,6 +5,7 @@ import editor.util.Resources;
 import editor.util.Strings;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 public class Player implements Serializable, Comparable<Player> {
@@ -165,9 +166,7 @@ public class Player implements Serializable, Comparable<Player> {
 		}
 		int adr = getOffset(index);
 
-		String nm = new String(of.getData(), adr, NAME_LEN, Strings.UNICODE);
-		nm = Strings.fixCString(nm);
-
+		String nm = Strings.readUNICODE(of.getData(), adr, NAME_LEN);
 		if (!Strings.isEmpty(nm)) {
 			return nm;
 		} else if (index >= FIRST_EDIT) {
@@ -190,8 +189,12 @@ public class Player implements Serializable, Comparable<Player> {
 		Arrays.fill(temp, (byte) 0);
 
 		if (!Strings.isEmpty(newName)) {
-			byte[] buf = newName.getBytes(Strings.UNICODE);
-			System.arraycopy(buf, 0, temp, 0, Math.min(buf.length, temp.length));
+			try {
+				byte[] buf = newName.getBytes(Strings.UNICODE);
+				System.arraycopy(buf, 0, temp, 0, Math.min(buf.length, temp.length));
+			} catch (UnsupportedEncodingException e) {
+				throw new IllegalStateException(e);
+			}
 		}
 
 		System.arraycopy(temp, 0, of.getData(), adr, temp.length);
@@ -206,8 +209,7 @@ public class Player implements Serializable, Comparable<Player> {
 	public String getShirtName() {
 		if (null == shirtName) {
 			int adr = getOffset(index) + NAME_LEN;
-			String sn = new String(of.getData(), adr, SHIRT_NAME_LEN, Strings.ANSI);
-			shirtName = Strings.fixCString(sn);
+			shirtName = Strings.readANSI(of.getData(), adr, SHIRT_NAME_LEN);
 		}
 		return shirtName;
 	}
@@ -219,9 +221,13 @@ public class Player implements Serializable, Comparable<Player> {
 		Arrays.fill(temp, (byte) 0);
 
 		if (!Strings.isEmpty(newName)) {
-			newName = newName.replaceAll("[^a-zA-Z \\._]", " ").trim().toUpperCase();
-			byte[] buf = newName.getBytes(Strings.ANSI);
-			System.arraycopy(buf, 0, temp, 0, Math.min(buf.length, temp.length));
+			newName = newName.replaceAll(SHIRT_NAME_PATTERN, "?").trim().toUpperCase();
+			try {
+				byte[] buf = newName.getBytes(Strings.ANSI);
+				System.arraycopy(buf, 0, temp, 0, Math.min(buf.length, temp.length));
+			} catch (UnsupportedEncodingException e) {
+				throw new IllegalStateException(e);
+			}
 		}
 
 		System.arraycopy(temp, 0, of.getData(), adr, temp.length);
@@ -240,8 +246,10 @@ public class Player implements Serializable, Comparable<Player> {
 		} else if (len < 9) {
 			return " ";
 		}
-		return "";
+		return Strings.EMPTY;
 	}
+
+	private static final String SHIRT_NAME_PATTERN = "[^a-zA-Z \\._]";
 
 	public static String buildShirtName(String name) {
 		if (Strings.isEmpty(name)) {
@@ -255,7 +263,7 @@ public class Player implements Serializable, Comparable<Player> {
 		}
 
 		String spaces = getSpacesForLength(len);
-		name = name.replaceAll("[^a-zA-Z \\._]", "").toUpperCase();
+		name = name.replaceAll(SHIRT_NAME_PATTERN, Strings.EMPTY).toUpperCase();
 
 		StringBuilder result = new StringBuilder();
 		len = name.length();

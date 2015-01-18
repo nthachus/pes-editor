@@ -4,6 +4,7 @@ import editor.data.*;
 import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import editor.util.Resources;
+import editor.util.Strings;
 import editor.util.UIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +73,7 @@ public class InfoPanel extends JScrollPane {
 	 */
 	public void refresh(int index1, int index2) {
 		log.debug("Refresh Info panel with index1: {}, index2: {}", index1, index2);
-		ta.setText("");
+		ta.setText(Strings.EMPTY);
 		if (index1 <= 0 && index2 <= 0) {
 			return;
 		}
@@ -359,7 +360,7 @@ public class InfoPanel extends JScrollPane {
 
 	private static String buildPhysicalInfo(int foot, int side, String height, String weight) {
 		String fs = Stats.MOD_FOOT_SIDE[foot * 3 + side];
-		fs = fs.replaceAll("\\b(?i:foot)\\b", "F").replaceAll("\\b(?i:side)\\b", "S").replaceAll("\\s+", "");
+		fs = fs.replaceAll("\\b(?i:foot)\\b", "F").replaceAll("\\b(?i:side)\\b", "S").replaceAll("\\s+", Strings.EMPTY);
 
 		return String.format("%s, %scm, %sKg", fs, height, weight);
 	}

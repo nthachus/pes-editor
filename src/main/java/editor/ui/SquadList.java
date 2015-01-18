@@ -11,7 +11,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class SquadList extends JList<Player> {
+public class SquadList extends JList/*<Player>*/ {
 	private static final long serialVersionUID = 6246402135860985745L;
 	private static final Logger log = LoggerFactory.getLogger(SquadList.class);
 

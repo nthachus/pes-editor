@@ -5,6 +5,7 @@ import editor.data.Stadiums;
 import editor.lang.JTextFieldLimit;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
+import editor.util.Strings;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -91,7 +92,7 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 		if (!evt.getValueIsAdjusting()) {
 			int stadiumId = list.getSelectedIndex();
 			if (stadiumId < 0) {
-				editor.setText("");
+				editor.setText(Strings.EMPTY);
 			} else {
 				editor.setText(Stadiums.get(of, stadiumId));
 				editor.selectAll();

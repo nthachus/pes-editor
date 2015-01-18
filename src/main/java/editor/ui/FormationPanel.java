@@ -85,7 +85,7 @@ public class FormationPanel extends JPanel
 
 		numList = new SquadNumberList(of);
 
-		altBox = new JComboBox<String>(Formations.ALT_ITEMS);
+		altBox = new JComboBox/*<String>*/(Formations.ALT_ITEMS);
 		altBox.addActionListener(this);
 
 		roleBox = new JComboBox/*<Role>*/();
@@ -625,7 +625,8 @@ public class FormationPanel extends JPanel
 
 		ArrayList<String> formNames = new ArrayList<String>(Arrays.asList(Formations.FORM_NAMES));
 		formNames.add(0, myForm);
-		formNamesBox.setModel(new DefaultComboBoxModel<String>(formNames.toArray(new String[formNames.size()])));
+		formNamesBox.setModel(new DefaultComboBoxModel/*<String>*/(
+				formNames.toArray(/*new String[formNames.size()]*/)));
 		formNamesBox.setActionCommand("y");
 	}
 
@@ -706,7 +707,7 @@ public class FormationPanel extends JPanel
 		squadList.setSelectedIndex(squadIndex);
 
 		if (squadIndex >= 0 && squadIndex != sourceIndex
-				&& squadList.getModel().getElementAt(squadIndex).getIndex() > 0) {
+				&& ((Player) squadList.getModel().getElementAt(squadIndex)).getIndex() > 0) {
 			evt.acceptDrag(DnDConstants.ACTION_MOVE);
 		} else {
 			evt.rejectDrag();
@@ -784,7 +785,7 @@ public class FormationPanel extends JPanel
 		sourceIndex = squadList.getSelectedIndex();
 		// DEBUG
 		log.debug("Drag recognized for source-squad: {}", sourceIndex);
-		Player p = squadList.getSelectedValue();
+		Player p = (Player) squadList.getSelectedValue();
 
 		if (sourceIndex >= 0 && p.getIndex() > 0) {
 			posList.selectPos(squadList, sourceIndex);

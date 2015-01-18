@@ -138,7 +138,7 @@ public class SelectByTeam extends JPanel implements ActionListener {
 		String[] squads = getAllTeams();
 		int newIdx = (isNormal) ? Squads.NATION_COUNT + Squads.EXTRA_COUNT : squads.length - 1;
 
-		teamBox.setModel(new DefaultComboBoxModel<String>(squads));
+		teamBox.setModel(new DefaultComboBoxModel/*<String>*/(squads));
 		teamBox.setSelectedIndex(newIdx);
 
 		refreshForTeam();

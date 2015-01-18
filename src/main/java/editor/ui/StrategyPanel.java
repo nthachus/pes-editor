@@ -59,7 +59,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 			labels[i].setText(null);
 			labels[i].setIcon(new Ps2ButtonIcon(ControlButton.valueOf(i)));
 
-			buttonBoxes[i] = new JComboBox<String>(items);
+			buttonBoxes[i] = new JComboBox/*<String>*/(items);
 			buttonBoxes[i].setActionCommand(Integer.toString(i));
 			buttonBoxes[i].addActionListener(this);
 		}
@@ -219,7 +219,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 					sel = count;
 				}
 
-				p = list.getModel().getElementAt(i);
+				p = (Player) list.getModel().getElementAt(i);
 				overlapBox.addItem(new SweepItem(i, p.getName()));
 
 				count++;

@@ -6,6 +6,7 @@ import editor.data.Stat;
 import editor.data.Stats;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
+import editor.util.Strings;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -44,7 +45,7 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 	}
 
 	private void initComponents() {
-		fileLabel = new JLabel(Resources.getMessage("import.label", ""));
+		fileLabel = new JLabel(Resources.getMessage("import.label", Strings.EMPTY));
 
 		playerList = new SelectByTeam(of2, false);
 		playerList.getSquadList().addListSelectionListener(this);
@@ -104,7 +105,7 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 		}
 
 		if (!playerList.getSquadList().isSelectionEmpty()) {
-			Player p = playerList.getSquadList().getSelectedValue();
+			Player p = (Player) playerList.getSquadList().getSelectedValue();
 			infoPanel.refresh(p.getIndex(), 0);
 		}
 	}

@@ -261,7 +261,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 			return;
 		}
 
-		String numText = numList.getModel().getElementAt(player);
+		String numText = (String) numList.getModel().getElementAt(player);
 		int textAdj = 0;
 		if (numText.length() == 1) {
 			textAdj = 3;

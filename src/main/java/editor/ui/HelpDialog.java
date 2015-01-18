@@ -3,6 +3,7 @@ package editor.ui;
 import editor.lang.NullArgumentException;
 import editor.util.Files;
 import editor.util.Resources;
+import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +69,7 @@ public class HelpDialog extends JDialog implements ActionListener, HyperlinkList
 			helpUrl = getClass().getResource(String.format(HOME_PAGE, Files.EXT_SEPARATOR + lang));
 
 			if (null == helpUrl) {
-				helpUrl = getClass().getResource(String.format(HOME_PAGE, ""));
+				helpUrl = getClass().getResource(String.format(HOME_PAGE, Strings.EMPTY));
 			}
 		}
 

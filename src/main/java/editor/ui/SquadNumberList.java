@@ -10,7 +10,7 @@ import editor.util.Bits;
 import javax.swing.*;
 import java.awt.*;
 
-public class SquadNumberList extends JList<String> {
+public class SquadNumberList extends JList/*<String>*/ {
 	private static final long serialVersionUID = -3655153993225424165L;
 
 	private final OptionFile of;

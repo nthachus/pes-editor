@@ -5,6 +5,7 @@ import editor.data.Emblems;
 import editor.data.OptionFile;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
+import editor.util.Strings;
 import editor.util.UIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +65,7 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 		contentPane.add(cancelButton, BorderLayout.SOUTH);
 		contentPane.add(flagPanel, BorderLayout.CENTER);
 
-		fileLabel = new JLabel(Resources.getMessage("import.label", ""));
+		fileLabel = new JLabel(Resources.getMessage("import.label", Strings.EMPTY));
 
 		getContentPane().add(fileLabel, BorderLayout.NORTH);
 		getContentPane().add(contentPane, BorderLayout.CENTER);

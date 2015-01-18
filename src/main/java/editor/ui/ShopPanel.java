@@ -4,6 +4,7 @@ import editor.data.OptionFile;
 import editor.data.Player;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
+import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +76,7 @@ public class ShopPanel extends JPanel implements ActionListener {
 		log.debug("Shop panel is refreshing..");
 
 		if (!of.isLoaded()) {
-			status.setText("");
+			status.setText(Strings.EMPTY);
 		} else {
 
 			boolean unlocked = false;

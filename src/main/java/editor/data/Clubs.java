@@ -5,6 +5,7 @@ import editor.util.Bits;
 import editor.util.Strings;
 
 import java.awt.*;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 public final class Clubs {
@@ -100,11 +101,8 @@ public final class Clubs {
 		}
 		int adr = getOffset(club);
 
-		String name = new String(of.getData(), adr, NAME_LEN, Strings.UTF8);
-		name = Strings.fixCString(name);
-
+		return Strings.readUTF8(of.getData(), adr, NAME_LEN);
 		//if (Strings.isEmpty(name)) name = "<" + club + ">";
-		return name;
 	}
 
 	public static void setName(OptionFile of, int club, String name) {
@@ -117,8 +115,12 @@ public final class Clubs {
 		Arrays.fill(temp, (byte) 0);
 
 		if (!Strings.isEmpty(name)) {
-			byte[] buf = name.getBytes(Strings.UTF8);
-			System.arraycopy(buf, 0, temp, 0, Math.min(buf.length, NAME_LEN));
+			try {
+				byte[] buf = name.getBytes(Strings.UTF8);
+				System.arraycopy(buf, 0, temp, 0, Math.min(buf.length, NAME_LEN));
+			} catch (UnsupportedEncodingException e) {
+				throw new IllegalStateException(e);
+			}
 		}
 
 		System.arraycopy(temp, 0, of.getData(), adr, temp.length);
@@ -137,12 +139,9 @@ public final class Clubs {
 		if (null == of) {
 			throw new NullArgumentException("of");
 		}
+
 		int adr = getOffset(club) + NAME_LEN + 1;
-
-		String abv = new String(of.getData(), adr, ABBR_NAME_LEN, Strings.ANSI);
-		abv = Strings.fixCString(abv);
-
-		return abv;
+		return Strings.readANSI(of.getData(), adr, ABBR_NAME_LEN);
 	}
 
 	public static void setAbbrName(OptionFile of, int club, String name) {
@@ -155,8 +154,12 @@ public final class Clubs {
 		Arrays.fill(temp, (byte) 0);
 
 		if (!Strings.isEmpty(name)) {
-			byte[] buf = name.getBytes(Strings.ANSI);
-			System.arraycopy(buf, 0, temp, 0, Math.min(buf.length, temp.length));
+			try {
+				byte[] buf = name.getBytes(Strings.ANSI);
+				System.arraycopy(buf, 0, temp, 0, Math.min(buf.length, temp.length));
+			} catch (UnsupportedEncodingException e) {
+				throw new IllegalStateException(e);
+			}
 		}
 
 		System.arraycopy(temp, 0, of.getData(), adr, temp.length);

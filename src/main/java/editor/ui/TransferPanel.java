@@ -195,9 +195,9 @@ public class TransferPanel extends JPanel
 	}
 
 	private void clearForm() {
-		nameEditor.setText("");
-		numEditor.setText("");
-		shirtEditor.setText("");
+		nameEditor.setText(Strings.EMPTY);
+		numEditor.setText(Strings.EMPTY);
+		shirtEditor.setText(Strings.EMPTY);
 
 		compareIndex = 0;
 		lastIndex = 0;
@@ -222,18 +222,18 @@ public class TransferPanel extends JPanel
 			return -1;
 		}
 
-		int adr = selector.getSquadList().getModel().getElementAt(index).getSlotAdr();
-		return getNumberAdr(adr);
+		Player p = (Player) selector.getSquadList().getModel().getElementAt(index);
+		return getNumberAdr(p.getSlotAdr());
 	}
 
 	private String getShirtNumber(EventSource source, int index) {
 		int adr = getNumberAdr(source, index);
 		if (adr < 0) {
-			return "";
+			return Strings.EMPTY;
 		}
 
 		int shirt = Bits.toInt(of.getData()[adr]) + 1;
-		return (shirt > 0xFF) ? "" : Integer.toString(shirt);
+		return (shirt > 0xFF) ? Strings.EMPTY : Integer.toString(shirt);
 	}
 
 	private void setShirtNumber(EventSource source, int index, int newShirt) {
@@ -599,8 +599,8 @@ public class TransferPanel extends JPanel
 		compareIndex = 0;
 		infoPanel.refresh(lastIndex, compareIndex);
 
-		nameEditor.setText("");
-		shirtEditor.setText("");
+		nameEditor.setText(Strings.EMPTY);
+		shirtEditor.setText(Strings.EMPTY);
 		nameEditor.source = null;
 		shirtEditor.source = null;
 
@@ -884,7 +884,7 @@ public class TransferPanel extends JPanel
 	}
 
 	private void transferFromFree(SelectByTeam selector, int player) {
-		int adr = selector.getSquadList().getSelectedValue().getSlotAdr();
+		Player p = (Player) selector.getSquadList().getSelectedValue();
 		int teamId = selector.getTeamBox().getSelectedIndex();
 
 		int newIdx = -1;
@@ -892,8 +892,8 @@ public class TransferPanel extends JPanel
 			newIdx = clubRelease(player, true);
 		}
 
-		Bits.toBytes((short) player, of.getData(), adr);
-		int numAdr = getNumberAdr(adr);
+		Bits.toBytes((short) player, of.getData(), p.getSlotAdr());
+		int numAdr = getNumberAdr(p.getSlotAdr());
 		if (of.getData()[numAdr] == -1) {
 			of.getData()[numAdr] = getNextNumber(teamId);
 		}
@@ -925,7 +925,7 @@ public class TransferPanel extends JPanel
 			return;
 		}
 
-		int adrD = toList.getSquadList().getSelectedValue().getSlotAdr();
+		Player pD = (Player) toList.getSquadList().getSelectedValue();
 		int teamD = toList.getTeamBox().getSelectedIndex();
 		int teamS = fromList.getTeamBox().getSelectedIndex();
 
@@ -934,8 +934,8 @@ public class TransferPanel extends JPanel
 			newIdx = clubRelease(pId, true);
 		}
 
-		Bits.toBytes((short) pId, of.getData(), adrD);
-		int numAdr = getNumberAdr(adrD);
+		Bits.toBytes((short) pId, of.getData(), pD.getSlotAdr());
+		int numAdr = getNumberAdr(pD.getSlotAdr());
 		if (of.getData()[numAdr] == -1) {
 			of.getData()[numAdr] = getNextNumber(teamD);
 		}
@@ -1083,7 +1083,7 @@ public class TransferPanel extends JPanel
 
 			JList listS = (JList) evt.getSource();
 			if (listS.isSelectionEmpty()) {
-				setText("");
+				setText(Strings.EMPTY);
 				source = null;
 				owner.lastIndex = 0;
 
@@ -1097,7 +1097,7 @@ public class TransferPanel extends JPanel
 				}
 
 				Player p = (Player) listS.getSelectedValue();
-				setText(p.getIndex() > 0 ? p.getName() : "");
+				setText(p.getIndex() > 0 ? p.getName() : Strings.EMPTY);
 				selectAll();
 
 				owner.lastIndex = p.getIndex();
@@ -1173,7 +1173,7 @@ public class TransferPanel extends JPanel
 
 			JList listS = (JList) evt.getSource();
 			if (listS.isSelectionEmpty()) {
-				setText("");
+				setText(Strings.EMPTY);
 				source = null;
 
 			} else {
@@ -1204,7 +1204,7 @@ public class TransferPanel extends JPanel
 				num = -1;
 			}
 			if (num <= 0 || num > 99) {// NOTE: max squad number is 99 ?
-				setText("");
+				setText(Strings.EMPTY);
 				return;
 			}
 
@@ -1255,7 +1255,7 @@ public class TransferPanel extends JPanel
 
 			JList listS = (JList) evt.getSource();
 			if (listS.isSelectionEmpty()) {
-				setText("");
+				setText(Strings.EMPTY);
 				source = null;
 
 			} else {

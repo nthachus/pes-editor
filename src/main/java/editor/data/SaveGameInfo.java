@@ -14,10 +14,10 @@ import java.io.RandomAccessFile;
 public class SaveGameInfo {
 	private static final Logger log = LoggerFactory.getLogger(SaveGameInfo.class);
 
-	private volatile String gameName = "";
-	private volatile String saveName = "";
-	private volatile String notes = "";
-	private volatile String game = "";
+	private volatile String gameName = Strings.EMPTY;
+	private volatile String saveName = Strings.EMPTY;
+	private volatile String notes = Strings.EMPTY;
+	private volatile String game = Strings.EMPTY;
 
 	/**
 	 * Game ID.
@@ -48,7 +48,7 @@ public class SaveGameInfo {
 		// DEBUG
 		log.debug("Try to get save game info from file: {}", file.getName());
 
-		gameName = saveName = notes = game = "";
+		gameName = saveName = notes = game = Strings.EMPTY;
 		RandomAccessFile rf = null;
 		try {
 			rf = new RandomAccessFile(file, "r");
@@ -116,7 +116,7 @@ public class SaveGameInfo {
 		rf.seek(48);
 		temp = new byte[32];
 		len = rf.read(temp);
-		gameName = Strings.fixCString(new String(temp, 0, len, Strings.ANSI));
+		gameName = Strings.readANSI(temp, 0, len);
 
 		log.debug("Getting ARMax save game '{}' successfully", game);
 	}

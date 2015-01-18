@@ -60,7 +60,7 @@ public final class Files {
 			return filename.substring(i + 1);
 		}
 
-		return "";
+		return Strings.EMPTY;
 	}
 
 	public static File addExtension(File file, String extension) {

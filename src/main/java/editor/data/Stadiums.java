@@ -3,6 +3,7 @@ package editor.data;
 import editor.lang.NullArgumentException;
 import editor.util.Strings;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 public final class Stadiums {
@@ -31,10 +32,7 @@ public final class Stadiums {
 		}
 
 		int ofs = getOffset(stadium);
-		String name = new String(of.getData(), ofs, NAME_LEN, Strings.UTF8);
-		name = Strings.fixCString(name);
-
-		return name;
+		return Strings.readUTF8(of.getData(), ofs, NAME_LEN);
 	}
 
 	public static String[] get(OptionFile of) {
@@ -60,8 +58,12 @@ public final class Stadiums {
 		Arrays.fill(temp, (byte) 0);
 
 		if (!Strings.isEmpty(name)) {
-			byte[] sb = name.getBytes(Strings.UTF8);
-			System.arraycopy(sb, 0, temp, 0, Math.min(sb.length, NAME_LEN));
+			try {
+				byte[] sb = name.getBytes(Strings.UTF8);
+				System.arraycopy(sb, 0, temp, 0, Math.min(sb.length, NAME_LEN));
+			} catch (UnsupportedEncodingException e) {
+				throw new IllegalStateException(e);
+			}
 		}
 
 		System.arraycopy(temp, 0, of.getData(), ofs, temp.length);

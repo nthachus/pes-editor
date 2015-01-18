@@ -1,6 +1,9 @@
 package editor.util;
 
-import java.nio.charset.Charset;
+import editor.lang.NullArgumentException;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.UnsupportedCharsetException;
 
 public final class Strings {
 	private Strings() {
@@ -9,29 +12,115 @@ public final class Strings {
 	/**
 	 * Latin-1 encoding.
 	 */
-	public static final Charset ANSI = Charset.forName("ISO-8859-1");
-	public static final Charset UTF8 = Charset.forName("UTF-8");
+	public static final String ANSI = "ISO-8859-1";
+	public static final String UTF8 = "UTF-8";
 
 	/**
 	 * Shift JIS encoding.
 	 */
-	//public static final Charset S_JIS = Charset.forName("Shift_JIS");
-	public static final Charset UNICODE = Charset.forName("UTF-16LE");
+	//public static final String S_JIS = "Shift_JIS";
+	public static final String UNICODE = "UTF-16LE";
 
 	/**
 	 * Platform independent newline character.
 	 */
 	public static final String NEW_LINE = System.getProperty("line.separator");
 
-	public static String fixCString(String s) {
-		if (null != s && s.length() > 0) {
-			int p = s.indexOf('\0');
-			if (p >= 0) {
-				return s.substring(0, p);
+	public static final String EMPTY = "";
+
+	//region Create String from bytes array
+
+	private static void checkBounds(byte[] bytes, int offset, int length) {
+		if (null == bytes) {
+			throw new NullArgumentException("bytes");
+		}
+		if (length < 0) {
+			throw new StringIndexOutOfBoundsException(length);
+		}
+		if (offset < 0) {
+			throw new StringIndexOutOfBoundsException(offset);
+		}
+		if (offset + length > bytes.length) {
+			throw new StringIndexOutOfBoundsException(offset + length);
+		}
+	}
+
+	private static String readANSI(byte[] bytes, int offset, int length, String charset, boolean checkBounds) {
+		if (checkBounds) {
+			checkBounds(bytes, offset, length);
+		}
+
+		for (int l = 0; l < length; l++) {
+			if (bytes[offset + l] == 0) {
+				length = l;
+				break;
 			}
 		}
-		return s;
+
+		try {
+			return (length == 0) ? EMPTY : new String(bytes, offset, length, charset);
+		} catch (UnsupportedEncodingException e) {
+			RuntimeException t = new UnsupportedCharsetException(charset);
+			t.initCause(e);
+			throw t;
+		}
 	}
+
+	public static String readANSI(byte[] bytes, int offset, int length) {
+		return readANSI(bytes, offset, length, ANSI, true);
+	}
+
+	public static String readANSI(byte[] bytes) {
+		if (null == bytes) {
+			throw new NullArgumentException("bytes");
+		}
+		return readANSI(bytes, 0, bytes.length, ANSI, false);
+	}
+
+	public static String readUTF8(byte[] bytes, int offset, int length) {
+		return readANSI(bytes, offset, length, UTF8, true);
+	}
+
+	public static String readUTF8(byte[] bytes) {
+		if (null == bytes) {
+			throw new NullArgumentException("bytes");
+		}
+		return readANSI(bytes, 0, bytes.length, UTF8, false);
+	}
+
+	private static String readUNICODE(byte[] bytes, int offset, int length, String charset, boolean checkBounds) {
+		if (checkBounds) {
+			checkBounds(bytes, offset, length);
+		}
+
+		for (int l = 0, e = length - 1; l < e; l += 2) {
+			if (bytes[offset + l] == 0 && bytes[offset + l + 1] == 0) {
+				length = l;
+				break;
+			}
+		}
+
+		try {
+			return (length == 0) ? EMPTY : new String(bytes, offset, length, charset);
+		} catch (UnsupportedEncodingException e) {
+			RuntimeException t = new UnsupportedCharsetException(charset);
+			t.initCause(e);
+			throw t;
+		}
+	}
+
+	public static String readUNICODE(byte[] bytes, int offset, int length) {
+		return readUNICODE(bytes, offset, length, UNICODE, true);
+	}
+
+	public static String readUNICODE(byte[] bytes) {
+		if (null == bytes) {
+			throw new NullArgumentException("bytes");
+		}
+		return readUNICODE(bytes, 0, bytes.length, UNICODE, false);
+	}
+
+	//endregion
 
 	public static boolean equalsIgnoreCase(String s1, String s2) {
 		return (null == s1 && null == s2)
