@@ -7,7 +7,9 @@ import editor.lang.TrustAllManager;
 import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
@@ -16,32 +18,35 @@ import java.security.SecureRandom;
 /**
  * This allows you to quickly and easily send emails through SendGrid using Java.
  */
-public class SendGrid {
+public class SendGrid implements Serializable {
+	private static final long serialVersionUID = 3614556945357970755L;
+
 	private static final String VERSION = "2.1.0";
 	private static final String USER_AGENT = "sendgrid/" + VERSION + ";java";
 
-	private volatile String endpoint = "https://api.sendgrid.com/api/mail.send.json";
+	private volatile URL endpoint;
 	private final String form;
 	private final String encoding;
 	private volatile Integer timeout = null;
 
-	public SendGrid(String form, String encoding) {
+	public SendGrid(String form, String encoding) throws MalformedURLException {
 		if (null == form) {
 			throw new NullArgumentException("form");
 		}
+		setEndpoint("https://api.sendgrid.com/api/mail.send.json");
 		this.form = form;
 		this.encoding = (null != encoding && encoding.length() > 0) ? encoding : "UTF-8";
 	}
 
-	public SendGrid(String form) {
+	public SendGrid(String form) throws MalformedURLException {
 		this(form, null);
 	}
 
-	public SendGrid setEndpoint(String endpoint) {
+	public SendGrid setEndpoint(String endpoint) throws MalformedURLException {
 		if (null == endpoint) {
 			throw new NullArgumentException("endpoint");
 		}
-		this.endpoint = endpoint;
+		this.endpoint = new URL(endpoint);
 		return this;
 	}
 
@@ -55,8 +60,7 @@ public class SendGrid {
 	}
 
 	public boolean send(String subject, String body) throws IOException, GeneralSecurityException {
-		URL url = new URL(endpoint);
-		HttpURLConnection http = (HttpURLConnection) url.openConnection();
+		HttpURLConnection http = (HttpURLConnection) endpoint.openConnection();
 
 		if (http instanceof HttpsURLConnection) {
 			initHttpsRequest((HttpsURLConnection) http);
@@ -108,7 +112,7 @@ public class SendGrid {
 	private void initHttpsRequest(HttpsURLConnection https) throws GeneralSecurityException {
 		// Tell the url connection object to use our socket factory which bypasses security checks
 		https.setSSLSocketFactory(getSSLSocketFactory());
-		https.setHostnameVerifier(getHostnameVerifier());
+		https.setHostnameVerifier(getSSLHostVerifier());
 	}
 
 	private String buildPostData(String subject, String body) throws IOException {
@@ -124,7 +128,7 @@ public class SendGrid {
 	}
 
 	private static volatile SSLSocketFactory sslSocketFactory = null;
-	private static volatile HostnameVerifier hostnameVerifier = null;
+	private static volatile HostnameVerifier sslHostVerifier = null;
 
 	private static SSLSocketFactory getSSLSocketFactory() throws GeneralSecurityException {
 		if (null == sslSocketFactory) {
@@ -137,11 +141,11 @@ public class SendGrid {
 		return sslSocketFactory;
 	}
 
-	private static HostnameVerifier getHostnameVerifier() {
-		if (null == hostnameVerifier) {
-			hostnameVerifier = new NullHostnameVerifier();
+	private static HostnameVerifier getSSLHostVerifier() {
+		if (null == sslHostVerifier) {
+			sslHostVerifier = new NullHostnameVerifier();
 		}
-		return hostnameVerifier;
+		return sslHostVerifier;
 	}
 
 }

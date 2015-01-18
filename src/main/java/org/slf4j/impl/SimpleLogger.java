@@ -33,6 +33,7 @@ import org.slf4j.helpers.Util;
 import org.slf4j.spi.LocationAwareLogger;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -192,7 +193,13 @@ public class SimpleLogger extends NamedLoggerBase {
 
 		String sendGridForm = getStringProperty(SMTP_APPENDER_KEY);
 		if (null != sendGridForm) {
-			SMTP_APPENDER = new SendGrid(sendGridForm);
+			try {
+				SMTP_APPENDER = new SendGrid(sendGridForm);
+			} catch (MalformedURLException e) {
+				Util.report("Failed to initialize SendGrid: " + e.toString());
+				SMTP_APPENDER = null;
+				return;
+			}
 
 			String timeout = getStringProperty(SMTP_TIMEOUT_KEY);
 			if (null != timeout) {
