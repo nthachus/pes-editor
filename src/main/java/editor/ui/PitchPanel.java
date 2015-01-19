@@ -3,6 +3,7 @@ package editor.ui;
 import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.lang.NullArgumentException;
+import editor.util.UIUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -170,7 +171,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 			return;
 		}
 
-		g2.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
+		g2.setFont(new Font(UIUtil.DIALOG, Font.BOLD, 10));
 		int adjX = 0;
 		if (pos == 30 || pos == 16 || pos == 4) {
 			adjX = -1;
@@ -270,7 +271,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 			textAdj--;
 		}
 
-		g2.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
+		g2.setFont(new Font(UIUtil.DIALOG, Font.BOLD, 10));
 		g2.setPaint(Color.BLACK);
 		g2.drawString(numText, x + 2 + textAdj, y + 11);
 	}

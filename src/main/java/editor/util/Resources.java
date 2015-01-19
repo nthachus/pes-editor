@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public final class Resources {
@@ -35,9 +36,12 @@ public final class Resources {
 		}
 
 		String msg;
-		if (getMessages().containsKey(key)) {
+		try {
 			msg = messages.getString(key);
-		} else {
+		} catch (MissingResourceException e) {
+			msg = null;
+		}
+		if (null == msg) {
 			msg = key;
 			log.error("Message key '{}' not found for '{}'", key, Locale.getDefault());
 		}

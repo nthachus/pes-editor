@@ -5,6 +5,7 @@ import editor.lang.NullArgumentException;
 import editor.util.Files;
 import editor.util.Resources;
 import editor.util.Strings;
+import editor.util.UIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 		saveInfo = new SaveGameInfo();
 
 		previewText = new JTextArea(20, 19);//30
-		previewText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+		previewText.setFont(new Font(UIUtil.SANS_SERIF, Font.PLAIN, 12));
 		previewText.setEditable(false);
 		previewText.setLineWrap(true);
 		previewText.setWrapStyleWord(true);

@@ -3,6 +3,7 @@ package editor.ui;
 import editor.data.Emblems;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
+import editor.util.UIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ public class DefaultIcon implements Icon {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.translate(x, y);
 
-		g2.setFont(new Font(Font.DIALOG, Font.BOLD, 18));
+		g2.setFont(new Font(UIUtil.DIALOG, Font.BOLD, 18));
 		g2.setPaint(Color.BLACK);
 		g2.drawString(Resources.getMessage("Default"), 0, 38);
 

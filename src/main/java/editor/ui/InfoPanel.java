@@ -60,7 +60,7 @@ public class InfoPanel extends JScrollPane {
 
 		setPreferredSize(new Dimension(hasSquadList() ? 290 : 145, 493));
 
-		StyleConstants.setFontFamily(attr, Font.SANS_SERIF);
+		StyleConstants.setFontFamily(attr, UIUtil.SANS_SERIF);
 	}
 
 	private boolean hasSquadList() {

@@ -2,11 +2,11 @@ package editor.ui;
 
 import editor.data.*;
 import editor.lang.NullArgumentException;
+import editor.util.Arrays;
 import editor.util.UIUtil;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 
 public class PositionList extends JList/*<String>*/ {
 	private static final long serialVersionUID = 1293447084620847213L;
@@ -49,7 +49,7 @@ public class PositionList extends JList/*<String>*/ {
 	@SuppressWarnings("unchecked")
 	public void refresh(int team) {
 		String[] posList = new String[posNum.length];
-		Arrays.fill(posList, " ");
+		java.util.Arrays.fill(posList, " ");
 
 		if (!inTransfer
 				|| ((team < Squads.FIRST_EDIT_NATION || team >= Squads.FIRST_CLUB)

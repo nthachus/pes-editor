@@ -1,11 +1,15 @@
 package editor.data;
 
 import editor.lang.NullArgumentException;
+import editor.lang.SimpleEntry;
 import editor.util.Bits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public final class Squads {
 	private static final Logger log = LoggerFactory.getLogger(Squads.class);
@@ -349,7 +353,7 @@ public final class Squads {
 					break;
 			}
 
-			list.add(new AbstractMap.SimpleEntry<Integer, Integer>(playerIdx, score));
+			list.add(new SimpleEntry<Integer, Integer>(playerIdx, score));
 		}
 
 		return list;

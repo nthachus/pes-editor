@@ -17,6 +17,14 @@ public final class UIUtil {
 
 	public static final Color CHARTREUSE0 = new Color(183, 255, 0);
 
+
+	public static final String DIALOG = "Dialog";
+	//public static final String DIALOG_INPUT = "DialogInput";
+	public static final String SANS_SERIF = "SansSerif";
+	//public static final String SERIF = "Serif";
+	//public static final String MONOSPACED = "Monospaced";
+
+
 	public static void javaUI() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());

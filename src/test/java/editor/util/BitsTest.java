@@ -4,8 +4,6 @@ import editor.lang.NullArgumentException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 public final class BitsTest {
 	@Test
 	public void testToBytes() throws Exception {

@@ -123,8 +123,7 @@ public final class Strings {
 	//endregion
 
 	public static boolean equalsIgnoreCase(String s1, String s2) {
-		return (null == s1 && null == s2)
-				|| (null != s1 && null != s2 && s1.equalsIgnoreCase(s2));
+		return (null == s1) ? (null == s2) : s1.equalsIgnoreCase(s2);
 	}
 
 	public static boolean isEmpty(String s) {

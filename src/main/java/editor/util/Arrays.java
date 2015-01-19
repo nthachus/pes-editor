@@ -27,12 +27,15 @@ public final class Arrays {
 			throw new NullArgumentException("array");
 		}
 		for (int i = 0; i < array.length; i++) {
-			if ((null == array[i] && null == value)
-					|| (null != array[i] && null != value && array[i].equals(value))) {
+			if (eq(array[i], value)) {
 				return i;
 			}
 		}
 		return -1;
+	}
+
+	private static boolean eq(Object o1, Object o2) {
+		return (null == o1) ? (null == o2) : o1.equals(o2);
 	}
 
 	public static class EntryValueComparator<K, V extends Comparable<? super V>>
@@ -46,6 +49,51 @@ public final class Arrays {
 
 			return (null == o2.getValue()) ? -1 : o2.getValue().compareTo(o1.getValue());
 		}
+	}
+
+	/**
+	 * Copies the specified array, truncating or padding with zeros (if necessary)
+	 * so the copy has the specified length.
+	 *
+	 * @throws NegativeArraySizeException if <tt>newLength</tt> is negative
+	 * @throws NullPointerException       if <tt>original</tt> is null
+	 */
+	public static int[] copyOf(int[] original, int newLength) {
+		int[] copy = new int[newLength];
+		System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
+		return copy;
+	}
+
+	/**
+	 * Copies the specified array, truncating or padding with zeros (if necessary)
+	 * so the copy has the specified length.
+	 *
+	 * @throws NegativeArraySizeException if <tt>newLength</tt> is negative
+	 * @throws NullPointerException       if <tt>original</tt> is null
+	 */
+	public static byte[] copyOf(byte[] original, int newLength) {
+		byte[] copy = new byte[newLength];
+		System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
+		return copy;
+	}
+
+	/**
+	 * Copies the specified range of the specified array into a new array.
+	 * The initial index of the range (<tt>from</tt>) must lie between zero
+	 * and <tt>original.length</tt>, inclusive.
+	 *
+	 * @throws ArrayIndexOutOfBoundsException if {@code from < 0} or {@code from > original.length}
+	 * @throws IllegalArgumentException       if <tt>from &gt; to</tt>
+	 * @throws NullPointerException           if <tt>original</tt> is null
+	 */
+	public static byte[] copyOfRange(byte[] original, int from, int to) {
+		int newLength = to - from;
+		if (newLength < 0) {
+			throw new IllegalArgumentException(from + " > " + to);
+		}
+		byte[] copy = new byte[newLength];
+		System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
+		return copy;
 	}
 
 }
