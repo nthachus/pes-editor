@@ -25,16 +25,15 @@
 package org.slf4j.impl;
 
 import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
 /**
- * The binding of {@link LoggerFactory} class with an actual instance of
+ * The binding of {@link org.slf4j.LoggerFactory} class with an actual instance of
  * {@link ILoggerFactory} is performed using information returned by this class.
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class StaticLoggerBinder implements LoggerFactoryBinder {
+public final class StaticLoggerBinder implements LoggerFactoryBinder {
 
 	/**
 	 * The unique instance of this class.

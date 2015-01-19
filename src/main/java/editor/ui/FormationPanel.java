@@ -426,27 +426,6 @@ public class FormationPanel extends JPanel
 		}
 	}
 
-	private static class Role implements Serializable {
-		private static final long serialVersionUID = 3234599033413239419L;
-
-		private final int index;
-		private final String name;
-
-		public Role(int index) {
-			this.index = index;
-			this.name = Formations.positionToString(index);
-		}
-
-		public boolean isCB() {
-			return name.contains("CB");
-		}
-
-		@Override
-		public String toString() {
-			return name;
-		}
-	}
-
 	private void updateRoleBox() {
 		log.debug("Try to update Role box for team: {}", team);
 		roleBox.setActionCommand("n");
@@ -829,4 +808,25 @@ public class FormationPanel extends JPanel
 	}
 
 	//endregion
+
+	private static class Role implements Serializable {
+		private static final long serialVersionUID = 3234599033413239419L;
+
+		private final int index;
+		private final String name;
+
+		public Role(int index) {
+			this.index = index;
+			this.name = Formations.positionToString(index);
+		}
+
+		public boolean isCB() {
+			return name.contains("CB");
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
+	}
 }

@@ -38,19 +38,6 @@ public final class Arrays {
 		return (null == o1) ? (null == o2) : o1.equals(o2);
 	}
 
-	public static class EntryValueComparator<K, V extends Comparable<? super V>>
-			implements Comparator<Map.Entry<K, V>>, Serializable {
-		private static final long serialVersionUID = 1803953350037498756L;
-
-		public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-			if (null == o1.getValue()) {
-				return (null == o2.getValue()) ? 0 : 1;
-			}
-
-			return (null == o2.getValue()) ? -1 : o2.getValue().compareTo(o1.getValue());
-		}
-	}
-
 	/**
 	 * Copies the specified array, truncating or padding with zeros (if necessary)
 	 * so the copy has the specified length.
@@ -94,6 +81,19 @@ public final class Arrays {
 		byte[] copy = new byte[newLength];
 		System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
 		return copy;
+	}
+
+	public static class EntryValueComparator<K, V extends Comparable<? super V>>
+			implements Comparator<Map.Entry<K, V>>, Serializable {
+		private static final long serialVersionUID = 1803953350037498756L;
+
+		public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+			if (null == o1.getValue()) {
+				return (null == o2.getValue()) ? 0 : 1;
+			}
+
+			return (null == o2.getValue()) ? -1 : o2.getValue().compareTo(o1.getValue());
+		}
 	}
 
 }

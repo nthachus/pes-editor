@@ -379,7 +379,10 @@ public final class Stats {
 		Bits.toBytes((short) value, of.getData(), ofs - 1);
 	}
 
-	public static void setValue(OptionFile of, int player, Stat stat, String value) throws NumberFormatException {
+	/**
+	 * @throws NumberFormatException
+	 */
+	public static void setValue(OptionFile of, int player, Stat stat, String value) {
 		if (null == stat) {
 			throw new NullArgumentException("stat");
 		}
@@ -398,7 +401,10 @@ public final class Stats {
 		setValue(of, player, stat, val);
 	}
 
-	public static String getString(OptionFile of, int player, Stat stat) throws IndexOutOfBoundsException {
+	/**
+	 * @throws IndexOutOfBoundsException
+	 */
+	public static String getString(OptionFile of, int player, Stat stat) {
 		int val = getValue(of, player, stat);
 
 		String result;

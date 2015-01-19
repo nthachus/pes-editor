@@ -44,7 +44,7 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 		setSelectionBackground(colour);
 		setSelectionForeground(Color.BLACK);
 		//setBackground(UIUtil.LIGHT_YELLOW);
-		//setFont(new Font(Font.DIALOG, Font.BOLD, 12));
+		//setFont(new Font(UIUtil.DIALOG, Font.BOLD, 12));
 
 		addListSelectionListener(this);
 

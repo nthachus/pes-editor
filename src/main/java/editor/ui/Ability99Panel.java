@@ -121,32 +121,6 @@ public class Ability99Panel extends JPanel
 		}
 	}
 
-	public static class Verifier99 extends InputVerifier {
-		@Override
-		public boolean verify(JComponent input) {
-			if (!(input instanceof JTextComponent)) {
-				throw new IllegalArgumentException("input");
-			}
-
-			return verify((JTextComponent) input);
-		}
-
-		public static boolean verify(JTextComponent tf) {
-			if (null == tf) {
-				throw new NullArgumentException("tf");
-			}
-			try {
-				int v = Integer.parseInt(tf.getText());
-				if (v > 0 && v <= Stats.MAX_STAT99) {
-					return true;
-				}
-			} catch (NumberFormatException nfe) {
-				return false;
-			}
-			return false;
-		}
-	}
-
 	public void stateChanged(ChangeEvent evt) {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
@@ -214,6 +188,32 @@ public class Ability99Panel extends JPanel
 	}
 
 	public void keyReleased(KeyEvent evt) {
+	}
+
+	public static class Verifier99 extends InputVerifier {
+		@Override
+		public boolean verify(JComponent input) {
+			if (!(input instanceof JTextComponent)) {
+				throw new IllegalArgumentException("input");
+			}
+
+			return verify((JTextComponent) input);
+		}
+
+		public static boolean verify(JTextComponent tf) {
+			if (null == tf) {
+				throw new NullArgumentException("tf");
+			}
+			try {
+				int v = Integer.parseInt(tf.getText());
+				if (v > 0 && v <= Stats.MAX_STAT99) {
+					return true;
+				}
+			} catch (NumberFormatException nfe) {
+				return false;
+			}
+			return false;
+		}
 	}
 
 }

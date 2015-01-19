@@ -120,8 +120,8 @@ public final class MessageFormatter {
 		int j;
 		StringBuffer sb = new StringBuffer(messagePattern.length() + 50);
 
-		int L;
-		for (L = 0; L < argArray.length; L++) {
+		int l;
+		for (l = 0; l < argArray.length; l++) {
 
 			j = messagePattern.indexOf(DELIM_STR, i);
 
@@ -137,7 +137,7 @@ public final class MessageFormatter {
 			} else {
 				if (isEscapedDelimiter(messagePattern, j)) {
 					if (!isDoubleEscaped(messagePattern, j)) {
-						L--; // DELIM_START was escaped, thus should not be incremented
+						l--; // DELIM_START was escaped, thus should not be incremented
 						sb.append(messagePattern.substring(i, j - 1));
 						sb.append(DELIM_START);
 						i = j + 1;
@@ -146,13 +146,13 @@ public final class MessageFormatter {
 						// itself escaped: "abc x:\\{}"
 						// we have to consume one backward slash
 						sb.append(messagePattern.substring(i, j - 1));
-						deeplyAppendParameter(sb, argArray[L], new HashMap<Object[], Object>());
+						deeplyAppendParameter(sb, argArray[l], new HashMap<Object[], Object>());
 						i = j + 2;
 					}
 				} else {
 					// normal case
 					sb.append(messagePattern.substring(i, j));
-					deeplyAppendParameter(sb, argArray[L], new HashMap<Object[], Object>());
+					deeplyAppendParameter(sb, argArray[l], new HashMap<Object[], Object>());
 					i = j + 2;
 				}
 			}
@@ -160,7 +160,7 @@ public final class MessageFormatter {
 
 		// append the characters following the last {} pair.
 		sb.append(messagePattern.substring(i, messagePattern.length()));
-		if (L < argArray.length - 1) {
+		if (l < argArray.length - 1) {
 			return new FormattingTuple(sb.toString(), argArray, throwableCandidate);
 		}
 		return new FormattingTuple(sb.toString(), argArray, null);

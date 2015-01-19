@@ -24,10 +24,8 @@
 
 package org.slf4j.helpers;
 
-import org.slf4j.Logger;
-
 /**
- * A direct NOP (no operation) implementation of {@link Logger}.
+ * A direct NOP (no operation) implementation of {@link org.slf4j.Logger}.
  *
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -71,13 +69,13 @@ public final class NOPLogger extends NamedLoggerBase {
 	/**
 	 * A NOP implementation.
 	 */
-	public final void trace(String format, Object arg1, Object arg2) {
+	public void trace(String format, Object arg1, Object arg2) {
 	}
 
 	/**
 	 * A NOP implementation.
 	 */
-	public final void trace(String format, Object... argArray) {
+	public void trace(String format, Object... argArray) {
 	}
 
 	/**
@@ -110,13 +108,13 @@ public final class NOPLogger extends NamedLoggerBase {
 	/**
 	 * A NOP implementation.
 	 */
-	public final void debug(String format, Object arg1, Object arg2) {
+	public void debug(String format, Object arg1, Object arg2) {
 	}
 
 	/**
 	 * A NOP implementation.
 	 */
-	public final void debug(String format, Object... argArray) {
+	public void debug(String format, Object... argArray) {
 	}
 
 	/**
@@ -155,7 +153,7 @@ public final class NOPLogger extends NamedLoggerBase {
 	/**
 	 * A NOP implementation.
 	 */
-	public final void info(String format, Object... argArray) {
+	public void info(String format, Object... argArray) {
 	}
 
 	/**
@@ -194,7 +192,7 @@ public final class NOPLogger extends NamedLoggerBase {
 	/**
 	 * A NOP implementation.
 	 */
-	public final void warn(String format, Object... argArray) {
+	public void warn(String format, Object... argArray) {
 	}
 
 	/**
@@ -231,7 +229,7 @@ public final class NOPLogger extends NamedLoggerBase {
 	/**
 	 * A NOP implementation.
 	 */
-	public final void error(String format, Object... argArray) {
+	public void error(String format, Object... argArray) {
 	}
 
 	/**

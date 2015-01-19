@@ -25,7 +25,6 @@
 package org.slf4j.impl;
 
 import com.sendgrid.SendGrid;
-import org.slf4j.Logger;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
 import org.slf4j.helpers.NamedLoggerBase;
@@ -48,7 +47,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Simple implementation of {@link Logger} that sends all enabled log messages,
+ * Simple implementation of {@link org.slf4j.Logger} that sends all enabled log messages,
  * for all defined loggers, to the console ({@code System.err}).
  *
  * @author Ceki G&uuml;lc&uuml;
@@ -269,24 +268,11 @@ public class SimpleLogger extends NamedLoggerBase {
 		}
 	}
 
-	private static class ConfigFileLoader implements PrivilegedAction<InputStream> {
-		public ConfigFileLoader() {
-		}
-
-		public InputStream run() {
-			ClassLoader threadCL = Thread.currentThread().getContextClassLoader();
-			if (threadCL != null) {
-				return threadCL.getResourceAsStream(CONFIG_FILE);
-			}
-			return ClassLoader.getSystemResourceAsStream(CONFIG_FILE);
-		}
-	}
-
 
 	/**
 	 * The current log level
 	 */
-	protected final int currentLogLevel;
+	private final int currentLogLevel;
 	/**
 	 * The short name of this simple log instance
 	 */
@@ -302,7 +288,7 @@ public class SimpleLogger extends NamedLoggerBase {
 			init();
 		}
 
-		String levelString = recursivelyComputeLevelString();
+		String levelString = recursivelyComputeLevelString(name);
 		if (levelString != null) {
 			this.currentLogLevel = stringToLevel(levelString);
 		} else {
@@ -310,14 +296,15 @@ public class SimpleLogger extends NamedLoggerBase {
 		}
 	}
 
-	protected String recursivelyComputeLevelString() {
-		String tempName = name;
+	protected static String recursivelyComputeLevelString(String name) {
 		String levelString = null;
-		int indexOfLastDot = tempName.length();
-		while ((levelString == null) && (indexOfLastDot >= 0)) {
-			tempName = tempName.substring(0, indexOfLastDot);
-			levelString = getStringProperty(LOG_KEY_PREFIX + tempName, null);
-			indexOfLastDot = String.valueOf(tempName).lastIndexOf(".");
+		int indexOfLastDot;
+		if (null != name && (indexOfLastDot = name.length()) > 0) {
+			while ((levelString == null) && (indexOfLastDot >= 0)) {
+				name = name.substring(0, indexOfLastDot);
+				levelString = getStringProperty(LOG_KEY_PREFIX + name, null);
+				indexOfLastDot = name.lastIndexOf('.');
+			}
 		}
 		return levelString;
 	}
@@ -405,7 +392,7 @@ public class SimpleLogger extends NamedLoggerBase {
 			}
 			buf.append(String.valueOf(shortLogName)).append(" - ");
 		} else if (SHOW_LOG_NAME) {
-			buf.append(String.valueOf(name)).append(" - ");
+			buf.append(String.valueOf(getName())).append(" - ");
 		}
 
 		// Append the message
@@ -414,7 +401,7 @@ public class SimpleLogger extends NamedLoggerBase {
 		write(buf, t);
 
 		if (null != SMTP_APPENDER && level >= LOG_LEVEL_ERROR) {
-			sendErrorMail(SHOW_SHORT_LOG_NAME ? shortLogName : name,
+			sendErrorMail(SHOW_SHORT_LOG_NAME ? shortLogName : getName(),
 					message, t instanceof ExceptionInInitializerError);
 		}
 	}
@@ -458,48 +445,13 @@ public class SimpleLogger extends NamedLoggerBase {
 		for (String s : messages) {
 			body.append(s).append(NEW_LINE);
 		}
-		String subject = name + " - " + msg;
+		String subject = String.valueOf(name) + " - " + msg;
 
 		Runnable sender = new MailSender(subject, body.toString());
 		if (immediately) {
 			sender.run();
 		} else {
 			THREAD_POOL.execute(sender);
-		}
-	}
-
-	private static class MailSender implements Runnable {
-		private final String subject;
-		private final String body;
-
-		public MailSender(String subject, String body) {
-			this.subject = subject;
-			this.body = body;
-		}
-
-		public void run() {
-			try {
-				SMTP_APPENDER.send(subject, body);
-			} catch (Exception e) {
-				Util.report("Failed to send error mail.", e);
-			}
-		}
-	}
-
-	private static class MessageWriter implements Runnable {
-		private final String message;
-		private final Throwable error;
-
-		public MessageWriter(String message, Throwable error) {
-			this.message = message;
-			this.error = error;
-		}
-
-		public void run() {
-			TARGET_STREAM.println(message);
-			if (null != error) {
-				error.printStackTrace(TARGET_STREAM);
-			}
 		}
 	}
 
@@ -511,7 +463,11 @@ public class SimpleLogger extends NamedLoggerBase {
 	}
 
 	private String computeShortName() {
-		return name.substring(name.lastIndexOf(".") + 1);
+		int p;
+		if (null == getName() || (p = getName().lastIndexOf('.')) < 0) {
+			return getName();
+		}
+		return getName().substring(p + 1);
 	}
 
 	/**
@@ -777,4 +733,56 @@ public class SimpleLogger extends NamedLoggerBase {
 	public void error(String msg, Throwable t) {
 		log(LOG_LEVEL_ERROR, msg, t);
 	}
+
+	//region Nested Classes
+
+	private static class ConfigFileLoader implements PrivilegedAction<InputStream> {
+		public ConfigFileLoader() {
+		}
+
+		public InputStream run() {
+			ClassLoader threadCL = Thread.currentThread().getContextClassLoader();
+			if (threadCL != null) {
+				return threadCL.getResourceAsStream(CONFIG_FILE);
+			}
+			return ClassLoader.getSystemResourceAsStream(CONFIG_FILE);
+		}
+	}
+
+	private static class MailSender implements Runnable {
+		private final String subject;
+		private final String body;
+
+		public MailSender(String subject, String body) {
+			this.subject = subject;
+			this.body = body;
+		}
+
+		public void run() {
+			try {
+				SMTP_APPENDER.send(subject, body);
+			} catch (Exception e) {
+				Util.report("Failed to send error mail.", e);
+			}
+		}
+	}
+
+	private static class MessageWriter implements Runnable {
+		private final String message;
+		private final Throwable error;
+
+		public MessageWriter(String message, Throwable error) {
+			this.message = message;
+			this.error = error;
+		}
+
+		public void run() {
+			TARGET_STREAM.println(message);
+			if (null != error) {
+				error.printStackTrace(TARGET_STREAM);
+			}
+		}
+	}
+
+	//endregion
 }

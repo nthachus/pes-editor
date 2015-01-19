@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Collections;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SquadList extends JList/*<Player>*/ {
 	private static final long serialVersionUID = 6246402135860985745L;
@@ -30,7 +30,7 @@ public class SquadList extends JList/*<Player>*/ {
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setLayoutOrientation(JList.VERTICAL);
 		setVisibleRowCount(Formations.CLUB_TEAM_SIZE);
-		//setFont(new Font(Font.DIALOG, Font.BOLD, 12));
+		//setFont(new Font(UIUtil.DIALOG, Font.BOLD, 12));
 
 		if (setSize) {
 			setPreferredSize(new Dimension(118, 576));
@@ -61,7 +61,7 @@ public class SquadList extends JList/*<Player>*/ {
 	}
 
 	private void fetchAllPlayers() {
-		Vector<Player> model = new Vector<Player>(Player.TOTAL + Player.TOTAL_EDIT - 1);
+		java.util.List<Player> model = new ArrayList<Player>(Player.TOTAL + Player.TOTAL_EDIT - 1);
 		for (int p = 1; p < Player.TOTAL; p++) {
 			model.add(new Player(of, p));
 		}
@@ -74,11 +74,12 @@ public class SquadList extends JList/*<Player>*/ {
 			}
 		}
 
-		Collections.sort(model);
+		Player[] listData = model.toArray(new Player[model.size()]);
+		Arrays.sort(listData);
 
-		setListData(model);
+		setListData(listData);
 		// DEBUG
-		log.debug("Squad list #{} is reloaded with all ({}) players", hashCode(), model.size());
+		log.debug("Squad list #{} is reloaded with all ({}) players", hashCode(), listData.length);
 	}
 
 	/**

@@ -12,8 +12,8 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class KitImportDialog extends JDialog implements MouseListener {
 	private static final long serialVersionUID = 6176947558253913789L;
@@ -78,7 +78,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 	public void refresh(int teamId) {
 		log.debug("Try to refresh importable Kit teams for team: {}", teamId);
 
-		Vector<KitItem> model = new Vector<KitItem>(Clubs.TOTAL);
+		List<KitItem> model = new ArrayList<KitItem>(Clubs.TOTAL);
 		if (teamId < Clubs.TOTAL) {
 			// Clubs
 			addClubKitItem(model, teamId);
@@ -99,11 +99,13 @@ public class KitImportDialog extends JDialog implements MouseListener {
 			}
 		}
 
-		list.setListData(model);
-		fileLabel.setText(Resources.getMessage("import.label", of2.getFilename()));
+		KitItem[] listData = model.toArray(new KitItem[model.size()]);
+		list.setListData(listData);
 
+		fileLabel.setText(Resources.getMessage("import.label", of2.getFilename()));
 		pack();
-		log.debug("Refresh completed on {} Kit teams", model.size());
+
+		log.debug("Refresh completed on {} Kit teams", listData.length);
 	}
 
 	private void addClubKitItem(List<KitItem> model, int clubId) {

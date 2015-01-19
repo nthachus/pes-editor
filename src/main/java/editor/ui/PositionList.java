@@ -32,7 +32,7 @@ public class PositionList extends JList/*<String>*/ {
 		setVisibleRowCount(posNum.length);
 		setBackground(UIUtil.LIGHT_YELLOW);
 		setPreferredSize(new Dimension(32, 576));//30
-		//setFont(new Font(Font.DIALOG, Font.BOLD, 12));
+		//setFont(new Font(UIUtil.DIALOG, Font.BOLD, 12));
 	}
 
 	public int getPosNum(int index) {

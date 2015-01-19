@@ -39,7 +39,7 @@ import java.io.Serializable;
 public abstract class NamedLoggerBase implements Logger, Serializable {
 	private static final long serialVersionUID = 7535258609338176893L;
 
-	protected final String name;
+	private final String name;
 
 	protected NamedLoggerBase(String name) {
 		this.name = name;
