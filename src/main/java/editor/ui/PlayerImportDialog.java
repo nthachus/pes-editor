@@ -7,6 +7,8 @@ import editor.data.Stats;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -17,6 +19,7 @@ import java.awt.event.MouseListener;
 
 public class PlayerImportDialog extends JDialog implements ListSelectionListener, MouseListener {
 	private static final long serialVersionUID = -8875420784069492334L;
+	private static final Logger log = LoggerFactory.getLogger(PlayerImportDialog.class);
 
 	private final OptionFile of;
 	private final OptionFile of2;
@@ -41,6 +44,7 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 		this.of = of;
 		this.of2 = of2;
 
+		log.debug("Player Import dialog is initializing..");
 		initComponents();
 	}
 
@@ -85,11 +89,15 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 	}
 
 	public void show(int playerId) {
+		log.debug("Show Import dialog for player: {}", playerId);
+
 		this.index = playerId;
 		setVisible(true);
 	}
 
 	public void refresh() {
+		log.debug("Refresh import players list from OF2: {}", of2.getFilename());
+
 		playerList.refresh();
 		fileLabel.setText(Resources.getMessage("import.label", of2.getFilename()));
 		index = 0;
@@ -103,6 +111,8 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 		if (e.getValueIsAdjusting()) {
 			return;
 		}
+		// DEBUG
+		log.debug("On players list selected: {} -> {}", e.getFirstIndex(), e.getLastIndex());
 
 		if (!playerList.getSquadList().isSelectionEmpty()) {
 			Player p = (Player) playerList.getSquadList().getSelectedValue();
@@ -129,12 +139,15 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 		if (e.getClickCount() < 2) {
 			return;
 		}
+		log.debug("On double-clicked on list: {}", e.getSource());
 
 		if (!(e.getSource() instanceof JList)) {
 			throw new IllegalArgumentException("e");
 		}
 		JList list = (JList) e.getSource();
 		Player p = (Player) list.getSelectedValue();
+		// DEBUG
+		log.debug("Try to import player '{}' after double-clicked", p);
 
 		int pid = (null == p) ? 0 : p.getIndex();
 		if (pid > 0) {
@@ -170,6 +183,8 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 		Stats.setValue(of, index, Stats.SHIRT_EDITED, 1);
 
 		System.arraycopy(temp, 0, of2.getData(), repAdr, temp.length);
+		// DEBUG
+		log.debug("Importing succeeded player {} -> {}, except Stats", replacement, index);
 	}
 
 	private static void importPlayerStats(OptionFile of2, int replacement, OptionFile of, int index) {
@@ -199,6 +214,8 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 		for (Stat s : Stats.ABILITY_SPECIAL) {
 			Stats.setValue(of, index, s, Stats.getValue(of2, replacement, s));
 		}
+		// DEBUG
+		log.debug("Importing succeeded Stats for player {} -> {}", replacement, index);
 	}
 
 	private void importPlayerStats() {
@@ -216,6 +233,8 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 		Stats.setValue(of, index, Stats.CALL_EDITED, 1);
 		Stats.setValue(of, index, Stats.SHIRT_EDITED, 1);
 		Stats.setValue(of, index, Stats.ABILITY_EDITED, 1);
+		// DEBUG
+		log.debug("Importing succeeded All for player {} -> {}", replacement, index);
 	}
 
 }

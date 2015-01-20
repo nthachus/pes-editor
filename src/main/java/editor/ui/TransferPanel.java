@@ -150,7 +150,7 @@ public class TransferPanel extends JPanel
 	//endregion
 
 	public void actionPerformed(ActionEvent evt) {
-		log.debug("Try to perform action: {}", (null == evt) ? null : evt.getActionCommand());
+		log.debug("Try to perform Transfer action: {}", (null == evt) ? null : evt.getActionCommand());
 
 		//if ("Compare".equalsIgnoreCase(evt.getActionCommand()))
 		compareStats();
@@ -170,6 +170,8 @@ public class TransferPanel extends JPanel
 			selectorR.getPosList().clearSelection();
 		}
 		infoPanel.refresh(lastIndex, compareIndex);
+		// DEBUG
+		log.debug("Compare Stats completed on last-player: {}, compare-to: {}", lastIndex, compareIndex);
 	}
 
 	private static boolean isValidSquad(int squadS) {
@@ -179,6 +181,8 @@ public class TransferPanel extends JPanel
 
 	private static void selectTeamPos(SelectByTeam selector) {
 		int squadS = selector.getTeamBox().getSelectedIndex();
+		// DEBUG
+		log.debug("Try to select position for team: {}", squadS);
 		if (isValidSquad(squadS)) {
 			SquadList squadList = selector.getSquadList();
 			int squadIndex = squadList.getSelectedIndex();
@@ -187,6 +191,8 @@ public class TransferPanel extends JPanel
 	}
 
 	public void refresh() {
+		log.debug("Transfer panel is refreshing..");
+
 		freeList.refresh();
 		selectorL.refresh();
 		selectorR.refresh();
@@ -202,9 +208,13 @@ public class TransferPanel extends JPanel
 		compareIndex = 0;
 		lastIndex = 0;
 		infoPanel.refresh(lastIndex, compareIndex);
+
+		log.debug("Transfer form was cleared");
 	}
 
 	public void refreshLists() {
+		log.debug("Transfer lists are refreshing..");
+
 		freeList.refreshForNation();
 		selectorL.refreshForTeam();
 		selectorR.refreshForTeam();
@@ -259,6 +269,9 @@ public class TransferPanel extends JPanel
 		if (null == e) {
 			throw new NullArgumentException("e");
 		}
+		// DEBUG
+		log.debug("Perform mouse-pressed action for button: {}, control: {}, on: {}",
+				e.getButton(), e.isControlDown(), e.getSource());
 		if (e.getButton() != MouseEvent.BUTTON1 || !e.isControlDown()) {
 			return;
 		}
@@ -274,6 +287,7 @@ public class TransferPanel extends JPanel
 	}
 
 	private void showFormationDialog(int team) {
+		log.debug("Try to show Formation dialog for team: {}", team);
 		if (!isValidSquadTeam(team)) {
 			return;
 		}
@@ -303,6 +317,9 @@ public class TransferPanel extends JPanel
 		}
 
 		int clicks = e.getClickCount();
+		// DEBUG
+		log.debug("Perform mouse-clicked action for button: {}, clicks: {}, on: {}",
+				e.getButton(), clicks, e.getSource());
 		if (e.getButton() == MouseEvent.BUTTON1 && clicks > 1) {
 			if (e.getSource() instanceof JList) {
 
@@ -371,6 +388,7 @@ public class TransferPanel extends JPanel
 			}
 		}
 
+		log.debug("Release ({}) succeeded player: {} to club: {}", release, player, result);
 		return result;
 	}
 
@@ -406,6 +424,7 @@ public class TransferPanel extends JPanel
 				}
 			}
 			if (spare) {
+				log.debug("Found first unused number: {} in squad: {}", i, squad);
 				return (byte) i;
 			}
 		}
@@ -425,6 +444,8 @@ public class TransferPanel extends JPanel
 			}
 			adr += 2;
 		}
+
+		log.debug("Counting result: {} players in squad: {}", count, squad);
 		return count;
 	}
 

@@ -4,12 +4,15 @@ import editor.data.*;
 import editor.lang.NullArgumentException;
 import editor.util.Arrays;
 import editor.util.UIUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class PositionList extends JList/*<String>*/ {
 	private static final long serialVersionUID = 1293447084620847213L;
+	private static final Logger log = LoggerFactory.getLogger(PositionList.class);
 
 	private final OptionFile of;
 	private final boolean inTransfer;
@@ -25,6 +28,7 @@ public class PositionList extends JList/*<String>*/ {
 		this.of = of;
 		this.inTransfer = inTransfer;
 
+		log.debug("Initialize Position list with in-transfer: {}", inTransfer);
 		//refresh(team);
 
 		setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -48,6 +52,8 @@ public class PositionList extends JList/*<String>*/ {
 
 	@SuppressWarnings("unchecked")
 	public void refresh(int team) {
+		// TODO: log.debug("", team);
+
 		String[] posList = new String[posNum.length];
 		java.util.Arrays.fill(posList, " ");
 
