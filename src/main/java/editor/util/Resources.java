@@ -37,7 +37,7 @@ public final class Resources {
 
 		String msg;
 		try {
-			msg = messages.getString(key);
+			msg = getMessages().getString(key);
 		} catch (MissingResourceException e) {
 			msg = null;
 		}
