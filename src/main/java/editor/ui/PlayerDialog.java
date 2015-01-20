@@ -4,8 +4,12 @@ import editor.data.OptionFile;
 import editor.data.Player;
 import editor.data.Stats;
 import editor.lang.NullArgumentException;
+import editor.ui.Ability99Panel.Verifier99;
+import editor.ui.GeneralAbilityPanel.StatVerifier;
 import editor.util.Bits;
 import editor.util.Resources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +18,7 @@ import java.awt.event.ActionListener;
 
 public class PlayerDialog extends JDialog implements ActionListener {
 	private static final long serialVersionUID = -2775873759488026356L;
+	private static final Logger log = LoggerFactory.getLogger(PlayerDialog.class);
 
 	private final OptionFile of;
 	private final PlayerImportDialog playerImportDia;
@@ -37,6 +42,7 @@ public class PlayerDialog extends JDialog implements ActionListener {
 		this.of = of;
 		playerImportDia = pid;
 
+		log.debug("Initialize Player dialog with Player import dialog #{}", pid.hashCode());
 		initComponents();
 	}
 
@@ -84,6 +90,7 @@ public class PlayerDialog extends JDialog implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
+		log.debug("Try to perform action: {} on Player #{}", evt.getActionCommand(), index);
 
 		if ("Accept".equalsIgnoreCase(evt.getActionCommand())) {
 			if (isFormValid()) {
@@ -100,6 +107,8 @@ public class PlayerDialog extends JDialog implements ActionListener {
 		if (null == player) {
 			throw new NullArgumentException("player");
 		}
+		// DEBUG
+		log.debug("Try to show dialog for Player: [{}] {}", player.getIndex(), player);
 		index = player.getIndex();
 
 		String tit = String.format("[%d] %s", index, player.getName());
@@ -118,20 +127,20 @@ public class PlayerDialog extends JDialog implements ActionListener {
 	@SuppressWarnings("RedundantIfStatement")
 	private boolean isFormValid() {
 		for (int i = 0; i < Stats.ABILITY99.length; i++) {
-			if (!Ability99Panel.Verifier99.verify(abilityPan.getField(i))) {
+			if (!Verifier99.verify(abilityPan.getField(i))) {
 				return false;
 			}
 		}
 
-		if (!GeneralAbilityPanel.StatVerifier.verify(Stats.HEIGHT, generalPan.getHeightField())) {
+		if (!StatVerifier.verify(Stats.HEIGHT, generalPan.getHeightField())) {
 			return false;
 		}
 
-		if (!GeneralAbilityPanel.StatVerifier.verify(Stats.WEIGHT, generalPan.getWeightField())) {
+		if (!StatVerifier.verify(Stats.WEIGHT, generalPan.getWeightField())) {
 			return false;
 		}
 
-		if (!GeneralAbilityPanel.StatVerifier.verify(Stats.AGE, generalPan.getAgeField())) {
+		if (!StatVerifier.verify(Stats.AGE, generalPan.getAgeField())) {
 			return false;
 		}
 
@@ -143,8 +152,10 @@ public class PlayerDialog extends JDialog implements ActionListener {
 			Stats.setValue(of, index, Stats.ROLES[i], Bits.toByte(positionPan.getRoleCheck(i).isSelected()));
 		}
 
+		String regPos;
 		for (int i = 0; i < Stats.ROLES.length; i++) {
-			if (Stats.ROLES[i].getName().equalsIgnoreCase((String) positionPan.getRegBox().getSelectedItem())) {
+			regPos = (String) positionPan.getRegBox().getSelectedItem();
+			if (Stats.ROLES[i].getName().equalsIgnoreCase(regPos)) {
 				Stats.setValue(of, index, Stats.REG_POS, Stats.roleToRegPos(i));
 				break;
 			}
@@ -169,8 +180,8 @@ public class PlayerDialog extends JDialog implements ActionListener {
 		Stats.setValue(of, index, Stats.CONDITION, (String) generalPan.getConditionBox().getSelectedItem());
 
 		for (int i = 0; i < Stats.ABILITY_SPECIAL.length; i++) {
-			Stats.setValue(of, index, Stats.ABILITY_SPECIAL[i],
-					Bits.toByte(specialPan.getAbilityCheck(i).isSelected()));
+			boolean hasSpecAbi = specialPan.getAbilityCheck(i).isSelected();
+			Stats.setValue(of, index, Stats.ABILITY_SPECIAL[i], Bits.toByte(hasSpecAbi));
 		}
 
 		Stats.setValue(of, index, Stats.INJURY, (String) generalPan.getInjuryBox().getSelectedItem());
@@ -183,6 +194,8 @@ public class PlayerDialog extends JDialog implements ActionListener {
 		Stats.setValue(of, index, Stats.DK_STYLE, (String) generalPan.getDropKickBox().getSelectedItem());
 
 		Stats.setValue(of, index, Stats.ABILITY_EDITED, 1);
+		// DEBUG
+		log.debug("Update succeeded Stats on Player: {}", index);
 	}
 
 }

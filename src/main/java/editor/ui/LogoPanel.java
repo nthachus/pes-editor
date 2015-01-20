@@ -164,7 +164,7 @@ public class LogoPanel extends JPanel implements ActionListener {
 			Logos.set(of, slot, image);
 			refresh(slot);
 
-			log.debug("");// TODO: log !!!
+			log.debug("Succeeded to add logo {} from file '{}'", slot, source.getName());
 		} catch (Exception e) {
 			showAccessFailedMsg(e.getLocalizedMessage());
 		}
@@ -194,6 +194,8 @@ public class LogoPanel extends JPanel implements ActionListener {
 		}
 
 		writeFile(dest, slot);
+		// DEBUG
+		log.debug("Saving of logo {} to file '{}' succeeded", slot, dest.getName());
 	}
 
 	private void writeFile(File dest, int slot) {
@@ -215,6 +217,7 @@ public class LogoPanel extends JPanel implements ActionListener {
 	}
 
 	public void refresh() {
+		log.debug("Try to refresh all logos with transparency: {}", isTrans);
 		for (int l = 0; l < logoButtons.length; l++) {
 			refresh(l);
 		}

@@ -23,6 +23,8 @@ public class NationalityList extends JList/*<Player>*/ {
 			throw new NullArgumentException("of");
 		}
 		this.of = of;
+		// DEBUG
+		log.debug("Nationality list is initializing..");
 
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setLayoutOrientation(JList.VERTICAL);
@@ -66,17 +68,21 @@ public class NationalityList extends JList/*<Player>*/ {
 
 	private Player[] getOldPlayers() {
 		Player[] model = new Player[Player.TOTAL_OLD_PLAYERS];
-		for (int i = 0; i < Player.TOTAL_OLD_PLAYERS; i++) {
+		for (int i = 0; i < model.length; i++) {
 			model[i] = new Player(of, Player.FIRST_OLD + i);
 		}
+		// DEBUG
+		log.debug("{} Old players was loaded", model.length);
 		return model;
 	}
 
 	private Player[] getYoungPlayers() {
 		Player[] model = new Player[Player.TOTAL_YOUNG_PLAYERS];
-		for (int i = 0; i < Player.TOTAL_YOUNG_PLAYERS; i++) {
+		for (int i = 0; i < model.length; i++) {
 			model[i] = new Player(of, Player.FIRST_YOUNG + i);
 		}
+		// DEBUG
+		log.debug("{} Young players was loaded", model.length);
 		return model;
 	}
 
@@ -93,6 +99,8 @@ public class NationalityList extends JList/*<Player>*/ {
 				model.add(new Player(of, p));
 			}
 		}
+		// DEBUG
+		log.debug("{} Free Agents was found", model.size());
 		return model.toArray(new Player[model.size()]);
 	}
 
@@ -119,6 +127,8 @@ public class NationalityList extends JList/*<Player>*/ {
 				model.add(o);
 			}
 		}
+		// DEBUG
+		log.debug("All {} players was loaded", model.size());
 		return model.toArray(new Player[model.size()]);
 	}
 
@@ -135,6 +145,8 @@ public class NationalityList extends JList/*<Player>*/ {
 				model.add(new Player(of, p));
 			}
 		}
+		// DEBUG
+		log.debug("{} Nationality #{} players was found", model.size(), nation);
 		return model.toArray(new Player[model.size()]);
 	}
 
@@ -147,6 +159,8 @@ public class NationalityList extends JList/*<Player>*/ {
 				model.add(new Player(of, dupe));
 			}
 		}
+		// DEBUG
+		log.debug("{} Duplicated players was found", model.size());
 		return model.toArray(new Player[model.size()]);
 	}
 
