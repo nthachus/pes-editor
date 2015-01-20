@@ -107,7 +107,6 @@ public class Stat implements Serializable, Comparable<Stat> {
 	}
 
 	@SuppressWarnings("NullableProblems")
-	@Override
 	public int compareTo(Stat o) {
 		if (null == o) {
 			return 1;
