@@ -94,6 +94,7 @@ public class GlobalPanel extends JPanel implements ActionListener {
 
 	private static final String[] OPS = {"+", "-", "=", "+ %", "- %"};
 
+	@SuppressWarnings("unchecked")
 	private void initComponents() {
 		scopeBox = new JComboBox/*<String>*/(getScopes());
 		teamBox = new JComboBox/*<String>*/();

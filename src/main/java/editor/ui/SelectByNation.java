@@ -34,6 +34,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 		//refresh();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initComponents() {
 		sortButton = new JButton(Resources.getMessage("nation.sortAlpha"));
 		sortButton.setActionCommand("Sort");

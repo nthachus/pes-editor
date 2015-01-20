@@ -49,6 +49,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 		return s.split("\\s*,\\s*");
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initComponents() {
 		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("strategy.title")));
 
