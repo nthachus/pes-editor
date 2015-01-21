@@ -34,7 +34,7 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 			throw new NullArgumentException("fc.fileFilter");
 		}
 		// DEBUG
-		log.debug("Initialize OF preview for file chooser: {}#{}", fc.getClass().getSimpleName(), fc.hashCode());
+		log.debug("Initialize OF preview for file chooser: {}", Strings.valueOf(fc));
 
 		filter = fc.getFileFilter();
 		saveInfo = new SaveGameInfo();

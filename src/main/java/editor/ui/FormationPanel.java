@@ -184,7 +184,8 @@ public class FormationPanel extends JPanel
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Perform Formation action '{}' for: {}", evt.getActionCommand(), evt.getSource());
+		log.debug("Perform Formation action '{}' for: {}",
+				evt.getActionCommand(), Strings.valueOf(evt.getSource()));
 
 		if (evt.getSource() == altBox) {
 			altChanged(evt);

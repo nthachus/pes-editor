@@ -271,7 +271,7 @@ public class TransferPanel extends JPanel
 		}
 		// DEBUG
 		log.debug("Perform mouse-pressed action for button: {}, control: {}, on: {}",
-				e.getButton(), e.isControlDown(), e.getSource());
+				e.getButton(), e.isControlDown(), Strings.valueOf(e.getSource()));
 		if (e.getButton() != MouseEvent.BUTTON1 || !e.isControlDown()) {
 			return;
 		}
@@ -319,7 +319,7 @@ public class TransferPanel extends JPanel
 		int clicks = e.getClickCount();
 		// DEBUG
 		log.debug("Perform mouse-clicked action for button: {}, clicks: {}, on: {}",
-				e.getButton(), clicks, e.getSource());
+				e.getButton(), clicks, Strings.valueOf(e.getSource()));
 		if (e.getButton() == MouseEvent.BUTTON1 && clicks > 1) {
 			if (e.getSource() instanceof JList) {
 

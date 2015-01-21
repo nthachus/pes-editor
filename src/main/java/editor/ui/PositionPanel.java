@@ -4,6 +4,9 @@ import editor.data.OptionFile;
 import editor.data.Stats;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
+import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +15,7 @@ import java.awt.event.ActionListener;
 
 public class PositionPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 6052934571754116663L;
+	private static final Logger log = LoggerFactory.getLogger(PositionPanel.class);
 
 	private final OptionFile of;
 	private volatile int regRole;
@@ -26,6 +30,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 		}
 		this.of = of;
 
+		log.debug("Position panel is initializing..");
 		initComponents();
 	}
 
@@ -33,9 +38,12 @@ public class PositionPanel extends JPanel implements ActionListener {
 		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("pos.title")));
 
 		JPanel chkPanel = new JPanel(new GridLayout(4, 4));
+		String labText;
 		for (int i = 0; i < roleCheck.length; i++) {
-			roleCheck[i] = new JCheckBox(Stats.ROLES[i].getName());
-			roleCheck[i].setToolTipText(Resources.getNullableMessage(roleCheck[i].getText()));
+
+			labText = Stats.ROLES[i].getName();
+			roleCheck[i] = new JCheckBox(labText);
+			roleCheck[i].setToolTipText(Resources.getNullableMessage(labText));
 			roleCheck[i].setActionCommand(Integer.toString(i));
 			roleCheck[i].addActionListener(this);
 
@@ -74,15 +82,14 @@ public class PositionPanel extends JPanel implements ActionListener {
 	}
 
 	public void load(int player) {
+		log.debug("Try to load role for player: {}", player);
+
 		regRole = Stats.getValue(of, player, Stats.REG_POS);
 		regRole = Stats.regPosToRole(regRole);
 
 		for (int i = 0; i < roleCheck.length; i++) {
-			if (Stats.getValue(of, player, Stats.ROLES[i]) != 0 || regRole == i) {
-				roleCheck[i].setSelected(true);
-			} else {
-				roleCheck[i].setSelected(false);
-			}
+			int v = Stats.getValue(of, player, Stats.ROLES[i]);
+			roleCheck[i].setSelected(v != 0 || regRole == i);
 		}
 
 		updateRegBox();
@@ -101,6 +108,8 @@ public class PositionPanel extends JPanel implements ActionListener {
 
 		regBox.setSelectedItem(Stats.ROLES[regRole].getName());
 		regBox.setActionCommand("y");
+
+		log.debug("Updating of registered role {} succeeded", regRole);
 	}
 
 	/**
@@ -110,6 +119,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
+		log.debug("Perform position action: {} from: {}", evt.getActionCommand(), Strings.valueOf(evt.getSource()));
 
 		if (evt.getSource() == regBox) {
 			registerRole(evt);
@@ -134,6 +144,8 @@ public class PositionPanel extends JPanel implements ActionListener {
 				break;
 			}
 		}
+		// DEBUG
+		log.debug("Register succeeded on role {} to {}", roleName, regRole);
 	}
 
 }

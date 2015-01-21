@@ -30,7 +30,7 @@ public final class Resources {
 		return getMessages(false);
 	}
 
-	public static String getMessage(String key, Object... args) {
+	private static String getMessage(String key, boolean nullable, Object... args) {
 		if (null == key) {
 			throw new NullArgumentException("key");
 		}
@@ -41,6 +41,10 @@ public final class Resources {
 		} catch (MissingResourceException e) {
 			msg = null;
 		}
+
+		if (nullable && Strings.isEmpty(msg)) {
+			return null;
+		}
 		if (null == msg) {
 			msg = key;
 			log.error("Message key '{}' not found for '{}'", key, Locale.getDefault());
@@ -49,9 +53,12 @@ public final class Resources {
 		return (null == args || args.length == 0) ? msg : String.format(msg, args);
 	}
 
+	public static String getMessage(String key, Object... args) {
+		return getMessage(key, false, args);
+	}
+
 	public static String getNullableMessage(String key, Object... args) {
-		String msg = getMessage(key, args);
-		return Strings.isEmpty(msg) ? null : msg;
+		return getMessage(key, true, args);
 	}
 
 }

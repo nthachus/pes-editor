@@ -144,4 +144,8 @@ public final class Strings {
 		return true;
 	}
 
+	public static String valueOf(Object o) {
+		return (null == o) ? "null" : (o.getClass().getSimpleName() + "#" + o.hashCode());
+	}
+
 }

@@ -21,8 +21,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class Ability99Panel extends JPanel
-		implements ActionListener, ChangeListener, KeyListener {
+public class Ability99Panel extends JPanel implements ActionListener, ChangeListener, KeyListener {
 	private static final long serialVersionUID = 8544889045993110691L;
 	private static final Logger log = LoggerFactory.getLogger(Ability99Panel.class);
 
@@ -50,9 +49,12 @@ public class Ability99Panel extends JPanel
 
 		Verifier99 verifier99 = new Verifier99();
 		JLabel lab;
+		String labText;
 		for (int i = 0; i < fields.length; i++) {
-			lab = new JLabel(Stats.ABILITY99[i].getName());
-			lab.setToolTipText(Resources.getNullableMessage(lab.getText()));
+
+			labText = Stats.ABILITY99[i].getName();
+			lab = new JLabel(Resources.getMessage(labText));
+			lab.setToolTipText(Resources.getNullableMessage(labText + ".tip"));
 			//lab.setHorizontalAlignment(SwingConstants.TRAILING);
 
 			grid.anchor = GridBagConstraints.EAST;

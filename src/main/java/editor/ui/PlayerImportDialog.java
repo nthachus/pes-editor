@@ -139,7 +139,7 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 		if (e.getClickCount() < 2) {
 			return;
 		}
-		log.debug("On double-clicked on list: {}", e.getSource());
+		log.debug("On double-clicked on list: {}", Strings.valueOf(e.getSource()));
 
 		if (!(e.getSource() instanceof JList)) {
 			throw new IllegalArgumentException("e");
