@@ -21,12 +21,9 @@ public enum ControlButton {
 	 */
 	square;
 
-	private static volatile ControlButton[] values = null;
+	private static final ControlButton[] values = values();
 
 	public static int size() {
-		if (values == null) {
-			values = values();
-		}
 		return values.length;
 	}
 

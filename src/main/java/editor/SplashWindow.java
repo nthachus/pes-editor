@@ -54,7 +54,7 @@ public final class SplashWindow extends Window implements MouseListener {
 	/**
 	 * The splash image which is displayed on the splash window.
 	 */
-	private final Image image;
+	private final transient Image image;
 
 	/**
 	 * This attribute indicates whether the method paint(Graphics) has been

@@ -8,13 +8,11 @@ import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.util.zip.CRC32;
 
-public class OptionFile {
+public class OptionFile implements Serializable {
+	private static final long serialVersionUID = 6606548308414538296L;
 	private static final Logger log = LoggerFactory.getLogger(OptionFile.class);
 
 	private static final String SHARK_PORT = "\15\0\0\0SharkPortSave";
@@ -28,7 +26,7 @@ public class OptionFile {
 	//region Properties
 
 	private final byte[] data = new byte[LENGTH];
-	private volatile byte[] headerData;
+	private/* volatile*/ byte[] headerData;
 
 	private volatile String gameId;
 	private volatile String gameName;
@@ -82,7 +80,7 @@ public class OptionFile {
 
 	//region Load Game File
 
-	public boolean load(File file) {
+	public synchronized boolean load(File file) {
 		if (null == file) {
 			throw new NullArgumentException("file");
 		}
@@ -266,7 +264,7 @@ public class OptionFile {
 
 	//region Save Game File
 
-	public boolean save(File file) {
+	public synchronized boolean save(File file) {
 		if (null == format) {
 			return false;
 		}
@@ -466,7 +464,7 @@ public class OptionFile {
 			0x7ab368c4, 0x7ab368a1, 0x7ab368a6, 0x7ab36890, 0x7ab3684c
 	};
 
-	public static final int KEY_MASK = KEYS[KEYS.length - 1];
+	private static final int KEY_MASK = KEYS[KEYS.length - 1];
 
 	public static int blockAddress(int index) {
 		return BLOCKS[index][0];

@@ -16,7 +16,7 @@ public final class OptionFileTest extends BaseTest {
 	public void testAddresses() throws Exception {
 		Assert.assertTrue((OptionFile.LENGTH % 4) == 0);
 		Assert.assertEquals(1095680, OptionFile.LENGTH);
-		Assert.assertEquals(2058577996, OptionFile.KEY_MASK);
+		Assert.assertEquals(2058577996, readStaticField(OptionFile.class, "KEY_MASK", true, true));
 
 		for (int i = 0; i < BLOCKS.length; i++) {
 			Assert.assertEquals(BLOCKS[i], OptionFile.blockAddress(i));

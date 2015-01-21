@@ -42,7 +42,7 @@ public class Editor extends JFrame implements ActionListener {
 	//region Initialize the GUI components
 
 	private/* final*/ JFileChooser opFileChooser;
-	private/* final*/ javax.swing.filechooser.FileFilter opFileFilter;
+	private/* final*/ transient javax.swing.filechooser.FileFilter opFileFilter;
 
 	private/* final*/ EmblemPanel flagPanel;
 	private/* final*/ LogoPanel imagePanel;
@@ -201,7 +201,7 @@ public class Editor extends JFrame implements ActionListener {
 	}
 
 	private void initIcon() {
-		URL iconUrl = getClass().getResource("/META-INF/images/icon.png");
+		URL iconUrl = Editor.class.getResource("/META-INF/images/icon.png");
 		if (iconUrl != null) {
 			ImageIcon icon = new ImageIcon(iconUrl);
 			setIconImage(icon.getImage());

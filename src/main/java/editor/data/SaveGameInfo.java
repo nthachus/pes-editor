@@ -10,8 +10,10 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.Serializable;
 
-public class SaveGameInfo {
+public class SaveGameInfo implements Serializable {
+	private static final long serialVersionUID = -4795934280992874495L;
 	private static final Logger log = LoggerFactory.getLogger(SaveGameInfo.class);
 
 	private volatile String gameName = Strings.EMPTY;

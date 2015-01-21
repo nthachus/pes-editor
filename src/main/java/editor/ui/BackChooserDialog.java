@@ -25,7 +25,7 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	//private static final byte[] COLOR_PALETTE = {0, -1};
 
 	private final JButton[] flagButtons = new JButton[12];
-	private final WritableRaster[] rasterData = new WritableRaster[flagButtons.length];
+	private final transient WritableRaster[] rasterData = new WritableRaster[flagButtons.length];
 
 	/**
 	 * Picked flag index.

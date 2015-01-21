@@ -88,7 +88,7 @@ public class Player implements Serializable, Comparable<Player> {
 	public static final int NAME_LEN = 32;
 	public static final int SHIRT_NAME_LEN = 16;
 
-	private final transient OptionFile of;
+	private final OptionFile of;
 	private final int index;
 	private final int slotAdr;
 

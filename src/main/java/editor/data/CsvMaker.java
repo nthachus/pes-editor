@@ -6,12 +6,10 @@ import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.DataOutput;
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 
-public class CsvMaker {
+public class CsvMaker implements Serializable {
+	private static final long serialVersionUID = -4764145193633313484L;
 	private static final Logger log = LoggerFactory.getLogger(CsvMaker.class);
 
 	private final char separator;

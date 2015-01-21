@@ -33,7 +33,7 @@ public class TeamPanel extends JPanel
 
 	private volatile EmblemPanel emblemPan;
 
-	private volatile String[] teams;
+	private final String[] teams = new String[Clubs.TOTAL];
 	private volatile boolean isOk = false;
 
 	public TeamPanel(
@@ -62,7 +62,7 @@ public class TeamPanel extends JPanel
 
 	//region Initialize the GUI components
 
-	private/* final*/ DefaultIcon defaultIcon;
+	private/* final*/ transient DefaultIcon defaultIcon;
 	private/* final*/ BackChooserDialog backChooser;
 
 	private/* final*/ JList/*<String>*/ teamList;
@@ -316,7 +316,7 @@ public class TeamPanel extends JPanel
 		backButton.setIcon(new ImageIcon(Emblems.BLANK16));
 		badgeButton.setIcon(new ImageIcon(Emblems.BLANK16));
 
-		teams = Clubs.getNames(of);
+		System.arraycopy(Clubs.getNames(of), 0, teams, 0, teams.length);
 		int ofs = teams.length;
 
 		String[] list = new String[ofs + Squads.NATION_COUNT + Squads.CLASSIC_COUNT];

@@ -20,7 +20,7 @@ public class OptionPreviewPanel extends JPanel implements PropertyChangeListener
 	private static final long serialVersionUID = 2370607914947646769L;
 	private static final Logger log = LoggerFactory.getLogger(OptionPreviewPanel.class);
 
-	private final FileFilter filter;
+	private final transient FileFilter filter;
 	private final JTextArea previewText;
 
 	private final SaveGameInfo saveInfo;
