@@ -52,7 +52,7 @@ public class PositionList extends JList/*<String>*/ {
 
 	@SuppressWarnings("unchecked")
 	public void refresh(int team) {
-		// TODO: log.debug("", team);
+		log.debug("Try to refresh Position list for team: {}, in-transfer: {}", team, inTransfer);
 
 		String[] posList = new String[posNum.length];
 		java.util.Arrays.fill(posList, " ");
@@ -65,7 +65,7 @@ public class PositionList extends JList/*<String>*/ {
 				team -= Squads.EDIT_TEAM_COUNT;
 			}
 
-			posList[0] = Formations.positionToString(0) + "   ";// NOTE: padding right string ?
+			posList[0] = Formations.positionToString(0);// NOTE: padding right string ?
 			posNum[0] = 0;
 			for (int i = 1; i < Formations.PLAYER_COUNT; i++) {
 				int pos = Formations.getPosition(of, team, alt, i);
@@ -75,14 +75,17 @@ public class PositionList extends JList/*<String>*/ {
 		}
 
 		setListData(posList);
+		// DEBUG
+		log.debug("{} Positions in team {} was refreshed", posList.length, team);
 	}
 
 	public void selectPos(JList/*<Player>*/ squadList, int listIndex) {
 		if (null == squadList) {
 			throw new NullArgumentException("squadList");
 		}
-		clearSelection();
+		log.debug("Try to select position at index: {}", listIndex);
 
+		clearSelection();
 		if (listIndex < 0 || listIndex >= Formations.PLAYER_COUNT) {
 			return;
 		}
@@ -103,6 +106,8 @@ public class PositionList extends JList/*<String>*/ {
 
 		int[] select = Arrays.copyOf(temp, count);
 		setSelectedIndices(select);
+		// DEBUG
+		log.debug("{} Positions of Stat {} was selected", count, stat);
 	}
 
 }

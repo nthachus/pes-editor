@@ -192,8 +192,43 @@ public final class ClubsTest extends BaseTest {
 		int sid = 3;
 		Assert.assertEquals(sid, Clubs.getStadium(of, cid));
 		Assert.assertEquals("OLD TRAFFORD", Stadiums.get(of, sid));
+
+		cid = 48;
+
+		Assert.assertEquals("JUVENTUS F.C.", Clubs.getName(of, cid));
+		Assert.assertEquals("JUV", Clubs.getAbbrName(of, cid));
+		Assert.assertEquals(192, Clubs.FIRST_DEF_EMBLEM + cid);
+		Assert.assertEquals(Clubs.FIRST_DEF_EMBLEM + cid, Clubs.getEmblem(of, cid));
+		Assert.assertEquals(0, Clubs.getBackFlag(of, cid));
+		bg = new Color(0x444444);
+		Assert.assertEquals(bg, Clubs.getColor(of, cid, false));
+		Assert.assertEquals(bg, Clubs.getColor(of, cid, true));
+
+		sid = 7;
+		Assert.assertEquals(sid, Clubs.getStadium(of, cid));
+		Assert.assertEquals("AMERIGO ATLANTIS", Stadiums.get(of, sid));
+
+		// patched OF
+		of = loadLicensedOF();
+		cid = 0;
+
+		Assert.assertEquals("ARSENAL FC", Clubs.getName(of, cid));
+		Assert.assertEquals("ARS", Clubs.getAbbrName(of, cid));
+		int emblem = Clubs.getEmblem(of, cid) - Clubs.FIRST_EMBLEM;
+		Assert.assertThat(emblem, Matchers.greaterThanOrEqualTo(0));
+		Assert.assertThat(emblem, Matchers.lessThan(Emblems.TOTAL16));
+		Image flag = Emblems.getImage(of, emblem);
+		Assert.assertTrue(flag instanceof BufferedImage);
+		Assert.assertFalse(Images.isBlank((BufferedImage) flag));
+		//
+		Assert.assertEquals(0, Clubs.getBackFlag(of, cid));
+		Assert.assertEquals(Color.WHITE, Clubs.getColor(of, cid, false));
+		Assert.assertEquals(Color.WHITE, Clubs.getColor(of, cid, true));
+
+		sid = 17;
+		Assert.assertEquals(sid, Clubs.getStadium(of, cid));
+		Assert.assertEquals("WEMBLEY STADIUM", Stadiums.get(of, sid));
 	}
 
-	// TODO: Other test-cases!
-
+	// TODO: Exception test-cases
 }

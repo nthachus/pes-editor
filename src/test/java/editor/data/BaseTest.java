@@ -75,6 +75,10 @@ public abstract class BaseTest {
 		return loadOptionFile(OF_ORIGINAL);
 	}
 
+	protected static OptionFile loadLicensedOF() throws Exception {
+		return loadOptionFile(OF_LICENSED);
+	}
+
 	protected static OptionFile loadLatestOF() throws Exception {
 		return loadOptionFile(OF_LATEST);
 	}

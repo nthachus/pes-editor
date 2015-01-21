@@ -22,7 +22,7 @@ public final class Program implements Thread.UncaughtExceptionHandler {
 		try {
 			Thread.setDefaultUncaughtExceptionHandler(new Program());
 
-			if (!log.isDebugEnabled()) {
+			if (!log.isTraceEnabled()) {
 				SplashWindow.splash(Program.class.getResource("/META-INF/images/splash.jpg"));
 			}
 			EventQueue.invokeLater(new Editor.Runner(args));

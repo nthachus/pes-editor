@@ -45,5 +45,8 @@ public final class SquadsTest extends BaseTest {
 		Assert.assertEquals(7, Squads.getNationForTeam(7));
 	}
 
+	// testPlayersInClub()
+	// testPlayersInNationTeam()
 	// TODO: Other test-cases
+
 }

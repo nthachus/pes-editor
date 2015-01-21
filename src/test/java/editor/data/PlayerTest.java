@@ -39,6 +39,12 @@ public final class PlayerTest extends BaseTest {
 		Assert.assertEquals("DRAGOVIĆ", p.getName());
 		Assert.assertEquals("DRAGOVIC", p.getShirtName());
 
+		pid = 148;
+		p = new Player(of, pid);
+		Assert.assertEquals("ASHLEY YOUNG", p.getName());
+		Assert.assertEquals("YOUNG", p.getShirtName());
+
+
 		pid = rand.nextInt(Player.TOTAL - 1) + 1;
 		p = new Player(of, pid);
 

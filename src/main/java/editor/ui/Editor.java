@@ -581,7 +581,7 @@ public class Editor extends JFrame implements ActionListener {
 				UIUtil.systemUI();
 
 				Editor form = new Editor();
-				if (null == form.opFileChooser.getCurrentDirectory() && !log.isDebugEnabled()) {
+				if (null == form.opFileChooser.getCurrentDirectory() && !log.isTraceEnabled()) {
 					form.about();
 				}
 				form.setVisible(true);
