@@ -3,7 +3,6 @@ package editor.ui;
 import editor.data.*;
 import editor.lang.JTextFieldLimit;
 import editor.lang.NullArgumentException;
-import editor.util.Bits;
 import editor.util.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -311,13 +310,11 @@ public class GlobalPanel extends JPanel implements ActionListener {
 		if (teamId > 0) {
 			boolean toExclude = isExcluded.isSelected();
 
-			int adr = Squads.CLUB_ADR + (teamId - 1) * Formations.CLUB_TEAM_SIZE * 2;
 			for (int sp = 0; sp < Formations.CLUB_TEAM_SIZE; sp++) {
-				int id = Bits.toInt16(of.getData(), adr);
+				int id = Squads.getTeamPlayer(of, teamId - 1 + Squads.FIRST_CLUB, sp);
 				if (id == player) {
 					return toExclude;
 				}
-				adr += 2;
 			}
 
 			return !toExclude;

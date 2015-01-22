@@ -1,5 +1,6 @@
 package editor.data;
 
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,6 +18,7 @@ public final class SquadsTest extends BaseTest {
 		Assert.assertEquals(8, Squads.EDIT_TEAM_COUNT);
 		Assert.assertEquals(73, Squads.LAST_EDIT_NATION);
 		Assert.assertEquals(75, Squads.FIRST_CLUB);
+		Assert.assertEquals(Squads.FIRST_CLUB + Clubs.TOTAL, Squads.LAST_CLUB);
 	}
 
 	@Test
@@ -45,7 +47,49 @@ public final class SquadsTest extends BaseTest {
 		Assert.assertEquals(7, Squads.getNationForTeam(7));
 	}
 
-	// testPlayersInClub()
+	@Test
+	public void testPlayersInClub() throws Exception {
+		OptionFile of = loadOriginalOF();
+
+		int club = 7;// MU
+		int team = club + Squads.FIRST_CLUB;
+
+		int teamSize = Squads.getTeamSize(team);
+		Assert.assertEquals(32, teamSize);
+
+		teamSize = Squads.countPlayers(of, team);
+		Assert.assertEquals(27, teamSize);
+
+		// GK
+		int slot = 0;
+		int p = Squads.getTeamPlayer(of, team, slot);
+		Assert.assertThat(p, Matchers.greaterThan(0));
+		String pName = Player.getName(of, p);
+		Assert.assertEquals("DE GEA", pName);
+		//
+		int no = Squads.getTeamSquadNum(of, team, slot);
+		Assert.assertEquals(1, no);
+
+		// CB
+		slot = 1;
+		p = Squads.getTeamPlayer(of, team, slot);
+		Assert.assertThat(p, Matchers.greaterThan(0));
+		pName = Player.getName(of, p);
+		Assert.assertEquals("CARRICK", pName);
+		//
+		no = Squads.getTeamSquadNum(of, team, slot);
+		Assert.assertEquals(16, no);
+
+		slot = 16;
+		p = Squads.getTeamPlayer(of, team, slot);
+		Assert.assertThat(p, Matchers.greaterThan(0));
+		pName = Player.getName(of, p);
+		Assert.assertEquals("RAFAEL", pName);
+		//
+		no = Squads.getTeamSquadNum(of, team, slot);
+		Assert.assertEquals(2, no);
+	}
+
 	// testPlayersInNationTeam()
 	// TODO: Other test-cases
 

@@ -91,16 +91,14 @@ public class SquadList extends JList/*<Player>*/ {
 	 * @see SquadNumberList#refresh(int)
 	 */
 	private void fetchPlayers(int team) {
-		int size, firstAdr, ft = team;
+		int size, ft = team;
+		int firstAdr = Squads.getOffset(team);
 		if (team < Squads.LAST_EDIT_NATION) {
 			size = Formations.NATION_TEAM_SIZE;
-			firstAdr = Squads.NATION_ADR + team * size * 2;
 		} else if (team == Squads.LAST_EDIT_NATION) {
 			size = Squads.LAST_EDIT_NATION_SIZE;
-			firstAdr = Squads.NATION_ADR + team * Formations.NATION_TEAM_SIZE * 2;
 		} else {
 			size = Formations.CLUB_TEAM_SIZE;
-			firstAdr = Squads.CLUB_ADR + (team - Squads.FIRST_CLUB) * size * 2;
 			ft -= Squads.EDIT_TEAM_COUNT;
 		}
 

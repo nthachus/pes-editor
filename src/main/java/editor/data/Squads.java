@@ -20,12 +20,12 @@ public final class Squads {
 	public static final int NATION_COUNT = 60;
 	public static final int CLASSIC_COUNT = 7;
 
-	public static final int NATION_NUM_ADR = OptionFile.blockAddress(5);
+	public static final int NATION_NUM_ADR = OptionFile.blockAddress(5);// TODO: private all _ADR fields
 	private static final int FIRST_CLUB_SLOT = (NATION_COUNT + CLASSIC_COUNT) * Formations.NATION_TEAM_SIZE
-			+ Player.TOTAL_EDIT;
+			+ Player.TOTAL_EDIT;// 7*23 + 32
 	private static final int TOTAL_SLOTS = FIRST_CLUB_SLOT + (Clubs.TOTAL + 1) * Formations.CLUB_TEAM_SIZE
-			+ Player.TOTAL_SHOP;
-	public static final int NATION_ADR = NATION_NUM_ADR + TOTAL_SLOTS + 97;
+			+ Player.TOTAL_SHOP;// (Clubs.TOTAL + 2) * 32
+	public static final int NATION_ADR = NATION_NUM_ADR + TOTAL_SLOTS + 97;// 56
 
 	public static final int CLUB_NUM_ADR = NATION_NUM_ADR + FIRST_CLUB_SLOT;
 	public static final int CLUB_ADR = NATION_ADR + FIRST_CLUB_SLOT * 2;
@@ -69,7 +69,8 @@ public final class Squads {
 	public static final int FIRST_EDIT_NATION = NATION_COUNT + CLASSIC_COUNT;
 	public static final int FIRST_CLUB = FIRST_EDIT_NATION + EDIT_TEAM_COUNT;
 
-	public static final int LAST_EDIT_NATION = FIRST_CLUB - 2;
+	public static final int EDIT_CLUB = FIRST_CLUB - 1;
+	public static final int LAST_EDIT_NATION = EDIT_CLUB - 1;
 	/**
 	 * Last editable national players slot (23 - 9).
 	 */
@@ -77,23 +78,155 @@ public final class Squads {
 			= (Player.TOTAL_EDIT - Formations.CLUB_TEAM_SIZE) % Formations.NATION_TEAM_SIZE;
 
 
-	private static int getTeamSize(int team) {
-		return (team < FIRST_EDIT_NATION) ? Formations.NATION_TEAM_SIZE : Formations.CLUB_TEAM_SIZE;
+	private static void ensureValidTeam(int team) {
+		if (team < 0 || team >= TOTAL) {
+			throw new IndexOutOfBoundsException("team#" + team);
+		}
 	}
 
-	private static int getOffset(int team) {
-		if (team < FIRST_EDIT_NATION) {
+	public static int getTeamSize(int team) {
+		return (team < EDIT_CLUB) ? Formations.NATION_TEAM_SIZE : Formations.CLUB_TEAM_SIZE;
+	}
+
+	public static int getOffset(int team) {
+		if (team < EDIT_CLUB) {
 			return NATION_ADR + team * Formations.NATION_TEAM_SIZE * 2;
 		}
 		return CLUB_ADR + (team - FIRST_CLUB) * Formations.CLUB_TEAM_SIZE * 2;
 	}
 
-	private static int getNumOffset(int team) {
-		if (team < FIRST_EDIT_NATION) {
+	public static int getNumOffset(int team) {
+		if (team < EDIT_CLUB) {
 			return NATION_NUM_ADR + team * Formations.NATION_TEAM_SIZE;
 		}
 		return CLUB_NUM_ADR + (team - FIRST_CLUB) * Formations.CLUB_TEAM_SIZE;
 	}
+
+	private static void ensureValidSlot(int team, int slot) {
+		ensureValidTeam(team);
+		if (slot < 0 || slot >= getTeamSize(team)) {
+			throw new IndexOutOfBoundsException("slot#" + slot);
+		}
+	}
+
+	public static int getTeamPlayer(OptionFile of, int team, int index) {
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		ensureValidSlot(team, index);
+
+		int adr = getOffset(team) + index * 2;
+		return Bits.toInt16(of.getData(), adr);
+	}
+
+	public static void setTeamPlayer(OptionFile of, int team, int index, int player) {
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		ensureValidSlot(team, index);
+
+		int adr = getOffset(team) + index * 2;
+		Bits.toBytes((short) player, of.getData(), adr);
+	}
+
+	public static int getTeamSquadNum(OptionFile of, int team, int index) {
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		ensureValidSlot(team, index);
+
+		int adr = getNumOffset(team) + index;
+		return Bits.toInt(of.getData()[adr]) + 1;// TODO: if squad-number > 0xFF -> return -1
+	}
+
+	public static void setTeamSquadNum(OptionFile of, int team, int index, int squadNumber) {
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		ensureValidSlot(team, index);
+
+		int adr = getNumOffset(team) + index;
+		of.getData()[adr] = Bits.toByte(squadNumber - 1);
+	}
+
+	public static int countPlayers(OptionFile of, int team) {
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		ensureValidTeam(team);
+
+		int count = 0;
+		for (int p = 0, size = getTeamSize(team); p < size; p++) {
+			int id = getTeamPlayer(of, team, p);
+			if (id > 0) {
+				count++;
+			}
+		}
+
+		log.debug("Counting result: {} players in team: {}", count, team);
+		return count;
+	}
+
+	public static int getNextNumber(OptionFile of, int team) {
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		ensureValidTeam(team);
+
+		int size = getTeamSize(team);
+		for (int i = 1; i <= 99; i++) {
+
+			boolean spare = true;
+			for (int p = 0; p < size; p++) {
+				int num = getTeamSquadNum(of, team, p);
+				if (num == i) {
+					spare = false;
+					break;
+				}
+			}
+
+			if (spare) {
+				log.debug("Found first unused number: {} in team: {}", i, team);
+				return i;
+			}
+		}
+
+		return 256;
+	}
+
+	public static boolean inNationTeam(OptionFile of, int playerId) {
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+
+		if (playerId > 0) {
+			for (int t = 0; t < FIRST_EDIT_NATION; t++) {
+				if (inTeam(of, t, playerId)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean inTeam(OptionFile of, int team, int playerId) {
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		ensureValidTeam(team);
+
+		if (playerId > 0) {
+			for (int p = 0, size = getTeamSize(team); p < size; p++) {
+				int id = getTeamPlayer(of, team, p);
+				if (id == playerId) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	//region From/To Classic Team
 
 	public static int getClassicNation(String nation) {
 		for (int i = 0; i < CLASSIC_COUNT; i++) {
@@ -127,24 +260,28 @@ public final class Squads {
 		return team;
 	}
 
+	//endregion
+
+	private static boolean isFixedTeam(int squad) {
+		return ((squad >= FIRST_EDIT_NATION && squad < FIRST_CLUB) || squad >= FIRST_CLUB + Clubs.TOTAL);
+	}
+
 	public static void fixFormation(OptionFile of, int squad, boolean fixJobs) {
 		if (null == of) {
 			throw new NullArgumentException("of");
 		}
-		if (squad < 0 || squad >= TOTAL) {
-			throw new IndexOutOfBoundsException("squad#" + squad);
-		}
+		ensureValidTeam(squad);
 		if (!fixJobs) {
 			log.debug("Try to fix formation for team: {}", squad);
 		}
 
-		if ((squad >= FIRST_EDIT_NATION && squad < FIRST_CLUB) || squad >= FIRST_CLUB + Clubs.TOTAL) {
+		if (isFixedTeam(squad)) {
 			return;
 		}
 
-		int team = squad;
+		int formationTeam = squad;
 		if (squad >= FIRST_CLUB) {
-			team -= EDIT_TEAM_COUNT;
+			formationTeam -= EDIT_TEAM_COUNT;
 		}
 
 		int size = getTeamSize(squad);
@@ -157,7 +294,7 @@ public final class Squads {
 		System.arraycopy(of.getData(), firstNumAdr, tempNum, 0, tempNum.length);
 
 		for (int p = 0; p < size; p++) {
-			int fSlot = Formations.getSlot(of, team, p);
+			int fSlot = Formations.getSlot(of, formationTeam, p);
 			System.arraycopy(temp, fSlot * 2, of.getData(), firstAdr + p * 2, 2);
 			System.arraycopy(tempNum, fSlot, of.getData(), firstNumAdr + p, 1);
 		}
@@ -165,8 +302,8 @@ public final class Squads {
 		if (fixJobs) {
 			for (int j = 0; j < Formations.JOBS_COUNT; j++) {
 				for (int i = 0; i < size; i++) {
-					if (Formations.getSlot(of, team, i) == Formations.getJob(of, team, j)) {
-						Formations.setJob(of, team, j, i);
+					if (Formations.getSlot(of, formationTeam, i) == Formations.getJob(of, formationTeam, j)) {
+						Formations.setJob(of, formationTeam, j, i);
 						break;
 					}
 				}
@@ -174,7 +311,7 @@ public final class Squads {
 		}
 
 		for (int i = 0; i < size; i++) {
-			Formations.setSlot(of, team, i, i);
+			Formations.setSlot(of, formationTeam, i, i);
 		}
 
 		if (!fixJobs) {
@@ -199,12 +336,10 @@ public final class Squads {
 		if (null == of) {
 			throw new NullArgumentException("of");
 		}
-		if (team < 0 || team >= TOTAL) {
-			throw new IndexOutOfBoundsException("team#" + team);
-		}
+		ensureValidTeam(team);
 		log.debug("Try to tidy team: {}", team);
 
-		if ((team >= FIRST_EDIT_NATION && team < FIRST_CLUB) || team >= FIRST_CLUB + Clubs.TOTAL) {
+		if (isFixedTeam(team)) {
 			return;
 		}
 
@@ -363,12 +498,10 @@ public final class Squads {
 		if (null == of) {
 			throw new NullArgumentException("of");
 		}
-		if (team < 0 || team >= TOTAL) {
-			throw new IndexOutOfBoundsException("team#" + team);
-		}
+		ensureValidTeam(team);
 		log.debug("Try to tidy 11 for team: {}, free-position: {}, selected-position: {}", team, freePos, selPos);
 
-		if ((team >= FIRST_EDIT_NATION && team < FIRST_CLUB) || team >= FIRST_CLUB + Clubs.TOTAL) {
+		if (isFixedTeam(team)) {
 			return;
 		}
 

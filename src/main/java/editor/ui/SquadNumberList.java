@@ -47,16 +47,14 @@ public class SquadNumberList extends JList/*<String>*/ {
 		}
 		log.info("Try to refresh Squad-number list for team: {}", team);
 
-		int size, firstAdr, ft = team;
+		int size, ft = team;
+		int firstAdr = Squads.getNumOffset(team);
 		if (team < Squads.LAST_EDIT_NATION) {
 			size = Formations.NATION_TEAM_SIZE;
-			firstAdr = Squads.NATION_NUM_ADR + team * size;
 		} else if (team == Squads.LAST_EDIT_NATION) {
 			size = Squads.LAST_EDIT_NATION_SIZE;
-			firstAdr = Squads.NATION_NUM_ADR + team * Formations.NATION_TEAM_SIZE;
 		} else {
 			size = Formations.CLUB_TEAM_SIZE;
-			firstAdr = Squads.CLUB_NUM_ADR + (team - Squads.FIRST_CLUB) * size;
 			ft -= Squads.EDIT_TEAM_COUNT;
 		}
 

@@ -1,7 +1,6 @@
 package editor.data;
 
 import editor.lang.NullArgumentException;
-import editor.util.Bits;
 import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -231,7 +230,7 @@ public class CsvMaker implements Serializable {
 		out.writeBytes(Stats.getString(of, player, Stats.NATIONALITY));
 
 		out.write(separator);
-		writeInterStatus(of, out, player);
+		writeInternationalStatus(of, out, player);
 
 		out.write(separator);
 		writeClassicStatus(of, out, player);
@@ -248,19 +247,17 @@ public class CsvMaker implements Serializable {
 		out.write(name.getBytes(Strings.UTF8));
 	}
 
-	private static void writeInterStatus(OptionFile of, DataOutput out, int player) throws IOException {
+	private static void writeInternationalStatus(OptionFile of, DataOutput out, int player) throws IOException {
 		int playerNationalNo = 0;
 
 		int nat = Stats.getValue(of, player, Stats.NATIONALITY);
 		if (nat < Squads.NATION_COUNT) {
 			for (int np = 0; np < Formations.NATION_TEAM_SIZE; np++) {
 
-				int ofs = Squads.NATION_ADR + (Formations.NATION_TEAM_SIZE * nat + np) * 2;
-				int p = Bits.toInt16(of.getData(), ofs);
+				int p = Squads.getTeamPlayer(of, nat, np);
 				if (p == player) {
 					// get squad number
-					ofs = Squads.NATION_NUM_ADR + Formations.NATION_TEAM_SIZE * nat + np;
-					playerNationalNo = Bits.toInt(of.getData()[ofs]) + 1;
+					playerNationalNo = Squads.getTeamSquadNum(of, nat, np);
 					break;
 				}
 			}
@@ -277,12 +274,10 @@ public class CsvMaker implements Serializable {
 		if (cNat > 0) {
 			for (int np = 0; np < Formations.NATION_TEAM_SIZE; np++) {
 
-				int ofs = Squads.NATION_ADR + (Formations.NATION_TEAM_SIZE * cNat + np) * 2;
-				int p = Bits.toInt16(of.getData(), ofs);
+				int p = Squads.getTeamPlayer(of, cNat, np);
 				if (p == player) {
 					// get squad number
-					ofs = Squads.NATION_NUM_ADR + Formations.NATION_TEAM_SIZE * cNat + np;
-					playerClassicNo = Bits.toInt(of.getData()[ofs]) + 1;
+					playerClassicNo = Squads.getTeamSquadNum(of, cNat, np);
 					break;
 				}
 			}
@@ -299,12 +294,10 @@ public class CsvMaker implements Serializable {
 		for (int c = 0; c < Clubs.TOTAL; c++) {
 			for (int np = 0; np < Formations.CLUB_TEAM_SIZE; np++) {
 
-				int ofs = Squads.CLUB_ADR + (Formations.CLUB_TEAM_SIZE * c + np) * 2;
-				int p = Bits.toInt16(of.getData(), ofs);
+				int p = Squads.getTeamPlayer(of, c + Squads.FIRST_CLUB, np);
 				if (p == player) {
 					// get squad number
-					ofs = Squads.CLUB_NUM_ADR + Formations.CLUB_TEAM_SIZE * c + np;
-					playerClubNo = Bits.toInt(of.getData()[ofs]) + 1;
+					playerClubNo = Squads.getTeamSquadNum(of, c + Squads.FIRST_CLUB, np);
 					club = clubNames[c];
 					break outerLoop;
 				}
