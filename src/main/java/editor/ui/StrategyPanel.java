@@ -6,6 +6,8 @@ import editor.data.OptionFile;
 import editor.data.Player;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +17,7 @@ import java.io.Serializable;
 
 public class StrategyPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 3335107620381551627L;
+	private static final Logger log = LoggerFactory.getLogger(StrategyPanel.class);
 
 	private static final int CB_OVERLAP = 6;
 
@@ -41,6 +44,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 		this.of = of;
 		list = squadList;
 
+		log.debug("Initialize Strategy panel with Squad list #{}", squadList.hashCode());
 		initComponents();
 	}
 
@@ -120,6 +124,8 @@ public class StrategyPanel extends JPanel implements ActionListener {
 
 		Formations.setStrategyAuto(of, squad, isAuto);
 		refresh(squad);
+
+		log.debug("Update succeeded on auto-strategy: {} for squad: {}", isAuto, squad);
 	}
 
 	private void overlapCB() {
@@ -127,6 +133,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 		if (null != item) {
 			Formations.setCBOverlap(of, squad, item.index);
 		}
+		log.debug("Update succeeded on CB-Overlap: {} for squad: {}", item, squad);
 	}
 
 	public void actionPerformed(ActionEvent evt) {
@@ -136,6 +143,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 		if (!isOk) {
 			return;
 		}
+		log.info("Perform Strategy action: '{}' for squad: {}", evt.getActionCommand(), squad);
 
 		if ("Auto".equalsIgnoreCase(evt.getActionCommand())) {
 			autoStrategy();
@@ -145,7 +153,6 @@ public class StrategyPanel extends JPanel implements ActionListener {
 
 			int btnId = Integer.parseInt(evt.getActionCommand());
 			int strategy = buttonBoxes[btnId].getSelectedIndex();
-			//log.debug("{}, {}", btnId, strategy);
 			Formations.setStrategy(of, squad, btnId, strategy);
 
 			if (strategy == CB_OVERLAP && Formations.getCBOverlap(of, squad) == 0) {
@@ -159,10 +166,13 @@ public class StrategyPanel extends JPanel implements ActionListener {
 			}
 
 			refresh(squad);
+			// DEBUG
+			log.debug("Updated succeeded on strategy: {} for squad: {}", strategy, squad);
 		}
 	}
 
 	public void refresh(int squad) {
+		log.info("Try to refresh Strategy for squad: {}", squad);
 		isOk = false;
 		this.squad = squad;
 
@@ -181,6 +191,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 		refreshOverlapBox(olCB);
 
 		isOk = true;
+		log.debug("Refresh completed on Strategy panel for squad: {}, CB-Overlap: {}", squad, olCB);
 	}
 
 	private void refreshAutoButton() {
@@ -205,6 +216,8 @@ public class StrategyPanel extends JPanel implements ActionListener {
 				labels[i].setIcon(new Ps2ButtonIcon(ControlButton.valueOf(i)));
 			}
 		}
+		// DEBUG
+		log.debug("Refresh completed on Auto button: {} for squad: {}", isAuto, squad);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -226,13 +239,11 @@ public class StrategyPanel extends JPanel implements ActionListener {
 				count++;
 			}
 		}
-		overlapBox.setSelectedIndex(sel);
 
-		if (olCB && overlapBox.getItemCount() > 0) {
-			overlapBox.setEnabled(true);
-		} else {
-			overlapBox.setEnabled(false);
-		}
+		overlapBox.setSelectedIndex(sel);
+		overlapBox.setEnabled(olCB && overlapBox.getItemCount() > 0);
+
+		log.debug("Reload completed {} items on Overlap dropdown with CB-Overlap: {}", count, olCB);
 	}
 
 	private static class SweepItem implements Serializable {

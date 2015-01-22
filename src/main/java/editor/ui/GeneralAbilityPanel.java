@@ -211,7 +211,7 @@ public class GeneralAbilityPanel extends JPanel {
 	}
 
 	public void load(int player) {
-		log.debug("Try to load general abilities for player: {}", player);
+		log.info("Try to load general abilities for player: {}", player);
 
 		nationBox.setSelectedItem(Stats.getString(of, player, Stats.NATIONALITY));
 		ageField.setText(Stats.getString(of, player, Stats.AGE));

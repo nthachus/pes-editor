@@ -42,7 +42,7 @@ public class PlayerDialog extends JDialog implements ActionListener {
 		this.of = of;
 		playerImportDia = pid;
 
-		log.debug("Initialize Player dialog with Player import dialog #{}", pid.hashCode());
+		log.debug("Initialize Player dialog with Import dialog #{}", pid.hashCode());
 		initComponents();
 	}
 
@@ -90,7 +90,7 @@ public class PlayerDialog extends JDialog implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Try to perform action: {} on Player #{}", evt.getActionCommand(), index);
+		log.info("Try to perform action: {} on Player #{}", evt.getActionCommand(), index);
 
 		if ("Accept".equalsIgnoreCase(evt.getActionCommand())) {
 			if (isFormValid()) {
@@ -107,9 +107,9 @@ public class PlayerDialog extends JDialog implements ActionListener {
 		if (null == player) {
 			throw new NullArgumentException("player");
 		}
-		// DEBUG
-		log.debug("Try to show dialog for Player: [{}] {}", player.getIndex(), player);
 		index = player.getIndex();
+		// DEBUG
+		log.info("Try to show dialog for Player: [{}] {}", player.getIndex(), player);
 
 		String tit = String.format("[%d] %s", index, player.getName());
 		tit = Resources.getMessage("title.format", Resources.getMessage("player.title"), tit);

@@ -87,7 +87,7 @@ public class Ability99Panel extends JPanel implements ActionListener, ChangeList
 	}
 
 	public void load(int player) {
-		log.debug("Try to load all abilities for player: {}", player);
+		log.info("Try to load all abilities for player: {}", player);
 
 		for (int i = 0; i < fields.length; i++) {
 			initValues[i] = Stats.getString(of, player, Stats.ABILITY99[i]);
@@ -104,7 +104,7 @@ public class Ability99Panel extends JPanel implements ActionListener, ChangeList
 		if (!(evt.getSource() instanceof JTextComponent)) {
 			throw new IllegalArgumentException("evt");
 		}
-		log.debug("Try to update ability field: {}", evt.getActionCommand());
+		log.info("Try to update ability field: {}", evt.getActionCommand());
 
 		JTextComponent tf = (JTextComponent) evt.getSource();
 		int f = Integer.parseInt(evt.getActionCommand());

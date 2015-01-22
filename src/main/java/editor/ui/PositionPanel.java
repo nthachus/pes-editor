@@ -82,7 +82,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 	}
 
 	public void load(int player) {
-		log.debug("Try to load role for player: {}", player);
+		log.info("Try to load role for player: {}", player);
 
 		regRole = Stats.getValue(of, player, Stats.REG_POS);
 		regRole = Stats.regPosToRole(regRole);
@@ -119,7 +119,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Perform position action: {} from: {}", evt.getActionCommand(), Strings.valueOf(evt.getSource()));
+		log.info("Perform position action: {} from: {}", evt.getActionCommand(), Strings.valueOf(evt.getSource()));
 
 		if (evt.getSource() == regBox) {
 			registerRole(evt);

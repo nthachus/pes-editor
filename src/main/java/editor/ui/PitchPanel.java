@@ -70,10 +70,13 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 		this.atkDefPan = adp;
 		this.altBox = altBox;
 		this.numList = numList;
-		// DEBUG
+
 		log.debug("Initialize Pitch panel for alt: {}, squad-number: {}",
 				altBox.getSelectedItem(), numList.getSelectedValue());
+		initComponents();
+	}
 
+	private void initComponents() {
 		setOpaque(true);
 		setPreferredSize(new Dimension(329 + ADJ * 2, 200 + ADJ * 2));
 		setBackground(Color.BLACK);

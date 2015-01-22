@@ -32,7 +32,7 @@ public class GlobalPanel extends JPanel implements ActionListener {
 		this.of = of;
 		transferPan = tp;
 
-		log.debug("Global panel is initializing..");
+		log.debug("Initialize Global panel with Transfer panel #{}", tp.hashCode());
 		initComponents();
 	}
 
@@ -76,6 +76,7 @@ public class GlobalPanel extends JPanel implements ActionListener {
 			names.add(Resources.getMessage(st.getName()).toUpperCase());
 		}
 
+		log.debug("All {} Stats was retrieved", names.size());
 		return names.toArray(new String[names.size()]);
 	}
 
@@ -152,7 +153,8 @@ public class GlobalPanel extends JPanel implements ActionListener {
 			return;
 		}
 		// DEBUG
-		log.debug("Try to adjust for Stat: {}", statBox.getSelectedItem());
+		log.info("Try to adjust Stat: {} for team: {} (excluded: {})",
+				statBox.getSelectedItem(), teamBox.getSelectedItem(), isExcluded.isSelected());
 
 		int min = 1, max = Stats.MAX_STAT99;
 		Stat st = getStat(statIndex);
@@ -215,9 +217,12 @@ public class GlobalPanel extends JPanel implements ActionListener {
 	 * Stat number value -or- zero on error.
 	 */
 	private int getNum(int min, int max) {
+		String txt = numField.getText();
+		log.debug("Try to parse & validate number '{}'", txt);
+
 		int v;
 		try {
-			v = Integer.parseInt(numField.getText());
+			v = Integer.parseInt(txt);
 			if (v < min || v > max) {
 				v = 0;
 			}
@@ -228,6 +233,9 @@ public class GlobalPanel extends JPanel implements ActionListener {
 	}
 
 	private void setStat(int statIndex, int player, int opId, int num, int min, int max) {
+		log.debug("Update stat {} for player #{} with OP {}, value: {} ({} - {})",
+				statIndex, player, opId, num, min, max);
+
 		int v = 0;
 		if (opId != 2) {
 			v = getStat(statIndex, player);
@@ -277,6 +285,8 @@ public class GlobalPanel extends JPanel implements ActionListener {
 			v = Stats.getValue(of, player, st);
 			v += st.minValue();
 		}
+
+		log.debug("Retrieved value: {} for Stat {} of player #{}", v, statIndex, player);
 		return v;
 	}
 
@@ -321,7 +331,7 @@ public class GlobalPanel extends JPanel implements ActionListener {
 		if (null == teams) {
 			throw new NullArgumentException("teams");
 		}
-		log.debug("Try to update Team box with {} teams", teams.length);
+		log.info("Try to update Team box with {} teams", teams.length);
 
 		String[] clubs = new String[teams.length + 1];
 		clubs[0] = Resources.getMessage("None");

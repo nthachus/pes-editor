@@ -6,6 +6,8 @@ import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import editor.util.Strings;
 import editor.util.UIUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -20,6 +22,7 @@ import java.util.Arrays;
 
 public class TeamPanel extends JPanel implements ActionListener, ListSelectionListener, MouseListener {
 	private static final long serialVersionUID = -7358055199745460533L;
+	private static final Logger log = LoggerFactory.getLogger(TeamPanel.class);
 
 	private final OptionFile of;
 	private final OptionFile of2;
@@ -37,7 +40,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 	public TeamPanel(
 			OptionFile of, OptionFile of2,
-			TransferPanel tran, EmblemChooserDialog fc,
+			TransferPanel tp, EmblemChooserDialog fc,
 			LogoPanel imgPan, GlobalPanel gp, KitImportDialog kid, LogoChooserDialog lc) {
 		super(new BorderLayout());
 
@@ -49,13 +52,14 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		}
 		this.of = of;
 		this.of2 = of2;
-		transferPan = tran;
+		transferPan = tp;
 		flagChooser = fc;
 		logoChooser = lc;
 		logoPan = imgPan;
 		kitImportDia = kid;
 		globalPan = gp;
 
+		log.debug("Initialize Team panel with Transfer panel #{} ...", tp.hashCode());
 		initComponents();
 	}
 
@@ -206,6 +210,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
+		log.info("Perform Team action: {} on {}", evt.getActionCommand(), Strings.valueOf(evt.getSource()));
 
 		if ("BackFlag".equalsIgnoreCase(evt.getActionCommand())) {
 			selectBackFlag();

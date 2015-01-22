@@ -49,7 +49,7 @@ public class SpecialAbilityPanel extends JPanel {
 	}
 
 	public void load(int player) {
-		log.debug("Try to load special abilities for player {}", player);
+		log.info("Try to load special abilities for player {}", player);
 
 		for (int i = 0; i < abilityCheck.length; i++) {
 			int v = Stats.getValue(of, player, Stats.ABILITY_SPECIAL[i]);

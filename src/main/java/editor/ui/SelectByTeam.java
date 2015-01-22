@@ -96,7 +96,7 @@ public class SelectByTeam extends JPanel implements ActionListener {
 
 	public void refreshForTeam() {
 		int teamId = teamBox.getSelectedIndex();
-		log.info("Try to refresh for selected team: {}", teamId);
+		log.info("Try to refresh for selected team: {}, normal-mode: {}", teamId, isNormal);
 
 		if (teamId >= 0) {
 			squadList.refresh(teamId, true);
@@ -128,6 +128,7 @@ public class SelectByTeam extends JPanel implements ActionListener {
 			squads[squads.length - 1] = Resources.getMessage("All Players");
 		}
 
+		log.debug("All {} teams was retrieved for normal-mode: {}", squads.length, isNormal);
 		return squads;
 	}
 

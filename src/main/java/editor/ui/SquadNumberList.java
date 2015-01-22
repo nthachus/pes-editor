@@ -6,12 +6,15 @@ import editor.data.OptionFile;
 import editor.data.Squads;
 import editor.lang.NullArgumentException;
 import editor.util.Bits;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class SquadNumberList extends JList/*<String>*/ {
 	private static final long serialVersionUID = -3655153993225424165L;
+	private static final Logger log = LoggerFactory.getLogger(SquadNumberList.class);
 
 	private final OptionFile of;
 
@@ -22,6 +25,11 @@ public class SquadNumberList extends JList/*<String>*/ {
 		}
 		this.of = of;
 
+		log.debug("Squad-number list is initializing..");
+		initComponents();
+	}
+
+	private void initComponents() {
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setLayoutOrientation(JList.VERTICAL);
 		setVisibleRowCount(1);
@@ -37,6 +45,7 @@ public class SquadNumberList extends JList/*<String>*/ {
 		if (team < 0 || team >= Squads.TOTAL) {
 			throw new IndexOutOfBoundsException("team#" + team);
 		}
+		log.info("Try to refresh Squad-number list for team: {}", team);
 
 		int size, firstAdr, ft = team;
 		if (team < Squads.LAST_EDIT_NATION) {
@@ -75,6 +84,7 @@ public class SquadNumberList extends JList/*<String>*/ {
 			}
 		}
 
+		log.debug("Squad-number list was built with {} items, for team {} (formation-team: {})", size, team, ft);
 		return numList;
 	}
 

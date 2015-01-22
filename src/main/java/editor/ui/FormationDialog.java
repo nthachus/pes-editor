@@ -62,7 +62,7 @@ public class FormationDialog extends JDialog implements ActionListener, WindowLi
 	}
 
 	public void show(int team, String title) {
-		log.debug("Show Formation dialog for team: {}", team);
+		log.info("Show Formation dialog '{}' for team: {}", title, team);
 
 		int adr = Formations.getOffset(team);
 		squadIndex = team;
@@ -78,7 +78,7 @@ public class FormationDialog extends JDialog implements ActionListener, WindowLi
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Perform Formation dialog action: {}", evt.getActionCommand());
+		log.info("Perform Formation dialog action: {}", evt.getActionCommand());
 
 		if ("Cancel".equalsIgnoreCase(evt.getActionCommand())) {
 			restoreData();
@@ -93,7 +93,7 @@ public class FormationDialog extends JDialog implements ActionListener, WindowLi
 	}
 
 	public void windowClosing(WindowEvent e) {
-		log.debug("Formation dialog is closing..");
+		log.info("Restore data for squad: {} while closing", squadIndex);
 		restoreData();
 	}
 
