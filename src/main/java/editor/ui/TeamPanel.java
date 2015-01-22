@@ -210,45 +210,45 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.info("Perform Team action: {} on {}", evt.getActionCommand(), Strings.valueOf(evt.getSource()));
-
-		if ("BackFlag".equalsIgnoreCase(evt.getActionCommand())) {
-			selectBackFlag();
-		} else if ("Color1".equalsIgnoreCase(evt.getActionCommand())) {
-			selectBgColor(1);
-		} else if ("Color2".equalsIgnoreCase(evt.getActionCommand())) {
-			selectBgColor(2);
-		} else if ("CopyColor".equalsIgnoreCase(evt.getActionCommand())) {
-			copyToBackColor2();
-		} else if ("SwapColor".equalsIgnoreCase(evt.getActionCommand())) {
-			swapBackColors();
-		} else if (evt.getSource() == stadiumBox) {
-			stadiumChanged(evt);
-		} else {
-			clubNameChanged(evt);
-		}
-	}
-
-	private void selectBackFlag() {
 		int team = teamList.getSelectedIndex();
 		if (team < 0) {
 			return;
 		}
+		log.info("Perform action: {} for team: {}, on: {}",
+				evt.getActionCommand(), team, Strings.valueOf(evt.getSource()));
 
+		if ("BackFlag".equalsIgnoreCase(evt.getActionCommand())) {
+			selectBackFlag(team);
+		} else if ("Color1".equalsIgnoreCase(evt.getActionCommand())) {
+			selectBgColor(team, 1);
+		} else if ("Color2".equalsIgnoreCase(evt.getActionCommand())) {
+			selectBgColor(team, 2);
+		} else if ("CopyColor".equalsIgnoreCase(evt.getActionCommand())) {
+			copyToBackColor2(team);
+		} else if ("SwapColor".equalsIgnoreCase(evt.getActionCommand())) {
+			swapBackColors(team);
+		} else if (evt.getSource() == stadiumBox) {
+			stadiumChanged(team, evt);
+		} else {
+			if (!(evt.getSource() instanceof JTextComponent)) {
+				throw new IllegalArgumentException("evt");
+			}
+			clubNameChanged(team, (JTextComponent) evt.getSource());
+		}
+	}
+
+	private void selectBackFlag(int team) {
 		int flagId = backChooser.getBackFlag(getEmblemImage(team),
 				Clubs.getRed(of, team), Clubs.getGreen(of, team), Clubs.getBlue(of, team));
 		if (flagId >= 0) {
 			Clubs.setBackFlag(of, team, flagId);
 			backButton.setIcon(backChooser.getFlagButton(flagId).getIcon());
 		}
+		// DEBUG
+		log.debug("Select completed BackFlag {} for team {}", flagId, team);
 	}
 
-	private void selectBgColor(int colorNo) {
-		int team = teamList.getSelectedIndex();
-		if (team < 0) {
-			return;
-		}
-
+	private void selectBgColor(int team, int colorNo) {
 		boolean isSecond = (colorNo == 2);
 		Color newColor = JColorChooser.showDialog(null,
 				Resources.getMessage("teamPane.choiceBg", colorNo), Clubs.getColor(of, team, isSecond));
@@ -265,24 +265,14 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		}
 	}
 
-	private void copyToBackColor2() {
-		int team = teamList.getSelectedIndex();
-		if (team < 0) {
-			return;
-		}
-
+	private void copyToBackColor2(int team) {
 		Clubs.setColor(of, team, true, Clubs.getColor(of, team, false));
 		color2Btn.setBackground(color1Btn.getBackground());
 
 		updateBackButton(team);
 	}
 
-	private void swapBackColors() {
-		int team = teamList.getSelectedIndex();
-		if (team < 0) {
-			return;
-		}
-
+	private void swapBackColors(int team) {
 		Color c = Clubs.getColor(of, team, false);
 		Clubs.setColor(of, team, false, Clubs.getColor(of, team, true));
 		Clubs.setColor(of, team, true, c);
@@ -293,19 +283,21 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		updateBackButton(team);
 	}
 
-	private void stadiumChanged(ActionEvent evt) {
+	private void stadiumChanged(int team, ActionEvent evt) {
 		if (!"y".equalsIgnoreCase(evt.getActionCommand())) {
 			return;
 		}
 
 		int stadiumId = stadiumBox.getSelectedIndex();
-		int team = teamList.getSelectedIndex();
-		if (stadiumId >= 0 && team >= 0) {
+		if (stadiumId >= 0) {
 			Clubs.setStadium(of, team, stadiumId);
+
+			log.debug("Updating of team {} with stadium {} succeeded", team, stadiumId);
 		}
 	}
 
 	public void refresh() {
+		log.info("Team panel is refreshing..");
 		isOk = false;
 
 		stadiumBox.setActionCommand("n");
@@ -339,22 +331,14 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 		stadiumBox.setActionCommand("y");
 		isOk = true;
+		// DEBUG
+		log.debug("Refresh completed for {} Teams on panel", list.length);
 	}
 
 	/**
 	 * On club name / abbreviation name changed.
 	 */
-	private void clubNameChanged(ActionEvent evt) {
-		int team = teamList.getSelectedIndex();
-		if (team < 0) {
-			return;
-		}
-
-		if (!(evt.getSource() instanceof JTextComponent)) {
-			throw new IllegalArgumentException("evt");
-		}
-		JTextComponent tf = (JTextComponent) evt.getSource();
-
+	private void clubNameChanged(int team, JTextComponent tf) {
 		String name = tf.getText();
 		boolean updated = false;
 		if (null != name) {
@@ -383,6 +367,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				tf.requestFocusInWindow();
 				tf.selectAll();
 			}
+			// DEBUG
+			log.debug("Change succeeded on club {} name/abbr name to '{}'", team, name);
 		}
 	}
 
@@ -398,6 +384,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		}
 
 		int team = teamList.getSelectedIndex();
+		// DEBUG
+		log.info("On team {} was selected", team);
 		if (team < 0 || team >= teams.length) {
 			nameField.setText(Strings.EMPTY);
 			abvEditor.setText(Strings.EMPTY);
@@ -468,6 +456,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 		int mBtn = e.getButton();
 		int clicks = e.getClickCount();
+		// DEBUG
+		log.info("On team/emblem list clicked, mouse: {}, clicks: {}", mBtn, clicks);
 		if (e.getSource() == teamList && mBtn == MouseEvent.BUTTON1 && clicks > 1) {
 
 			if (of2.isLoaded()) {
@@ -519,6 +509,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		ImageIcon icon = backChooser.getBackFlag(getEmblemImage(team), flag,
 				Clubs.getRed(of, team), Clubs.getGreen(of, team), Clubs.getBlue(of, team));
 		backButton.setIcon(icon);
+		// DEBUG
+		log.debug("Update succeeded on BackFlag button for team {}, flag: {}", team, flag);
 	}
 
 	private Image getEmblemImage(int team) {

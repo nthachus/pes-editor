@@ -399,7 +399,7 @@ public class OptionFile implements Serializable {
 
 	private static final int[][] BLOCKS = {
 			{12, 4852},
-			{5144, 2296},
+			{5144, 2296},    // Shop + WEN
 			{7608, 4472},    // Stadiums + Leagues
 			{12092, 22816},  // Editable Players
 			{34920, 613800}, // Players + Boots

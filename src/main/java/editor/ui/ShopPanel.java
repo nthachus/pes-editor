@@ -19,7 +19,7 @@ public class ShopPanel extends JPanel implements ActionListener {
 	private static final Logger log = LoggerFactory.getLogger(ShopPanel.class);
 
 	private static final int PLAYER_COUNT = Player.TOTAL_SHOP;
-	private static final int START_ADR = 5144;
+	private static final int START_ADR = OptionFile.blockAddress(1);
 
 	private final OptionFile of;
 	private/* final*/ JLabel status;
