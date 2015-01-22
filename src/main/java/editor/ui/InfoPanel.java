@@ -72,7 +72,8 @@ public class InfoPanel extends JScrollPane {
 	 * @param index2 Player 2 ID
 	 */
 	public void refresh(int index1, int index2) {
-		log.debug("Refresh Info panel with index1: {}, index2: {}", index1, index2);
+		log.info("Refresh Info panel with players: {} <-> {}", index1, index2);
+
 		ta.setText(Strings.EMPTY);
 		if (index1 <= 0 && index2 <= 0) {
 			return;
@@ -112,7 +113,7 @@ public class InfoPanel extends JScrollPane {
 				insertSquads(index1);
 			}
 
-			log.debug("Refresh info succeeded for player: {} - {}", index1, index2);
+			log.debug("Refresh info succeeded for player: {} <-> {}", index1, index2);
 		} catch (BadLocationException e) {
 			log.warn(String.format("Failed to refresh info for player: %d - %d", index1, index2), e);
 		}

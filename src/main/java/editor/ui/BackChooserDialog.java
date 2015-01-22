@@ -3,6 +3,7 @@ package editor.ui;
 import editor.lang.NullArgumentException;
 import editor.util.Images;
 import editor.util.Resources;
+import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,6 +88,7 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public int getBackFlag(Image image, byte[] red, byte[] green, byte[] blue) {
+		log.info("Try to choice Background Flag for image: {}", Strings.valueOf(image));
 		slot = -1;
 
 		refresh(image, red, green, blue);
@@ -100,13 +102,14 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
+		log.info("Perform BackFlag chooser action: {}", evt.getActionCommand());
 
 		slot = Integer.parseInt(evt.getActionCommand());
 		setVisible(false);
 	}
 
 	private void refresh(Image image, byte[] red, byte[] green, byte[] blue) {
-		log.debug("Try to refresh dialog with image: {}", image);
+		log.info("Try to refresh dialog with image: {}", Strings.valueOf(image));
 
 		ImageIcon flag;
 		for (int i = 0; i < flagButtons.length; i++) {
@@ -137,7 +140,7 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 			throw new IndexOutOfBoundsException("bgIndex#" + bgIndex);
 		}
 		if (null != image) {
-			log.debug("Try to build Background Flag with image: {}", image);
+			log.info("Try to build Background Flag with image: {}", Strings.valueOf(image));
 		}
 
 		IndexColorModel colorModel = new IndexColorModel(BITS_DEPTH, Images.paletteSize(BITS_DEPTH), red, green, blue);

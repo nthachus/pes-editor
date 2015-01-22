@@ -78,7 +78,7 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Perform emblem import action: {}", evt.getActionCommand());
+		log.info("Perform emblem-import action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans;
@@ -104,7 +104,7 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 	 * @see EmblemChooserDialog#refresh()
 	 */
 	public void refresh() {
-		log.debug("Try to refresh emblem import dialog for type: {}", type);
+		log.info("Try to refresh emblem import dialog for type: {}", type);
 
 		Image icon;
 		if (type == null || type == EmblemType.lowRes) {
@@ -139,6 +139,8 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 	}
 
 	public int getEmblem(String title, EmblemType type) {
+		log.info("Try to import '{}' for type: {}", title, type);
+
 		this.type = type;
 		slot = -1;
 
@@ -152,12 +154,12 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 	}
 
 	public void import128(OptionFile of, int slot, int replacement) {
-		log.debug("Try to import Emblem128 from OF2: {} -> {}", replacement, slot);
+		log.info("Try to import Emblem-128 from OF2: {} -> {}", replacement, slot);
 		Emblems.importData128(of2, replacement, of, slot);
 	}
 
 	public void import16(OptionFile of, int slot, int replacement) {
-		log.debug("Try to import Emblem16 from OF2: {} -> {}", replacement, slot);
+		log.info("Try to import Emblem-16 from OF2: {} -> {}", replacement, slot);
 		Emblems.importData16(of2, replacement, of, slot);
 	}
 

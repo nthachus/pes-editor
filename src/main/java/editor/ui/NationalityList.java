@@ -23,9 +23,12 @@ public class NationalityList extends JList/*<Player>*/ {
 			throw new NullArgumentException("of");
 		}
 		this.of = of;
-		// DEBUG
-		log.debug("Nationality list is initializing..");
 
+		log.debug("Nationality list is initializing..");
+		initComponents();
+	}
+
+	private void initComponents() {
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setLayoutOrientation(JList.VERTICAL);
 		setVisibleRowCount(Formations.CLUB_TEAM_SIZE);
@@ -33,13 +36,13 @@ public class NationalityList extends JList/*<Player>*/ {
 
 	@SuppressWarnings("unchecked")
 	public void refresh(int nation, boolean alphaOrder) {
+		log.info("Reload Nationality list #{} for country: {}, sort: {}", hashCode(), nation, alphaOrder);
+
 		int extraCount = SelectByNation.getExtraNations().length;
 		int total = Stats.NATION.length + extraCount;
 		if (nation < 0 || nation >= total) {
 			throw new IndexOutOfBoundsException("nation#" + nation);
 		}
-		// DEBUG
-		log.debug("Reload Nationality list #{} for country: {}, sort: {}", hashCode(), nation, alphaOrder);
 
 		Player[] model;
 		if (nation < Stats.NATION.length) {

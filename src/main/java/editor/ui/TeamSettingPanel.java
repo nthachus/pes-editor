@@ -89,9 +89,10 @@ public class TeamSettingPanel extends JPanel implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Perform action {} on Team Setting panel", evt.getActionCommand());
 
 		if (isOk) {
+			log.info("Perform team-setting action: {}", evt.getActionCommand());
+
 			int i = Integer.parseInt(evt.getActionCommand());
 			Formations.setTeamSetting(of, squad, alt, i, boxes[i].getSelectedIndex());
 		}
@@ -102,7 +103,7 @@ public class TeamSettingPanel extends JPanel implements ActionListener {
 	}
 
 	public void refresh(int squad) {
-		log.debug("Refresh Team Setting panel for alt: {}, squad: {}", alt, squad);
+		log.info("Refresh Team Setting panel for alt: {}, squad: {}", alt, squad);
 
 		isOk = false;
 		this.squad = squad;

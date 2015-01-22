@@ -119,7 +119,7 @@ public class ImportPanel extends JPanel implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Try to perform Import action: {}", evt.getActionCommand());
+		log.info("Try to perform Import action: {} for OF2: {}", evt.getActionCommand(), of2.getFilename());
 
 		if ("Options".equalsIgnoreCase(evt.getActionCommand())) {
 			importOptions();
@@ -228,7 +228,7 @@ public class ImportPanel extends JPanel implements ActionListener {
 	}
 
 	public void refresh() {
-		log.debug("Try to refresh Import panel for OF2: {}", of2.isLoaded());
+		log.info("Try to refresh Import panel for OF2: {}", of2.isLoaded());
 
 		if (!of2.isLoaded()) {
 			contentPane.setVisible(false);
@@ -248,7 +248,7 @@ public class ImportPanel extends JPanel implements ActionListener {
 	}
 
 	public void disableAll() {
-		log.debug("Try to disable all buttons in Import panel..");
+		log.info("Try to disable all buttons in Import panel..");
 
 		optionsButton.setEnabled(false);
 		stadiumButton.setEnabled(false);

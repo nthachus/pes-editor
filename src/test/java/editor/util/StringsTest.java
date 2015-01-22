@@ -1,6 +1,7 @@
 package editor.util;
 
 import editor.lang.NullArgumentException;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,6 +12,7 @@ import java.util.Locale;
 public final class StringsTest {
 	private volatile Locale defLocale;
 
+	// @BeforeClass setUpClass()
 	@Before
 	public void setUp() throws Exception {
 		defLocale = Locale.getDefault();
@@ -143,6 +145,21 @@ public final class StringsTest {
 		String existsMsg = "Current:  -10";
 		msg = Resources.getMessage("wen.label", -10);
 		Assert.assertEquals(existsMsg, msg);
+	}
+
+	@Test
+	public void testFallbackMessage() throws Exception {
+		Locale.setDefault(new Locale("vi"));
+		Resources.getMessages(true);
+
+		String val = "Tốc độ";
+		String msg = Resources.getMessage("Speed");
+		Assert.assertEquals(val, msg);
+
+		val = "Slide Tackle";
+		msg = Resources.getMessage("Sliding.tip");
+		Assert.assertThat(msg, Matchers.not(Matchers.isEmptyOrNullString()));
+		Assert.assertEquals(val, msg);
 	}
 
 }

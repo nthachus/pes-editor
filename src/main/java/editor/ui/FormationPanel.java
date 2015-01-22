@@ -184,8 +184,7 @@ public class FormationPanel extends JPanel
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Perform Formation action '{}' for: {}",
-				evt.getActionCommand(), Strings.valueOf(evt.getSource()));
+		log.info("Perform Formation action '{}' on: {}", evt.getActionCommand(), Strings.valueOf(evt.getSource()));
 
 		if (evt.getSource() == altBox) {
 			altChanged(evt);
@@ -347,7 +346,7 @@ public class FormationPanel extends JPanel
 	}
 
 	public void refresh(int team) {
-		log.debug("Try to refresh Formation panel for team: {}", team);
+		log.info("Try to refresh Formation panel for team: {}", team);
 
 		isOk = false;
 		this.team = team;
@@ -400,7 +399,7 @@ public class FormationPanel extends JPanel
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("On the squad list selection changed, from-pitch: {}, ok: {}", isFromPitch, isOk);
+		log.info("On the squad list selection changed, from-pitch: {}, ok: {}", isFromPitch, isOk);
 
 		if (isFromPitch) {
 			isFromPitch = false;

@@ -64,10 +64,10 @@ public class WenPanel extends JPanel implements ActionListener {
 		current.setToolTipText((wen != wen2) ? Long.toString(wen) : null);
 		field.setText(Strings.EMPTY);
 
-		log.debug("WEN panel is refreshed with: {} / {}", wen2, wen);
+		log.info("WEN panel is refreshed with: {} / {}", wen2, wen);
 	}
 
-	public void setWen(int newWen) {
+	private void setWen(int newWen) {
 		log.debug("Try to set PES: {}", newWen);
 
 		if (newWen >= 0 && newWen <= MAX_WEN) {
@@ -86,7 +86,7 @@ public class WenPanel extends JPanel implements ActionListener {
 
 	public void actionPerformed(ActionEvent evt) {
 		String text = field.getText();
-		log.debug("Try to perform WEN updating: {}", text);
+		log.info("Try to perform WEN updating: {}", text);
 
 		int newWen;
 		try {

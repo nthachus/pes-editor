@@ -40,7 +40,7 @@ public class LogoPanel extends JPanel implements ActionListener {
 		this.of = of;
 		logoImportDia = lid;
 
-		log.debug("Logo panel is initializing..");
+		log.debug("Initialize Logo panel with import dialog: {}", Strings.valueOf(lid));
 		initComponents();
 
 		refresh();
@@ -96,7 +96,7 @@ public class LogoPanel extends JPanel implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Try to perform panel action: {}", evt.getActionCommand());
+		log.info("Try to perform logo action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans;
@@ -217,7 +217,8 @@ public class LogoPanel extends JPanel implements ActionListener {
 	}
 
 	public void refresh() {
-		log.debug("Try to refresh all logos with transparency: {}", isTrans);
+		log.info("Refresh all Panel logos with transparency: {}", isTrans);
+
 		for (int l = 0; l < logoButtons.length; l++) {
 			refresh(l);
 		}

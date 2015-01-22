@@ -4,6 +4,7 @@ import editor.data.Logos;
 import editor.data.OptionFile;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
+import editor.util.Strings;
 import editor.util.UIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,7 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Perform Logo chooser action: {}", evt.getActionCommand());
+		log.info("Perform Logo chooser action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans;
@@ -87,7 +88,7 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public void refresh() {
-		log.debug("Try to reload all Logos with transparency: {}", isTrans);
+		log.info("Try to reload all Logos with transparency: {}", isTrans);
 
 		Image logo;
 		for (int f = 0; f < logoButtons.length; f++) {
@@ -97,6 +98,7 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public int getLogo(String title, Image image) {
+		log.info("Try to choice '{}' for image: {}", title, Strings.valueOf(image));
 		slot = -1;
 
 		setTitle(title);

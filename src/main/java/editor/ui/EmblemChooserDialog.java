@@ -73,7 +73,7 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Try to perform action: {}", evt.getActionCommand());
+		log.info("Perform emblem-chooser action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans;
@@ -92,7 +92,7 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public void refresh() {
-		log.debug("Try to refresh emblem chooser dialog for type: {}", type);
+		log.info("Try to refresh emblem chooser dialog for type: {}", type);
 
 		Image icon;
 		if (type == null || type == EmblemType.lowRes) {
@@ -127,6 +127,8 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public int getEmblem(String title, EmblemType type) {
+		log.info("Try to choice '{}' for type: {}", title, type);
+
 		this.type = type;
 		slot = -1;
 

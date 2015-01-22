@@ -18,7 +18,7 @@ public final class Resources {
 
 	public static ResourceBundle getMessages(boolean reload) {
 		if (null == messages || reload) {
-			messages = ResourceBundle.getBundle("META-INF/i18n/messages");
+			messages = ResourceBundle.getBundle("META-INF/i18n/messages", Locale.getDefault());
 			if (null == messages) {
 				throw new IllegalStateException("messages must not be null.");
 			}

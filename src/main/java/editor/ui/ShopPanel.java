@@ -63,7 +63,7 @@ public class ShopPanel extends JPanel implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Try to perform action: {}", evt.getActionCommand());
+		log.info("Try to perform shop action: {}", evt.getActionCommand());
 
 		if ("Lock".equalsIgnoreCase(evt.getActionCommand())) {
 			lockAll();
@@ -73,7 +73,7 @@ public class ShopPanel extends JPanel implements ActionListener {
 	}
 
 	public void refresh() {
-		log.debug("Shop panel is refreshing..");
+		log.info("Try to refresh Shop panel for OF: {}", of.getFilename());
 
 		if (!of.isLoaded()) {
 			status.setText(Strings.EMPTY);

@@ -56,7 +56,7 @@ public class LeaguePanel extends JPanel implements ActionListener, ListSelection
 
 	@SuppressWarnings("unchecked")
 	public void refresh() {
-		log.debug("Try to reload all leagues to List");
+		log.info("Try to reload all leagues list");
 
 		String[] model = Leagues.get(of);
 		list.setListData(model);
@@ -66,7 +66,7 @@ public class LeaguePanel extends JPanel implements ActionListener, ListSelection
 		int id = list.getSelectedIndex();
 		String text = editor.getText();
 		// DEBUG
-		log.debug("Perform update league at {} to: {}", id, text);
+		log.info("Perform update league at {} to: '{}'", id, text);
 
 		if (id >= 0 && null != text && text.length() <= Leagues.NAME_LEN * 2 / 3) {
 			if (!text.equals(Leagues.get(of, id))) {

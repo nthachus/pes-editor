@@ -87,6 +87,7 @@ public class SelectByTeam extends JPanel implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
+		log.info("Perform team-select action: {}", evt.getActionCommand());
 
 		if ("y".equalsIgnoreCase(evt.getActionCommand())) {
 			refreshForTeam();
@@ -95,7 +96,7 @@ public class SelectByTeam extends JPanel implements ActionListener {
 
 	public void refreshForTeam() {
 		int teamId = teamBox.getSelectedIndex();
-		log.debug("Try to refresh for selected team: {}", teamId);
+		log.info("Try to refresh for selected team: {}", teamId);
 
 		if (teamId >= 0) {
 			squadList.refresh(teamId, true);
@@ -132,7 +133,7 @@ public class SelectByTeam extends JPanel implements ActionListener {
 
 	@SuppressWarnings("unchecked")
 	public void refresh() {
-		log.debug("Reload By Team dropdown #{}", hashCode());
+		log.info("Try to reload By Team dropdown #{}", hashCode());
 		teamBox.setActionCommand("n");
 
 		String[] squads = getAllTeams();

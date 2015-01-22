@@ -37,7 +37,12 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 		this.job = job;
 
 		log.debug("Initialize Job list '{}' at {}, color: {}", job, offset, colour);
+		initComponents(colour);
 
+		refresh(-1);
+	}
+
+	private void initComponents(Color colour) {
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setLayoutOrientation(JList.VERTICAL);
 		setVisibleRowCount(Formations.CLUB_TEAM_SIZE);
@@ -47,8 +52,6 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 		//setFont(new Font(UIUtil.DIALOG, Font.BOLD, 12));
 
 		addListSelectionListener(this);
-
-		refresh(-1);
 	}
 
 	/*public int getTeam() {
@@ -57,7 +60,7 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 
 	@SuppressWarnings("unchecked")
 	public void refresh(int team) {
-		log.debug("Try to refresh Job list '{}' for team: {}", job, team);
+		log.info("Try to refresh Job list '{}' for team: {}", job, team);
 
 		isOk = false;
 		this.team = team;
@@ -88,9 +91,11 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 		if (evt.getValueIsAdjusting()) {
 			return;
 		}
-		log.debug("Try to change Job list '{}' for team: {}, ok: {}", job, team, isOk);
 
 		if (!isSelectionEmpty() && isOk) {
+			// DEBUG
+			log.debug("Change Job list '{}' at {} for team: {}", job, offset, team);
+
 			Formations.setJob(of, team, offset, getSelectedIndex());
 			refresh(team);
 		}

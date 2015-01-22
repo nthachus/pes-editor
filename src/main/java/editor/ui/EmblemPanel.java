@@ -51,7 +51,8 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		flagImportDia = fid;
 		teamPanel = tp;
 
-		log.debug("Emblem panel is initializing..");
+		log.debug("Initialize Emblem panel with Import dialog: {}, Team panel: {}",
+				Strings.valueOf(fid), Strings.valueOf(tp));
 		initComponents();
 
 		refresh();
@@ -242,7 +243,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Try to perform panel action: {}", evt.getActionCommand());
+		log.info("Try to perform emblem action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans;
@@ -380,7 +381,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 	}
 
 	public void refresh() {
-		log.debug("Try to refresh Emblem panel with transparency: {}", isTrans);
+		log.info("Try to refresh Emblem panel with transparency: {}", isTrans);
 
 		int n16 = Emblems.count16(of);
 		int n128 = Emblems.count128(of);
@@ -429,8 +430,6 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 
 		AbstractButton btn = (AbstractButton) e.getSource();
 		int slot = Integer.parseInt(btn.getActionCommand());
-		// DEBUG
-		//log.debug("Try to zoom emblem: {}", slot);
 
 		Image icon;
 		if (slot >= Emblems.count16(of)) {
@@ -445,8 +444,6 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 
 	public void mouseExited(MouseEvent e) {
 		largeFlag.setIcon(new ImageIcon(Emblems.BLANK16));
-		// DEBUG
-		//log.debug("Clearing zoomed emblem succeeded");
 	}
 
 	public void mouseClicked(MouseEvent e) {

@@ -64,7 +64,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 	}
 
 	public int show(int teamId) {
-		log.debug("Show Kit Import dialog for team: {}", teamId);
+		log.info("Show Kit Import dialog for team: {}", teamId);
 		index = -1;
 
 		refresh(teamId);
@@ -76,7 +76,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 
 	@SuppressWarnings("unchecked")
 	public void refresh(int teamId) {
-		log.debug("Try to refresh importable Kit teams for team: {}", teamId);
+		log.info("Refresh importable Kit teams for team: {}", teamId);
 
 		List<KitItem> model = new ArrayList<KitItem>(Clubs.TOTAL);
 		if (teamId < Clubs.TOTAL) {
@@ -141,7 +141,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 		if (clicks > 1) {
 			KitItem item = (KitItem) list.getSelectedValue();
 			// DEBUG
-			log.debug("Perform double-click on Kit team: {}", item);
+			log.info("Perform double-click on Kit team: {}", item);
 			if (null != item) {
 				index = item.teamId;
 				setVisible(false);

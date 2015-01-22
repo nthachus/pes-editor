@@ -27,6 +27,11 @@ public class SquadList extends JList/*<Player>*/ {
 
 		//refresh(team);
 
+		log.debug("Initialize Squad list with fixed-size: {}", setSize);
+		initComponents(setSize);
+	}
+
+	private void initComponents(boolean setSize) {
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setLayoutOrientation(JList.VERTICAL);
 		setVisibleRowCount(Formations.CLUB_TEAM_SIZE);
@@ -45,7 +50,7 @@ public class SquadList extends JList/*<Player>*/ {
 		if (team < 0 || team > Squads.TOTAL) {
 			throw new IndexOutOfBoundsException("team#" + team);
 		}
-		log.debug("Try to reload Squad list #{} for team: {}, normal-mode: {}", hashCode(), team, isNormal);
+		log.info("Try to reload Squad list #{} for team: {}, normal-mode: {}", hashCode(), team, isNormal);
 
 		if (!isNormal
 				&& team >= Squads.FIRST_EDIT_NATION) {

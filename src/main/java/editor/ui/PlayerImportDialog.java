@@ -89,14 +89,14 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 	}
 
 	public void show(int playerId) {
-		log.debug("Show Import dialog for player: {}", playerId);
+		log.info("Show Import dialog for player: {}", playerId);
 
 		this.index = playerId;
 		setVisible(true);
 	}
 
 	public void refresh() {
-		log.debug("Refresh import players list from OF2: {}", of2.getFilename());
+		log.info("Refresh import players list from OF2: {}", of2.getFilename());
 
 		playerList.refresh();
 		fileLabel.setText(Resources.getMessage("import.label", of2.getFilename()));
@@ -111,8 +111,7 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 		if (e.getValueIsAdjusting()) {
 			return;
 		}
-		// DEBUG
-		log.debug("On players list selected: {} -> {}", e.getFirstIndex(), e.getLastIndex());
+		log.info("On players list selected: {} -> {}", e.getFirstIndex(), e.getLastIndex());
 
 		if (!playerList.getSquadList().isSelectionEmpty()) {
 			Player p = (Player) playerList.getSquadList().getSelectedValue();
@@ -147,7 +146,7 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 		JList list = (JList) e.getSource();
 		Player p = (Player) list.getSelectedValue();
 		// DEBUG
-		log.debug("Try to import player '{}' after double-clicked", p);
+		log.info("Try to import player '{}' after double-clicked", p);
 
 		int pid = (null == p) ? 0 : p.getIndex();
 		if (pid > 0) {

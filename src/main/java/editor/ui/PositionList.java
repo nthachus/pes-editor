@@ -31,6 +31,10 @@ public class PositionList extends JList/*<String>*/ {
 		log.debug("Initialize Position list with in-transfer: {}", inTransfer);
 		//refresh(team);
 
+		initComponents();
+	}
+
+	private void initComponents() {
 		setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		setLayoutOrientation(JList.VERTICAL);
 		setVisibleRowCount(posNum.length);
@@ -52,7 +56,7 @@ public class PositionList extends JList/*<String>*/ {
 
 	@SuppressWarnings("unchecked")
 	public void refresh(int team) {
-		log.debug("Try to refresh Position list for team: {}, in-transfer: {}", team, inTransfer);
+		log.info("Refresh Position list for team: {}, in-transfer: {}", team, inTransfer);
 
 		String[] posList = new String[posNum.length];
 		java.util.Arrays.fill(posList, " ");
@@ -83,7 +87,7 @@ public class PositionList extends JList/*<String>*/ {
 		if (null == squadList) {
 			throw new NullArgumentException("squadList");
 		}
-		log.debug("Try to select position at index: {}", listIndex);
+		log.info("Try to select position at index: {}", listIndex);
 
 		clearSelection();
 		if (listIndex < 0 || listIndex >= Formations.PLAYER_COUNT) {

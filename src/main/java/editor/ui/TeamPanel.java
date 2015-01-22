@@ -18,8 +18,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
 
-public class TeamPanel extends JPanel
-		implements ActionListener, ListSelectionListener, MouseListener {
+public class TeamPanel extends JPanel implements ActionListener, ListSelectionListener, MouseListener {
 	private static final long serialVersionUID = -7358055199745460533L;
 
 	private final OptionFile of;

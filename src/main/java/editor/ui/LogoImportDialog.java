@@ -95,7 +95,7 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 	}
 
 	public void refresh() {
-		log.debug("Try to refresh dialog with OF2: {}", of2.getFilename());
+		log.info("Refresh logo import dialog with OF2: {}", of2.getFilename());
 
 		reloadLogos();
 
@@ -106,7 +106,7 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 	}
 
 	public void show(int slot, String title) {
-		log.debug("Show Logo dialog to import to {}", slot);
+		log.info("Show Logo dialog to import to {}", slot);
 
 		setTitle(title);
 		this.slot = slot;
@@ -118,7 +118,7 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Perform Logo import action: {}", evt.getActionCommand());
+		log.info("Perform import action: {} for logo: {}", evt.getActionCommand(), slot);
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
 			isTrans = !isTrans; // toggle transparency

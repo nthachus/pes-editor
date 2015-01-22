@@ -150,7 +150,7 @@ public class TransferPanel extends JPanel
 	//endregion
 
 	public void actionPerformed(ActionEvent evt) {
-		log.debug("Try to perform Transfer action: {}", (null == evt) ? null : evt.getActionCommand());
+		log.info("Try to perform Transfer action: {}", (null == evt) ? null : evt.getActionCommand());
 
 		//if ("Compare".equalsIgnoreCase(evt.getActionCommand()))
 		compareStats();
@@ -191,7 +191,7 @@ public class TransferPanel extends JPanel
 	}
 
 	public void refresh() {
-		log.debug("Transfer panel is refreshing..");
+		log.info("Try to refresh Transfer panel..");
 
 		freeList.refresh();
 		selectorL.refresh();
@@ -213,7 +213,7 @@ public class TransferPanel extends JPanel
 	}
 
 	public void refreshLists() {
-		log.debug("Transfer lists are refreshing..");
+		log.info("Try to refresh lists in Transfer panel..");
 
 		freeList.refreshForNation();
 		selectorL.refreshForTeam();
@@ -287,10 +287,10 @@ public class TransferPanel extends JPanel
 	}
 
 	private void showFormationDialog(int team) {
-		log.debug("Try to show Formation dialog for team: {}", team);
 		if (!isValidSquadTeam(team)) {
 			return;
 		}
+		log.info("Try to show Formation dialog for team: {}", team);
 
 		int tt = team;
 		if (tt >= Squads.FIRST_CLUB) {

@@ -31,6 +31,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 
 		log.debug("Initialize By Nation dropdown #{}", hashCode());
 		initComponents();
+
 		//refresh();
 	}
 
@@ -72,6 +73,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 		ArrayList<String> list = new ArrayList<String>(Arrays.asList(Stats.NATION));
 		list.addAll(Arrays.asList(arr));
 
+		log.debug("All {} nations was fetched", list.size());
 		return list.toArray(new String[list.size()]);
 	}
 
@@ -79,7 +81,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.debug("Try to perform action: {}", evt.getActionCommand());
+		log.info("Perform nation-select action: {}", evt.getActionCommand());
 
 		if ("Sort".equalsIgnoreCase(evt.getActionCommand())) {
 			sortList();
@@ -89,6 +91,8 @@ public class SelectByNation extends JPanel implements ActionListener {
 	}
 
 	private void sortList() {
+		log.info("Try to sort nation-select with alpha-order: {}", isAlphaOrder);
+
 		if (isAlphaOrder) {
 			sortButton.setText(Resources.getMessage("nation.sortIndex"));
 			isAlphaOrder = false;
@@ -106,7 +110,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 			freeList.refresh(i, isAlphaOrder);
 		}
 
-		log.debug("Select completed By Nation {}", i);
+		log.debug("Select/refresh completed By Nation {}", i);
 	}
 
 	public NationalityList getFreeList() {
@@ -118,7 +122,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 	}
 
 	public void refresh() {
-		log.debug("Reload By Nation dropdown #{}", hashCode());
+		log.info("Try to reload By Nation dropdown #{}", hashCode());
 
 		nationBox.setActionCommand("n");
 		nationBox.setSelectedIndex(nationBox.getItemCount() - 1);
