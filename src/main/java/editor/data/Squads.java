@@ -20,15 +20,16 @@ public final class Squads {
 	public static final int NATION_COUNT = 60;
 	public static final int CLASSIC_COUNT = 7;
 
-	public static final int NATION_NUM_ADR = OptionFile.blockAddress(5);// TODO: private all _ADR fields
+	private static final int NATION_NUM_ADR = OptionFile.blockAddress(5);
 	private static final int FIRST_CLUB_SLOT = (NATION_COUNT + CLASSIC_COUNT) * Formations.NATION_TEAM_SIZE
 			+ Player.TOTAL_EDIT;// 7*23 + 32
-	private static final int TOTAL_SLOTS = FIRST_CLUB_SLOT + (Clubs.TOTAL + 1) * Formations.CLUB_TEAM_SIZE
-			+ Player.TOTAL_SHOP;// (Clubs.TOTAL + 2) * 32
-	public static final int NATION_ADR = NATION_NUM_ADR + TOTAL_SLOTS + 97;// 56
+	public static final int CLUB_COUNT = Clubs.TOTAL + 2;
+	private static final int TOTAL_SLOTS = FIRST_CLUB_SLOT + CLUB_COUNT * Formations.CLUB_TEAM_SIZE
+			+ Player.TOTAL_SHOP;
+	public static final int NATION_ADR = NATION_NUM_ADR + TOTAL_SLOTS + 65;
 
-	public static final int CLUB_NUM_ADR = NATION_NUM_ADR + FIRST_CLUB_SLOT;
-	public static final int CLUB_ADR = NATION_ADR + FIRST_CLUB_SLOT * 2;
+	private static final int CLUB_NUM_ADR = NATION_NUM_ADR + FIRST_CLUB_SLOT;
+	private static final int CLUB_ADR = NATION_ADR + FIRST_CLUB_SLOT * 2;
 	public static final int END_ADR = NATION_ADR + TOTAL_SLOTS * 2;
 
 	public static final int EDIT_TEAM_COUNT
@@ -102,6 +103,35 @@ public final class Squads {
 		return CLUB_NUM_ADR + (team - FIRST_CLUB) * Formations.CLUB_TEAM_SIZE;
 	}
 
+	public static int getNumberAdr(int slotAdr) {
+		return NATION_NUM_ADR + (slotAdr - NATION_ADR) / 2;
+	}
+
+	public static int getTeamFromAdr(int slotAdr) {
+		if (slotAdr < CLUB_ADR) {
+			if (slotAdr >= CLUB_ADR - 2 * Formations.CLUB_TEAM_SIZE) {
+				return FIRST_CLUB - 1;
+			}
+			return (slotAdr - NATION_ADR) / (2 * Formations.NATION_TEAM_SIZE);
+		}
+		return (slotAdr - CLUB_ADR) / (2 * Formations.CLUB_TEAM_SIZE) + FIRST_CLUB;
+	}
+
+	public static boolean isFreeAgent(OptionFile of, int player) {
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (player > 0) {
+			int endAdr = CLUB_ADR + Clubs.TOTAL * Formations.CLUB_TEAM_SIZE * 2;
+			for (int adr = CLUB_ADR; adr < endAdr; adr += 2) {
+				if (Bits.toInt16(of.getData(), adr) == player) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	private static void ensureValidSlot(int team, int slot) {
 		ensureValidTeam(team);
 		if (slot < 0 || slot >= getTeamSize(team)) {
@@ -146,7 +176,7 @@ public final class Squads {
 		ensureValidSlot(team, index);
 
 		int adr = getNumOffset(team) + index;
-		of.getData()[adr] = Bits.toByte(squadNumber - 1);
+		of.getData()[adr] = (squadNumber < 0) ? -1 : Bits.toByte(squadNumber - 1);
 	}
 
 	public static int countPlayers(OptionFile of, int team) {

@@ -2,7 +2,6 @@ package editor.ui;
 
 import editor.data.*;
 import editor.lang.NullArgumentException;
-import editor.util.Bits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,29 +91,19 @@ public class NationalityList extends JList/*<Player>*/ {
 	private Player[] getFreeAgents() {
 		List<Player> model = new ArrayList<Player>((Player.FIRST_CLASSIC + Player.FIRST_ML - Player.FIRST_CLUB) / 2);
 		for (int p = 1; p < Player.FIRST_CLASSIC; p++) {
-			if (isFreeAgent(p)) {
+			if (Squads.isFreeAgent(of, p)) {
 				model.add(new Player(of, p));
 			}
 		}
 
 		for (int p = Player.FIRST_CLUB; p < Player.FIRST_ML; p++) {
-			if (isFreeAgent(p)) {
+			if (Squads.isFreeAgent(of, p)) {
 				model.add(new Player(of, p));
 			}
 		}
 		// DEBUG
 		log.debug("{} Free Agents was found", model.size());
 		return model.toArray(new Player[model.size()]);
-	}
-
-	private boolean isFreeAgent(int player) {
-		int endAdr = Squads.CLUB_ADR + Clubs.TOTAL * Formations.CLUB_TEAM_SIZE * 2;
-		for (int adr = Squads.CLUB_ADR; adr < endAdr; adr += 2) {
-			if (Bits.toInt16(of.getData(), adr) == player) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	private Player[] getAllPlayers() {

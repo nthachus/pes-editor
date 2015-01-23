@@ -286,21 +286,11 @@ public class InfoPanel extends JScrollPane {
 		while (adr < Squads.END_ADR) {
 			int id = Bits.toInt16(of.getData(), adr);
 			if (id > 0 && id == index1) {
+
 				//log.debug("adr: {}", adr);
-
-				int team;
-				if (adr < Squads.CLUB_ADR) {
-					if (adr >= Squads.CLUB_ADR - 2 * Formations.CLUB_TEAM_SIZE) {
-						team = Squads.FIRST_CLUB - 1;
-					} else {
-						team = (adr - Squads.NATION_ADR) / (2 * Formations.NATION_TEAM_SIZE);
-					}
-				} else {
-					team = (adr - Squads.CLUB_ADR) / (2 * Formations.CLUB_TEAM_SIZE) + Squads.FIRST_CLUB;
-				}
+				int team = Squads.getTeamFromAdr(adr);
 				//log.debug("team: {}", team);
-
-				if (team < teams.getSize()) {
+				if (team >= 0 && team < teams.getSize()) {
 					doc.insertString(doc.getLength(), "\n" + teams.getElementAt(team), attr);
 				}
 			}

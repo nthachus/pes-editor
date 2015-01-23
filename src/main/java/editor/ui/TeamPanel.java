@@ -253,6 +253,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		Color newColor = JColorChooser.showDialog(null,
 				Resources.getMessage("teamPane.choiceBg", colorNo), Clubs.getColor(of, team, isSecond));
 
+		log.debug("Selected BG {} color: {}", colorNo, newColor);
 		if (newColor != null) {
 			Clubs.setColor(of, team, isSecond, newColor);
 			if (isSecond) {
@@ -341,6 +342,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 	private void clubNameChanged(int team, JTextComponent tf) {
 		String name = tf.getText();
 		boolean updated = false;
+		// DEBUG
+		log.debug("Try to change club {} name/abbr name to '{}'", team, name);
 		if (null != name) {
 			if (tf == nameField) {
 				if (name.length() <= Clubs.NAME_LEN * 2 / 3) {
@@ -423,6 +426,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 			nameField.setText(teams[team]);
 			abvEditor.setText(Clubs.getAbbrName(of, team));
+
+			log.debug("Show up team [{}] {}", team, teams[team]);
 		}
 	}
 
@@ -490,6 +495,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		if (flag < 0) {
 			return;
 		}
+		log.debug("Try to update team {} emblem: {}", team, flag);
 
 		Image icon;
 		if (flag < Emblems.TOTAL128) {
@@ -524,7 +530,6 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 
 	private void importTeamKit(int teamSource, int teamDest) {
 		deleteEmblem(teamDest);
-
 		deleteLogos(teamDest);
 
 		if (teamDest < Clubs.TOTAL) {
@@ -540,7 +545,9 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		}
 		logoPan.refresh();
 		transferPan.refresh();
+
 		refresh();
+		log.debug("Import completed for team Kit: {} -> {}", teamSource, teamDest);
 	}
 
 	private void deleteEmblem(int team) {
@@ -548,6 +555,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			int deleteId = Clubs.getEmblem(of, team) - Clubs.FIRST_EMBLEM;
 			if (deleteId >= 0 && deleteId < Emblems.TOTAL128 + Emblems.TOTAL16) {
 				Emblems.deleteImage(of, deleteId);
+
+				log.debug("Emblem {} was deleted for team {}", deleteId, team);
 			}
 		}
 	}
@@ -559,6 +568,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		for (int l = 0; l < usedLogos.length; l++) {
 			if (logoDelete[l] && usedLogos[l] >= 0 && usedLogos[l] < Logos.TOTAL) {
 				Logos.delete(of, usedLogos[l]);
+
+				log.debug("Logo {} was deleted for team {}", usedLogos[l], team);
 			}
 		}
 	}
@@ -572,6 +583,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				usedLogos[l] = -1;
 			}
 		}
+		// DEBUG
+		log.debug("Team {} used Logos: {}", team, usedLogos);
 		return usedLogos;
 	}
 
@@ -603,6 +616,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 			}
 		}
 
+		log.debug("Team {} has deletable Logos: {}", team, logoDelete);
 		return logoDelete;
 	}
 
@@ -643,6 +657,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		if (embValid) {
 			Clubs.setEmblem(of, clubDest, embIndex);
 		}
+		// DEBUG
+		log.debug("Import data completed from Club: {} -> {}", clubSource, clubDest);
 	}
 
 	private void importLogos(int teamSource, int teamDest) {
@@ -680,6 +696,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				}
 			}
 		}
+		// DEBUG
+		log.debug("Import logos completed from team: {} -> {}", teamSource, teamDest);
 	}
 
 }

@@ -222,10 +222,6 @@ public class TransferPanel extends JPanel
 		clearForm();
 	}
 
-	private static int getNumberAdr(int adr) {
-		return Squads.NATION_NUM_ADR + (adr - Squads.NATION_ADR) / 2;
-	}
-
 	private int getNumberAdr(EventSource source, int index) {
 		SelectByTeam selector = (source == EventSource.squadLeft) ? selectorL : selectorR;
 		if (index < 0 || index >= selector.getSquadList().getModel().getSize()) {
@@ -233,7 +229,7 @@ public class TransferPanel extends JPanel
 		}
 
 		Player p = (Player) selector.getSquadList().getModel().getElementAt(index);
-		return getNumberAdr(p.getSlotAdr());
+		return Squads.getNumberAdr(p.getSlotAdr());
 	}
 
 	private String getShirtNumber(EventSource source, int index) {
@@ -349,41 +345,39 @@ public class TransferPanel extends JPanel
 	private int clubRelease(int player, boolean release) {
 		int result = -1;
 
-		int slotsSize = Formations.CLUB_TEAM_SIZE * 2;
-		int endAdr = Squads.CLUB_ADR + Clubs.TOTAL * slotsSize;
-		for (int adr = Squads.CLUB_ADR; adr < endAdr; adr += 2) {
+		for (int c = 0; c < Clubs.TOTAL; c++) {
+			for (int sp = 0; sp < Formations.CLUB_TEAM_SIZE; sp++) {
 
-			int index = Bits.toInt16(of.getData(), adr);
-			if (index != player) {
-				continue;
-			}
+				int squadId = c + Squads.FIRST_CLUB;
+				int index = Squads.getTeamPlayer(of, squadId, sp);
+				if (index != player) {
+					continue;
+				}
 
-			int squadId = (adr - Squads.CLUB_ADR) / slotsSize + Squads.FIRST_CLUB;
-			int sp = (adr - Squads.CLUB_ADR) % slotsSize;
-			if (result < 0) {
-				if (!release || sp < Formations.PLAYER_COUNT * 2) {
-					result = squadId;
-					if (release) {
-						releasedIndex = sp / 2;
+				if (result < 0) {
+					if (!release || sp < Formations.PLAYER_COUNT) {
+						result = squadId;
+						if (release) {
+							releasedIndex = sp;
+						}
 					}
 				}
-			}
 
-			if (release) {
-				Bits.toBytes((short) 0, of.getData(), adr);
-				int numAdr = getNumberAdr(adr);
-				of.getData()[numAdr] = -1;
+				if (release) {
+					Squads.setTeamPlayer(of, squadId, sp, 0);
+					Squads.setTeamSquadNum(of, squadId, sp, -1);
 
-				if (sp >= Formations.PLAYER_COUNT * 2) {
-					Squads.tidy(of, squadId);
-				} else if (autoGaps.isSelected()) {
+					if (sp >= Formations.PLAYER_COUNT) {
+						Squads.tidy(of, squadId);
+					} else if (autoGaps.isSelected()) {
 
-					int t = squadId;
-					if (t >= Squads.FIRST_CLUB) {
-						t -= Squads.EDIT_TEAM_COUNT;
+						int t = squadId;
+						if (t >= Squads.FIRST_CLUB) {
+							t -= Squads.EDIT_TEAM_COUNT;
+						}
+						int pos = Formations.getPosition(of, t, 0, sp);
+						Squads.tidy11(of, squadId, sp, pos);
 					}
-					int pos = Formations.getPosition(of, t, 0, sp / 2);
-					Squads.tidy11(of, squadId, sp / 2, pos);
 				}
 			}
 		}
@@ -830,7 +824,7 @@ public class TransferPanel extends JPanel
 		}
 
 		Bits.toBytes((short) player, of.getData(), p.getSlotAdr());
-		int numAdr = getNumberAdr(p.getSlotAdr());
+		int numAdr = Squads.getNumberAdr(p.getSlotAdr());
 		if (of.getData()[numAdr] == -1) {
 			of.getData()[numAdr] = Bits.toByte(Squads.getNextNumber(of, teamId) - 1);
 		}
@@ -872,7 +866,7 @@ public class TransferPanel extends JPanel
 		}
 
 		Bits.toBytes((short) pId, of.getData(), pD.getSlotAdr());
-		int numAdr = getNumberAdr(pD.getSlotAdr());
+		int numAdr = Squads.getNumberAdr(pD.getSlotAdr());
 		if (of.getData()[numAdr] == -1) {
 			of.getData()[numAdr] = Bits.toByte(Squads.getNextNumber(of, teamD) - 1);
 		}
@@ -903,8 +897,8 @@ public class TransferPanel extends JPanel
 		Bits.toBytes((short) pidS, of.getData(), adrT);
 
 		if (sourceTeam == targetTeam) {
-			int numAdrS = getNumberAdr(adrS);
-			int numAdrT = getNumberAdr(adrT);
+			int numAdrS = Squads.getNumberAdr(adrS);
+			int numAdrT = Squads.getNumberAdr(adrT);
 
 			byte num = of.getData()[numAdrT];
 			of.getData()[numAdrT] = of.getData()[numAdrS];
@@ -939,7 +933,7 @@ public class TransferPanel extends JPanel
 	private void transferRelease(SelectByTeam selector, Player player, int sourceIndex) {
 		int adr = player.getSlotAdr();
 		Bits.toBytes((short) 0, of.getData(), adr);
-		int numAdr = getNumberAdr(adr);
+		int numAdr = Squads.getNumberAdr(adr);
 		of.getData()[numAdr] = -1;
 
 		if (sourceIndex >= Formations.PLAYER_COUNT) {
