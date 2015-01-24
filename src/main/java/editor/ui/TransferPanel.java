@@ -407,6 +407,8 @@ public class TransferPanel extends JPanel
 
 		JList targetList = (JList) evt.getDropTargetContext().getComponent();
 		int idx = targetList.locationToIndex(evt.getLocation());
+		// DEBUG
+		log.info("Drag over Players list at: {}", idx);
 
 		Player p;
 		if (idx < 0) {
@@ -449,6 +451,9 @@ public class TransferPanel extends JPanel
 		JList targetList = (JList) evt.getDropTargetContext().getComponent();
 		Player sourcePlayer = (Player) sourceList.getModel().getElementAt(sourceIndex);
 		int playerS = sourcePlayer.getIndex();
+		// DEBUG
+		log.info("Drop Player [{}] {} from source index {} -> to target List at: {}",
+				playerS, sourcePlayer, sourceIndex, targetList.getSelectedIndex());
 
 		Player targetPlayer;
 		if (targetList.getSelectedIndex() < 0) {
@@ -500,6 +505,9 @@ public class TransferPanel extends JPanel
 		}
 
 		evt.getDropTargetContext().dropComplete(true);
+		// DEBUG
+		log.debug("Drop completed Player from source index: {} -> to player [{}] {}",
+				sourceIndex, playerT, targetPlayer);
 	}
 
 	public void dropActionChanged(DropTargetDragEvent evt) {
@@ -523,6 +531,8 @@ public class TransferPanel extends JPanel
 		if (p.getIndex() <= 0) {
 			return;
 		}
+		// DEBUG
+		log.info("Recognized drag Player: [{}] {} from source index: {}", p.getIndex(), p, sourceIndex);
 
 		removeListListeners();
 
@@ -550,12 +560,16 @@ public class TransferPanel extends JPanel
 
 		PlayerTransferable tPlayer = new PlayerTransferable(p);
 		evt.getDragSource().startDrag(evt, null, tPlayer, this);
+		// DEBUG
+		log.debug("Start drag Player: [{}] {} from source index: {}", p.getIndex(), p, sourceIndex);
 	}
 
 	public void dragDropEnd(DragSourceDropEvent evt) {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
+		// DEBUG
+		log.info("Drag/drop end success: {}", evt.getDropSuccess());
 
 		if (!evt.getDropSuccess()) {
 			refreshLists();
@@ -648,6 +662,12 @@ public class TransferPanel extends JPanel
 			AtomicBoolean transferFL, AtomicBoolean transferFR,
 			AtomicBoolean transferLR, AtomicBoolean transferRL,
 			AtomicBoolean releaseL, AtomicBoolean releaseR) {
+		// DEBUG
+		log.debug("Detect safety transfer; indexF: {}, fEmpty: {}, indexL: {}, lEmpty: {}, indexR: {}, rEmpty: {},"
+						+ " squadL: {}, squadR: {}, transferFL: {}, transferFR: {}, transferLR: {}, transferRL: {},"
+						+ " releaseL: {}, releaseR: {}",
+				indexF, fEmpty, indexL, lEmpty, indexR, rEmpty, squadL, squadR,
+				transferFL, transferFR, transferLR, transferRL, releaseL, releaseR);
 
 		if ((indexF >= Player.FIRST_YOUNG && indexF < Player.FIRST_UNUSED)
 				|| (indexF >= Player.FIRST_ML && indexF < Player.FIRST_SHOP)) {
@@ -679,6 +699,10 @@ public class TransferPanel extends JPanel
 	}
 
 	private void detectSafeTransferFree(int squad, int freePlayer, AtomicBoolean freeTransfer) {
+		// DEBUG
+		log.debug("Detect safety transfer from free; squad: {}, freePlayer: {}, freeTransfer: {}",
+				squad, freePlayer, freeTransfer);
+
 		if (freeTransfer.get() && squad >= Squads.FIRST_CLUB && squad <= Squads.TOTAL) {
 			int s = clubRelease(freePlayer, false);
 			if (autoRelease.isSelected()) {
@@ -697,6 +721,10 @@ public class TransferPanel extends JPanel
 	private void detectSafeTransferSide(
 			int squadFrom, int indexFree, int squadTo, int indexTo,
 			AtomicBoolean transferFree, AtomicBoolean transferTo, AtomicBoolean transferFrom, AtomicBoolean release) {
+		// DEBUG
+		log.debug("Detect safety transfer from side; squadFrom: {}, indexFree: {}, squadTo: {}, indexTo: {},"
+						+ " transferFree: {}, transferTo: {}, transferFrom: {}, release: {}",
+				squadFrom, indexFree, squadTo, indexTo, transferFree, transferTo, transferFrom, release);
 
 		if ((squadFrom >= Squads.NATION_COUNT && squadFrom < Squads.FIRST_CLUB) || squadFrom >= Squads.TOTAL - 3) {
 			transferFree.set(false);
@@ -743,6 +771,10 @@ public class TransferPanel extends JPanel
 	private void detectSafeTransferNation(
 			int squad, boolean fEmpty, int indexF, AtomicBoolean transferF,
 			boolean sideEmpty, int indexSide, AtomicBoolean transferSide) {
+		// DEBUG
+		log.debug("Detect safety transfer from nation; squad: {}, fEmpty: {}, indexF: {}, transferF: {},"
+						+ " sideEmpty: {}, indexSide: {}, transferSide: {}",
+				squad, fEmpty, indexF, transferF, sideEmpty, indexSide, transferSide);
 
 		if (squad >= Squads.FIRST_EDIT_NATION) {
 			return;
@@ -776,6 +808,11 @@ public class TransferPanel extends JPanel
 			boolean transferFL, boolean transferFR,
 			boolean transferLR, boolean transferRL,
 			boolean releaseL, boolean releaseR) {
+		// DEBUG
+		log.debug("Is drag safety; targetList: {}, squadS: {}, playerS: {}, playerT: {},"
+						+ " transferFL: {}, transferFR: {}, transferLR: {}, transferRL: {}, releaseL: {}, releaseR: {}",
+				targetList, squadS, playerS, playerT,
+				transferFL, transferFR, transferLR, transferRL, releaseL, releaseR);
 
 		if (sourceList != freeList.getFreeList() && targetList != freeList.getFreeList()) {
 			if (sourceList == targetList) {
@@ -817,6 +854,8 @@ public class TransferPanel extends JPanel
 	private void transferFromFree(SelectByTeam selector, int player) {
 		Player p = (Player) selector.getSquadList().getSelectedValue();
 		int teamId = selector.getTeamBox().getSelectedIndex();
+		// DEBUG
+		log.debug("Transfer from Free for player: {}, to team: {}, player: [{}] {}", player, teamId, p.getIndex(), p);
 
 		int newIdx = -1;
 		if (autoRelease.isSelected() && teamId >= Squads.FIRST_CLUB && teamId <= Squads.TOTAL) {
@@ -859,6 +898,8 @@ public class TransferPanel extends JPanel
 		Player pD = (Player) toList.getSquadList().getSelectedValue();
 		int teamD = toList.getTeamBox().getSelectedIndex();
 		int teamS = fromList.getTeamBox().getSelectedIndex();
+		// DEBUG
+		log.debug("Transfer between L-R for player: [{}] {}, from team: {}, to team: {}", pId, player, teamS, teamD);
 
 		int newIdx = -1;
 		if (autoRelease.isSelected() && teamD >= Squads.FIRST_CLUB && teamD <= Squads.TOTAL) {// NOTE: should be < TOTAL
@@ -892,6 +933,9 @@ public class TransferPanel extends JPanel
 		int pidS = sourcePlayer.getIndex();
 		int adrT = targetPlayer.getSlotAdr();
 		int pidT = targetPlayer.getIndex();
+		// DEBUG
+		log.debug("Transfer swap from player: {}, team: {} -> to player: {}, team: {}",
+				sourcePlayer, sourceTeam, targetPlayer, targetTeam);
 
 		Bits.toBytes((short) pidT, of.getData(), adrS);
 		Bits.toBytes((short) pidS, of.getData(), adrT);
@@ -931,6 +975,8 @@ public class TransferPanel extends JPanel
 	}
 
 	private void transferRelease(SelectByTeam selector, Player player, int sourceIndex) {
+		log.debug("Transfer release player: {} from source: {}", player, sourceIndex);
+
 		int adr = player.getSlotAdr();
 		Bits.toBytes((short) 0, of.getData(), adr);
 		int numAdr = Squads.getNumberAdr(adr);
@@ -950,6 +996,8 @@ public class TransferPanel extends JPanel
 	}
 
 	private void addListListeners() {
+		log.debug("Try to add listeners into all Lists");
+
 		selectorL.getSquadList().addListSelectionListener(nameEditor);
 		selectorR.getSquadList().addListSelectionListener(nameEditor);
 		freeList.getFreeList().addListSelectionListener(nameEditor);
@@ -963,6 +1011,8 @@ public class TransferPanel extends JPanel
 	}
 
 	private void removeListListeners() {
+		log.debug("Try to remove listeners from all Lists");
+
 		selectorL.getSquadList().removeListSelectionListener(nameEditor);
 		selectorR.getSquadList().removeListSelectionListener(nameEditor);
 		freeList.getFreeList().removeListSelectionListener(nameEditor);
@@ -996,6 +1046,8 @@ public class TransferPanel extends JPanel
 			super(Math.round(0.4f * Player.NAME_LEN));
 			this.owner = owner;
 
+			log.debug("Initialize player name input for Transfer panel #{}", owner.hashCode());
+
 			setDocument(new JTextFieldLimit(Player.NAME_LEN / 2));
 			setToolTipText(Resources.getMessage("transfer.nameField.tip"));
 			addActionListener(this);
@@ -1011,6 +1063,8 @@ public class TransferPanel extends JPanel
 			if (!(evt.getSource() instanceof JList)) {
 				throw new IllegalArgumentException("evt");
 			}
+			log.info("Refresh player name input when source list #{} changed: {} -> {}",
+					evt.getSource().hashCode(), evt.getFirstIndex(), evt.getLastIndex());
 
 			JList listS = (JList) evt.getSource();
 			if (listS.isSelectionEmpty()) {
@@ -1045,6 +1099,7 @@ public class TransferPanel extends JPanel
 			if (Strings.isEmpty(text) || text.length() > Player.NAME_LEN / 2) {
 				return;
 			}
+			log.info("Update source list #{} when player name changed: {}", source.hashCode(), text);
 
 			JList listS;
 			if (source == EventSource.squadLeft) {
@@ -1086,6 +1141,8 @@ public class TransferPanel extends JPanel
 			super(2);
 			this.owner = owner;
 
+			log.debug("Initialize player number input for Transfer panel #{}", owner.hashCode());
+
 			setDocument(new JTextFieldLimit(3));
 			setToolTipText(Resources.getMessage("transfer.numField.tip"));
 			addActionListener(this);
@@ -1101,6 +1158,8 @@ public class TransferPanel extends JPanel
 			if (!(evt.getSource() instanceof JList)) {
 				throw new IllegalArgumentException("evt");
 			}
+			log.info("Refresh player number input when source list #{} changed: {} -> {}",
+					evt.getSource().hashCode(), evt.getFirstIndex(), evt.getLastIndex());
 
 			JList listS = (JList) evt.getSource();
 			if (listS.isSelectionEmpty()) {
@@ -1127,10 +1186,12 @@ public class TransferPanel extends JPanel
 			if (null == source) {
 				return;
 			}
+			String text = getText();
+			log.info("Update source list #{} when player number changed: {}", source.hashCode(), text);
 
 			int num;
 			try {
-				num = Integer.parseInt(getText());
+				num = Integer.parseInt(text);
 			} catch (NumberFormatException nfe) {
 				num = -1;
 			}
@@ -1168,6 +1229,8 @@ public class TransferPanel extends JPanel
 			super(Math.round(0.8f * Player.SHIRT_NAME_LEN));
 			this.owner = owner;
 
+			log.debug("Initialize player shirt-name input for Transfer panel #{}", owner.hashCode());
+
 			setDocument(new JTextFieldLimit(Player.SHIRT_NAME_LEN));
 			setToolTipText(Resources.getMessage("transfer.shirtName.tip"));
 			addActionListener(this);
@@ -1183,6 +1246,8 @@ public class TransferPanel extends JPanel
 			if (!(evt.getSource() instanceof JList)) {
 				throw new IllegalArgumentException("evt");
 			}
+			log.info("Refresh player shirt-name input when source list #{} changed: {} -> {}",
+					evt.getSource().hashCode(), evt.getFirstIndex(), evt.getLastIndex());
 
 			JList listS = (JList) evt.getSource();
 			if (listS.isSelectionEmpty()) {
@@ -1213,6 +1278,7 @@ public class TransferPanel extends JPanel
 			if (Strings.isEmpty(text) || text.length() > Player.SHIRT_NAME_LEN) {
 				return;
 			}
+			log.info("Update source list #{} when player shirt-name changed: {}", source.hashCode(), text);
 
 			JList listS;
 			if (source == EventSource.squadLeft) {
