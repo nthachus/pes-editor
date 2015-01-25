@@ -28,9 +28,9 @@ public class PositionList extends JList/*<String>*/ {
 		this.of = of;
 		this.inTransfer = inTransfer;
 
-		log.debug("Initialize Position list with in-transfer: {}", inTransfer);
 		//refresh(team);
 
+		log.debug("Initialize Position list #{} with in-transfer: {}", hashCode(), inTransfer);
 		initComponents();
 	}
 

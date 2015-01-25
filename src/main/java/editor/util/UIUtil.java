@@ -41,4 +41,8 @@ public final class UIUtil {
 		}
 	}
 
+	public static String htmlColor(Color c) {
+		return (null == c) ? "null" : String.format("#%08X", c.getRGB());
+	}
+
 }

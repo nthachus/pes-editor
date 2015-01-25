@@ -51,11 +51,10 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		flagImportDia = fid;
 		teamPanel = tp;
 
-		log.debug("Initialize Emblem panel with Import dialog: {}, Team panel: {}",
-				Strings.valueOf(fid), Strings.valueOf(tp));
+		log.debug("Initialize Emblem panel with Import dialog: {}, Team panel: {}", fid.hashCode(), tp.hashCode());
 		initComponents();
 
-		refresh();
+		//refresh();
 	}
 
 	//region Initialize the GUI components
@@ -93,6 +92,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 			emblemButtons[i].setBackground(UIUtil.GRAY80);
 			emblemButtons[i].setMargin(margin);
 			emblemButtons[i].setPreferredSize(prefSize);
+			emblemButtons[i].setVisible(false);
 			emblemButtons[i].setActionCommand(Integer.toString(i));
 			emblemButtons[i].addMouseListener(this);
 			emblemButtons[i].addActionListener(this);

@@ -4,6 +4,7 @@ import editor.data.Formations;
 import editor.data.OptionFile;
 import editor.lang.NullArgumentException;
 import editor.util.Strings;
+import editor.util.UIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,10 +37,10 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 		this.offset = offset;
 		this.job = job;
 
-		log.debug("Initialize Job list '{}' at {}, color: {}", job, offset, colour);
+		log.debug("Initialize Job list '{}' at {}, color: {}", job, offset, UIUtil.htmlColor(colour));
 		initComponents(colour);
 
-		refresh(-1);
+		//refresh(-1);
 	}
 
 	private void initComponents(Color colour) {

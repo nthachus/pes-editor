@@ -32,7 +32,7 @@ public class InfoPanel extends JScrollPane {
 		this.of = of;
 		selector = teamDropdown;
 
-		log.debug("Info panel is initializing..");
+		log.debug("Initialize Info panel #{} for Team dropdown: {}", hashCode(), Strings.valueOf(teamDropdown));
 		initComponents();
 	}
 

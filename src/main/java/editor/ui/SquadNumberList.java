@@ -25,7 +25,7 @@ public class SquadNumberList extends JList/*<String>*/ {
 		}
 		this.of = of;
 
-		log.debug("Squad-number list is initializing..");
+		log.debug("Squad-number list #{} is initializing..", hashCode());
 		initComponents();
 	}
 
@@ -82,7 +82,8 @@ public class SquadNumberList extends JList/*<String>*/ {
 			}
 		}
 
-		log.debug("Squad-number list was built with {} items, for team {} (formation-team: {})", size, team, ft);
+		log.debug("Squad-number list #{} was built with {} items, for team {} (formation-team: {})",
+				hashCode(), size, team, ft);
 		return numList;
 	}
 

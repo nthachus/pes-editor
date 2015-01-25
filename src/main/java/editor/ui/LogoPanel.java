@@ -43,7 +43,7 @@ public class LogoPanel extends JPanel implements ActionListener {
 		log.debug("Initialize Logo panel with import dialog: {}", Strings.valueOf(lid));
 		initComponents();
 
-		refresh();
+		//refresh();
 	}
 
 	private JFileChooser chooser;

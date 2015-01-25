@@ -27,7 +27,7 @@ public class SquadList extends JList/*<Player>*/ {
 
 		//refresh(team);
 
-		log.debug("Initialize Squad list with fixed-size: {}", setSize);
+		log.debug("Initialize Squad list #{} with fixed-size: {}", hashCode(), setSize);
 		initComponents(setSize);
 	}
 
