@@ -452,8 +452,9 @@ public class TransferPanel extends JPanel
 		Player sourcePlayer = (Player) sourceList.getModel().getElementAt(sourceIndex);
 		int playerS = sourcePlayer.getIndex();
 		// DEBUG
-		log.info("Drop Player [{}] {} from source index {} -> to target List at: {}",
-				playerS, sourcePlayer, sourceIndex, targetList.getSelectedIndex());
+		log.info("Drop Player [{}] {} from source: {}, at: {} -> to target List {}, at: {}",
+				playerS, sourcePlayer, Strings.valueOf(sourceList), sourceIndex,
+				Strings.valueOf(targetList), targetList.getSelectedIndex());
 
 		Player targetPlayer;
 		if (targetList.getSelectedIndex() < 0) {
@@ -502,6 +503,7 @@ public class TransferPanel extends JPanel
 
 		} else {
 			evt.rejectDrop();
+			return;
 		}
 
 		evt.getDropTargetContext().dropComplete(true);
@@ -596,6 +598,9 @@ public class TransferPanel extends JPanel
 		Player sourcePlayer = (Player) sourceList.getModel().getElementAt(sourceIndex);
 		int playerS = sourcePlayer.getIndex();
 		int playerT = targetPlayer.getIndex();
+		// DEBUG
+		log.debug("Check safety (safe-mode: {}) for dragging [{}] {} -> [{}] {} in target list",
+				safeMode, playerS, sourcePlayer, playerT, targetPlayer, Strings.valueOf(targetList));
 
 		int squadS = -1;
 		if (sourceList == selectorL.getSquadList()) {
@@ -811,7 +816,7 @@ public class TransferPanel extends JPanel
 		// DEBUG
 		log.debug("Is drag safety; targetList: {}, squadS: {}, playerS: {}, playerT: {},"
 						+ " transferFL: {}, transferFR: {}, transferLR: {}, transferRL: {}, releaseL: {}, releaseR: {}",
-				targetList, squadS, playerS, playerT,
+				Strings.valueOf(targetList), squadS, playerS, playerT,
 				transferFL, transferFR, transferLR, transferRL, releaseL, releaseR);
 
 		if (sourceList != freeList.getFreeList() && targetList != freeList.getFreeList()) {

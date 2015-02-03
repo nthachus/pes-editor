@@ -37,10 +37,10 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 		this.offset = offset;
 		this.job = job;
 
+		refresh(-1);// used to fix width x height for the JList
+
 		log.debug("Initialize Job list '{}' at {}, color: {}", job, offset, UIUtil.htmlColor(colour));
 		initComponents(colour);
-
-		//refresh(-1);
 	}
 
 	private void initComponents(Color colour) {
@@ -69,8 +69,9 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 		String[] posJobs = new String[Formations.PLAYER_COUNT];
 		Arrays.fill(posJobs, " ");
 
-		int p = 0;
+		int p;
 		if (team < 0) {
+			p = 0;
 			posJobs[p] = job;
 		} else {
 			p = Formations.getJob(of, team, offset);

@@ -12,8 +12,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.*;
-import java.io.IOException;
+import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
+import java.awt.image.WritableRaster;
 import java.net.URL;
 
 public class BackChooserDialog extends JDialog implements ActionListener {
@@ -23,7 +24,6 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	private static final int IMG_WIDTH = 85;
 	private static final int IMG_HEIGHT = 64;
 	private static final int BITS_DEPTH = 1;
-	//private static final byte[] COLOR_PALETTE = {0, -1};
 
 	private final JButton[] flagButtons = new JButton[12];
 	private final transient WritableRaster[] rasterData = new WritableRaster[flagButtons.length];
@@ -38,8 +38,6 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 
 		log.debug("Background Flag chooser dialog is initializing..");
 		initComponents();
-
-		//refresh(null, COLOR_PALETTE, COLOR_PALETTE, COLOR_PALETTE);
 	}
 
 	private void initComponents() {
@@ -52,20 +50,16 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 		for (int i = 0; i < flagButtons.length; i++) {
 			// load each flag background images
 			backUrl = getClass().getResource("/META-INF/images/backFlag" + i + ".png");
-			if (null != backUrl) {
-				try {
-					img = ImageIO.read(backUrl);
-					rasterData[i] = img.getRaster();
-				} catch (IOException e) {
-					log.warn("Failed to load back-flag {}: {}", backUrl, e.toString());
-				}
-			}
-			if (null == rasterData[i]) {
-				rasterData[i] = getBlankFlagData();
+			try {
+				img = ImageIO.read(backUrl);
+				rasterData[i] = img.getRaster();
+			} catch (Exception e) {
+				throw new RuntimeException("Failed to load back-flag: " + backUrl, e);
 			}
 
 			flagButtons[i] = new JButton();
 			flagButtons[i].setMargin(margin);
+			flagButtons[i].setIcon(new ImageIcon(img));
 			flagButtons[i].setActionCommand(Integer.toString(i));
 			flagButtons[i].addActionListener(this);
 
@@ -116,23 +110,6 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 			flag = getBackFlag(image, i, red, green, blue);
 			flagButtons[i].setIcon(flag);
 		}
-	}
-
-	private static volatile WritableRaster blankFlagData = null;
-
-	private static WritableRaster getBlankFlagData() {
-		log.warn("Blank Background Flag data should not be used!");
-
-		if (null == blankFlagData) {
-			int rasterSize = Images.rasterDataSize(BITS_DEPTH, IMG_WIDTH, IMG_HEIGHT);
-			DataBuffer buf = new DataBufferByte(rasterSize);
-			SampleModel sampleModel = new MultiPixelPackedSampleModel(
-					DataBuffer.TYPE_BYTE, IMG_WIDTH, IMG_HEIGHT, BITS_DEPTH);
-
-			blankFlagData = Raster.createWritableRaster(sampleModel, buf, null);
-		}
-
-		return blankFlagData;
 	}
 
 	public ImageIcon getBackFlag(Image image, int bgIndex, byte[] red, byte[] green, byte[] blue) {
