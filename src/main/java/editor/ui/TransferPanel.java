@@ -599,7 +599,7 @@ public class TransferPanel extends JPanel
 		int playerS = sourcePlayer.getIndex();
 		int playerT = targetPlayer.getIndex();
 		// DEBUG
-		log.debug("Check safety (safe-mode: {}) for dragging [{}] {} -> [{}] {} in target list",
+		log.debug("Check safety (safe-mode: {}) for dragging [{}] {} -> [{}] {} in target list {}",
 				safeMode, playerS, sourcePlayer, playerT, targetPlayer, Strings.valueOf(targetList));
 
 		int squadS = -1;
@@ -1269,7 +1269,7 @@ public class TransferPanel extends JPanel
 				}
 
 				Player p = (Player) listS.getSelectedValue();
-				setText(p.getShirtName());
+				setText(p.getIndex() > 0 ? p.getShirtName() : Strings.EMPTY);
 				selectAll();
 			}
 		}
