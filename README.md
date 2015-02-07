@@ -1,4 +1,4 @@
 PS2 PES Editor
 ==============
 
-PlayStation 2 - Pro Evolution Soccer Editor
+PlayStation 2 - Pro Evolution Soccer OptionFile Editor
