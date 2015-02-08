@@ -7,11 +7,11 @@ import org.junit.Test;
 public final class SquadsTest extends BaseTest {
 	@Test
 	public void testAddresses() throws Exception {
-		Assert.assertEquals(649560, readStaticField(Squads.class, "NATION_NUM_ADR", true, true));
-		Assert.assertEquals(651285, readStaticField(Squads.class, "CLUB_NUM_ADR", true, true));
+		Assert.assertEquals(640632, readStaticField(Squads.class, "NATION_NUM_ADR", true, true));
+		Assert.assertEquals(642357, readStaticField(Squads.class, "CLUB_NUM_ADR", true, true));
 
-		Assert.assertEquals(655734, Squads.NATION_ADR);
-		Assert.assertEquals(659184, readStaticField(Squads.class, "CLUB_ADR", true, true));
+		Assert.assertEquals(646806, Squads.NATION_ADR);
+		Assert.assertEquals(650256, readStaticField(Squads.class, "CLUB_ADR", true, true));
 
 		Assert.assertEquals(212, Squads.TOTAL);
 		Assert.assertEquals(15, Squads.EXTRA_COUNT);
@@ -51,14 +51,14 @@ public final class SquadsTest extends BaseTest {
 	public void testPlayersInClub() throws Exception {
 		OptionFile of = loadOriginalOF();
 
-		int club = 7;// MU
+		int club = 10;// MU
 		int team = club + Squads.FIRST_CLUB;
 
 		int teamSize = Squads.getTeamSize(team);
 		Assert.assertEquals(32, teamSize);
 
 		teamSize = Squads.countPlayers(of, team);
-		Assert.assertEquals(27, teamSize);
+		Assert.assertEquals(32, teamSize);
 
 		// GK
 		int slot = 0;
@@ -75,19 +75,19 @@ public final class SquadsTest extends BaseTest {
 		p = Squads.getTeamPlayer(of, team, slot);
 		Assert.assertThat(p, Matchers.greaterThan(0));
 		pName = Player.getName(of, p);
-		Assert.assertEquals("CARRICK", pName);
+		Assert.assertThat(pName, Matchers.equalToIgnoringCase("VIDIĆ"));
 		//
 		no = Squads.getTeamSquadNum(of, team, slot);
-		Assert.assertEquals(16, no);
+		Assert.assertEquals(15, no);
 
 		slot = 16;
 		p = Squads.getTeamPlayer(of, team, slot);
 		Assert.assertThat(p, Matchers.greaterThan(0));
 		pName = Player.getName(of, p);
-		Assert.assertEquals("RAFAEL", pName);
+		Assert.assertThat(pName, Matchers.equalToIgnoringCase("FLETCHER"));
 		//
 		no = Squads.getTeamSquadNum(of, team, slot);
-		Assert.assertEquals(2, no);
+		Assert.assertEquals(24, no);
 	}
 
 	// testPlayersInNationTeam()

@@ -10,7 +10,7 @@ public final class Leagues {
 	private Leagues() {
 	}
 
-	public static final int TOTAL = 34;
+	public static final int TOTAL = 33;
 
 	private static final int BASE_NAME_LEN = 20;
 	public static final int NAME_LEN = 61;

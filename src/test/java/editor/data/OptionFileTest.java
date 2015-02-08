@@ -9,13 +9,13 @@ import java.io.File;
 
 public final class OptionFileTest extends BaseTest {
 	private final static int[] BLOCKS = {
-			12, 5144, 7608, 12092, 34920, 649560, 739800, 751252, 914696, 1070332, 1074144
+			12, 5144, 7608, 11844, 34672, 640632, 730872, 742324, 905768, 1061404, 1065212
 	};
 
 	@Test
 	public void testAddresses() throws Exception {
 		Assert.assertTrue((OptionFile.LENGTH % 4) == 0);
-		Assert.assertEquals(1095680, OptionFile.LENGTH);
+		Assert.assertEquals(1086464, OptionFile.LENGTH);
 		Assert.assertEquals(2058577996, readStaticField(OptionFile.class, "KEY_MASK", true, true));
 
 		for (int i = 0; i < BLOCKS.length; i++) {

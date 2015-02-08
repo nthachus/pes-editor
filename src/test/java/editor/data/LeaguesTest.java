@@ -10,7 +10,7 @@ public final class LeaguesTest extends BaseTest {
 	@Test
 	public void testAddresses() throws Exception {
 		Assert.assertEquals(84, Leagues.SIZE);
-		Assert.assertEquals(9057 - Leagues.SIZE - 1, Leagues.START_ADR);
+		Assert.assertEquals(8724, Leagues.START_ADR);
 	}
 
 	@Test

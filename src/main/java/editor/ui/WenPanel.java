@@ -19,7 +19,7 @@ public class WenPanel extends JPanel implements ActionListener {
 	private static final Logger log = LoggerFactory.getLogger(WenPanel.class);
 
 	private static final int MAX_WEN = 99999;
-	private static final int START_ADR = 5208;
+	private static final int START_ADR = 5208 + 8;
 	private static final int ALT_ADR = 52;
 
 	private final OptionFile of;

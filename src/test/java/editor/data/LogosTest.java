@@ -11,7 +11,7 @@ import java.util.List;
 public final class LogosTest extends BaseTest {
 	@Test
 	public void testAddresses() throws Exception {
-		Assert.assertEquals(866044, Logos.START_ADR);
+		Assert.assertEquals(857116, Logos.START_ADR);
 
 		Assert.assertEquals(80, Logos.TOTAL);
 		Assert.assertEquals(608, Logos.SIZE);
@@ -19,7 +19,7 @@ public final class LogosTest extends BaseTest {
 
 	@Test
 	public void testIsUsed() throws Exception {
-		OptionFile of = loadLatestOF();
+		OptionFile of = loadLicensedOF();
 
 		List<Boolean> list = new ArrayList<Boolean>();
 		for (int l = 0; l < Logos.TOTAL; l++) {

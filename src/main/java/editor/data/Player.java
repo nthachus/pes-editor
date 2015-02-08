@@ -13,7 +13,7 @@ public class Player implements Serializable, Comparable<Player> {
 
 	//region Constants
 
-	public static final int TOTAL_CLUB_PLAYERS = 3042;
+	public static final int TOTAL_CLUB_PLAYERS = 2985;
 
 	/**
 	 * The first ID of Classic players.
@@ -27,7 +27,7 @@ public class Player implements Serializable, Comparable<Player> {
 	 * The first ID of Japan plus players (NOTE: Also is the first "PES United" ID).
 	 */
 	public static final int FIRST_JAPAN = FIRST_CLUB + TOTAL_CLUB_PLAYERS;
-	public static final int TOTAL_JAPAN_PLAYERS = 19;
+	public static final int TOTAL_JAPAN_PLAYERS = 7;
 	/**
 	 * The first ID of Master League default players.
 	 */

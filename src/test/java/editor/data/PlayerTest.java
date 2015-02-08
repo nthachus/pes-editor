@@ -8,21 +8,21 @@ import org.junit.Test;
 public final class PlayerTest extends BaseTest {
 	@Test
 	public void testAddresses() throws Exception {
-		Assert.assertEquals(34920, Player.START_ADR);
-		Assert.assertEquals(12092, Player.START_EDIT_ADR);
+		Assert.assertEquals(34672, Player.START_ADR);
+		Assert.assertEquals(11844, Player.START_EDIT_ADR);
 
 		Assert.assertEquals(1381, Player.FIRST_CLASSIC);
 		Assert.assertEquals(1542, Player.FIRST_CLUB);
-		Assert.assertEquals(4584, Player.FIRST_JAPAN);
-		Assert.assertEquals(4603, Player.FIRST_ML);
-		Assert.assertEquals(4631, Player.FIRST_SHOP);
-		Assert.assertEquals(4791, Player.FIRST_YOUNG);
-		Assert.assertEquals(4931, Player.FIRST_OLD);
-		Assert.assertEquals(4941, Player.FIRST_UNUSED);
+		//Assert.assertEquals(4527, Player.FIRST_JAPAN);
+		Assert.assertEquals(4534, Player.FIRST_ML);
+		Assert.assertEquals(4562, Player.FIRST_SHOP);
+		Assert.assertEquals(4722, Player.FIRST_YOUNG);
+		Assert.assertEquals(4862, Player.FIRST_OLD);
+		Assert.assertEquals(4872, Player.FIRST_UNUSED);
 
 		Assert.assertEquals(0x8000, Player.FIRST_EDIT);
 		Assert.assertEquals(184, Player.TOTAL_EDIT);
-		Assert.assertEquals(4941, Player.TOTAL);
+		Assert.assertEquals(4872, Player.TOTAL);
 	}
 
 	@Test
@@ -39,7 +39,7 @@ public final class PlayerTest extends BaseTest {
 		Assert.assertEquals("DRAGOVIĆ", p.getName());
 		Assert.assertEquals("DRAGOVIC", p.getShirtName());
 
-		pid = 148;
+		pid = 156;
 		p = new Player(of, pid);
 		Assert.assertEquals("ASHLEY YOUNG", p.getName());
 		Assert.assertEquals("YOUNG", p.getShirtName());

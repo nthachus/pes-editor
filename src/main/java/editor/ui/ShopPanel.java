@@ -113,7 +113,7 @@ public class ShopPanel extends JPanel implements ActionListener {
 		of.getData()[++ofs] = 0x09;
 		of.getData()[++ofs] = (byte) 0xFE;
 		of.getData()[++ofs] = (byte) 0xFF;
-		of.getData()[++ofs] = (byte) 0xCF;
+		of.getData()[++ofs] = 0x40;
 		of.getData()[++ofs] = 0x7F;
 
 		setStatusText(true);

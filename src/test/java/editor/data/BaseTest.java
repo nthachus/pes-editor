@@ -23,7 +23,7 @@ public abstract class BaseTest {
 
 	protected static final String OF_ORIGINAL = "PES2014_SLES-55673_original.psu";
 	protected static final String OF_LICENSED = "PES2014_SLES-55676_licensed.psu";
-	protected static final String OF_LATEST = "PES2014-55673_TEMPORADA-2015_FINAL-KTS82.pws";
+	protected static final String OF_LATEST = "PES2014-55673_TEMPORADA-2015_FINAL-KTS82.max";
 
 	public static final String IMG_FORMAT = "png";
 

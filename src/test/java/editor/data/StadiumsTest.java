@@ -11,6 +11,7 @@ public final class StadiumsTest extends BaseTest {
 	public void testAddresses() throws Exception {
 		Assert.assertEquals(61, Stadiums.SIZE);
 		Assert.assertEquals(7608, Stadiums.START_ADR);
+		Assert.assertEquals(17, Stadiums.TOTAL);
 	}
 
 	@Test
@@ -92,7 +93,7 @@ public final class StadiumsTest extends BaseTest {
 	public void testGetName() throws Exception {
 		OptionFile of = loadOriginalOF();
 
-		Assert.assertEquals("STADIO OLIMPICO", Stadiums.get(of, 8));
-		Assert.assertEquals("SANTIAGO BERNABEU", Stadiums.get(of, 11));
+		Assert.assertEquals("OLD TRAFFORD", Stadiums.get(of, 3));
+		Assert.assertEquals("ALLIANZ ARENA", Stadiums.get(of, Stadiums.TOTAL - 1));
 	}
 }

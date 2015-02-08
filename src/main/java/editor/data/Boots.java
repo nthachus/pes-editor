@@ -16,7 +16,7 @@ public final class Boots {
 	 */
 	public static final int SIZE = 92;
 
-	public static final int START_ADR = Player.END_ADR + 1116;
+	public static final int START_ADR = Player.END_ADR + 1116 - Player.SIZE;
 
 	public static void importData(OptionFile ofSource, OptionFile ofDest) {
 		if (null == ofSource) {

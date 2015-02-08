@@ -76,6 +76,7 @@ public final class StatsTest extends BaseTest {
 		}
 
 		Assert.assertEquals(stats.get("Name"), Player.getName(of, pid));
+		log.debug("Verifies stats for player: {}", stats.get("Name"));
 		stats.remove("Name");
 
 		List<Stat> fields = readStaticFields(Stats.class, Stat.class, true, false);
@@ -120,7 +121,7 @@ public final class StatsTest extends BaseTest {
 			{"Nationality", "Austria"},
 			{"Height", "194"},
 			{"Weight", "91"},
-			{"Age", "28"},
+			{"Age", "29"},
 			{"Foot", "R"},
 			{"Registered Position", "GK"},
 			{"GK", "1"},
@@ -146,8 +147,8 @@ public final class StatsTest extends BaseTest {
 			{"FK Accuracy", "44"},// Place kicking
 			{"Swerve", "43"},
 			{"Technique", "50"},// Ball control
-			{"W-foot accuracy", "4"},
-			{"W-foot Frequency", "4"},
+			{"W-foot accuracy", "3"},
+			{"W-foot Frequency", "3"},
 			{"GK skills", "77"},
 			{"Response", "80"},
 			{"Agility", "62"},// Explosive power
@@ -158,7 +159,7 @@ public final class StatsTest extends BaseTest {
 			{"Shot power", "80"},
 			{"Jump", "73"},
 			{"Injury Tolerance", "A"},// 1-3 [C-A]
-			{"Condition", "4"},// Form
+			{"Condition", "3"},// Form
 			{"Mentality", "72"},
 			{"Team work", "69"},
 	};
@@ -185,7 +186,7 @@ public final class StatsTest extends BaseTest {
 			{"Attack", "97"},
 			{"Defense", "24"},
 			{"Heading", "91"},// Header accuracy
-			{"Dribble accuracy", "75"},
+			{"Dribble accuracy", "77"},
 			{"S-pass accuracy", "72"},
 			{"S-pass speed", "76"},
 			{"L-pass accuracy", "68"},
@@ -194,8 +195,8 @@ public final class StatsTest extends BaseTest {
 			{"FK Accuracy", "85"},
 			{"Swerve", "86"},
 			{"Technique", "82"},
-			{"W-foot accuracy", "5"},
-			{"W-foot Frequency", "4"},
+			{"W-foot accuracy", "4"},
+			{"W-foot Frequency", "3"},
 			{"GK skills", "50"},
 			{"Response", "95"},
 			{"Agility", "75"},// Explosive power
@@ -203,10 +204,10 @@ public final class StatsTest extends BaseTest {
 			{"Speed", "82"},
 			{"Balance", "88"},
 			{"Stamina", "77"},
-			{"Shot power", "97"},
+			{"Shot power", "96"},
 			{"Jump", "85"},
 			{"Injury Tolerance", "A"},// 1-3 [C-A]
-			{"Condition", "7"},// Form
+			{"Condition", "6"},// Form
 			{"Mentality", "87"},// Tenacity
 			{"Team work", "71"},
 

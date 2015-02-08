@@ -14,10 +14,10 @@ import java.io.File;
 public final class ClubsTest extends BaseTest {
 	@Test
 	public void testAddresses() throws Exception {
-		Assert.assertEquals(739800, Clubs.START_ADR);
+		Assert.assertEquals(730872, Clubs.START_ADR);
 
-		Assert.assertEquals(144, Clubs.FIRST_DEF_EMBLEM);
-		Assert.assertEquals(349, Clubs.FIRST_EMBLEM);
+		Assert.assertEquals(143, Clubs.FIRST_DEF_EMBLEM);
+		Assert.assertEquals(348, Clubs.FIRST_EMBLEM);
 		Assert.assertEquals(130, Clubs.TOTAL);
 	}
 
@@ -54,7 +54,7 @@ public final class ClubsTest extends BaseTest {
 
 	@Test
 	public void testGetEmblem() throws Exception {
-		OptionFile of = loadLatestOF();
+		OptionFile of = loadLicensedOF();
 
 		String name, abv;
 		BufferedImage flag;
@@ -75,7 +75,7 @@ public final class ClubsTest extends BaseTest {
 			} else {
 				emblem -= Clubs.FIRST_EMBLEM;
 				Assert.assertThat(emblem, Matchers.greaterThanOrEqualTo(0));
-				Assert.assertThat(emblem, Matchers.lessThan(Emblems.TOTAL16));
+				Assert.assertThat(emblem, Matchers.lessThan(Emblems.TOTAL16 + Emblems.TOTAL128));
 
 				flag = (BufferedImage) Emblems.getImage(of, emblem);
 				Assert.assertNotNull(flag);
@@ -102,13 +102,13 @@ public final class ClubsTest extends BaseTest {
 		String name = Clubs.getName(of, cid);
 		Assert.assertThat(name, Matchers.not(Matchers.isEmptyOrNullString()));
 
-		int n128 = Emblems.count128(of);
-		Assert.assertThat(n128, Matchers.greaterThan(0));
+		int n16 = Emblems.count16(of);
+		Assert.assertThat(n16, Matchers.greaterThan(0));
 
 		int newEmblem = 0;
 		BufferedImage flag = null;
 		while (flag == null || Images.isBlank(flag)) {
-			newEmblem = rand.nextInt(n128);
+			newEmblem = rand.nextInt(n16);
 			flag = (BufferedImage) Emblems.getImage(of, newEmblem);
 		}
 		Assert.assertNotNull(flag);
@@ -178,11 +178,11 @@ public final class ClubsTest extends BaseTest {
 	@Test
 	public void testGetClubInfo() throws Exception {
 		OptionFile of = loadOriginalOF();
-		int cid = 7;
+		int cid = 10;
 
 		Assert.assertEquals("MANCHESTER UNITED", Clubs.getName(of, cid));
 		Assert.assertEquals("MCU", Clubs.getAbbrName(of, cid));
-		Assert.assertEquals(151, Clubs.FIRST_DEF_EMBLEM + cid);
+		Assert.assertEquals(153, Clubs.FIRST_DEF_EMBLEM + cid);
 		Assert.assertEquals(Clubs.FIRST_DEF_EMBLEM + cid, Clubs.getEmblem(of, cid));
 		Assert.assertEquals(0, Clubs.getBackFlag(of, cid));
 		Color bg = new Color(0x8F1016);
@@ -197,14 +197,14 @@ public final class ClubsTest extends BaseTest {
 
 		Assert.assertEquals("JUVENTUS F.C.", Clubs.getName(of, cid));
 		Assert.assertEquals("JUV", Clubs.getAbbrName(of, cid));
-		Assert.assertEquals(192, Clubs.FIRST_DEF_EMBLEM + cid);
+		Assert.assertEquals(191, Clubs.FIRST_DEF_EMBLEM + cid);
 		Assert.assertEquals(Clubs.FIRST_DEF_EMBLEM + cid, Clubs.getEmblem(of, cid));
 		Assert.assertEquals(0, Clubs.getBackFlag(of, cid));
 		bg = new Color(0x444444);
 		Assert.assertEquals(bg, Clubs.getColor(of, cid, false));
 		Assert.assertEquals(bg, Clubs.getColor(of, cid, true));
 
-		sid = 7;
+		sid = 6;
 		Assert.assertEquals(sid, Clubs.getStadium(of, cid));
 		Assert.assertEquals("AMERIGO ATLANTIS", Stadiums.get(of, sid));
 
@@ -212,7 +212,7 @@ public final class ClubsTest extends BaseTest {
 		of = loadLicensedOF();
 		cid = 0;
 
-		Assert.assertEquals("ARSENAL FC", Clubs.getName(of, cid));
+		Assert.assertEquals("ARSENAL", Clubs.getName(of, cid));
 		Assert.assertEquals("ARS", Clubs.getAbbrName(of, cid));
 		int emblem = Clubs.getEmblem(of, cid) - Clubs.FIRST_EMBLEM;
 		Assert.assertThat(emblem, Matchers.greaterThanOrEqualTo(0));
@@ -225,9 +225,9 @@ public final class ClubsTest extends BaseTest {
 		Assert.assertEquals(Color.WHITE, Clubs.getColor(of, cid, false));
 		Assert.assertEquals(Color.WHITE, Clubs.getColor(of, cid, true));
 
-		sid = 17;
+		sid = 4;
 		Assert.assertEquals(sid, Clubs.getStadium(of, cid));
-		Assert.assertEquals("WEMBLEY STADIUM", Stadiums.get(of, sid));
+		Assert.assertEquals("ESTADIO GRAN CHACO", Stadiums.get(of, sid));
 	}
 
 	// TODO: Exception test-cases

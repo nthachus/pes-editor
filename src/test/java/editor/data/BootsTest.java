@@ -7,7 +7,7 @@ import org.junit.Test;
 public final class BootsTest extends BaseTest {
 	@Test
 	public void testAddresses() throws Exception {
-		Assert.assertEquals(648720, Boots.START_ADR);
+		Assert.assertEquals(639792, Boots.START_ADR);
 		Assert.assertEquals(828, Boots.TOTAL * Boots.SIZE);
 	}
 

@@ -10,7 +10,7 @@ public final class Stadiums {
 	private Stadiums() {
 	}
 
-	public static final int TOTAL = 21;
+	public static final int TOTAL = 17;
 
 	public static final int NAME_LEN = 60;
 	public static final int SIZE = NAME_LEN + 1;
