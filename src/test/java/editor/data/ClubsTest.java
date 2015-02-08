@@ -29,7 +29,7 @@ public final class ClubsTest extends BaseTest {
 		String name = Clubs.getName(of, cid);
 		Assert.assertThat(name, Matchers.not(Matchers.isEmptyOrNullString()));
 
-		String newName = name + "!";
+		String newName = name.substring(1).trim() + "!";
 		Clubs.setName(of, cid, newName);
 		name = Clubs.getName(of, cid);
 		Assert.assertEquals(newName, name);
@@ -42,7 +42,7 @@ public final class ClubsTest extends BaseTest {
 		name = Clubs.getAbbrName(of, cid);
 		Assert.assertThat(name, Matchers.not(Matchers.isEmptyOrNullString()));
 
-		newName = name.substring(1) + "!";
+		newName = name.substring(1).trim() + "!";
 		Clubs.setAbbrName(of, cid, newName);
 		name = Clubs.getAbbrName(of, cid);
 		Assert.assertEquals(newName, name);

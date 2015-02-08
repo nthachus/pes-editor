@@ -3,13 +3,18 @@ package editor.data;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
 import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Player implements Serializable, Comparable<Player> {
 	private static final long serialVersionUID = 1536161153505853967L;
+	private static final Logger log = LoggerFactory.getLogger(Player.class);
 
 	//region Constants
 
@@ -275,6 +280,45 @@ public class Player implements Serializable, Comparable<Player> {
 		}
 
 		return result.toString();
+	}
+
+	public static void importNames(OptionFile ofSource, OptionFile ofDest) {
+		if (null == ofSource) {
+			throw new NullArgumentException("ofSource");
+		}
+		if (null == ofDest) {
+			throw new NullArgumentException("ofDest");
+		}
+
+		Player pS, pD;
+		List<String> cmp;
+		for (int p = 1; p < FIRST_UNUSED; p++) {
+			pS = new Player(ofSource, p);
+			pD = new Player(ofDest, p);
+
+			if (!pS.getName().equals(pD.getName())) {
+				cmp = comparePlayerStats(ofSource, ofDest, p);
+				if (null == cmp) {
+					pD.setName(pS.getName());
+					pD.setShirtName(pS.getShirtName());
+				} else {
+					log.warn("Cannot import player #{} because they are not the same: '{}' -> '{}' {}", p, pS, pD, cmp);
+				}
+			}
+		}
+	}
+
+	private static List<String> comparePlayerStats(OptionFile ofSource, OptionFile ofDest, int player) {
+		List<String> dif = new ArrayList<String>();
+		for (Stat st : Stats.ABILITY99) {
+			int vS = Stats.getValue(ofSource, player, st);
+			int vD = Stats.getValue(ofDest, player, st);
+
+			if (vS != vD) {
+				dif.add(st + ": " + vS + " -> " + vD);
+			}
+		}
+		return (dif.size() < Stats.ABILITY99.length / 5) ? null : dif;
 	}
 
 }

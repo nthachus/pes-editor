@@ -54,12 +54,12 @@ public final class PlayerTest extends BaseTest {
 		String shirtName = p.getShirtName();
 		Assert.assertThat(shirtName, Matchers.not(Matchers.isEmptyOrNullString()));
 
-		String newName = name.substring(1) + "!";
+		String newName = name.substring(1).trim() + "!";
 		p.setName(newName);
 		name = p.getName();
 		Assert.assertEquals(newName, name);
 
-		String newShirt = shirtName.substring(1) + "_";
+		String newShirt = shirtName.substring(1).trim() + "_";
 		p.setShirtName(newShirt);
 		shirtName = p.getShirtName();
 		Assert.assertEquals(newShirt, shirtName);

@@ -303,6 +303,12 @@ public final class Clubs {
 
 		for (int i = 0; i < TOTAL; i++) {
 			System.arraycopy(ofSource.getData(), adr, ofDest.getData(), adr, len);
+			// Fix emblem ID
+			int e = getEmblem(ofDest, i);
+			if (e < FIRST_EMBLEM && e != FIRST_DEF_EMBLEM + i) {
+				setEmblem(ofDest, i, -1);
+			}
+
 			adr += SIZE;
 		}
 	}

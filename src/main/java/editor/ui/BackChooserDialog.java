@@ -54,7 +54,7 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 				img = ImageIO.read(backUrl);
 				rasterData[i] = img.getRaster();
 			} catch (Exception e) {
-				throw new RuntimeException("Failed to load back-flag: " + backUrl, e);
+				throw new IllegalStateException("Failed to load back-flag: " + backUrl, e);
 			}
 
 			flagButtons[i] = new JButton();
