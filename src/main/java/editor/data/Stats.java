@@ -242,7 +242,7 @@ public final class Stats {
 			"Liberia",
 			"Libya",
 			"Madagascar",
-			"Mauritania",// TODO: verify PES 2014 country [76] Mauritius
+			"Mauritania",
 			"Mozambique",
 			"Niger",
 			"Gambia",
