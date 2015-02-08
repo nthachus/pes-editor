@@ -21,9 +21,9 @@ import java.util.Random;
 public abstract class BaseTest {
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
-	protected static final String OF_ORIGINAL = "PES2013_SLES-55666_EN_Top.psu";
-	protected static final String OF_LICENSED = "PES2013_OF_FredPSG_V1.2.max";
-	protected static final String OF_LATEST = "PES2013_VRS_2.0_UK-Dany.xps";
+	protected static final String OF_ORIGINAL = "PES2014_SLES-55673_original.psu";
+	protected static final String OF_LICENSED = "PES2014_SLES-55676_licensed.psu";
+	protected static final String OF_LATEST = "PES2014-55673_TEMPORADA-2015_FINAL-KTS82.pws";
 
 	public static final String IMG_FORMAT = "png";
 

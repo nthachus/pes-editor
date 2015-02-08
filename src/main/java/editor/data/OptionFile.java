@@ -18,10 +18,10 @@ public class OptionFile implements Serializable {
 	private static final String SHARK_PORT = "\15\0\0\0SharkPortSave";
 	private static final String MAGIC_MAX = "Ps2PowerSave";
 
-	private static final String GAME_ID = "(?i:(BESLES|BASLUS)\\-.*2013OPT|.*3013OPT)";
+	private static final String GAME_ID = "(?i:(BESLES|BASLUS)\\-.*2014OPT|.*3014OPT)";
 	public static final int GAME_LEN = 19;
 
-	public static final int LENGTH = 1095680;
+	public static final int LENGTH = 1086464;
 
 	//region Properties
 
@@ -400,15 +400,15 @@ public class OptionFile implements Serializable {
 	private static final int[][] BLOCKS = {
 			{12, 4852},
 			{5144, 2296},    // Shop + WEN
-			{7608, 4472},    // Stadiums + Leagues
-			{12092, 22816},  // Editable Players
-			{34920, 613800}, // Players + Boots
-			{649560, 90227}, // Teams + Formations
-			{739800, 11440}, // Clubs
-			{751252, 163432},// Kits + Logos
-			{914696, 155624},// Emblems
-			{1070332, 2600},
-			{1074144, 20752}
+			{7608, 4224},    // Stadiums + Leagues
+			{11844, 22816},  // Editable Players
+			{34672, 605120}, // Players + Boots
+			{640632, 90227}, // Teams + Formations
+			{730872, 11440}, // Clubs
+			{742324, 163432},// Kits + Logos
+			{905768, 155624},// Emblems
+			{1061404, 2596},
+			{1065212, 20456}
 	};
 
 	private static final int[] KEYS = /*446*/{
