@@ -578,4 +578,31 @@ public final class Squads {
 		tidy(of, team);
 	}
 
+	public static void importTeams(OptionFile ofSource, OptionFile ofDest) {
+		if (null == ofSource) {
+			throw new NullArgumentException("ofSource");
+		}
+		if (null == ofDest) {
+			throw new NullArgumentException("ofDest");
+		}
+
+		for (int t = FIRST_EDIT_NATION; t < LAST_CLUB; t++) {
+			int ofs = getOffset(t);
+			int numOfs = getNumOffset(t);
+
+			for (int i = 0, sz = getTeamSize(t); i < sz; i++) {
+				int pid = Bits.toInt16(ofSource.getData(), ofs);
+				if (pid <= 0) {
+					break;
+				} else {
+					Bits.toBytes((short) pid, ofDest.getData(), ofs);
+					ofDest.getData()[numOfs] = ofSource.getData()[numOfs];
+
+					ofs += 2;
+					numOfs++;
+				}
+			}
+		}
+	}
+
 }

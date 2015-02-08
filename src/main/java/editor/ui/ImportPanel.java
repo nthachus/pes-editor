@@ -139,12 +139,11 @@ public class ImportPanel extends JPanel implements ActionListener {
 	}
 
 	private void importKits() {
-		Clubs.importData(of2, of);
-
-		for (int i = 7; i <= 8; i++) {
+		for (int i = 7; i <= 8; i++) {// Kits + Logos + Emblems
 			int adr = OptionFile.blockAddress(i);
 			System.arraycopy(of2.getData(), adr, of.getData(), adr, OptionFile.blockSize(i));
 		}
+		Clubs.importData(of2, of);
 
 		emblemPan.refresh();
 		logoPan.refresh();
@@ -168,10 +167,12 @@ public class ImportPanel extends JPanel implements ActionListener {
 	}
 
 	private void importPlayers() {
-		for (int i = 3; i <= 5; i++) {
-			int adr = OptionFile.blockAddress(i);
-			System.arraycopy(of2.getData(), adr, of.getData(), adr, OptionFile.blockSize(i));
-		}
+		// Editable players
+		System.arraycopy(of2.getData(), Player.START_EDIT_ADR, of.getData(), Player.START_EDIT_ADR,
+				Player.TOTAL_EDIT * Player.SIZE);
+		Player.importNames(of2, of);
+
+		Squads.importTeams(of2, of);
 
 		transferPan.refresh();
 

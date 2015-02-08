@@ -474,7 +474,7 @@ public class Editor extends JFrame implements ActionListener {
 	private int showOverwriteConfirm(File dest) {
 		return JOptionPane.showConfirmDialog(getContentPane(),
 				Resources.getMessage("msg.overwrite", dest.getName(), dest.getParent()),
-				Resources.getMessage("msg.overwrite.title"),
+				Resources.getMessage("msg.overwrite.title", dest.getName()),
 				JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null);
 	}
 
