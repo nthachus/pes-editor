@@ -3,12 +3,16 @@ package editor.data;
 import editor.lang.NullArgumentException;
 import editor.util.Bits;
 import editor.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 public final class Clubs {
+	private static final Logger log = LoggerFactory.getLogger(Clubs.class);
+
 	private Clubs() {
 	}
 
@@ -303,13 +307,16 @@ public final class Clubs {
 
 		for (int i = 0; i < TOTAL; i++) {
 			System.arraycopy(ofSource.getData(), adr, ofDest.getData(), adr, len);
-			// Fix emblem ID
-			int e = getEmblem(ofDest, i);
-			if (e < FIRST_EMBLEM && e != FIRST_DEF_EMBLEM + i) {
-				setEmblem(ofDest, i, -1);
-			}
-
+			fixClubEmblem(ofDest, i);
 			adr += SIZE;
+		}
+	}
+
+	private static void fixClubEmblem(OptionFile of, int club) {
+		int e = getEmblem(of, club);
+		if (e < FIRST_EMBLEM && e != FIRST_DEF_EMBLEM + club) {
+			log.warn("Try to fix club #{} emblem: {}", club, e);
+			setEmblem(of, club, -1);
 		}
 	}
 
