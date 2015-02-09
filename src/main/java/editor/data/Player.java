@@ -296,13 +296,13 @@ public class Player implements Serializable, Comparable<Player> {
 			pS = new Player(ofSource, p);
 			pD = new Player(ofDest, p);
 
-			if (!pS.getName().equals(pD.getName())) {
+			if (!pS.isEmpty() && !pS.getName().equals(pD.getName())) {
 				cmp = comparePlayerStats(ofSource, ofDest, p);
 				if (null == cmp) {
 					pD.setName(pS.getName());
 					pD.setShirtName(pS.getShirtName());
 				} else {
-					log.warn("Cannot import player #{} because they are not the same: '{}' -> '{}' {}", p, pS, pD, cmp);
+					log.warn("Cannot import difference player [{}] '{}' -> '{}' {}", p, pS, pD, cmp);
 				}
 			}
 		}
@@ -310,15 +310,21 @@ public class Player implements Serializable, Comparable<Player> {
 
 	private static List<String> comparePlayerStats(OptionFile ofSource, OptionFile ofDest, int player) {
 		List<String> dif = new ArrayList<String>();
+		int count = 0;
+
 		for (Stat st : Stats.ABILITY99) {
 			int vS = Stats.getValue(ofSource, player, st);
 			int vD = Stats.getValue(ofDest, player, st);
 
 			if (vS != vD) {
-				dif.add(st + ": " + vS + " -> " + vD);
+				if (count < 4) {
+					dif.add((count == 3) ? "..." : (st + ": " + vS + " -> " + vD));
+				}
+				count++;
 			}
 		}
-		return (dif.size() < Stats.ABILITY99.length / 5) ? null : dif;
+
+		return (count < Stats.ABILITY99.length / 5) ? null : dif;
 	}
 
 }

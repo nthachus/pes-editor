@@ -586,21 +586,40 @@ public final class Squads {
 			throw new NullArgumentException("ofDest");
 		}
 
+		List<Integer> teamSlots = new ArrayList<Integer>(Formations.CLUB_TEAM_SIZE);
+		int ofs, numOfs, ofsD, numOfsD, sz;
 		for (int t = FIRST_EDIT_NATION; t < LAST_CLUB; t++) {
-			int ofs = getOffset(t);
-			int numOfs = getNumOffset(t);
+			ofsD = ofs = getOffset(t);
+			numOfsD = numOfs = getNumOffset(t);
 
-			for (int i = 0, sz = getTeamSize(t); i < sz; i++) {
+			teamSlots.clear();
+			sz = (t == LAST_EDIT_NATION) ? LAST_EDIT_NATION_SIZE : getTeamSize(t);
+			for (int i = 0; i < sz; i++) {
 				int pid = Bits.toInt16(ofSource.getData(), ofs);
-				if (pid <= 0) {
-					break;
-				} else {
-					Bits.toBytes((short) pid, ofDest.getData(), ofs);
-					ofDest.getData()[numOfs] = ofSource.getData()[numOfs];
+				if (pid > 0) {
 
-					ofs += 2;
-					numOfs++;
+					if (teamSlots.contains(pid)) {
+						log.warn("Skip import duplicated player #{} for team {}, slot {}", pid, t, i);
+					} else {
+						Bits.toBytes((short) pid, ofDest.getData(), ofsD);
+						ofDest.getData()[numOfsD] = ofSource.getData()[numOfs];
+
+						teamSlots.add(pid);
+						ofsD += 2;
+						numOfsD++;
+					}
 				}
+
+				ofs += 2;
+				numOfs++;
+			}
+
+			while (ofsD < ofs) {
+				Bits.toBytes((short) 0, ofDest.getData(), ofsD);
+				ofDest.getData()[numOfsD] = -1;
+
+				ofsD += 2;
+				numOfsD++;
 			}
 		}
 	}
