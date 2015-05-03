@@ -267,8 +267,8 @@ public final class Stats {
 			"Syria",
 			"New Caledonia",
 
-			"[ - ]",// Black * NOTE: Nation IDs [100-101] must not be used
-			"[   ]",// White
+			"[  -  ]",// Black * NOTE: Nation IDs [100-101] must not be used
+			"[     ]",// White
 			"[ M ]",// Master-League country
 
 			"Albania",

@@ -764,7 +764,7 @@ public class TransferPanel extends JPanel
 				transferFree.set(false);
 			}
 
-			if (!autoRelease.isSelected() && squadFrom >= Squads.FIRST_CLUB && squadFrom <= Squads.TOTAL) {
+			if (!autoRelease.isSelected() && squadFrom >= Squads.FIRST_CLUB/* && squadFrom <= Squads.TOTAL*/) {
 				int s = clubRelease(indexTo, false);
 				if (s >= 0) {
 					transferTo.set(false);

@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.URL;
+import java.util.Locale;
 
 public class Editor extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 212475114885790986L;
@@ -28,15 +29,19 @@ public class Editor extends JFrame implements ActionListener {
 	private final CsvMaker csvMaker;
 
 	public Editor() {
-		super(Resources.getMessage("editor.title"));
+		super();
 
 		of = new OptionFile();
 		of2 = new OptionFile();
 		csvMaker = new CsvMaker();
 
-		initComponents();
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		initIcon();
 
-		tabbedPane.setVisible(false);
+		File lastDir = loadSettings();
+		setTitle(Resources.getMessage("editor.title"));
+
+		initComponents(lastDir);
 	}
 
 	//region Initialize the GUI components
@@ -60,10 +65,7 @@ public class Editor extends JFrame implements ActionListener {
 	private/* final*/ CsvSwitchPanel csvSwitch;
 	private/* final*/ JFileChooser csvChooser;
 
-	private void initComponents() {
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		initIcon();
-
+	private void initComponents(File lastDir) {
 		csvSwitch = new CsvSwitchPanel();
 
 		csvChooser = new JFileChooser();
@@ -110,18 +112,22 @@ public class Editor extends JFrame implements ActionListener {
 		tabbedPane.addTab(Resources.getMessage("editor.tab8"), null, globalPan, null);
 		tabbedPane.addTab(Resources.getMessage("editor.tab9"), null, importPanel, null);
 
-		buildMenu();
-		getContentPane().add(tabbedPane);
-
 		opFileFilter = new OptionFileFilter();
 		//
-		opFileChooser = new JFileChooser(loadSettings());
+		opFileChooser = new JFileChooser(lastDir);
 		opFileChooser.setAcceptAllFileFilterUsed(false);
 		opFileChooser.addChoosableFileFilter(opFileFilter);
 		opFileChooser.setAccessory(new OptionPreviewPanel(opFileChooser));
 
+		buildMenu();
+
+		setResizable(true);
+		getContentPane().add(tabbedPane);
+
 		setResizable(false);
 		pack();
+
+		tabbedPane.setVisible(false);
 	}
 
 	private JMenuItem open2Item;
@@ -172,6 +178,9 @@ public class Editor extends JFrame implements ActionListener {
 		tool.add(csvItem);
 		tool.add(convertItem);
 
+		JMenu language = new JMenu(Resources.getMessage("menu.language"));
+		buildLanguageMenu(language);
+
 		JMenuItem helpItem = new JMenuItem(Resources.getMessage("menu.helpPage"));
 		helpItem.setActionCommand("Help");
 		helpItem.addActionListener(this);
@@ -187,17 +196,21 @@ public class Editor extends JFrame implements ActionListener {
 		JMenuBar mb = new JMenuBar();
 		mb.add(file);
 		mb.add(tool);
+		mb.add(language);
 		mb.add(help);
 
 		setJMenuBar(mb);
 
-		csvItem.setEnabled(false);
-		open2Item.setEnabled(false);
-		saveItem.setEnabled(false);
-		saveAsItem.setEnabled(false);
-		convertItem.setEnabled(false);
+		enableMenuItems(false);
+		log.debug("Building of menu-bar is succeeded");
+	}
 
-		log.debug("Building of menu-bar succeeded");
+	private void enableMenuItems(boolean enable) {
+		csvItem.setEnabled(enable);
+		open2Item.setEnabled(enable);
+		saveItem.setEnabled(enable);
+		saveAsItem.setEnabled(enable);
+		convertItem.setEnabled(enable && of2.isLoaded());
 	}
 
 	private void initIcon() {
@@ -205,6 +218,20 @@ public class Editor extends JFrame implements ActionListener {
 		if (iconUrl != null) {
 			ImageIcon icon = new ImageIcon(iconUrl);
 			setIconImage(icon.getImage());
+		}
+	}
+
+	private void buildLanguageMenu(JMenu language) {
+		Locale loc;
+		JMenuItem mi;
+		for (int i = 0; i < Resources.SUPPORTED_LOCALES.length; i++) {
+			loc = Resources.SUPPORTED_LOCALES[i];
+
+			mi = new JMenuItem(loc.getDisplayLanguage(loc));
+			mi.setActionCommand("Language" + i);
+			mi.addActionListener(this);
+
+			language.add(mi);
 		}
 	}
 
@@ -239,6 +266,10 @@ public class Editor extends JFrame implements ActionListener {
 			exportCsv();
 		} else if ("Convert".equalsIgnoreCase(evt.getActionCommand())) {
 			importFromOF2();
+		} else if (null != evt.getActionCommand() && evt.getActionCommand().startsWith("Language")) {
+			int i = Integer.parseInt(evt.getActionCommand().substring(8));
+			switchLanguage(Resources.SUPPORTED_LOCALES[i]);
+
 		} else if ("Help".equalsIgnoreCase(evt.getActionCommand())) {
 			helpDia.setVisible(true);
 		} else if ("About".equalsIgnoreCase(evt.getActionCommand())) {
@@ -275,37 +306,48 @@ public class Editor extends JFrame implements ActionListener {
 
 			Squads.fixAll(of);
 
-			flagPanel.refresh();
-			imagePanel.refresh();
-			transferPan.refresh();
-			wenShop.getWenPanel().refresh();
-			wenShop.getShopPanel().refresh();
-			stadiumPan.refresh();
-			teamPan.refresh();
-			leaguePan.refresh();
-			importPanel.refresh();
-
-			tabbedPane.setVisible(true);
-
-			csvItem.setEnabled(true);
-			open2Item.setEnabled(true);
-			saveItem.setEnabled(true);
-			saveAsItem.setEnabled(true);
-			convertItem.setEnabled(of2.isLoaded());
+			refreshComponents();
+			enableMenuItems(true);
 
 			log.debug("Open succeeded on input file: {}", fs.getName());
 		} else {
 			refreshTitle(null);
 			tabbedPane.setVisible(false);
 
-			csvItem.setEnabled(false);
-			open2Item.setEnabled(false);
-			saveItem.setEnabled(false);
-			saveAsItem.setEnabled(false);
-			convertItem.setEnabled(false);
+			enableMenuItems(false);
 
 			log.debug("Failed to open file: {}", fs);
 			showOpenFailMsg();
+		}
+	}
+
+	private void refreshComponents() {
+		flagPanel.refresh();
+		imagePanel.refresh();
+		transferPan.refresh();
+		wenShop.getWenPanel().refresh();
+		wenShop.getShopPanel().refresh();
+		stadiumPan.refresh();
+		teamPan.refresh();
+		leaguePan.refresh();
+		importPanel.refresh();
+
+		tabbedPane.setVisible(true);
+	}
+
+	private void switchLanguage(Locale locale) {
+		Locale.setDefault(locale);
+		saveSettings();
+
+		getContentPane().remove(tabbedPane);
+		initComponents(opFileChooser.getCurrentDirectory());
+
+		if (null != currentFile) {
+			refreshTitle(currentFile.getName());
+			refreshComponents();
+			enableMenuItems(true);
+		} else {
+			refreshTitle(null);
 		}
 	}
 
@@ -505,14 +547,14 @@ public class Editor extends JFrame implements ActionListener {
 
 	private boolean saveSettings() {
 		File dir = opFileChooser.getCurrentDirectory();
-		if (null == dir) {
+		/*if (null == dir) {
 			return true;
-		}
+		}*/
 
 		ObjectOutputStream sw = null;
 		try {
 			sw = new ObjectOutputStream(new FileOutputStream(settingsFile, false));
-			sw.writeObject(dir);
+			sw.writeObject(new Object[]{dir, Locale.getDefault()});
 
 		} catch (IOException e) {
 			log.warn("Failed to save settings: {}", e.toString());
@@ -540,11 +582,13 @@ public class Editor extends JFrame implements ActionListener {
 			sr = new ObjectInputStream(new FileInputStream(settingsFile));
 			Object o = sr.readObject();
 
-			if (o instanceof File) {
-				dir = (File) o;
-				if (!dir.exists()) {
+			if (o instanceof Object[]) {
+				Object[] settings = (Object[]) o;
+				dir = (File) settings[0];
+				if (null != dir && !dir.exists()) {
 					dir = null;
 				}
+				Locale.setDefault((Locale) settings[1]);
 			}
 		} catch (Exception e) {
 			log.warn("Failed to load settings: {}", e.toString());
