@@ -24,11 +24,11 @@
 
 package org.slf4j.impl;
 
-import com.sendgrid.SendGrid;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
 import org.slf4j.helpers.NamedLoggerBase;
 import org.slf4j.helpers.Util;
+import org.slf4j.net.HttpMailer;
 import org.slf4j.spi.LocationAwareLogger;
 
 import java.io.*;
@@ -85,7 +85,7 @@ public class SimpleLogger extends NamedLoggerBase {
 
 	private static volatile String NEW_LINE = "\n";
 	private static volatile ExecutorService THREAD_POOL = null;
-	private static volatile SendGrid SMTP_APPENDER = null;
+	private static volatile HttpMailer SMTP_APPENDER = null;
 	private static final List<String> CACHED_MESSAGES = new LinkedList<String>();
 
 	/**
@@ -105,7 +105,10 @@ public class SimpleLogger extends NamedLoggerBase {
 	private static final String LOG_KEY_PREFIX = SYSTEM_PREFIX + "log.";
 
 	private static final String CHARSET_KEY = SYSTEM_PREFIX + "charset";
-	private static final String SMTP_APPENDER_KEY = SYSTEM_PREFIX + "sendGrid";
+	private static final String SMTP_APPENDER_KEY = SYSTEM_PREFIX + "httpMailer";
+	private static final String SMTP_ENDPOINT_KEY = SMTP_APPENDER_KEY + ".endpoint";
+	private static final String SMTP_AUTHORIZATION_KEY = SMTP_APPENDER_KEY + ".access";
+	private static final String SMTP_BODY_KEY = SMTP_APPENDER_KEY + ".form";
 	private static final String SMTP_TIMEOUT_KEY = SMTP_APPENDER_KEY + ".timeout";
 
 
@@ -189,12 +192,15 @@ public class SimpleLogger extends NamedLoggerBase {
 		NEW_LINE = getStringProperty("line.separator", NEW_LINE);
 		THREAD_POOL = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
 
-		String sendGridForm = getStringProperty(SMTP_APPENDER_KEY);
-		if (null != sendGridForm) {
+		String mailBody = getStringProperty(SMTP_BODY_KEY);
+		String endpoint = getStringProperty(SMTP_ENDPOINT_KEY);
+		if (null != mailBody && null != endpoint) {
 			try {
-				SMTP_APPENDER = new SendGrid(sendGridForm);
+				SMTP_APPENDER = new HttpMailer(mailBody)
+						.setEndpoint(endpoint)
+						.setAuthentication(getStringProperty(SMTP_AUTHORIZATION_KEY));
 			} catch (MalformedURLException e) {
-				Util.report("Failed to initialize SendGrid: " + e.toString());
+				Util.report("Failed to initialize HttpMailer: " + e.toString());
 				SMTP_APPENDER = null;
 				return;
 			}

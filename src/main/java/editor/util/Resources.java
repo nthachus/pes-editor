@@ -16,9 +16,9 @@ public final class Resources {
 
 	private static volatile ResourceBundle messages = null;
 
-	public static ResourceBundle getMessages(boolean reload) {
-		if (null == messages || reload) {
-			messages = ResourceBundle.getBundle("META-INF/i18n/messages", Locale.getDefault());
+	public static ResourceBundle getMessages(Locale locale) {
+		if (null == messages || !locale.equals(messages.getLocale())) {
+			messages = ResourceBundle.getBundle("META-INF/i18n/messages", locale);
 			if (null == messages) {
 				throw new IllegalStateException("messages must not be null.");
 			}
@@ -27,7 +27,7 @@ public final class Resources {
 	}
 
 	public static ResourceBundle getMessages() {
-		return getMessages(false);
+		return getMessages(Locale.getDefault());
 	}
 
 	private static String getMessage(String key, boolean nullable, Object... args) {
@@ -60,5 +60,10 @@ public final class Resources {
 	public static String getNullableMessage(String key, Object... args) {
 		return getMessage(key, true, args);
 	}
+
+	public static final Locale[] SUPPORTED_LOCALES = {
+			Locale.ENGLISH,
+			new Locale("vi"),
+	};
 
 }
