@@ -150,7 +150,7 @@ public final class StringsTest {
 	@Test
 	public void testFallbackMessage() throws Exception {
 		Locale.setDefault(new Locale("vi"));
-		Resources.getMessages(true);
+		Assert.assertNotNull(Resources.getMessages());
 
 		String val = "Tốc độ";
 		String msg = Resources.getMessage("Speed");

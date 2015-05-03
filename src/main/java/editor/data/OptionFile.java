@@ -115,9 +115,9 @@ public class OptionFile implements Serializable {
 
 				checksum(data, true);
 				decrypt(data);
-			}
 
-			log.info("Loading of {} save game file succeeded", format);
+				log.info("Loading of {} save game file succeeded", format);
+			}
 		} catch (Exception e) {
 			log.error("Failed to load save game file:", e);
 			format = null;
@@ -525,8 +525,8 @@ public class OptionFile implements Serializable {
 			// 4 bytes checksum before each blocks
 			if (validate) {
 				int crc = Bits.toInt(data, adr);
-				if (crc != chk) {
-					throw new IllegalStateException(String.format("Invalid checksum 0x%X, expected: 0x%X", crc, chk));
+				if (crc != 0 && crc != chk) {
+					throw new IllegalStateException(String.format("Invalid block@%d checksum 0x%X, expected: 0x%X", block[0], crc, chk));
 				}
 			} else {
 				Bits.toBytes(chk, data, adr);
