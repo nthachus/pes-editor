@@ -27,6 +27,10 @@ public final class Strings {
 	public static final String NEW_LINE = System.getProperty("line.separator");
 
 	public static final String EMPTY = "";
+	public static final String CR = "\r";
+	public static final String LF = "\n";
+	public static final String TAB = "\t";
+	public static final String SPACE = " ";
 
 	//region Create String from bytes array
 

@@ -135,6 +135,7 @@ public class Editor extends JFrame implements ActionListener {
 	private JMenuItem saveAsItem;
 	private JMenuItem csvItem;
 	private JMenuItem convertItem;
+	private JMenuItem relinkItem;
 
 	private void buildMenu() {
 		log.debug("Building menu-bar is starting..");
@@ -174,9 +175,14 @@ public class Editor extends JFrame implements ActionListener {
 		convertItem.setActionCommand("Convert");
 		convertItem.addActionListener(this);
 
+		relinkItem = new JMenuItem(Resources.getMessage("menu.relink"));
+		relinkItem.setActionCommand("Relink");
+		relinkItem.addActionListener(this);
+
 		JMenu tool = new JMenu(Resources.getMessage("menu.tool"));
 		tool.add(csvItem);
 		tool.add(convertItem);
+		tool.add(relinkItem);
 
 		JMenu language = new JMenu(Resources.getMessage("menu.language"));
 		buildLanguageMenu(language);
@@ -211,6 +217,7 @@ public class Editor extends JFrame implements ActionListener {
 		saveItem.setEnabled(enable);
 		saveAsItem.setEnabled(enable);
 		convertItem.setEnabled(enable && of2.isLoaded());
+		relinkItem.setEnabled(enable);
 	}
 
 	private void initIcon() {
@@ -222,7 +229,7 @@ public class Editor extends JFrame implements ActionListener {
 	}
 
 	private void buildLanguageMenu(JMenu language) {
-		Locale loc;
+		Locale loc, current = Locale.getDefault();
 		JMenuItem mi;
 		for (int i = 0; i < Resources.SUPPORTED_LOCALES.length; i++) {
 			loc = Resources.SUPPORTED_LOCALES[i];
@@ -230,6 +237,7 @@ public class Editor extends JFrame implements ActionListener {
 			mi = new JMenuItem(loc.getDisplayLanguage(loc));
 			mi.setActionCommand("Language" + i);
 			mi.addActionListener(this);
+			mi.setEnabled(!loc.equals(current));
 
 			language.add(mi);
 		}
@@ -266,6 +274,8 @@ public class Editor extends JFrame implements ActionListener {
 			exportCsv();
 		} else if ("Convert".equalsIgnoreCase(evt.getActionCommand())) {
 			importFromOF2();
+		} else if ("Relink".equalsIgnoreCase(evt.getActionCommand())) {
+			exportRelink();
 		} else if (null != evt.getActionCommand() && evt.getActionCommand().startsWith("Language")) {
 			int i = Integer.parseInt(evt.getActionCommand().substring(8));
 			switchLanguage(Resources.SUPPORTED_LOCALES[i]);
@@ -336,6 +346,9 @@ public class Editor extends JFrame implements ActionListener {
 	}
 
 	private void switchLanguage(Locale locale) {
+		if (locale.equals(Locale.getDefault())) {
+			return;
+		}
 		Locale.setDefault(locale);
 		saveSettings();
 
@@ -412,6 +425,19 @@ public class Editor extends JFrame implements ActionListener {
 
 		if (csvMaker.makeFile(of, dest, head/*, extra*/, create)) {
 			showSaveOkMsg(dest);
+		} else {
+			showSaveFailMsg();
+		}
+	}
+
+	private void exportRelink() {
+		if (null == currentFile) {
+			return;
+		}
+
+		String dest = currentFile.getParent();
+		if (of.exportRelink(dest)) {
+			showSaveOkMsg("Relink files", dest);
 		} else {
 			showSaveFailMsg();
 		}
@@ -531,8 +557,12 @@ public class Editor extends JFrame implements ActionListener {
 	}
 
 	private void showSaveOkMsg(File dest) {
+		showSaveOkMsg(dest.getName(), dest.getParent());
+	}
+
+	private void showSaveOkMsg(String filename, String path) {
 		JOptionPane.showMessageDialog(getContentPane(),
-				Resources.getMessage("msg.saveSuccess", dest.getName(), dest.getParent()),
+				Resources.getMessage("msg.saveSuccess", filename, path),
 				Resources.getMessage("msg.saveSuccess.title"), JOptionPane.INFORMATION_MESSAGE);
 	}
 
@@ -560,13 +590,7 @@ public class Editor extends JFrame implements ActionListener {
 			log.warn("Failed to save settings: {}", e.toString());
 			return false;
 		} finally {
-			if (null != sw) {
-				try {
-					sw.close();
-				} catch (IOException e) {
-					log.warn(e.toString());
-				}
-			}
+			Files.closeStream(sw);
 		}
 		return true;
 	}
@@ -593,13 +617,7 @@ public class Editor extends JFrame implements ActionListener {
 		} catch (Exception e) {
 			log.warn("Failed to load settings: {}", e.toString());
 		} finally {
-			if (null != sr) {
-				try {
-					sr.close();
-				} catch (IOException e) {
-					log.warn(e.toString());
-				}
-			}
+			Files.closeStream(sr);
 		}
 		return dir;
 	}

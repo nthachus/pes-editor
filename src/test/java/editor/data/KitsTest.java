@@ -10,7 +10,7 @@ import java.util.List;
 
 public final class KitsTest extends BaseTest {
 	@Test
-	public void testAddresses() throws Exception {
+	public void testAddresses() {
 		Assert.assertEquals(742324, Kits.START_ADR);
 		Assert.assertEquals(772876, Kits.START_CLUB_ADR);
 
@@ -22,7 +22,7 @@ public final class KitsTest extends BaseTest {
 	 * Verify licensed teams.
 	 */
 	@Test
-	public void testIsLicensed() throws Exception {
+	public void testIsLicensed() {
 		OptionFile of = loadOriginalOF();
 
 		List<Boolean> list = new ArrayList<Boolean>();
@@ -34,7 +34,7 @@ public final class KitsTest extends BaseTest {
 	}
 
 	@Test
-	public void testHasLogo() throws Exception {
+	public void testHasLogo() {
 		OptionFile of = loadLatestOF();
 
 		List<Boolean> list = new ArrayList<Boolean>();

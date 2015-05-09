@@ -9,12 +9,13 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 import java.io.File;
+import java.io.IOException;
 
 public final class ImagesTest extends BaseTest {
 	private static final String IMG_4BPP = "/mu_logo-64x4.png";
 
 	@Test
-	public void testReadAndWrite() throws Exception {
+	public void testReadAndWrite() throws IOException {
 		File fs = getResourceFile(IMG_4BPP);
 		BufferedImage img = ImageIO.read(fs);
 		Assert.assertNotNull(img);
