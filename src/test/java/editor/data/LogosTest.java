@@ -10,7 +10,7 @@ import java.util.List;
 
 public final class LogosTest extends BaseTest {
 	@Test
-	public void testAddresses() throws Exception {
+	public void testAddresses() {
 		Assert.assertEquals(857116, Logos.START_ADR);
 
 		Assert.assertEquals(80, Logos.TOTAL);
@@ -18,7 +18,7 @@ public final class LogosTest extends BaseTest {
 	}
 
 	@Test
-	public void testIsUsed() throws Exception {
+	public void testIsUsed() {
 		OptionFile of = loadLicensedOF();
 
 		List<Boolean> list = new ArrayList<Boolean>();
@@ -30,12 +30,12 @@ public final class LogosTest extends BaseTest {
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testSaveWithNullOF() throws Exception {
+	public void testSaveWithNullOF() {
 		Logos.set(null, 0, null);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void testSaveWithInvalidSlot() throws Exception {
+	public void testSaveWithInvalidSlot() {
 		Logos.set(new OptionFile(), -1, null);
 	}
 

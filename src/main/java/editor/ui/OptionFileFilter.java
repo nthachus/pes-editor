@@ -64,13 +64,7 @@ public class OptionFileFilter extends FileFilter {
 		} catch (IOException e) {
 			log.warn("{} is not a Memory Linker file: {}", f, e);
 		} finally {
-			if (null != rf) {
-				try {
-					rf.close();
-				} catch (IOException e) {
-					log.warn(e.toString());
-				}
-			}
+			Files.closeStream(rf);
 		}
 		return null;
 	}
@@ -103,13 +97,7 @@ public class OptionFileFilter extends FileFilter {
 		} catch (IOException e) {
 			log.warn("{} is not an XPort file: {}", f, e);
 		} finally {
-			if (null != rf) {
-				try {
-					rf.close();
-				} catch (IOException e) {
-					log.warn(e.toString());
-				}
-			}
+			Files.closeStream(rf);
 		}
 		return null;
 	}
@@ -131,13 +119,7 @@ public class OptionFileFilter extends FileFilter {
 		} catch (IOException e) {
 			log.warn("{} is not an ARMax file: {}", f, e);
 		} finally {
-			if (null != rf) {
-				try {
-					rf.close();
-				} catch (IOException e) {
-					log.warn(e.toString());
-				}
-			}
+			Files.closeStream(rf);
 		}
 		return null;
 	}

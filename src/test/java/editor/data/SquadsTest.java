@@ -6,12 +6,12 @@ import org.junit.Test;
 
 public final class SquadsTest extends BaseTest {
 	@Test
-	public void testAddresses() throws Exception {
-		Assert.assertEquals(640632, readStaticField(Squads.class, "NATION_NUM_ADR", true, true));
-		Assert.assertEquals(642357, readStaticField(Squads.class, "CLUB_NUM_ADR", true, true));
+	public void testAddresses() throws NoSuchFieldException, IllegalAccessException {
+		Assert.assertEquals(640632, Squads.NATION_NUM_ADR);
+		Assert.assertEquals(642357, Squads.CLUB_NUM_ADR);
 
 		Assert.assertEquals(646806, Squads.NATION_ADR);
-		Assert.assertEquals(650256, readStaticField(Squads.class, "CLUB_ADR", true, true));
+		Assert.assertEquals(650256, Squads.CLUB_ADR);
 
 		Assert.assertEquals(212, Squads.TOTAL);
 		Assert.assertEquals(15, Squads.EXTRA_COUNT);
@@ -19,10 +19,17 @@ public final class SquadsTest extends BaseTest {
 		Assert.assertEquals(73, Squads.LAST_EDIT_NATION);
 		Assert.assertEquals(75, Squads.FIRST_CLUB);
 		Assert.assertEquals(Squads.FIRST_CLUB + Clubs.TOTAL, Squads.LAST_CLUB);
+
+		Integer firstClubSlot = (Integer) readStaticField(Squads.class, "FIRST_CLUB_SLOT", true, true);
+		Assert.assertEquals(3450 / 2, firstClubSlot.intValue());
+		Assert.assertEquals(3450, Squads.CLUB_ADR - Squads.NATION_ADR);
+		Integer totalSlots = (Integer) readStaticField(Squads.class, "TOTAL_SLOTS", true, true);
+		Assert.assertEquals(4448, totalSlots - firstClubSlot);
+		Assert.assertEquals(8896, Squads.END_ADR - Squads.CLUB_ADR);
 	}
 
 	@Test
-	public void testGetClassicNation() throws Exception {
+	public void testGetClassicNation() {
 		Assert.assertEquals(7, Squads.getClassicNation(7));
 
 		Assert.assertEquals(60, Squads.getClassicNation(6));
@@ -35,7 +42,7 @@ public final class SquadsTest extends BaseTest {
 	}
 
 	@Test
-	public void testGetNationForTeam() throws Exception {
+	public void testGetNationForTeam() {
 		Assert.assertEquals(6, Squads.getNationForTeam(60));
 		Assert.assertEquals(8, Squads.getNationForTeam(61));
 		Assert.assertEquals(9, Squads.getNationForTeam(62));
@@ -48,7 +55,7 @@ public final class SquadsTest extends BaseTest {
 	}
 
 	@Test
-	public void testPlayersInClub() throws Exception {
+	public void testPlayersInClub() {
 		OptionFile of = loadOriginalOF();
 
 		int club = 10;// MU

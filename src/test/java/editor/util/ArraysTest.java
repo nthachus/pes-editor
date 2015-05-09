@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public final class ArraysTest {
 	@Test
-	public void testIndexOf() throws Exception {
+	public void testIndexOf() {
 		Object[] arr = new Object[]{"", null, getClass()};
 		int idx = Arrays.indexOf(arr, null);
 		Assert.assertEquals(1, idx);
@@ -22,7 +22,7 @@ public final class ArraysTest {
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testIndexOfWithNullArray() throws Exception {
+	public void testIndexOfWithNullArray() {
 		Arrays.indexOf(null, null);
 	}
 

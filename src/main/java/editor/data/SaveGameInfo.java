@@ -71,13 +71,7 @@ public class SaveGameInfo implements Serializable {
 
 			log.error("I/O error while getting save game info:", e);
 		} finally {
-			if (rf != null) {
-				try {
-					rf.close();
-				} catch (IOException e) {
-					log.warn(e.toString());
-				}
-			}
+			Files.closeStream(rf);
 		}
 		return false;
 	}

@@ -10,7 +10,7 @@ public final class Formations {
 	public static final int NATION_TEAM_SIZE = 23;
 	public static final int CLUB_TEAM_SIZE = 32;
 
-	public static final int START_ADR = Squads.END_ADR + 128;//192 - 2*32
+	public static final int START_ADR = Squads.END_ADR;
 	public static final int TOTAL = Squads.NATION_COUNT + Squads.CLASSIC_COUNT + Clubs.TOTAL;
 
 	/**

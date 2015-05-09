@@ -3,6 +3,7 @@ package editor.ui;
 import editor.data.*;
 import editor.lang.NullArgumentException;
 import editor.util.Arrays;
+import editor.util.Strings;
 import editor.util.UIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ public class PositionList extends JList/*<String>*/ {
 		log.info("Refresh Position list for team: {}, in-transfer: {}", team, inTransfer);
 
 		String[] posList = new String[posNum.length];
-		java.util.Arrays.fill(posList, " ");
+		java.util.Arrays.fill(posList, Strings.SPACE);
 
 		if (!inTransfer
 				|| ((team < Squads.FIRST_EDIT_NATION || team >= Squads.FIRST_CLUB)

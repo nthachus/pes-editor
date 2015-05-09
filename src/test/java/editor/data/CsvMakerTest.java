@@ -6,26 +6,27 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 
 public final class CsvMakerTest extends BaseTest {
 	private final CsvMaker csvMaker = new CsvMaker(true);
 
 	@Test
-	public void testExportCsvForOriginalOF() throws Exception {
+	public void testExportCsvForOriginalOF() throws IOException {
 		testExportCsv(OF_ORIGINAL);
 	}
 
 	@Test
-	public void testExportCsvForLicensedOF() throws Exception {
+	public void testExportCsvForLicensedOF() throws IOException {
 		testExportCsv(OF_LICENSED);
 	}
 
 	@Test
-	public void testExportCsvForLatestOF() throws Exception {
+	public void testExportCsvForLatestOF() throws IOException {
 		testExportCsv(OF_LATEST);
 	}
 
-	private void testExportCsv(String fn) throws Exception {
+	private void testExportCsv(String fn) throws IOException {
 		OptionFile of = loadOptionFile(fn);
 
 		File fs = createTempFile(fn, Files.CSV);
@@ -35,12 +36,12 @@ public final class CsvMakerTest extends BaseTest {
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testExportWithNullOF() throws Exception {
+	public void testExportWithNullOF() {
 		csvMaker.makeFile(null, new File(getClass().getSimpleName()), true/*, true*/, true);
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testExportWithNullDest() throws Exception {
+	public void testExportWithNullDest() {
 		csvMaker.makeFile(new OptionFile(), null, true/*, true*/, true);
 	}
 

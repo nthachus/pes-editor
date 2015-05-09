@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 public final class StringsTest {
@@ -14,18 +15,18 @@ public final class StringsTest {
 
 	// @BeforeClass setUpClass()
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		defLocale = Locale.getDefault();
 		Locale.setDefault(Locale.ENGLISH);
 	}
 
 	@After
-	public void tearDown() throws Exception {
+	public void tearDown() {
 		Locale.setDefault(defLocale);
 	}
 
 	@Test
-	public void testConstants() throws Exception {
+	public void testConstants() {
 		//Assert.assertNotNull(Strings.ANSI);
 		//Assert.assertNotNull(Strings.UTF8);
 		//Assert.assertNotNull(Strings.S_JIS);
@@ -36,7 +37,7 @@ public final class StringsTest {
 	}
 
 	@Test
-	public void testReadANSI() throws Exception {
+	public void testReadANSI() throws UnsupportedEncodingException {
 		String s = Strings.readANSI(new byte[0]);
 		Assert.assertEquals(0, s.length());
 
@@ -51,12 +52,12 @@ public final class StringsTest {
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testReadNullANSIString() throws Exception {
+	public void testReadNullANSIString() {
 		Strings.readANSI(null);
 	}
 
 	@Test
-	public void testReadUnicode() throws Exception {
+	public void testReadUnicode() throws UnsupportedEncodingException {
 		String s = Strings.readUNICODE(new byte[0]);
 		Assert.assertEquals(0, s.length());
 
@@ -74,12 +75,12 @@ public final class StringsTest {
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testReadNullUnicodeString() throws Exception {
+	public void testReadNullUnicodeString() {
 		Strings.readUNICODE(null);
 	}
 
 	@Test
-	public void testReadUtf8() throws Exception {
+	public void testReadUtf8() throws UnsupportedEncodingException {
 		String s = Strings.readUTF8(new byte[0]);
 		Assert.assertEquals(0, s.length());
 
@@ -94,7 +95,7 @@ public final class StringsTest {
 	}
 
 	@Test
-	public void testEqualsIgnoreCase() throws Exception {
+	public void testEqualsIgnoreCase() {
 		boolean res = Strings.equalsIgnoreCase(null, null);
 		Assert.assertEquals(true, res);
 
@@ -112,7 +113,7 @@ public final class StringsTest {
 	}
 
 	@Test
-	public void testIsEmpty() throws Exception {
+	public void testIsEmpty() {
 		Assert.assertEquals(true, Strings.isEmpty(null));
 		Assert.assertEquals(true, Strings.isEmpty(""));
 		Assert.assertEquals(false, Strings.isEmpty(" "));
@@ -121,7 +122,7 @@ public final class StringsTest {
 	}
 
 	@Test
-	public void testIsBlank() throws Exception {
+	public void testIsBlank() {
 		Assert.assertEquals(true, Strings.isBlank(null));
 		Assert.assertEquals(true, Strings.isBlank(""));
 		Assert.assertEquals(true, Strings.isBlank(" "));
@@ -131,7 +132,7 @@ public final class StringsTest {
 	}
 
 	@Test
-	public void testMessageResource() throws Exception {
+	public void testMessageResource() {
 		Assert.assertNotNull(Resources.getMessages());
 
 		String notFoundKey = getClass().getName();
@@ -148,7 +149,7 @@ public final class StringsTest {
 	}
 
 	@Test
-	public void testFallbackMessage() throws Exception {
+	public void testFallbackMessage() {
 		Locale.setDefault(new Locale("vi"));
 		Assert.assertNotNull(Resources.getMessages());
 

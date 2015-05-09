@@ -10,27 +10,27 @@ public final class StatsTest extends BaseTest {
 	private static final int FOR_PLAYER = 1;
 
 	@Test(expected = NullArgumentException.class)
-	public void testGetValueWithNullStat() throws Exception {
+	public void testGetValueWithNullStat() {
 		Stats.getValue(new OptionFile(), FOR_PLAYER, null);
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testGetValueWithNullOF() throws Exception {
+	public void testGetValueWithNullOF() {
 		Stats.getValue(null, FOR_PLAYER, Stats.AGE);
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testSetValueWithNullStat() throws Exception {
+	public void testSetValueWithNullStat() {
 		Stats.setValue(new OptionFile(), FOR_PLAYER, null, 1);
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testSetValueWithNullOF() throws Exception {
+	public void testSetValueWithNullOF() {
 		Stats.setValue(null, FOR_PLAYER, Stats.AGE, 1);
 	}
 
 	@Test
-	public void testDuplicatedStats() throws Exception {
+	public void testDuplicatedStats() throws IllegalAccessException {
 		List<Stat> fields = readStaticFields(Stats.class, Stat.class, true, false);
 		fields.addAll(Arrays.asList(Stats.ABILITY_SPECIAL));
 
@@ -43,7 +43,7 @@ public final class StatsTest extends BaseTest {
 	}
 
 	@Test
-	public void testGetAndSetValue() throws Exception {
+	public void testGetAndSetValue() throws IllegalAccessException {
 		OptionFile of = loadLatestOF();
 
 		List<Stat> fields = readStaticFields(Stats.class, Stat.class, true, false);
@@ -62,14 +62,14 @@ public final class StatsTest extends BaseTest {
 	}
 
 	@Test
-	public void testPlayerStats() throws Exception {
+	public void testPlayerStats() throws IllegalAccessException {
 		OptionFile of = loadOriginalOF();
 
 		testStatsForPlayer(of, 1, player1);
 		testStatsForPlayer(of, 1506, player1506);
 	}
 
-	private void testStatsForPlayer(OptionFile of, int pid, String[][] playerStats) throws Exception {
+	private void testStatsForPlayer(OptionFile of, int pid, String[][] playerStats) throws IllegalAccessException {
 		Map<String, String> stats = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 		for (String[] ps : playerStats) {
 			stats.put(ps[0], ps[1]);

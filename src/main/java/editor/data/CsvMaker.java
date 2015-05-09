@@ -1,6 +1,7 @@
 package editor.data;
 
 import editor.lang.NullArgumentException;
+import editor.util.Files;
 import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,13 +63,7 @@ public class CsvMaker implements Serializable {
 		} catch (IOException e) {
 			log.error("Failed to make CSV file:", e);
 		} finally {
-			if (null != out) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					log.warn(e.toString());
-				}
-			}
+			Files.closeStream(out);
 		}
 
 		return false;

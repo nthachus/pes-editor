@@ -162,7 +162,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 
 		@Override
 		public String toString() {
-			return Strings.isEmpty(team) ? " " : team;
+			return Strings.isEmpty(team) ? Strings.SPACE : team;
 		}
 	}
 

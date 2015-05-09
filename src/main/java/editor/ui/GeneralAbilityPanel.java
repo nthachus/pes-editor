@@ -107,11 +107,13 @@ public class GeneralAbilityPanel extends JPanel {
 		add(footBox);
 
 		lab = new JLabel(Resources.getMessage("genAbility.wfAcc"));
+		lab.setToolTipText(Resources.getNullableMessage("genAbility.wfAcc.tip"));
 		lab.setLabelFor(weakFootAccBox);
 		add(lab);
 		add(weakFootAccBox);
 
 		lab = new JLabel(Resources.getMessage("genAbility.wfFreq"));
+		lab.setToolTipText(Resources.getNullableMessage("genAbility.wfFreq.tip"));
 		lab.setLabelFor(weakFootFreqBox);
 		add(lab);
 		add(weakFootFreqBox);

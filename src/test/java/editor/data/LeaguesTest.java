@@ -8,13 +8,13 @@ public final class LeaguesTest extends BaseTest {
 	private static final String FIRST_LEAGUE = "International League";
 
 	@Test
-	public void testAddresses() throws Exception {
+	public void testAddresses() {
 		Assert.assertEquals(84, Leagues.SIZE);
 		Assert.assertEquals(8724, Leagues.START_ADR);
 	}
 
 	@Test
-	public void testLoadAndSave() throws Exception {
+	public void testLoadAndSave() {
 		OptionFile of = loadLatestOF();
 
 		String[] list = Leagues.get(of);
@@ -33,7 +33,7 @@ public final class LeaguesTest extends BaseTest {
 	}
 
 	@Test
-	public void testImport() throws Exception {
+	public void testImport() {
 		OptionFile of = loadOriginalOF();
 		OptionFile of2 = loadLatestOF();
 
@@ -51,37 +51,37 @@ public final class LeaguesTest extends BaseTest {
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testLoadAllWithNullOF() throws Exception {
+	public void testLoadAllWithNullOF() {
 		Leagues.get(null);
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testLoadWithNullOF() throws Exception {
+	public void testLoadWithNullOF() {
 		Leagues.get(null, 0);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void testLoadWithInvalidIndex() throws Exception {
+	public void testLoadWithInvalidIndex() {
 		Leagues.get(new OptionFile(), -1);
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testSaveWithNullOF() throws Exception {
+	public void testSaveWithNullOF() {
 		Leagues.set(null, 0, null);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void testSaveWithInvalidIndex() throws Exception {
+	public void testSaveWithInvalidIndex() {
 		Leagues.set(new OptionFile(), -1, null);
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testImportWithNullSource() throws Exception {
+	public void testImportWithNullSource() {
 		Leagues.importData(null, new OptionFile());
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testImportWithNullDest() throws Exception {
+	public void testImportWithNullDest() {
 		Leagues.importData(new OptionFile(), null);
 	}
 

@@ -10,10 +10,11 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 public final class ClubsTest extends BaseTest {
 	@Test
-	public void testAddresses() throws Exception {
+	public void testAddresses() {
 		Assert.assertEquals(730872, Clubs.START_ADR);
 
 		Assert.assertEquals(143, Clubs.FIRST_DEF_EMBLEM);
@@ -22,7 +23,7 @@ public final class ClubsTest extends BaseTest {
 	}
 
 	@Test
-	public void testGetAndSetName() throws Exception {
+	public void testGetAndSetName() {
 		OptionFile of = loadOriginalOF();
 		int cid = rand.nextInt(Clubs.TOTAL);
 
@@ -53,7 +54,7 @@ public final class ClubsTest extends BaseTest {
 	}
 
 	@Test
-	public void testGetEmblem() throws Exception {
+	public void testGetEmblem() throws IOException {
 		OptionFile of = loadLicensedOF();
 
 		String name, abv;
@@ -89,7 +90,7 @@ public final class ClubsTest extends BaseTest {
 	}
 
 	@Test
-	public void testSetEmblem() throws Exception {
+	public void testSetEmblem() {
 		OptionFile of = loadLatestOF();
 
 		int cid = 0;
@@ -123,7 +124,7 @@ public final class ClubsTest extends BaseTest {
 	}
 
 	@Test
-	public void testGetBackFlag() throws Exception {
+	public void testGetBackFlag() {
 		OptionFile of = loadLatestOF();
 
 		String name;
@@ -145,7 +146,7 @@ public final class ClubsTest extends BaseTest {
 	}
 
 	@Test
-	public void testSetBackFlag() throws Exception {
+	public void testSetBackFlag() {
 		OptionFile of = loadLatestOF();
 		int cid = rand.nextInt(Clubs.TOTAL);
 
@@ -176,7 +177,7 @@ public final class ClubsTest extends BaseTest {
 	}
 
 	@Test
-	public void testGetClubInfo() throws Exception {
+	public void testGetClubInfo() {
 		OptionFile of = loadOriginalOF();
 		int cid = 10;
 
