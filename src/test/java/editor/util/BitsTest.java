@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public final class BitsTest {
 	@Test
-	public void testToBytes() throws Exception {
+	public void testToBytes() {
 		int num = 0xAA112233;
 		byte[] a4 = new byte[]{0x33, 0x22, 0x11, (byte) 0xAA};
 		byte[] a3 = Arrays.copyOf(a4, 3);
@@ -26,17 +26,17 @@ public final class BitsTest {
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testToBytesWithNullBuffer() throws Exception {
+	public void testToBytesWithNullBuffer() {
 		Bits.toBytes(Byte.MIN_VALUE, null, 0);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void testToBytesWithInvalidOffset() throws Exception {
+	public void testToBytesWithInvalidOffset() {
 		Bits.toBytes(Short.MIN_VALUE, new byte[0], -1);
 	}
 
 	@Test
-	public void testGetBitLength() throws Exception {
+	public void testGetBitLength() {
 		Assert.assertEquals(0, Bits.bitLength(0));
 		Assert.assertEquals(1, Bits.bitLength(1));
 		Assert.assertEquals(2, Bits.bitLength(2));

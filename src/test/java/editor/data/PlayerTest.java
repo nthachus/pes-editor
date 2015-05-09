@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public final class PlayerTest extends BaseTest {
 	@Test
-	public void testAddresses() throws Exception {
+	public void testAddresses() {
 		Assert.assertEquals(34920, Player.START_ADR);
 		Assert.assertEquals(12092, Player.START_EDIT_ADR);
 
@@ -26,12 +26,12 @@ public final class PlayerTest extends BaseTest {
 	}
 
 	@Test
-	public void testTransferable() throws Exception {
+	public void testTransferable() {
 		Assert.assertNotNull(PlayerTransferable.getDataFlavor());
 	}
 
 	@Test
-	public void testGetAndSetName() throws Exception {
+	public void testGetAndSetName() {
 		OptionFile of = loadOriginalOF();
 
 		int pid = 2;
@@ -66,7 +66,7 @@ public final class PlayerTest extends BaseTest {
 	}
 
 	@Test
-	public void testBuildShirtName() throws Exception {
+	public void testBuildShirtName() {
 		String sn = Player.buildShirtName("abc");
 		Assert.assertEquals("A    B    C", sn);
 

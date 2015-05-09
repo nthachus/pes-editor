@@ -4,6 +4,7 @@ import editor.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -124,12 +125,16 @@ public final class Files {
 			log.error("Failed to read entire file:", e);
 			return null;
 		} finally {
-			if (null != fs) {
-				try {
-					fs.close();
-				} catch (IOException e) {
-					log.warn(e.toString());
-				}
+			closeStream(fs);
+		}
+	}
+
+	public static void closeStream(Closeable stream) {
+		if (null != stream) {
+			try {
+				stream.close();
+			} catch (IOException e) {
+				log.warn(e.toString());
 			}
 		}
 	}

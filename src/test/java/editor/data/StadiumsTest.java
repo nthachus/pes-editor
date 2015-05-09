@@ -8,13 +8,13 @@ public final class StadiumsTest extends BaseTest {
 	private static final String FIRST_STADIUM = "CLUB HOUSE";
 
 	@Test
-	public void testAddresses() throws Exception {
+	public void testAddresses() {
 		Assert.assertEquals(61, Stadiums.SIZE);
 		Assert.assertEquals(7608, Stadiums.START_ADR);
 	}
 
 	@Test
-	public void testLoadAndSave() throws Exception {
+	public void testLoadAndSave() {
 		OptionFile of = loadLatestOF();
 
 		String[] list = Stadiums.get(of);
@@ -36,7 +36,7 @@ public final class StadiumsTest extends BaseTest {
 	}
 
 	@Test
-	public void testImport() throws Exception {
+	public void testImport() {
 		OptionFile of = loadOriginalOF();
 		OptionFile of2 = loadLatestOF();
 
@@ -54,42 +54,42 @@ public final class StadiumsTest extends BaseTest {
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testLoadAllWithNullOF() throws Exception {
+	public void testLoadAllWithNullOF() {
 		Stadiums.get(null);
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testLoadWithNullOF() throws Exception {
+	public void testLoadWithNullOF() {
 		Stadiums.get(null, 0);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void testLoadWithInvalidIndex() throws Exception {
+	public void testLoadWithInvalidIndex() {
 		Stadiums.get(new OptionFile(), -1);
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testSaveWithNullOF() throws Exception {
+	public void testSaveWithNullOF() {
 		Stadiums.set(null, 0, null);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void testSaveWithInvalidIndex() throws Exception {
+	public void testSaveWithInvalidIndex() {
 		Stadiums.set(new OptionFile(), -1, null);
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testImportWithNullSource() throws Exception {
+	public void testImportWithNullSource() {
 		Stadiums.importData(null, new OptionFile());
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testImportWithNullDest() throws Exception {
+	public void testImportWithNullDest() {
 		Stadiums.importData(new OptionFile(), null);
 	}
 
 	@Test
-	public void testGetName() throws Exception {
+	public void testGetName() {
 		OptionFile of = loadOriginalOF();
 
 		Assert.assertEquals("STADIO OLIMPICO", Stadiums.get(of, 8));

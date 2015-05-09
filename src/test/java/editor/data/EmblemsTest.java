@@ -9,12 +9,13 @@ import org.junit.Test;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class EmblemsTest extends BaseTest {
 	@Test
-	public void testAddresses() throws Exception {
+	public void testAddresses() {
 		Assert.assertEquals(914800, Emblems.START_ADR);
 
 		Assert.assertEquals(5184, Emblems.SIZE128);
@@ -22,7 +23,7 @@ public final class EmblemsTest extends BaseTest {
 	}
 
 	@Test
-	public void testGetAllEmblems() throws Exception {
+	public void testGetAllEmblems() throws IOException {
 		OptionFile of = loadLatestOF();
 
 		int n16 = Emblems.count16(of);
@@ -42,7 +43,7 @@ public final class EmblemsTest extends BaseTest {
 		saveEmblemAsPNG(of, list);
 	}
 
-	private static void saveEmblemAsPNG(OptionFile of, List<BufferedImage> list) throws Exception {
+	private static void saveEmblemAsPNG(OptionFile of, List<BufferedImage> list) throws IOException {
 		File tempFs = createTempFile(of.getFilename(), String.format("%d%s%s", 1, Files.EXT_SEPARATOR, IMG_FORMAT));
 		boolean res = ImageIO.write(list.get(0), IMG_FORMAT, tempFs);
 		Assert.assertTrue(res);

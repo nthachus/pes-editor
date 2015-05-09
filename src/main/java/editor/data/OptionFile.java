@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.zip.CRC32;
 
 public class OptionFile implements Serializable {
@@ -122,13 +123,7 @@ public class OptionFile implements Serializable {
 			log.error("Failed to load save game file:", e);
 			format = null;
 		} finally {
-			if (null != in) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					log.warn(e.toString());
-				}
-			}
+			Files.closeStream(in);
 		}
 
 		if (null != format) {
@@ -303,14 +298,7 @@ public class OptionFile implements Serializable {
 			log.error("Failed to save game file:", e);
 			return false;
 		} finally {
-			if (null != out) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					log.warn(e.toString());
-				}
-			}
-
+			Files.closeStream(out);
 			decrypt(data);
 		}
 
@@ -383,13 +371,110 @@ public class OptionFile implements Serializable {
 			log.error("Failed to dump raw data:", e);
 			return false;
 		} finally {
-			if (null != out) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					log.warn(e.toString());
+			Files.closeStream(out);
+		}
+
+		return true;
+	}
+
+	public boolean exportRelink(String dest) {
+		if (null == dest) {
+			throw new NullArgumentException("dest");
+		}
+
+		RandomAccessFile playersBin = null;
+		RandomAccessFile slot23Bin = null;
+		RandomAccessFile slot32Bin = null;
+		RandomAccessFile num23Bin = null;
+		RandomAccessFile num32Bin = null;
+		RandomAccessFile formationsBin = null;
+		RandomAccessFile nationalKitsBin = null;
+		RandomAccessFile clubKitsBin = null;
+
+		try {
+			byte[] players = new byte[Player.TOTAL * Player.SIZE];
+			System.arraycopy(data, Player.START_ADR, players, 0, players.length);
+
+			byte[] slot23 = new byte[Squads.CLUB_ADR - Squads.NATION_ADR];
+			System.arraycopy(data, Squads.NATION_ADR, slot23, 0, slot23.length);
+
+			byte[] slot32 = new byte[Squads.END_ADR - Squads.CLUB_ADR];
+			System.arraycopy(data, Squads.CLUB_ADR, slot32, 0, slot32.length);
+
+			byte[] num23 = new byte[slot23.length / 2];
+			System.arraycopy(data, Squads.NATION_NUM_ADR, num23, 0, num23.length);
+
+			byte[] num32 = new byte[slot32.length / 2];
+			System.arraycopy(data, Squads.CLUB_NUM_ADR, num32, 0, num32.length);
+
+			int sz = 52;
+			byte[] formations = new byte[sz * Formations.TOTAL];
+			byte[] temp = new byte[sz + 1];
+			for (int squad = 0, ofs = 0; squad < Formations.TOTAL; squad++, ofs += sz) {
+				// Only copy X/Y coordinate formations
+				System.arraycopy(data, Formations.START_ADR + Formations.SIZE * squad + 118, temp, 0, temp.length);
+
+				System.arraycopy(temp, 21, formations, ofs, 10);
+				for (int i = 0; i < 10; i++) {
+					formations[ofs + 10 + i] = temp[i * 2];
 				}
+				for (int i = 0; i < 10; i++) {
+					formations[ofs + 20 + i] = temp[i * 2 + 1];
+				}
+				System.arraycopy(temp, 31, formations, ofs + 30, 22);
 			}
+
+			int total = Squads.NATION_COUNT + Squads.CLASSIC_COUNT;
+			byte[] nationalKits = new byte[total * Kits.SIZE_NATION];
+			sz = Kits.SIZE_NATION - 108;
+			for (int ofs = 0; total > 0; total--, ofs += Kits.SIZE_NATION) {
+				System.arraycopy(data, Kits.START_ADR + ofs, nationalKits, ofs, sz);
+				Arrays.fill(nationalKits, ofs + sz, ofs + Kits.SIZE_NATION, (byte) 0);
+			}
+
+			total = Clubs.TOTAL;
+			byte[] clubKits = new byte[total * Kits.SIZE_CLUB];
+			sz = Kits.SIZE_CLUB - 300;
+			for (int ofs = 0; total > 0; total--, ofs += Kits.SIZE_CLUB) {
+				System.arraycopy(data, Kits.START_CLUB_ADR + ofs, clubKits, ofs, sz);
+				Arrays.fill(clubKits, ofs + sz, ofs + Kits.SIZE_CLUB, (byte) 0);
+			}
+
+			if (!dest.endsWith(File.separator)) {
+				dest += File.separatorChar;
+			}
+
+			playersBin = new RandomAccessFile(dest + "unknow_00051.bin_000", "rw");
+			slot23Bin = new RandomAccessFile(dest + "unknow_00051.bin_001", "rw");
+			slot32Bin = new RandomAccessFile(dest + "unknow_00051.bin_002", "rw");
+			num23Bin = new RandomAccessFile(dest + "unknow_00051.bin_003", "rw");
+			num32Bin = new RandomAccessFile(dest + "unknow_00051.bin_004", "rw");
+			formationsBin = new RandomAccessFile(dest + "unknow_00057.bin_001", "rw");
+			nationalKitsBin = new RandomAccessFile(dest + "unknow_00058.bin_000", "rw");
+			clubKitsBin = new RandomAccessFile(dest + "unknow_00058.bin_001", "rw");
+
+			playersBin.write(players);
+			slot23Bin.write(slot23);
+			slot32Bin.write(slot32);
+			num23Bin.write(num23);
+			num32Bin.write(num32);
+			formationsBin.write(formations);
+			nationalKitsBin.write(nationalKits);
+			clubKitsBin.write(clubKits);
+
+		} catch (Exception e) {
+			log.error("Failed to export to Relink Kit files:", e);
+			return false;
+
+		} finally {
+			Files.closeStream(playersBin);
+			Files.closeStream(slot23Bin);
+			Files.closeStream(slot32Bin);
+			Files.closeStream(num23Bin);
+			Files.closeStream(num32Bin);
+			Files.closeStream(formationsBin);
+			Files.closeStream(nationalKitsBin);
+			Files.closeStream(clubKitsBin);
 		}
 
 		return true;

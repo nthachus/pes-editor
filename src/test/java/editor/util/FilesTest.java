@@ -12,7 +12,7 @@ public final class FilesTest {
 	private static final Logger log = LoggerFactory.getLogger(FilesTest.class);
 
 	@Test
-	public void testGetExtension() throws Exception {
+	public void testGetExtension() {
 		String ext = Files.getExtension((String) null);
 		Assert.assertNull(ext);
 
@@ -33,12 +33,12 @@ public final class FilesTest {
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testGetExtensionWithNullFile() throws Exception {
+	public void testGetExtensionWithNullFile() {
 		Files.getExtension((File) null);
 	}
 
 	@Test
-	public void testAddExtension() throws Exception {
+	public void testAddExtension() {
 		File fd = Files.addExtension(null, null);
 		Assert.assertNull(fd);
 
@@ -58,7 +58,7 @@ public final class FilesTest {
 	}
 
 	@Test
-	public void testRemoveExtension() throws Exception {
+	public void testRemoveExtension() {
 		String fn = Files.removeExtension(null);
 		Assert.assertNull(fn);
 
@@ -79,7 +79,7 @@ public final class FilesTest {
 	}
 
 	@Test
-	public void testIllegalFilename() throws Exception {
+	public void testIllegalFilename() {
 		Assert.assertEquals(true, Files.isFilenameLegal(null));
 		Assert.assertEquals(true, Files.isFilenameLegal(""));
 		Assert.assertEquals(true, Files.isFilenameLegal(" da%^()-"));
@@ -89,13 +89,13 @@ public final class FilesTest {
 	}
 
 	@Test
-	public void testReadBytesWithNonExistsFile() throws Exception {
+	public void testReadBytesWithNonExistsFile() {
 		byte[] data = Files.readBytes(new File(getClass().getName()));
 		Assert.assertNull(data);
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testReadBytesWithNullFile() throws Exception {
+	public void testReadBytesWithNullFile() {
 		Files.readBytes(null);
 	}
 

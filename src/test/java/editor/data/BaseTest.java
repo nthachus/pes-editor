@@ -34,10 +34,14 @@ public abstract class BaseTest {
 		return resourceName;
 	}
 
-	public static File getResourceFile(String resourceName) throws URISyntaxException {
+	public static File getResourceFile(String resourceName) {
 		URL url = BaseTest.class.getResource(getResourcePath(resourceName));
 		Assert.assertNotNull("Resource file '" + resourceName + "' was not found.", url);
-		return new File(url.toURI());
+		try {
+			return new File(url.toURI());
+		} catch (URISyntaxException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	public static InputStream getResourceStream(String resourceName) {
@@ -60,7 +64,7 @@ public abstract class BaseTest {
 		return File.createTempFile(Files.removeExtension(filename) + '_', Files.EXT_SEPARATOR + extension);
 	}
 
-	protected static OptionFile loadOptionFile(String filename) throws Exception {
+	protected static OptionFile loadOptionFile(String filename) {
 		File fs = getResourceFile(filename);
 
 		OptionFile of = new OptionFile();
@@ -71,15 +75,15 @@ public abstract class BaseTest {
 		return of;
 	}
 
-	protected static OptionFile loadOriginalOF() throws Exception {
+	protected static OptionFile loadOriginalOF() {
 		return loadOptionFile(OF_ORIGINAL);
 	}
 
-	protected static OptionFile loadLicensedOF() throws Exception {
+	protected static OptionFile loadLicensedOF() {
 		return loadOptionFile(OF_LICENSED);
 	}
 
-	protected static OptionFile loadLatestOF() throws Exception {
+	protected static OptionFile loadLatestOF() {
 		return loadOptionFile(OF_LATEST);
 	}
 
@@ -104,7 +108,8 @@ public abstract class BaseTest {
 	}
 
 	public static <T> java.util.List<T> readFields(
-			Class<?> clazz, Object target, Class<T> ofType, Boolean isFinal, boolean forceAccess) throws Exception {
+			Class<?> clazz, Object target, Class<T> ofType, Boolean isFinal, boolean forceAccess)
+			throws IllegalAccessException {
 		if (null == clazz) {
 			throw new NullArgumentException("clazz");
 		}
@@ -135,12 +140,12 @@ public abstract class BaseTest {
 	}
 
 	public static <T> java.util.List<T> readStaticFields(
-			Class<?> clazz, Class<T> ofType, Boolean isFinal, boolean forceAccess) throws Exception {
+			Class<?> clazz, Class<T> ofType, Boolean isFinal, boolean forceAccess) throws IllegalAccessException {
 		return readFields(clazz, null, ofType, isFinal, forceAccess);
 	}
 
 	public static Object readField(Class<?> clazz, Object target, String name, Boolean isFinal, boolean forceAccess)
-			throws Exception {
+			throws NoSuchFieldException, IllegalAccessException {
 		if (null == clazz) {
 			throw new NullArgumentException("clazz");
 		}
@@ -164,7 +169,7 @@ public abstract class BaseTest {
 	}
 
 	public static Object readStaticField(Class<?> clazz, String name, Boolean isFinal, boolean forceAccess)
-			throws Exception {
+			throws NoSuchFieldException, IllegalAccessException {
 		return readField(clazz, null, name, isFinal, forceAccess);
 	}
 

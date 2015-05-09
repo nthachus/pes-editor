@@ -11,21 +11,21 @@ public final class SaveGameInfoTest extends BaseTest {
 	private final SaveGameInfo saveInfo = new SaveGameInfo();
 
 	@Test
-	public void testGetInfoForOriginalOF() throws Exception {
+	public void testGetInfoForOriginalOF() {
 		testGetInfo(OF_ORIGINAL);
 	}
 
 	@Test
-	public void testGetInfoForLicensedOF() throws Exception {
+	public void testGetInfoForLicensedOF() {
 		testGetInfo(OF_LICENSED);
 	}
 
 	@Test
-	public void testGetInfoForLatestOF() throws Exception {
+	public void testGetInfoForLatestOF() {
 		testGetInfo(OF_LATEST);
 	}
 
-	private void testGetInfo(String fn) throws Exception {
+	private void testGetInfo(String fn) {
 		File fs = getResourceFile(fn);
 		boolean res = saveInfo.getInfo(fs);
 		Assert.assertTrue(res);
@@ -41,7 +41,7 @@ public final class SaveGameInfoTest extends BaseTest {
 	}
 
 	@Test(expected = NullArgumentException.class)
-	public void testGetInfoWithNullFile() throws Exception {
+	public void testGetInfoWithNullFile() {
 		saveInfo.getInfo(null);
 	}
 

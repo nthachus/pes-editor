@@ -268,7 +268,8 @@ public class InfoPanel extends JScrollPane {
 
 		ComboBoxModel teams = selector.getTeamBox().getModel();
 		int adr = Squads.NATION_ADR;
-		while (adr < Squads.END_ADR) {
+		int endAdr = Squads.END_ADR - Squads.EXTRA_CLUBS_COUNT * Formations.CLUB_TEAM_SIZE * 2;
+		while (adr < endAdr) {
 			int id = Bits.toInt16(of.getData(), adr);
 			if (id > 0 && id == index1) {
 
