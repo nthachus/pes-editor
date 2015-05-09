@@ -85,7 +85,7 @@ public class FormationPanel extends JPanel
 
 		numList = new SquadNumberList(of);
 
-		altBox = new JComboBox/*<String>*/(Formations.ALT_ITEMS);
+		altBox = new JComboBox/*<String>*/(Resources.getMessages(Formations.ALT_ITEMS));
 		altBox.addActionListener(this);
 
 		roleBox = new JComboBox/*<Role>*/();

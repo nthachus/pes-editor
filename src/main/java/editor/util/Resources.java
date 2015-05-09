@@ -66,4 +66,15 @@ public final class Resources {
 			new Locale("vi"),
 	};
 
+	public static String[] getMessages(String... keys) {
+		if (null == keys) {
+			return null;
+		}
+		String[] translated = new String[keys.length];
+		for (int i = 0; i < translated.length; i++) {
+			translated[i] = getMessage(keys[i], false, (Object[]) null);
+		}
+		return translated;
+	}
+
 }
