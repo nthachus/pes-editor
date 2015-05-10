@@ -352,10 +352,15 @@ public class Editor extends JFrame implements ActionListener {
 		Locale.setDefault(locale);
 		saveSettings();
 
+		// backup the index of the currently selected tab
+		int idx = tabbedPane.getSelectedIndex();
+
 		getContentPane().remove(tabbedPane);
 		initComponents(opFileChooser.getCurrentDirectory());
 
 		if (null != currentFile) {
+			tabbedPane.setSelectedIndex(idx);
+
 			refreshTitle(currentFile.getName());
 			refreshComponents();
 			enableMenuItems(true);
