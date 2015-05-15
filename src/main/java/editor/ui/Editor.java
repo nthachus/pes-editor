@@ -644,21 +644,22 @@ public class Editor extends JFrame implements ActionListener {
 
 		public void run() {
 			log.info("Main form is initializing...");
+			Editor form;
 			try {
 				UIUtil.systemUI();
 
-				Editor form = new Editor();
+				form = new Editor();
 				if (!form.settingsFile.exists() && !log.isTraceEnabled()) {
 					form.about();
 				}
 				form.setVisible(true);
 				// DEBUG
 				log.info("Main form has been initialized.");
-				form.openFile(filePath);
 
 			} catch (Exception e) {
 				throw new ExceptionInInitializerError(e);
 			}
+			form.openFile(filePath);
 		}
 	}
 
