@@ -327,8 +327,10 @@ public final class Squads {
 
 		for (int p = 0; p < size; p++) {
 			int fSlot = Formations.getSlot(of, formationTeam, p);
-			System.arraycopy(temp, fSlot * 2, of.getData(), firstAdr + p * 2, 2);
-			System.arraycopy(tempNum, fSlot, of.getData(), firstNumAdr + p, 1);
+			if (fSlot < size) {
+				System.arraycopy(temp, fSlot * 2, of.getData(), firstAdr + p * 2, 2);
+				System.arraycopy(tempNum, fSlot, of.getData(), firstNumAdr + p, 1);
+			}
 		}
 
 		if (fixJobs) {
