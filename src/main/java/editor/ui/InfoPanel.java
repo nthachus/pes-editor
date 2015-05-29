@@ -359,18 +359,21 @@ public class InfoPanel extends JScrollPane {
 	}
 
 	private void insertStat(Stat st, int index1, int index2, Font f) throws BadLocationException {
-		int v1 = Stats.getValue(of, index1, st);
-		int v2 = Stats.getValue(of, index2, st);
-		String s1 = Stats.getString(of, index1, st);
-		String s2 = Stats.getString(of, index2, st);
-
 		doc.insertString(doc.getLength(), Strings.LF + translateStatName(st.getName(), f) + Strings.TAB, attr);
+
+		int v1 = 0;
 		if (index1 > 0) {
+			v1 = Stats.getValue(of, index1, st);
+			String s1 = Stats.getString(of, index1, st);
+
 			StyleConstants.setForeground(attr, getStatColor(st, v1));
 			doc.insertString(doc.getLength(), s1, attr);
 		}
 
 		if (index2 > 0) {
+			int v2 = Stats.getValue(of, index2, st);
+			String s2 = Stats.getString(of, index2, st);
+
 			if (index1 > 0 && v1 != v2) {
 				int div, add;
 				if (st == Stats.WEAK_FOOT_ACC || st == Stats.WEAK_FOOT_FREQ
