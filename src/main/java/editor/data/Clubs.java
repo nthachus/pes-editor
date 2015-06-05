@@ -27,7 +27,7 @@ public final class Clubs {
 	public static final int NAME_LEN = 48;
 	public static final int ABBR_NAME_LEN = 3;
 
-	public static final int FIRST_DEF_EMBLEM = 143;
+	public static final int FIRST_DEF_EMBLEM = Stats.NATION.length;
 	public static final int FIRST_EMBLEM = FIRST_DEF_EMBLEM + Squads.FIRST_CLUB + TOTAL;
 
 	private static int getOffset(int club) {

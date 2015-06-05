@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class Emblems {
 	private static final Logger log = LoggerFactory.getLogger(Emblems.class);
@@ -16,14 +18,15 @@ public final class Emblems {
 	private Emblems() {
 	}
 
-	public static final int TOTAL16 = 60;
 	public static final int TOTAL128 = 30;
+	public static final int TOTAL16 = TOTAL128 * 2;
+	static final int TOTAL = TOTAL128 + TOTAL16;
 
-	private static final int START_IDX_TABLE_ADR = OptionFile.blockAddress(8) + 4;
-	private static final int SIZE_IDX_TABLE = 2 + TOTAL128 + TOTAL16 + 8;
-	private static final byte UNUSED_IDX_VALUE = 0x5D;
+	static final int IDX_TABLE_ADR = OptionFile.blockAddress(8) + 4;
+	private static final int IDX_TABLE_SIZE = 2 + TOTAL + 8;
+	private static final byte EMPTY_IDX_VALUE = 0x5D;
 
-	public static final int START_ADR = START_IDX_TABLE_ADR + SIZE_IDX_TABLE;
+	public static final int START_ADR = IDX_TABLE_ADR + IDX_TABLE_SIZE;
 
 	/**
 	 * The emblem image with and height (64px x 64px).
@@ -85,12 +88,35 @@ public final class Emblems {
 	}
 
 	// emblem index table: [hiCount] [lowCount] [..HighResTotal] [..LowResTotal]
-	private static int getIndexOffset(boolean hiRes, int slot) {
-		int ofs = START_IDX_TABLE_ADR + 2 + slot;
-		if (!hiRes) {
-			ofs += TOTAL128;
+	public static int getLocation(OptionFile of, int index) {
+		if (null == of) {
+			throw new NullArgumentException("of");
 		}
-		return ofs;
+		if (index < 0 || index >= TOTAL) {
+			throw new IndexOutOfBoundsException("index#" + index);
+		}
+
+		return getLocationInternal(of, index);
+	}
+
+	private static int getLocationInternal(OptionFile of, int index) {
+		byte idx = of.getData()[IDX_TABLE_ADR + 2 + index];
+		return (idx == EMPTY_IDX_VALUE) ? -1 : Bits.toInt(idx);
+	}
+
+	public static void setLocation(OptionFile of, int index, int location) {
+		if (null == of) {
+			throw new NullArgumentException("of");
+		}
+		if (index < 0 || index >= TOTAL) {
+			throw new IndexOutOfBoundsException("index#" + index);
+		}
+
+		setLocationInternal(of, index, location);
+	}
+
+	private static void setLocationInternal(OptionFile of, int index, int location) {
+		of.getData()[IDX_TABLE_ADR + 2 + index] = Bits.toByte(location);
 	}
 
 	public static boolean set128(OptionFile of, int slot, BufferedImage image) {
@@ -107,9 +133,9 @@ public final class Emblems {
 				setCount128(of, slot + 1);
 
 				for (int i = 0; i < TOTAL128; i++) {
-					int idxAdr = getIndexOffset(true, i);
-					if (of.getData()[idxAdr] == UNUSED_IDX_VALUE) {
-						of.getData()[idxAdr] = Bits.toByte(slot);
+					int loc = getLocationInternal(of, i);
+					if (loc < 0 || loc >= TOTAL128) {
+						setLocationInternal(of, i, slot);
 
 						int id = Clubs.FIRST_EMBLEM + i;
 						Bits.toBytes(Bits.toInt16(id), of.getData(), adr + 4);
@@ -138,12 +164,12 @@ public final class Emblems {
 			if (slot == count16(of)) {
 				setCount16(of, slot + 1);
 
-				for (int i = 0; i < TOTAL16; i++) {
-					int idxAdr = getIndexOffset(false, i);
-					if (of.getData()[idxAdr] == UNUSED_IDX_VALUE) {
-						of.getData()[idxAdr] = Bits.toByte(TOTAL128 + slot);
+				for (int i = TOTAL128; i < TOTAL; i++) {
+					int loc = getLocationInternal(of, i);
+					if (loc < TOTAL128 || loc >= TOTAL) {
+						setLocationInternal(of, i, TOTAL128 + slot);
 
-						int id = Clubs.FIRST_EMBLEM + TOTAL128 + i;
+						int id = Clubs.FIRST_EMBLEM + i;
 						Bits.toBytes(Bits.toInt16(id), of.getData(), adr + 4);
 						break;
 					}
@@ -161,69 +187,60 @@ public final class Emblems {
 		if (null == of) {
 			throw new NullArgumentException("of");
 		}
-		return Bits.toInt(of.getData()[START_IDX_TABLE_ADR]);
+		return Bits.toInt(of.getData()[IDX_TABLE_ADR]);
 	}
 
 	private static void setCount128(OptionFile of, int count) {
 		//if (null == of) { throw new NullArgumentException("of"); }
-		of.getData()[START_IDX_TABLE_ADR] = Bits.toByte(count);
+		of.getData()[IDX_TABLE_ADR] = Bits.toByte(count);
 	}
 
 	public static int count16(OptionFile of) {
 		if (null == of) {
 			throw new NullArgumentException("of");
 		}
-		return Bits.toInt(of.getData()[START_IDX_TABLE_ADR + 1]);
+		return Bits.toInt(of.getData()[IDX_TABLE_ADR + 1]);
 	}
 
 	private static void setCount16(OptionFile of, int count) {
 		//if (null == of) { throw new NullArgumentException("of"); }
-		of.getData()[START_IDX_TABLE_ADR + 1] = Bits.toByte(count);
+		of.getData()[IDX_TABLE_ADR + 1] = Bits.toByte(count);
 	}
 
 	public static int getFree16(OptionFile of) {
-		return TOTAL16 - count128(of) * 2 - count16(of);
+		return TOTAL16 - count16(of) - count128(of) * 2;
 	}
 
 	public static int getFree128(OptionFile of) {
-		return getFree16(of) / 2;
+		return TOTAL128 - count128(of) - (count16(of) + 1) / 2;
 	}
 
 	public static Image getImage(OptionFile of, int emblem) {
 		int slot = getLocation(of, emblem);
-		if (slot < 0) {
-			return BLANK16;
-		}
-
 		if (emblem < TOTAL128) {
+			if (slot < 0 || slot >= TOTAL128) {
+				return BLANK16;
+			}
 			return get128(of, slot, false, false);
 		}
 
+		if (slot < TOTAL128 || slot >= TOTAL) {
+			return BLANK16;
+		}
 		return get16(of, slot - TOTAL128, false, false);
-	}
-
-	public static int getLocation(OptionFile of, int emblem) {
-		if (null == of) {
-			throw new NullArgumentException("of");
-		}
-		if (emblem < 0 || emblem >= TOTAL128 + TOTAL16) {
-			throw new IndexOutOfBoundsException("emblem#" + emblem);
-		}
-
-		int adr = getIndexOffset(true, emblem);
-		byte idx = of.getData()[adr];
-		return (idx == UNUSED_IDX_VALUE) ? -1 : Bits.toInt(idx);
 	}
 
 	public static void deleteImage(OptionFile of, int emblem) {
 		int slot = getLocation(of, emblem);
-		if (slot < 0) {
-			return;
-		}
-
 		if (emblem < TOTAL128) {
+			if (slot < 0 || slot >= TOTAL128) {
+				return;
+			}
 			delete128(of, slot);
 		} else {
+			if (slot < TOTAL128 || slot >= TOTAL) {
+				return;
+			}
 			delete16(of, slot - TOTAL128);
 		}
 	}
@@ -232,7 +249,7 @@ public final class Emblems {
 		if (null == of) {
 			throw new NullArgumentException("of");
 		}
-		if (slot < 0 || slot >= TOTAL128 + TOTAL16) {
+		if (slot < 0 || slot >= TOTAL) {
 			throw new IndexOutOfBoundsException("slot#" + slot);
 		}
 
@@ -242,11 +259,10 @@ public final class Emblems {
 
 	public static void delete16(OptionFile of, int slot) {
 		int index = getIndex(of, slot + TOTAL128);
-		int sourceIdx = index - (Clubs.FIRST_EMBLEM + TOTAL128);
+		int sourceIdx = index - Clubs.FIRST_EMBLEM;
 
-		int adr = getIndexOffset(false, sourceIdx);
-		of.getData()[adr] = UNUSED_IDX_VALUE;
-		Clubs.unlinkEmblem(of, sourceIdx + TOTAL128);
+		setLocation(of, sourceIdx, EMPTY_IDX_VALUE);
+		Clubs.unlinkEmblem(of, sourceIdx);
 
 		int newCount = count16(of) - 1;
 		int source = getOffset(false, newCount);
@@ -256,9 +272,8 @@ public final class Emblems {
 			System.arraycopy(of.getData(), source, of.getData(), dest, SIZE16);
 
 			index = getIndex(of, slot + TOTAL128);
-			sourceIdx = index - (Clubs.FIRST_EMBLEM + TOTAL128);
-			adr = getIndexOffset(false, sourceIdx);
-			of.getData()[adr] = Bits.toByte(slot + TOTAL128);
+			sourceIdx = index - Clubs.FIRST_EMBLEM;
+			setLocation(of, sourceIdx, slot + TOTAL128);
 		}
 
 		Arrays.fill(of.getData(), source, source + SIZE16, (byte) 0);
@@ -269,8 +284,7 @@ public final class Emblems {
 		int index = getIndex(of, slot);
 		int sourceIdx = index - Clubs.FIRST_EMBLEM;
 
-		int adr = getIndexOffset(true, sourceIdx);
-		of.getData()[adr] = UNUSED_IDX_VALUE;
+		setLocation(of, sourceIdx, EMPTY_IDX_VALUE);
 		Clubs.unlinkEmblem(of, sourceIdx);
 
 		int newCount = count128(of) - 1;
@@ -282,8 +296,7 @@ public final class Emblems {
 
 			index = getIndex(of, slot);
 			sourceIdx = index - Clubs.FIRST_EMBLEM;
-			adr = getIndexOffset(true, sourceIdx);
-			of.getData()[adr] = Bits.toByte(slot);
+			setLocation(of, sourceIdx, slot);
 		}
 
 		Arrays.fill(of.getData(), source, source + SIZE128, (byte) 0);
@@ -308,12 +321,12 @@ public final class Emblems {
 			ofDest.getData()[adrDest] = 1;// is used
 			setCount16(ofDest, cntDest + 1);
 
-			int adr = getIndexOffset(false, 0);
-			for (int i = 0; i < TOTAL16; i++, adr++) {
-				if (ofDest.getData()[adr] == UNUSED_IDX_VALUE) {
+			for (int i = TOTAL128; i < TOTAL; i++) {
+				int loc = getLocationInternal(ofDest, i);
+				if (loc < TOTAL128 || loc >= TOTAL) {
+					setLocationInternal(ofDest, i, TOTAL128 + slotDest);
 
-					ofDest.getData()[adr] = Bits.toByte(TOTAL128 + slotDest);
-					int id = (Clubs.FIRST_EMBLEM + TOTAL128) + i;
+					int id = Clubs.FIRST_EMBLEM + i;
 					Bits.toBytes(Bits.toInt16(id), ofDest.getData(), adrDest + 4);
 					break;
 				}
@@ -339,17 +352,76 @@ public final class Emblems {
 			ofDest.getData()[adrDest] = 1;// is used
 			setCount128(ofDest, cntDest + 1);
 
-			int adr = getIndexOffset(true, 0);
-			for (int i = 0; i < TOTAL128; i++, adr++) {
-				if (ofDest.getData()[adr] == UNUSED_IDX_VALUE) {
+			for (int i = 0; i < TOTAL128; i++) {
+				int loc = getLocationInternal(ofDest, i);
+				if (loc < 0 || loc >= TOTAL128) {
+					setLocationInternal(ofDest, i, slotDest);
 
-					ofDest.getData()[adr] = Bits.toByte(slotDest);
 					int id = Clubs.FIRST_EMBLEM + i;
 					Bits.toBytes(Bits.toInt16(id), ofDest.getData(), adrDest + 4);
 					break;
 				}
 			}
 		}
+	}
+
+	public static boolean fixIndexesTable(OptionFile of) {
+		int n128 = count128(of), n16 = count16(of);
+		log.info("Try to fix emblem indexes-table: {} {}", n128, n16);
+
+		Set<Integer> highResIndexes = new HashSet<Integer>(TOTAL128);
+		Set<Integer> lowResIndexes = new HashSet<Integer>(TOTAL16);
+
+		// Fixes all invalid and duplicated emblem indexes
+		boolean isUpdated = false;
+		for (int i = TOTAL128; i < TOTAL; i++) {
+			int location = getLocationInternal(of, i);
+			if (location != -1) {
+
+				if (location < TOTAL128 || location >= TOTAL
+						/*|| lowResIndexes.contains(location)*/) {
+					setLocationInternal(of, i, EMPTY_IDX_VALUE);
+					isUpdated = true;
+				} else {
+					lowResIndexes.add(location);
+				}
+			}
+		}
+
+		// Fixes all duplicated and overwritten emblem indexes
+		int swapLocation;
+		for (int i = 0; i < TOTAL128; i++) {
+			int location = getLocationInternal(of, i);
+			if (location != -1) {
+
+				if (location < 0 || location >= TOTAL128
+						|| (lowResIndexes.size() + 2 * highResIndexes.size()) >= TOTAL16// out of space
+						/*|| highResIndexes.contains(location)*/
+						// overwritten emblems
+						|| lowResIndexes.contains(swapLocation = (TOTAL - 2 * (location + 1)))
+						|| lowResIndexes.contains(swapLocation + 1)) {
+					setLocationInternal(of, i, EMPTY_IDX_VALUE);
+					isUpdated = true;
+				} else {
+					highResIndexes.add(location);
+				}
+			}
+		}
+
+		// Re-counts the number of emblems for each type
+		if (n128 != highResIndexes.size()) {
+			setCount128(of, highResIndexes.size());
+			isUpdated = true;
+		}
+		if (n16 != lowResIndexes.size()) {
+			setCount16(of, lowResIndexes.size());
+			isUpdated = true;
+		}
+
+		if (isUpdated) {
+			log.info("Fixed emblem indexes-table: {} {}", highResIndexes.size(), lowResIndexes.size());
+		}
+		return isUpdated;
 	}
 
 }

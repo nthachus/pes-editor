@@ -1,5 +1,6 @@
 package editor.data;
 
+import editor.util.Arrays;
 import editor.util.Files;
 import editor.util.Images;
 import org.hamcrest.Matchers;
@@ -53,6 +54,23 @@ public final class EmblemsTest extends BaseTest {
 					String.format("%d%s%s", list.size(), Files.EXT_SEPARATOR, IMG_FORMAT));
 			res = ImageIO.write(list.get(list.size() - 1), IMG_FORMAT, tempFs);
 			Assert.assertTrue(res);
+		}
+	}
+
+	@Test
+	public void testFixIndexesTable() {
+		final String[] ofFilenames = {OF_ORIGINAL, OF_LICENSED, OF_LATEST};
+		final String ofFilename = ofFilenames[rand.nextInt(ofFilenames.length)];
+		OptionFile of = loadOptionFile(ofFilename);
+
+		byte[] before = Arrays.copyOfRange(of.getData(), Emblems.IDX_TABLE_ADR, Emblems.IDX_TABLE_ADR + Emblems.TOTAL + 2);
+		boolean updated = Emblems.fixIndexesTable(of);
+
+		byte[] after = Arrays.copyOfRange(of.getData(), Emblems.IDX_TABLE_ADR, Emblems.IDX_TABLE_ADR + Emblems.TOTAL + 2);
+		if (!updated) {
+			Assert.assertArrayEquals(before, after);
+		} else {
+			Assert.assertNotEquals(java.util.Arrays.toString(before), java.util.Arrays.toString(after));
 		}
 	}
 

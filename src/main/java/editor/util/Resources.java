@@ -63,6 +63,7 @@ public final class Resources {
 
 	public static final Locale[] SUPPORTED_LOCALES = {
 			Locale.ENGLISH,
+			new Locale("es"),
 			new Locale("vi"),
 	};
 

@@ -362,8 +362,9 @@ public final class Squads {
 		for (int s = 0; s < TOTAL; s++) {
 			fixFormation(of, s, true);
 		}
-
 		log.debug("Fixing formation for all teams succeeded");
+
+		Emblems.fixIndexesTable(of);
 	}
 
 	public static void tidy(OptionFile of, int team) {
