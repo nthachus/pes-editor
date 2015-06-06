@@ -77,7 +77,7 @@ public class Player implements Serializable, Comparable<Player> {
 	 * NOTE: We don't have the player at index 0.
 	 */
 	public static int getOffset(int player) {
-		if (player <= 0 || (player >= TOTAL && player < FIRST_EDIT) || player >= END_EDIT) {
+		if (isInvalidId(player)) {
 			throw new IndexOutOfBoundsException("player#" + player);
 		}
 
@@ -86,6 +86,10 @@ public class Player implements Serializable, Comparable<Player> {
 		}
 
 		return START_ADR + player * SIZE;
+	}
+
+	public static boolean isInvalidId(int player) {
+		return (player <= 0 || player >= END_EDIT || (player >= TOTAL && player < FIRST_EDIT));
 	}
 
 	//endregion

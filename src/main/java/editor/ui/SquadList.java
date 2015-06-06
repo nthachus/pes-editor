@@ -113,6 +113,10 @@ public class SquadList extends JList/*<Player>*/ {
 			}
 
 			int pId = Bits.toInt16(of.getData(), adr);
+			if (Player.isInvalidId(pId)) {
+				pId = 0;
+				Bits.toBytes((short) 0, of.getData(), adr);
+			}
 			players[p] = new Player(of, pId, adr);
 		}
 
