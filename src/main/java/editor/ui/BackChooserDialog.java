@@ -1,5 +1,6 @@
 package editor.ui;
 
+import editor.data.Clubs;
 import editor.lang.NullArgumentException;
 import editor.util.Images;
 import editor.util.Resources;
@@ -25,7 +26,7 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	private static final int IMG_HEIGHT = 64;
 	private static final int BITS_DEPTH = 1;
 
-	private final JButton[] flagButtons = new JButton[12];
+	private final JButton[] flagButtons = new JButton[Clubs.TOTAL_BACK_FLAGS];
 	private final transient WritableRaster[] rasterData = new WritableRaster[flagButtons.length];
 
 	/**

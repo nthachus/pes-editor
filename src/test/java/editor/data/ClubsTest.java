@@ -137,7 +137,7 @@ public final class ClubsTest extends BaseTest {
 			log.debug("Club [{}] '{}': backFlag #{} ( {} / {} )", c, name, backFlag, c1, c2);
 
 			Assert.assertThat(backFlag, Matchers.greaterThanOrEqualTo(0));
-			Assert.assertThat(backFlag, Matchers.lessThan(12));
+			Assert.assertThat(backFlag, Matchers.lessThan(Clubs.TOTAL_BACK_FLAGS));
 
 			if (backFlag > 0) {
 				Assert.assertNotEquals(c1, c2);
