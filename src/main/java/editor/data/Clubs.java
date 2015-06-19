@@ -30,6 +30,8 @@ public final class Clubs {
 	public static final int FIRST_DEF_EMBLEM = Stats.NATION.length;
 	public static final int FIRST_EMBLEM = FIRST_DEF_EMBLEM + Squads.FIRST_CLUB + TOTAL;
 
+	public static final int TOTAL_BACK_FLAGS = 12;
+
 	private static int getOffset(int club) {
 		if (club < 0 || club >= TOTAL) {
 			throw new IndexOutOfBoundsException("club#" + club);
@@ -203,7 +205,15 @@ public final class Clubs {
 		}
 		int adr = getOffset(club) + 70;
 
-		return Bits.toInt(of.getData()[adr]);
+		int v = Bits.toInt(of.getData()[adr]);
+		// Auto-fix club background-flag ID
+		if (v >= TOTAL_BACK_FLAGS) {
+			do {
+				v >>>= 1;
+			} while (v >= TOTAL_BACK_FLAGS);
+			of.getData()[adr] = (byte) v;
+		}
+		return v;
 	}
 
 	public static void setBackFlag(OptionFile of, int club, int backFlag) {
