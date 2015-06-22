@@ -14,7 +14,7 @@ public final class BitsTest {
 		int i = Bits.toInt(a4, 0);
 		Assert.assertEquals(num, i);
 
-		int n = Bits.toInt(a3, 0, a3.length);
+		long n = Bits.toInt(a3, 0, a3.length);
 		Assert.assertEquals(0x112233, n);
 
 		byte[] arr = Bits.toBytes(num);
@@ -24,8 +24,8 @@ public final class BitsTest {
 		Bits.toBytes(n, arr, a3.length, a3.length);
 		Assert.assertArrayEquals(a3, Arrays.copyOfRange(arr, a3.length, arr.length));
 
-		i = Bits.toInt(a4, 1, 2, 0x3F);
-		Assert.assertEquals(0x22, i);
+		n = Bits.toInt(a4, 1, 2, 0x3F);
+		Assert.assertEquals(0x22, n);
 		Assert.assertEquals(0, a4[2]);
 	}
 

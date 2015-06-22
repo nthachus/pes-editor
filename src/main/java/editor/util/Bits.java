@@ -60,7 +60,7 @@ public final class Bits {
 		return temp;
 	}*/
 
-	public static int toInt(byte[] bytes, int index, int count, int maxValue) {
+	public static long toInt(byte[] bytes, int index, int count, long maxValue) {
 		if (null == bytes) {
 			throw new NullArgumentException("bytes");
 		}
@@ -68,14 +68,14 @@ public final class Bits {
 			throw new IndexOutOfBoundsException(String.format("%d + %d > %d", index, count, bytes.length));
 		}
 
-		int value = 0;
+		long value = 0;
 		for (int i = count - 1; i >= 0; i--) {
 			value = (value << 8) | toInt(bytes[i + index]);
 		}
 
 		// auto-fix out-of-range value
 		if (maxValue > 0 && value > maxValue) {
-			int incorrect = value;
+			long incorrect = value;
 			do {
 				value >>>= 1;
 			} while (value > maxValue);
@@ -87,19 +87,19 @@ public final class Bits {
 		return value;
 	}
 
-	public static int toInt(byte[] bytes, int index, int count) {
-		return toInt(bytes, index, count, -1);
+	public static long toInt(byte[] bytes, int index, int count) {
+		return toInt(bytes, index, count, -1L);
 	}
 
 	public static int toInt(byte[] buffer, int offset) {
-		return toInt(buffer, offset, 4);
+		return (int) toInt(buffer, offset, 4);
 	}
 
 	public static int toInt16(byte[] buffer, int offset) {
-		return toInt(buffer, offset, 2);
+		return (int) toInt(buffer, offset, 2);
 	}
 
-	public static void toBytes(int value, byte[] bytes, int index, int count) {
+	public static void toBytes(long value, byte[] bytes, int index, int count) {
 		if (null == bytes) {
 			throw new NullArgumentException("bytes");
 		}
