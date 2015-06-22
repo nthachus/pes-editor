@@ -346,7 +346,7 @@ public class OptionFile implements Serializable {
 		crc32.update(temp);
 		long crc = crc32.getValue();
 
-		Bits.toBytes(crc, header, 12, 4);
+		Bits.toBytes(Bits.toInt(crc), header, 12, 4);
 
 		out.write(header);
 		out.write(temp);
