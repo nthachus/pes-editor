@@ -1,8 +1,12 @@
 package editor.util;
 
 import editor.lang.NullArgumentException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class Bits {
+	private static final Logger log = LoggerFactory.getLogger(Bits.class);
+
 	private Bits() {
 	}
 
@@ -56,7 +60,7 @@ public final class Bits {
 		return temp;
 	}*/
 
-	public static long toInt(byte[] bytes, int index, int count) {
+	public static int toInt(byte[] bytes, int index, int count, int maxValue) {
 		if (null == bytes) {
 			throw new NullArgumentException("bytes");
 		}
@@ -64,23 +68,38 @@ public final class Bits {
 			throw new IndexOutOfBoundsException(String.format("%d + %d > %d", index, count, bytes.length));
 		}
 
-		long value = 0;
+		int value = 0;
 		for (int i = count - 1; i >= 0; i--) {
 			value = (value << 8) | toInt(bytes[i + index]);
+		}
+
+		// auto-fix out-of-range value
+		if (maxValue > 0 && value > maxValue) {
+			int incorrect = value;
+			do {
+				value >>>= 1;
+			} while (value > maxValue);
+			toBytes(value, bytes, index, count);
+			// DEBUG
+			log.warn("Fixed {} bytes at {}: {} -> {} (max {})", count, index, incorrect, value, maxValue);
 		}
 
 		return value;
 	}
 
+	public static int toInt(byte[] bytes, int index, int count) {
+		return toInt(bytes, index, count, -1);
+	}
+
 	public static int toInt(byte[] buffer, int offset) {
-		return (int) toInt(buffer, offset, 4);
+		return toInt(buffer, offset, 4);
 	}
 
 	public static int toInt16(byte[] buffer, int offset) {
-		return (int) toInt(buffer, offset, 2);
+		return toInt(buffer, offset, 2);
 	}
 
-	public static void toBytes(long value, byte[] bytes, int index, int count) {
+	public static void toBytes(int value, byte[] bytes, int index, int count) {
 		if (null == bytes) {
 			throw new NullArgumentException("bytes");
 		}
