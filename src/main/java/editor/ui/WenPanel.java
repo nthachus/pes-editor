@@ -57,11 +57,11 @@ public class WenPanel extends JPanel implements ActionListener {
 	}
 
 	public void refresh() {
-		int wen = Bits.toInt(of.getData(), ALT_ADR, 3);
-		int wen2 = Bits.toInt(of.getData(), START_ADR, 3);
+		long wen = Bits.toInt(of.getData(), ALT_ADR, 3);
+		long wen2 = Bits.toInt(of.getData(), START_ADR, 3);
 
 		current.setText(Resources.getMessage("wen.label", wen2));
-		current.setToolTipText((wen != wen2) ? Integer.toString(wen) : null);
+		current.setToolTipText((wen != wen2) ? Long.toString(wen) : null);
 		field.setText(Strings.EMPTY);
 
 		log.info("WEN panel is refreshed with: {} / {}", wen2, wen);
