@@ -23,6 +23,10 @@ public final class BitsTest {
 		arr = new byte[a3.length * 2];
 		Bits.toBytes(n, arr, a3.length, a3.length);
 		Assert.assertArrayEquals(a3, Arrays.copyOfRange(arr, a3.length, arr.length));
+
+		n = Bits.toInt(a4, 1, 2, 0x3F);
+		Assert.assertEquals(0x22, n);
+		Assert.assertEquals(0, a4[2]);
 	}
 
 	@Test(expected = NullArgumentException.class)

@@ -1,8 +1,12 @@
 package editor.util;
 
 import editor.lang.NullArgumentException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class Bits {
+	private static final Logger log = LoggerFactory.getLogger(Bits.class);
+
 	private Bits() {
 	}
 
@@ -56,7 +60,7 @@ public final class Bits {
 		return temp;
 	}*/
 
-	public static long toInt(byte[] bytes, int index, int count) {
+	public static long toInt(byte[] bytes, int index, int count, long maxValue) {
 		if (null == bytes) {
 			throw new NullArgumentException("bytes");
 		}
@@ -69,7 +73,22 @@ public final class Bits {
 			value = (value << 8) | toInt(bytes[i + index]);
 		}
 
+		// auto-fix out-of-range value
+		if (maxValue > 0 && value > maxValue) {
+			long incorrect = value;
+			do {
+				value >>>= 1;
+			} while (value > maxValue);
+			toBytes(value, bytes, index, count);
+			// DEBUG
+			log.warn("Fixed {} bytes at {}: {} -> {} (max {})", count, index, incorrect, value, maxValue);
+		}
+
 		return value;
+	}
+
+	public static long toInt(byte[] bytes, int index, int count) {
+		return toInt(bytes, index, count, -1L);
 	}
 
 	public static int toInt(byte[] buffer, int offset) {

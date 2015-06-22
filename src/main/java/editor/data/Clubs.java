@@ -178,7 +178,8 @@ public final class Clubs {
 		}
 		int adr = getOffset(club) + 81;
 
-		return Bits.toInt(of.getData()[adr]);
+		// auto-fix club stadium ID
+		return (int) Bits.toInt(of.getData(), adr, 1, Stadiums.TOTAL - 1);
 	}
 
 	public static void setStadium(OptionFile of, int club, int stadium) {
@@ -205,15 +206,8 @@ public final class Clubs {
 		}
 		int adr = getOffset(club) + 70;
 
-		int v = Bits.toInt(of.getData()[adr]);
-		// Auto-fix club background-flag ID
-		if (v >= TOTAL_BACK_FLAGS) {
-			do {
-				v >>>= 1;
-			} while (v >= TOTAL_BACK_FLAGS);
-			of.getData()[adr] = (byte) v;
-		}
-		return v;
+		// auto-fix club background-flag ID
+		return (int) Bits.toInt(of.getData(), adr, 1, TOTAL_BACK_FLAGS - 1);
 	}
 
 	public static void setBackFlag(OptionFile of, int club, int backFlag) {
