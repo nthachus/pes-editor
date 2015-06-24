@@ -358,7 +358,7 @@ public final class Formations {
 		}
 
 		int adr = getTeamSetOffset(squad, alt, setting);
-		return Bits.toInt(of.getData()[adr]);
+		return (int) Bits.toInt(of.getData(), adr, 1, 2);// [A, B, C]
 	}
 
 	public static void setTeamSetting(OptionFile of, int squad, int alt, int setting, int value) {
