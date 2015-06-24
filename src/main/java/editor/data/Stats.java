@@ -3,8 +3,12 @@ package editor.data;
 import editor.lang.NullArgumentException;
 import editor.util.Arrays;
 import editor.util.Bits;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class Stats {
+	private static final Logger log = LoggerFactory.getLogger(Stats.class);
+
 	private Stats() {
 	}
 
@@ -341,13 +345,12 @@ public final class Stats {
 		int val = Bits.toInt16(of.getData(), ofs - 1);
 		val = (val >>> stat.getShift()) & stat.getMask();
 
-		/*if (stat.getType() == StatType.nationId) {
-			if (val == 100) {
-				val = NATION.length - 1;
-			} else if (val >= 103) {
-				val = val - 3;
-			}
-		}*/
+		// fix incorrect nationality stats
+		if (stat.getType() == StatType.nationId) {
+			return fixMaxValue(of, player, stat, val, NATION.length - 1);
+		} else if (stat.getType() == StatType.injuryId) {
+			return fixMaxValue(of, player, stat, val, MOD_INJURY.length - 1);
+		}
 
 		return val;
 	}
@@ -361,15 +364,6 @@ public final class Stats {
 		}
 
 		int ofs = stat.getOffset(player);
-
-		/*if (stat.getType() == StatType.nationId) {
-			if (value == NATION.length - 1) {
-				value = 100;
-			} else if (value >= 100) {
-				value = value + 3;
-			}
-		}*/
-
 		int old = Bits.toInt16(of.getData(), ofs - 1);
 		old &= stat.getUnmask();
 
@@ -427,6 +421,19 @@ public final class Stats {
 
 	public static int roleToRegPos(int regRole) {
 		return (regRole > 0) ? regRole + 1 : regRole;
+	}
+
+	private static int fixMaxValue(OptionFile of, int player, Stat stat, int value, int maxValue) {
+		if (maxValue > 0 && value > maxValue) {
+			int incorrect = value;
+			do {
+				value >>>= 1;
+			} while (value > maxValue);
+			setValue(of, player, stat, value);
+			// DEBUG
+			log.warn("Fixed stats {} of player #{}: {} -> {} (max {})", stat, player, incorrect, value, maxValue);
+		}
+		return value;
 	}
 
 }

@@ -85,7 +85,7 @@ public class PositionPanel extends JPanel implements ActionListener {
 		log.info("Try to load role for player: {}", player);
 
 		regRole = Stats.getValue(of, player, Stats.REG_POS);
-		regRole = Stats.regPosToRole(regRole);
+		regRole = Stats.regPosToRole(Math.min(Stats.ROLES.length, regRole));
 
 		for (int i = 0; i < roleCheck.length; i++) {
 			int v = Stats.getValue(of, player, Stats.ROLES[i]);
