@@ -6,7 +6,7 @@
 
 	<groupId>pes.compulsion</groupId>
 	<artifactId>pes-editor</artifactId>
-	<version>2013-2.3.2</version>
+	<version>2013-2.3.3</version>
 	<packaging>jar</packaging>
 
 	<!-- Generic properties -->
@@ -21,7 +21,7 @@
 	</properties>
 
 	<build>
-		<finalName>PES2013Editor-2.3.2</finalName>
+		<finalName>PES2013Editor-2.3.3</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

@@ -28,7 +28,7 @@ public final class Program implements Thread.UncaughtExceptionHandler {
 			EventQueue.invokeLater(new Editor.Runner(args));
 
 		} catch (Exception e) {
-			log.error("Failed to launch the application:", e);
+			log.error("Failed to launch the application on JVM " + getJvmInfo(), e);
 			System.exit(-1);
 
 		} finally {
@@ -36,8 +36,18 @@ public final class Program implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
+	private static volatile String jvmInfo = null;
+
+	public static String getJvmInfo() {
+		if (null == jvmInfo) {
+			jvmInfo = System.getProperty("java.version") + " / " + System.getProperty("os.name")
+					+ " (" + System.getProperty("os.version") + ") " + System.getProperty("os.arch");
+		}
+		return jvmInfo;
+	}
+
 	public void uncaughtException(Thread t, Throwable e) {
-		log.error("Unhandled exception occurred:", e);
+		log.error("Unhandled exception occurred on JVM " + getJvmInfo(), e);
 
 		if (e instanceof ExceptionInInitializerError) {
 			System.exit(-1);
