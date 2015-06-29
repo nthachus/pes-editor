@@ -58,15 +58,18 @@ public final class Emblems {
 	public static final Image BLANK_SMALL = Images.read(null, IMG_SIZE, BPP16, -1, false, 0.58f);
 
 
-	private static int getOffset(boolean hiRes, int slot) {
-		if (slot < 0 || (hiRes && slot >= TOTAL128) || (!hiRes && slot >= TOTAL16)) {
+	private static int getOffset128(int slot) {
+		if (slot < 0 || slot >= TOTAL128) {
 			throw new IndexOutOfBoundsException("slot#" + slot);
 		}
-
-		if (!hiRes) {
-			return START_ADR + (TOTAL128 - 1) * SIZE128 - (slot / 2) * SIZE128 + (slot % 2) * SIZE16;
-		}
 		return START_ADR + slot * SIZE128;
+	}
+
+	private static int getOffset16(int slot) {
+		if (slot < 0 || slot >= TOTAL16) {
+			throw new IndexOutOfBoundsException("slot#" + slot);
+		}
+		return START_ADR + (TOTAL128 - 1) * SIZE128 - (slot / 2) * SIZE128 + (slot % 2) * SIZE16;
 	}
 
 	public static Image get128(OptionFile of, int slot, boolean opaque, boolean small) {
@@ -74,7 +77,7 @@ public final class Emblems {
 			throw new NullArgumentException("of");
 		}
 
-		int adr = getOffset(true, slot) + IMG_SIZE;
+		int adr = getOffset128(slot) + IMG_SIZE;
 		return Images.read(of.getData(), IMG_SIZE, BPP128, adr, opaque, small ? 0.58f : 0f);
 	}
 
@@ -83,7 +86,7 @@ public final class Emblems {
 			throw new NullArgumentException("of");
 		}
 
-		int adr = getOffset(false, slot) + IMG_SIZE;
+		int adr = getOffset16(slot) + IMG_SIZE;
 		return Images.read(of.getData(), IMG_SIZE, BPP16, adr, opaque, small ? 0.58f : 0f);
 	}
 
@@ -124,7 +127,7 @@ public final class Emblems {
 			throw new NullArgumentException("of");
 		}
 
-		int adr = getOffset(true, slot);
+		int adr = getOffset128(slot);
 		try {
 			Images.write(of.getData(), IMG_SIZE, BPP128, adr + IMG_SIZE, image);
 			of.getData()[adr] = Bits.toByte(null != image); // is used?
@@ -156,7 +159,7 @@ public final class Emblems {
 			throw new NullArgumentException("of");
 		}
 
-		int adr = getOffset(false, slot);
+		int adr = getOffset16(slot);
 		try {
 			Images.write(of.getData(), IMG_SIZE, BPP128, adr + IMG_SIZE, image);
 			of.getData()[adr] = Bits.toByte(null != image); // is used?
@@ -245,6 +248,9 @@ public final class Emblems {
 		}
 	}
 
+	/**
+	 * Image ID at 4th byte.
+	 */
 	public static int getIndex(OptionFile of, int slot) {
 		if (null == of) {
 			throw new NullArgumentException("of");
@@ -253,7 +259,7 @@ public final class Emblems {
 			throw new IndexOutOfBoundsException("slot#" + slot);
 		}
 
-		int adr = (slot < TOTAL128) ? getOffset(true, slot) : getOffset(false, slot - TOTAL128);
+		int adr = (slot < TOTAL128) ? getOffset128(slot) : getOffset16(slot - TOTAL128);
 		return Bits.toInt16(of.getData(), adr + 4);
 	}
 
@@ -265,10 +271,10 @@ public final class Emblems {
 		Clubs.unlinkEmblem(of, sourceIdx);
 
 		int newCount = count16(of) - 1;
-		int source = getOffset(false, newCount);
+		int source = getOffset16(newCount);
 		if (slot != newCount) {
 
-			int dest = getOffset(false, slot);
+			int dest = getOffset16(slot);
 			System.arraycopy(of.getData(), source, of.getData(), dest, SIZE16);
 
 			index = getIndex(of, slot + TOTAL128);
@@ -288,10 +294,10 @@ public final class Emblems {
 		Clubs.unlinkEmblem(of, sourceIdx);
 
 		int newCount = count128(of) - 1;
-		int source = getOffset(true, newCount);
+		int source = getOffset128(newCount);
 		if (slot != newCount) {
 
-			int dest = getOffset(true, slot);
+			int dest = getOffset128(slot);
 			System.arraycopy(of.getData(), source, of.getData(), dest, SIZE128);
 
 			index = getIndex(of, slot);
@@ -311,8 +317,8 @@ public final class Emblems {
 			throw new NullArgumentException("ofDest");
 		}
 
-		int adrSource = getOffset(false, slotSource);
-		int adrDest = getOffset(false, slotDest);
+		int adrSource = getOffset16(slotSource);
+		int adrDest = getOffset16(slotDest);
 		System.arraycopy(ofSource.getData(), adrSource + IMG_SIZE,
 				ofDest.getData(), adrDest + IMG_SIZE, SIZE16 - IMG_SIZE);
 
@@ -342,8 +348,8 @@ public final class Emblems {
 			throw new NullArgumentException("ofDest");
 		}
 
-		int adrSource = getOffset(true, slotSource);
-		int adrDest = getOffset(true, slotDest);
+		int adrSource = getOffset128(slotSource);
+		int adrDest = getOffset128(slotDest);
 		System.arraycopy(ofSource.getData(), adrSource + IMG_SIZE,
 				ofDest.getData(), adrDest + IMG_SIZE, SIZE128 - IMG_SIZE);
 
@@ -384,6 +390,7 @@ public final class Emblems {
 					isUpdated = true;
 				} else {
 					lowResIndexes.add(location);
+					fixIdBasedOnIndex(of, i, location);
 				}
 			}
 		}
@@ -404,6 +411,7 @@ public final class Emblems {
 					isUpdated = true;
 				} else {
 					highResIndexes.add(location);
+					fixIdBasedOnIndex(of, i, location);
 				}
 			}
 		}
@@ -422,6 +430,23 @@ public final class Emblems {
 			log.info("Fixed emblem indexes-table: {} {}", highResIndexes.size(), lowResIndexes.size());
 		}
 		return isUpdated;
+	}
+
+	/**
+	 * Fixes emblem ID based on it's index.
+	 */
+	private static boolean fixIdBasedOnIndex(OptionFile of, int index, int slot) {
+		int adr = (slot < TOTAL128) ? getOffset128(slot) : getOffset16(slot - TOTAL128);
+		int id = Bits.toInt16(of.getData(), adr + 4);
+
+		int expected = index + Clubs.FIRST_EMBLEM;
+		if (id != expected) {
+			Bits.toBytes(Bits.toInt16(expected), of.getData(), adr + 4);
+			// DEBUG
+			log.info("Fixed ID of emblem ({} -> {}) from {} -> {}", index, slot, id, expected);
+			return true;
+		}
+		return false;
 	}
 
 }
