@@ -4,6 +4,7 @@ import editor.lang.NullArgumentException;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.regex.Pattern;
 
 public final class Strings {
 	private Strings() {
@@ -31,6 +32,8 @@ public final class Strings {
 	public static final String LF = "\n";
 	public static final String TAB = "\t";
 	public static final String SPACE = " ";
+
+	public static final Pattern COMMA_REGEX = Pattern.compile("\\s*,\\s*");
 
 	//region Create String from bytes array
 

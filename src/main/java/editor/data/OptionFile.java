@@ -462,7 +462,7 @@ public class OptionFile implements Serializable {
 			nationalKitsBin.write(nationalKits);
 			clubKitsBin.write(clubKits);
 
-		} catch (Exception e) {
+		} catch (IOException e) {
 			log.error("Failed to export to Relink Kit files:", e);
 			return false;
 

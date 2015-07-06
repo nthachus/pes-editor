@@ -38,6 +38,10 @@ public class Stat implements Serializable, Comparable<Stat> {
 		this.name = name;
 	}
 
+	public Stat(int offset, int shift, int mask, String name) {
+		this(StatType.integer, offset, shift, mask, name);
+	}
+
 	public StatType getType() {
 		return type;
 	}
@@ -79,6 +83,8 @@ public class Stat implements Serializable, Comparable<Stat> {
 			return 15;
 		} else if (type == StatType.height148) {
 			return 148;
+		} else if (type == StatType.integer4) {
+			return -7;
 		}
 		return 0;
 	}

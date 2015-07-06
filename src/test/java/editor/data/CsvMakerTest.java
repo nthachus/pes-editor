@@ -2,11 +2,11 @@ package editor.data;
 
 import editor.lang.NullArgumentException;
 import editor.util.Files;
+import editor.util.Strings;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 public final class CsvMakerTest extends BaseTest {
 	private final CsvMaker csvMaker = new CsvMaker(true);
@@ -33,6 +33,20 @@ public final class CsvMakerTest extends BaseTest {
 		boolean res = csvMaker.makeFile(of, fs, true/*, true*/, false);
 
 		Assert.assertTrue(res);
+
+		// Verify number of columns
+		FileInputStream stream = null;
+		try {
+			stream = new FileInputStream(fs);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Strings.UTF8));
+
+			String header = reader.readLine();
+			String firstLine = reader.readLine();
+
+			Assert.assertEquals(firstLine.split(Strings.TAB).length, header.split(Strings.TAB).length);
+		} finally {
+			Files.closeStream(stream);
+		}
 	}
 
 	@Test(expected = NullArgumentException.class)

@@ -38,4 +38,9 @@ public enum StatType {
 	 * Indicates if the {@link Stat} value is an injury-tolerance ID (C, B, A).
 	 */
 	injuryId,
+
+	/**
+	 * Indicates if the {@link Stat} value is a 4-bit signed integer.
+	 */
+	integer4,
 }

@@ -133,7 +133,7 @@ public class LogoPanel extends JPanel implements ActionListener {
 
 	private static Object[] getOptions(boolean of2Loaded) {
 		String s = Resources.getMessage("logo.options");
-		String[] opts = s.split("\\s*,\\s*");
+		String[] opts = Strings.COMMA_REGEX.split(s);
 		if (of2Loaded || opts.length < 2) {
 			return opts;
 		}
