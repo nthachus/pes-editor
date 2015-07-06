@@ -2,6 +2,7 @@ package editor.data;
 
 import editor.lang.NullArgumentException;
 import editor.util.Files;
+import editor.util.Resources;
 import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,107 +70,31 @@ public class CsvMaker implements Serializable {
 		return false;
 	}
 
-	//region CSV Header
-
-	private static final String[] HEADINGS = {
-			"NAME",
-			"GK  0",
-			"SW  1",
-			"SW  2",
-			"CB  3",
-			"SB  4",
-			"DMF  5",
-			"WB  6",
-			"CMF  7",
-			"SMF  8",
-			"AMF  9",
-			"WF 10",
-			"SS  11",
-			"CF  12",
-			"REGISTERED POSITION",
-			"HEIGHT",
-			"STRONG FOOT",
-			"FAVOURED SIDE",
-			"WEAK FOOT ACCURACY",
-			"WEAK FOOT FREQUENCY",
-			"ATTACK",
-			"DEFENSE",
-			"BALANCE",
-			"STAMINA",
-			"TOP SPEED",
-			"ACCELERATION",
-			"RESPONSE",
-			"AGILITY",
-			"DRIBBLE ACCURACY",
-			"DRIBBLE SPEED",
-			"SHORT PASS ACCURACY",
-			"SHORT PASS SPEED",
-			"LONG PASS ACCURACY",
-			"LONG PASS SPEED",
-			"SHOT ACCURACY",
-			"SHOT POWER",
-			"SHOT TECHNIQUE",
-			"FREE KICK ACCURACY",
-			"SWERVE",
-			"HEADING",
-			"JUMP",
-			"TECHNIQUE",
-			"AGGRESSION",
-			"MENTALITY",
-			"GOAL KEEPING",
-			"TEAM WORK",
-			"CONSISTENCY",
-			"CONDITION / FITNESS",
-			"DRIBBLING",
-			"TACTICAL DRIBBLE",
-			"POSITIONING",
-			"REACTION",
-			"PLAYMAKING",
-			"PASSING",
-			"SCORING",
-			"1-1 SCORING",
-			"POST PLAYER",
-			"LINES",
-			"MIDDLE SHOOTING",
-			"SIDE",
-			"CENTRE",
-			"PENALTIES",
-			"1-TOUCH PASS",
-			"OUTSIDE",
-			"MARKING",
-			"SLIDING",
-			"COVERING",
-			"D-LINE CONTROL",
-			"PENALTY STOPPER",
-			"1-ON-1 STOPPER",
-			"LONG THROW",
-			"INJURY TOLERANCE",
-			"DRIBBLE STYLE",
-			"FREE KICK STYLE",
-			"PK STYLE",
-			"DROP KICK STYLE",
-			"AGE",
-			"WEIGHT",
-			"NATIONALITY",
-			"INTERNATIONAL NUMBER",
-			"CLASSIC NUMBER",
-			"CLUB TEAM",
-			"CLUB NUMBER"
-	};
-
 	private void writeHeadings(DataOutput out) throws IOException {
-		for (int i = 0; i < HEADINGS.length; i++) {
+		String s = Resources.getMessage("csv.headers");
+		String[] headings = Strings.COMMA_REGEX.split(s);
+
+		for (int i = 0; i < headings.length; i++) {
 			if (i > 0) {
 				out.write(separator);
 			}
-			out.writeBytes(HEADINGS[i]);
+			out.write(headings[i].getBytes(Strings.UTF8));
 		}
 	}
 
-	//endregion
-
 	private void writePlayer(OptionFile of, DataOutput out, int player, String[] clubNames) throws IOException {
 		writeName(of, out, player);
+
+		out.write(separator);
+		out.writeBytes(Stats.getString(of, player, Stats.AGE));
+		out.write(separator);
+		out.writeBytes(Stats.getString(of, player, Stats.HEIGHT));
+		out.write(separator);
+		out.writeBytes(Stats.getString(of, player, Stats.WEIGHT));
+		out.write(separator);
+		out.writeBytes(Stats.getString(of, player, Stats.FOOT));
+		out.write(separator);
+		out.writeBytes(getSide(of, player));
 
 		for (Stat s : Stats.ROLES) {
 			out.write(separator);
@@ -182,32 +107,6 @@ public class CsvMaker implements Serializable {
 		out.writeBytes(v > Stats.ROLES.length ? v + "?" : Stats.ROLES[Stats.regPosToRole(v)] + (v == 1 ? "*" : Strings.EMPTY));
 
 		out.write(separator);
-		out.writeBytes(Stats.getString(of, player, Stats.HEIGHT));
-		out.write(separator);
-		out.writeBytes(Stats.getString(of, player, Stats.FOOT));
-		out.write(separator);
-		out.writeBytes(getSide(of, player));
-		out.write(separator);
-		out.writeBytes(Stats.getString(of, player, Stats.WEAK_FOOT_ACC));
-		out.write(separator);
-		out.writeBytes(Stats.getString(of, player, Stats.WEAK_FOOT_FREQ));
-
-		for (Stat s : Stats.ABILITY99) {
-			out.write(separator);
-			out.writeBytes(Stats.getString(of, player, s));
-		}
-
-		out.write(separator);
-		out.writeBytes(Stats.getString(of, player, Stats.CONSISTENCY));
-		out.write(separator);
-		out.writeBytes(Stats.getString(of, player, Stats.CONDITION));
-
-		for (Stat s : Stats.ABILITY_SPECIAL) {
-			out.write(separator);
-			out.writeBytes(Stats.getString(of, player, s));
-		}
-
-		out.write(separator);
 		out.writeBytes(Stats.getString(of, player, Stats.INJURY));
 		out.write(separator);
 		out.writeBytes(Stats.getString(of, player, Stats.DRIBBLE_STYLE));
@@ -217,10 +116,41 @@ public class CsvMaker implements Serializable {
 		out.writeBytes(Stats.getString(of, player, Stats.PK_STYLE));
 		out.write(separator);
 		out.writeBytes(Stats.getString(of, player, Stats.DK_STYLE));
+
 		out.write(separator);
-		out.writeBytes(Stats.getString(of, player, Stats.AGE));
+		out.writeBytes(Stats.getString(of, player, Stats.GROWTH));
 		out.write(separator);
-		out.writeBytes(Stats.getString(of, player, Stats.WEIGHT));
+		out.writeBytes(Stats.getString(of, player, Stats.FACE));
+		out.write(separator);
+		out.writeBytes(Stats.getString(of, player, Stats.FACE_TYPE));
+		out.write(separator);
+		out.writeBytes(Stats.getString(of, player, Stats.SKIN));
+		out.write(separator);
+		out.writeBytes(Stats.getString(of, player, Stats.HEAD_LENGTH));
+		out.write(separator);
+		out.writeBytes(Stats.getString(of, player, Stats.HEAD_WIDTH));
+		out.write(separator);
+		out.writeBytes(Stats.getString(of, player, Stats.HAIR));
+
+		for (Stat s : Stats.ABILITY99) {
+			out.write(separator);
+			out.writeBytes(Stats.getString(of, player, s));
+		}
+
+		out.write(separator);
+		out.writeBytes(Stats.getString(of, player, Stats.CONDITION));
+		out.write(separator);
+		out.writeBytes(Stats.getString(of, player, Stats.WEAK_FOOT_ACC));
+		out.write(separator);
+		out.writeBytes(Stats.getString(of, player, Stats.WEAK_FOOT_FREQ));
+		out.write(separator);
+		out.writeBytes(Stats.getString(of, player, Stats.CONSISTENCY));
+
+		for (Stat s : Stats.ABILITY_SPECIAL) {
+			out.write(separator);
+			out.writeBytes(Stats.getString(of, player, s));
+		}
+
 		out.write(separator);
 		out.writeBytes(Stats.getString(of, player, Stats.NATIONALITY));
 

@@ -38,7 +38,8 @@ public final class StatsTest extends BaseTest {
 		log.debug("Sorted Stats: {}", fields);
 
 		for (int i = 1; i < fields.size(); i++) {
-			Assert.assertNotEquals(fields.get(i - 1), fields.get(i));
+			Assert.assertNotEquals("Duplicated Stats: " + fields.get(i - 1) + " - " + fields.get(i),
+					fields.get(i - 1), fields.get(i));
 		}
 	}
 
@@ -161,6 +162,13 @@ public final class StatsTest extends BaseTest {
 			{"Condition", "4"},// Form
 			{"Mentality", "72"},
 			{"Team work", "69"},
+
+			{"Face", "Build"},
+			{"Face Type", "0"},
+			{"Skin", "1"},
+			{"Head Length", "0"},
+			{"Head Width", "0"},
+			{"Hair", "89"},
 	};
 
 	private static final String[][] player1506 = {

@@ -6,6 +6,7 @@ import editor.data.OptionFile;
 import editor.data.Player;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
+import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,7 @@ public class StrategyPanel extends JPanel implements ActionListener {
 
 	private static String[] getItems() {
 		String s = Resources.getMessage("strategy.items");
-		return s.split("\\s*,\\s*");
+		return Strings.COMMA_REGEX.split(s);
 	}
 
 	@SuppressWarnings("unchecked")
