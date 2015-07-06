@@ -135,12 +135,17 @@ public class PlayerDialog extends JDialog implements ActionListener {
 		if (!StatVerifier.verify(Stats.HEIGHT, generalPan.getHeightField())) {
 			return false;
 		}
-
 		if (!StatVerifier.verify(Stats.WEIGHT, generalPan.getWeightField())) {
 			return false;
 		}
-
 		if (!StatVerifier.verify(Stats.AGE, generalPan.getAgeField())) {
+			return false;
+		}
+
+		if (!StatVerifier.verify(Stats.FACE_TYPE, generalPan.getFaceField())) {
+			return false;
+		}
+		if (!StatVerifier.verify(Stats.HAIR, generalPan.getHairField())) {
 			return false;
 		}
 
@@ -160,8 +165,6 @@ public class PlayerDialog extends JDialog implements ActionListener {
 				break;
 			}
 		}
-
-		Stats.setValue(of, index, Stats.HEIGHT, generalPan.getHeightField().getText());
 
 		int footIdx = generalPan.getFootBox().getSelectedIndex();
 		int foot = footIdx / 3;
@@ -187,13 +190,21 @@ public class PlayerDialog extends JDialog implements ActionListener {
 		Stats.setValue(of, index, Stats.INJURY, (String) generalPan.getInjuryBox().getSelectedItem());
 		Stats.setValue(of, index, Stats.FREE_KICK, (String) generalPan.getFreeKickBox().getSelectedItem());
 		Stats.setValue(of, index, Stats.PK_STYLE, (String) generalPan.getPenaltyBox().getSelectedItem());
-		Stats.setValue(of, index, Stats.AGE, generalPan.getAgeField().getText());
-		Stats.setValue(of, index, Stats.WEIGHT, generalPan.getWeightField().getText());
-		Stats.setValue(of, index, Stats.NATIONALITY, (String) generalPan.getNationBox().getSelectedItem());
 		Stats.setValue(of, index, Stats.DRIBBLE_STYLE, (String) generalPan.getDribbleBox().getSelectedItem());
 		Stats.setValue(of, index, Stats.DK_STYLE, (String) generalPan.getDropKickBox().getSelectedItem());
 
+		Stats.setValue(of, index, Stats.AGE, generalPan.getAgeField().getText());
+		Stats.setValue(of, index, Stats.HEIGHT, generalPan.getHeightField().getText());
+		Stats.setValue(of, index, Stats.WEIGHT, generalPan.getWeightField().getText());
+
+		Stats.setValue(of, index, Stats.NATIONALITY, (String) generalPan.getNationBox().getSelectedItem());
+
+		Stats.setValue(of, index, Stats.FACE, generalPan.getFaceBox().getSelectedIndex());
+		Stats.setValue(of, index, Stats.FACE_TYPE, generalPan.getFaceField().getText());
+		Stats.setValue(of, index, Stats.HAIR, generalPan.getHairField().getText());
+
 		Stats.setValue(of, index, Stats.ABILITY_EDITED, 1);
+		Stats.setValue(of, index, Stats.APPEARANCE_EDITED, 1);
 		// DEBUG
 		log.debug("Update succeeded Stats on Player: {}", index);
 	}

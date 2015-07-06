@@ -312,14 +312,24 @@ public class InfoPanel extends JScrollPane {
 	private void insertAgeNation(int index1, int index2) throws BadLocationException {
 		StyleConstants.setForeground(attr, Color.WHITE);
 
+		String s = Resources.getMessage("info.faceHair");
 		if (index1 > 0) {
-			doc.insertString(doc.getLength(), Stats.getString(of, index1, Stats.NATIONALITY), attr);
+			doc.insertString(doc.getLength(), String.format(s, Stats.getString(of, index1, Stats.FACE_TYPE),
+					Stats.getString(of, index1, Stats.HAIR)), attr);
+		}
+		if (index2 > 0) {
+			doc.insertString(doc.getLength(), Strings.TAB + String.format(s, Stats.getString(of, index2, Stats.FACE_TYPE),
+					Stats.getString(of, index2, Stats.HAIR)), attr);
+		}
+
+		if (index1 > 0) {
+			doc.insertString(doc.getLength(), Strings.LF + Stats.getString(of, index1, Stats.NATIONALITY), attr);
 		}
 		if (index2 > 0) {
 			doc.insertString(doc.getLength(), Strings.TAB + Stats.getString(of, index2, Stats.NATIONALITY), attr);
 		}
 
-		String s = Resources.getMessage("info.age");
+		s = Resources.getMessage("info.age");
 		if (index1 > 0) {
 			doc.insertString(doc.getLength(), Strings.LF + s + Strings.SPACE + Stats.getString(of, index1, Stats.AGE), attr);
 		}

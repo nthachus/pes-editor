@@ -12,15 +12,17 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class GeneralAbilityPanel extends JPanel {
+public class GeneralAbilityPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -7411807493467061728L;
 	private static final Logger log = LoggerFactory.getLogger(GeneralAbilityPanel.class);
 
 	private final OptionFile of;
 
 	public GeneralAbilityPanel(OptionFile of) {
-		super(new GridLayout(0, 2));
+		super(new GridBagLayout());
 		if (null == of) {
 			throw new NullArgumentException("of");
 		}
@@ -46,6 +48,10 @@ public class GeneralAbilityPanel extends JPanel {
 	private/* final*/ JComboBox pkBox;
 	private/* final*/ JComboBox dribbleBox;
 	private/* final*/ JComboBox dkBox;
+	//
+	private/* final*/ JComboBox faceBox;
+	private/* final*/ JTextField faceField;
+	private/* final*/ JTextField hairField;
 
 	private void initComponents() {
 		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("genAbility.title")));
@@ -56,7 +62,7 @@ public class GeneralAbilityPanel extends JPanel {
 		ageField.setDocument(new JTextFieldLimit(Integer.toString(Stats.AGE.maxValue()).length()));
 		ageField.setInputVerifier(new StatVerifier(Stats.AGE));
 
-		heightField = new JTextField(2);
+		heightField = new JTextField(3);
 		heightField.setDocument(new JTextFieldLimit(Integer.toString(Stats.HEIGHT.maxValue()).length()));
 		heightField.setInputVerifier(new StatVerifier(Stats.HEIGHT));
 
@@ -80,78 +86,173 @@ public class GeneralAbilityPanel extends JPanel {
 		fkBox = new JComboBox/*<String>*/(Stats.MOD_FK);
 		pkBox = new JComboBox/*<String>*/(Stats.MOD_PK);
 
+		// Layout manager
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+
 		// Register TextBox and Label
 		JLabel lab = new JLabel(Resources.getMessage("genAbility.nation"));
 		lab.setLabelFor(nationBox);
-		add(lab);
-		add(nationBox);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(nationBox, c);
 
 		lab = new JLabel(Resources.getMessage("genAbility.age"));
 		lab.setLabelFor(ageField);
-		add(lab);
-		add(ageField);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(ageField, c);
 
 		lab = new JLabel(Resources.getMessage("genAbility.height"));
 		lab.setLabelFor(heightField);
-		add(lab);
-		add(heightField);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(heightField, c);
 
 		lab = new JLabel(Resources.getMessage("genAbility.weight"));
 		lab.setLabelFor(weightField);
-		add(lab);
-		add(weightField);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(weightField, c);
 
 		lab = new JLabel(Resources.getMessage("genAbility.footSide"));
 		lab.setLabelFor(footBox);
-		add(lab);
-		add(footBox);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(footBox, c);
+
+		// Separator
+		GridBagConstraints sep = (GridBagConstraints) c.clone();
+		int pad = lab.getPreferredSize().height / 3;
+		sep.insets = new Insets(pad, 0, pad, 0);
+		sep.gridwidth = 2;
+		sep.gridx = 0;
+		sep.gridy = ++c.gridy;
+		add(new JSeparator(SwingConstants.HORIZONTAL), sep);
+
+		lab = new JLabel(Resources.getMessage("genAbility.cond"));
+		lab.setLabelFor(conditionBox);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(conditionBox, c);
 
 		lab = new JLabel(Resources.getMessage("genAbility.wfAcc"));
 		lab.setToolTipText(Resources.getNullableMessage("genAbility.wfAcc.tip"));
 		lab.setLabelFor(weakFootAccBox);
-		add(lab);
-		add(weakFootAccBox);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(weakFootAccBox, c);
 
 		lab = new JLabel(Resources.getMessage("genAbility.wfFreq"));
 		lab.setToolTipText(Resources.getNullableMessage("genAbility.wfFreq.tip"));
 		lab.setLabelFor(weakFootFreqBox);
-		add(lab);
-		add(weakFootFreqBox);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(weakFootFreqBox, c);
 
 		lab = new JLabel(Resources.getMessage("genAbility.cons"));
 		lab.setLabelFor(consistencyBox);
-		add(lab);
-		add(consistencyBox);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(consistencyBox, c);
 
-		lab = new JLabel(Resources.getMessage("genAbility.cond"));
-		lab.setLabelFor(conditionBox);
-		add(lab);
-		add(conditionBox);
+		// Separator
+		sep.gridy = ++c.gridy;
+		add(new JSeparator(SwingConstants.HORIZONTAL), sep);
 
 		lab = new JLabel(Resources.getMessage("genAbility.injuryT"));
 		lab.setLabelFor(injuryBox);
-		add(lab);
-		add(injuryBox);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(injuryBox, c);
 
 		lab = new JLabel(Resources.getMessage("genAbility.dribble"));
 		lab.setLabelFor(dribbleBox);
-		add(lab);
-		add(dribbleBox);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(dribbleBox, c);
 
 		lab = new JLabel(Resources.getMessage("genAbility.fk"));
 		lab.setLabelFor(fkBox);
-		add(lab);
-		add(fkBox);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(fkBox, c);
 
 		lab = new JLabel(Resources.getMessage("genAbility.pk"));
 		lab.setLabelFor(pkBox);
-		add(lab);
-		add(pkBox);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(pkBox, c);
 
 		lab = new JLabel(Resources.getMessage("genAbility.dk"));
 		lab.setLabelFor(dkBox);
-		add(lab);
-		add(dkBox);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(dkBox, c);
+
+		// Separator
+		sep.gridy = ++c.gridy;
+		add(new JSeparator(SwingConstants.HORIZONTAL), sep);
+
+		// Face and Hair
+		faceBox = new JComboBox/*<String>*/(Stats.MOD_FACE);
+		faceBox.setActionCommand("Face");
+		faceBox.addActionListener(this);
+
+		faceField = new JTextField(4);
+		faceField.setDocument(new JTextFieldLimit(Integer.toString(Stats.FACE_TYPE.maxValue()).length()));
+		faceField.setInputVerifier(new StatVerifier(Stats.FACE_TYPE));
+
+		hairField = new JTextField(4);
+		hairField.setDocument(new JTextFieldLimit(Integer.toString(Stats.HAIR.maxValue()).length()));
+		hairField.setInputVerifier(new StatVerifier(Stats.HAIR));
+
+		lab = new JLabel(Resources.getMessage("genAbility.face"));
+		lab.setLabelFor(faceBox);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		JPanel pan = new JPanel(new GridLayout(0, 2));
+		pan.add(faceBox);
+		pan.add(faceField);
+		add(pan, c);
+
+		lab = new JLabel(Resources.getMessage("genAbility.hair"));
+		lab.setLabelFor(hairField);
+		c.gridx = 0;
+		c.gridy++;
+		add(lab, c);
+		c.gridx++;
+		add(hairField, c);
 	}
 
 	//endregion
@@ -212,6 +313,18 @@ public class GeneralAbilityPanel extends JPanel {
 		return dkBox;
 	}
 
+	public JComboBox getFaceBox() {
+		return faceBox;
+	}
+
+	public JTextField getFaceField() {
+		return faceField;
+	}
+
+	public JTextField getHairField() {
+		return hairField;
+	}
+
 	public void load(int player) {
 		log.info("Try to load general abilities for player: {}", player);
 
@@ -233,6 +346,21 @@ public class GeneralAbilityPanel extends JPanel {
 		int foot = Stats.getValue(of, player, Stats.FOOT);
 		int side = Stats.getValue(of, player, Stats.FAVORITE_SIDE);
 		footBox.setSelectedIndex(foot * 3 + side);
+
+		faceField.setText(Stats.getString(of, player, Stats.FACE_TYPE));
+		faceBox.setSelectedItem(Stats.getString(of, player, Stats.FACE));
+		hairField.setText(Stats.getString(of, player, Stats.HAIR));
+	}
+
+	public void actionPerformed(ActionEvent evt) {
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
+		log.info("Perform general-ability changed action: {}", evt.getActionCommand());
+
+		if ("Face".equalsIgnoreCase(evt.getActionCommand())) {
+			faceField.setEnabled(faceBox.getSelectedIndex() > 0);
+		}
 	}
 
 	public static class StatVerifier extends InputVerifier {

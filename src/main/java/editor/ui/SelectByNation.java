@@ -5,6 +5,7 @@ import editor.data.OptionFile;
 import editor.data.Stats;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
+import editor.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 
 	public static String[] getExtraNations() {
 		String s = Resources.getMessage("nation.extras");
-		return s.split("\\s*,\\s*");
+		return Strings.COMMA_REGEX.split(s);
 	}
 
 	private static String[] getAllNations() {

@@ -323,7 +323,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 
 	private static Object[] getOptions(boolean of2Loaded) {
 		String s = Resources.getMessage("emblem.options");
-		String[] opts = s.split("\\s*,\\s*");
+		String[] opts = Strings.COMMA_REGEX.split(s);
 		if (of2Loaded || opts.length < 2) {
 			return opts;
 		}
