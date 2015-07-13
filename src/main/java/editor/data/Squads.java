@@ -327,9 +327,11 @@ public final class Squads {
 
 		for (int p = 0; p < size; p++) {
 			int fSlot = Formations.getSlot(of, formationTeam, p);
-			if (fSlot < size) {
+			if (fSlot != p && fSlot < size) {
 				System.arraycopy(temp, fSlot * 2, of.getData(), firstAdr + p * 2, 2);
 				System.arraycopy(tempNum, fSlot, of.getData(), firstNumAdr + p, 1);
+				// DEBUG
+				log.debug("Fixed formation for team #{}: Slot {} -> {}", squad, fSlot, p);
 			}
 		}
 
@@ -386,7 +388,7 @@ public final class Squads {
 
 		byte[] tempSlot = new byte[(size - Formations.PLAYER_COUNT) * 2];
 		byte[] tempNum = new byte[size - Formations.PLAYER_COUNT];
-		int tempPos = 0;
+		int tempPos = 0, emptySlot = 0;
 		for (int i = Formations.PLAYER_COUNT; i < size; i++) {
 
 			int slotAdr = firstAdr + i * 2;
@@ -398,6 +400,13 @@ public final class Squads {
 				tempNum[tempPos] = of.getData()[numAdr];
 
 				tempPos++;
+				if (emptySlot > 0) {
+					// DEBUG
+					log.debug("Defrag empty slot {} -> {} for team #{}", i, emptySlot, team);
+					emptySlot = 0;
+				}
+			} else if (emptySlot == 0) {
+				emptySlot = i;
 			}
 		}
 

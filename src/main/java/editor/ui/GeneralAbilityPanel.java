@@ -370,35 +370,30 @@ public class GeneralAbilityPanel extends JPanel implements ActionListener, Chang
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		if (null == evt) {
-			throw new NullArgumentException("evt");
-		}
-		log.info("Perform general-ability changed action: {}", evt.getActionCommand());
+		log.info("Perform general-ability changed action: {}", (null == evt) ? null : evt.getActionCommand());
 
-		if ("Face".equalsIgnoreCase(evt.getActionCommand())) {
-			faceField.setEnabled(faceBox.getSelectedIndex() > 0);
-		}
+		//if ("Face".equalsIgnoreCase(evt.getActionCommand())) {
+		faceField.setEnabled(faceBox.getSelectedIndex() > 0);
+		//}
 	}
 
 	public void stateChanged(ChangeEvent evt) {
-		if (null == evt) {
-			throw new NullArgumentException("evt");
-		}
-		if (!(evt.getSource() instanceof JTextComponent)) {
-			throw new IllegalArgumentException("evt");
-		}
+		String s;
+		if (specHairCheck.isSelected()) {
+			s = null;
+		} else {
+			String text = hairField.getText();
+			// DEBUG
+			log.info("Try to analyze changed hair value: {}", text);
 
-		JTextComponent tf = (JTextComponent) evt.getSource();
-		String text = tf.getText();
-		// DEBUG
-		log.info("Try to analyze changed hair value: {}", text);
-
-		try {
-			int v = Integer.parseInt(text);
-			tf.setToolTipText(Hairs.toString(v));
-		} catch (RuntimeException ignore) {
-			tf.setToolTipText(null);
+			try {
+				int v = Integer.parseInt(text);
+				s = Hairs.toString(v);
+			} catch (RuntimeException ignore) {
+				s = null;
+			}
 		}
+		hairField.setToolTipText(s);
 	}
 
 	public static class StatVerifier extends InputVerifier {

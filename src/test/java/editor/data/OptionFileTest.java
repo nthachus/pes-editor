@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 
 public final class OptionFileTest extends BaseTest {
-	private final static int[] BLOCKS = {
+	private static final int[] BLOCKS = {
 			12, 5144, 7608, 12092, 34920, 649560, 739800, 751252, 914696, 1070332, 1074144
 	};
 

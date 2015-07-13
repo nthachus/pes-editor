@@ -148,7 +148,7 @@ public class OptionFile implements Serializable {
 
 		ofs += MAGIC_MAX.length();
 		int chk = Bits.toInt(temp, ofs);
-		System.arraycopy(Bits.ZERO_INT, 0, temp, ofs, Bits.ZERO_INT.length);
+		Arrays.fill(temp, ofs, ofs + 4, (byte) 0);
 
 		CRC32 crc32 = new CRC32();
 		crc32.update(temp);
@@ -291,7 +291,7 @@ public class OptionFile implements Serializable {
 				out.write(data);
 
 				if (format == OfFormat.xPort) {
-					out.write(Bits.ZERO_INT);// skip the last CRC32 of XPort file
+					out.write(Bits.toBytes(0));// skip the last CRC32 of XPort file
 				}
 			}
 		} catch (Exception e) {
