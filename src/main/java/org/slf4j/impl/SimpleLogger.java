@@ -282,7 +282,7 @@ public class SimpleLogger extends NamedLoggerBase {
 	/**
 	 * The short name of this simple log instance
 	 */
-	private volatile transient String shortLogName = null;
+	private transient volatile String shortLogName = null;
 
 	/**
 	 * Package access allows only {@link SimpleLoggerFactory} to instantiate

@@ -38,27 +38,25 @@ public final class Bits {
 		return (short) (value & 0xFFFF);
 	}
 
-	public static final byte[] ZERO_INT = new byte[]{0, 0, 0, 0};
-	//public static final byte[] ZERO_INT16 = new byte[]{0, 0};
-
 	public static byte[] toBytes(int value) {
 		if (value == 0) {
-			return ZERO_INT;
+			return new byte[]{0, 0, 0, 0};
 		}
 
-		byte[] temp = new byte[ZERO_INT.length];
+		byte[] temp = new byte[4];
 		toBytes(value, temp, 0);
 		return temp;
 	}
 
-	/*public static byte[] toBytes(short value) {
-		if (value == 0)
-			return ZERO_INT16;
+	public static byte[] toBytes(short value) {
+		if (value == 0) {
+			return new byte[]{0, 0};
+		}
 
-		byte[] temp = new byte[ZERO_INT16.length];
+		byte[] temp = new byte[2];
 		toBytes(value, temp, 0);
 		return temp;
-	}*/
+	}
 
 	public static long toInt(byte[] bytes, int index, int count, long maxValue) {
 		if (null == bytes) {

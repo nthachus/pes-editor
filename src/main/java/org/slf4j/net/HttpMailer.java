@@ -18,11 +18,11 @@ import java.security.cert.X509Certificate;
 public class HttpMailer implements Serializable {
 	private static final long serialVersionUID = 3614556945357970755L;
 
-	protected volatile URL endpoint;
-	protected volatile String authentication;
-	protected final String form;
-	protected final String encoding;
-	protected volatile Integer timeout = null;
+	private volatile URL endpoint;
+	private volatile String authentication;
+	private final String form;
+	private final String encoding;
+	private volatile Integer timeout = null;
 
 	public HttpMailer(String form, String encoding) {
 		if (null == form) {
@@ -36,6 +36,18 @@ public class HttpMailer implements Serializable {
 		this(form, null);
 	}
 
+	public String getForm() {
+		return form;
+	}
+
+	public String getEncoding() {
+		return encoding;
+	}
+
+	public URL getEndpoint() {
+		return endpoint;
+	}
+
 	public HttpMailer setEndpoint(String endpoint) throws MalformedURLException {
 		if (null == endpoint) {
 			throw new IllegalArgumentException("endpoint must not be null.");
@@ -44,9 +56,17 @@ public class HttpMailer implements Serializable {
 		return this;
 	}
 
+	public String getAuthentication() {
+		return authentication;
+	}
+
 	public HttpMailer setAuthentication(String authentication) {
 		this.authentication = authentication;
 		return this;
+	}
+
+	public Integer getTimeout() {
+		return timeout;
 	}
 
 	public HttpMailer setTimeout(int timeout) {
@@ -59,7 +79,7 @@ public class HttpMailer implements Serializable {
 	}
 
 	public boolean send(String subject, String body) throws IOException, GeneralSecurityException {
-		HttpURLConnection http = (HttpURLConnection) endpoint.openConnection();
+		HttpURLConnection http = (HttpURLConnection) getEndpoint().openConnection();
 
 		if (http instanceof HttpsURLConnection) {
 			initHttpsRequest((HttpsURLConnection) http);
@@ -73,7 +93,7 @@ public class HttpMailer implements Serializable {
 		http.setDoOutput(true);
 		OutputStreamWriter sw = null;
 		try {
-			sw = new OutputStreamWriter(http.getOutputStream(), encoding);
+			sw = new OutputStreamWriter(http.getOutputStream(), getEncoding());
 			sw.write(postData);
 		} finally {
 			if (null != sw) {
@@ -85,13 +105,13 @@ public class HttpMailer implements Serializable {
 		/*BufferedReader sr = null;
 		StringBuilder response = new StringBuilder();
 		try {
-			sr = new BufferedReader(new InputStreamReader(http.getInputStream(), encoding));
+			sr = new BufferedReader(new InputStreamReader(http.getInputStream(), getEncoding()));
 			String line;
 			while ((line = sr.readLine()) != null) {
 				response.append(line);
 			}
 		} finally {
-			if (null != sr) sr.close();
+			if (null != sr) { sr.close(); }
 		}*/
 
 		return (http.getResponseCode() == HttpURLConnection.HTTP_OK);
@@ -102,10 +122,12 @@ public class HttpMailer implements Serializable {
 		http.setRequestMethod("POST");
 		http.setRequestProperty("User-Agent", getUserAgent());
 
+		String authentication = getAuthentication();
 		if (null != authentication && authentication.length() > 0) {
 			http.setRequestProperty("Authorization", authentication);
 		}
 
+		Integer timeout = getTimeout();
 		if (null != timeout) {
 			http.setConnectTimeout(timeout);
 			http.setReadTimeout(timeout);
@@ -120,14 +142,14 @@ public class HttpMailer implements Serializable {
 
 	protected String buildPostData(String subject, String body) throws IOException {
 		if (null != subject && subject.length() > 0) {
-			subject = URLEncoder.encode(subject, encoding);
+			subject = URLEncoder.encode(subject, getEncoding());
 		}
 
 		if (null != body && body.length() > 0) {
-			body = URLEncoder.encode(body, encoding);
+			body = URLEncoder.encode(body, getEncoding());
 		}
 
-		return String.format(form, subject, body);
+		return String.format(getForm(), subject, body);
 	}
 
 	private static volatile SSLSocketFactory sslSocketFactory = null;

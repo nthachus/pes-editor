@@ -74,7 +74,7 @@ public final class Stats {
 	/**
 	 * 0:Build, 1:Preset
 	 */
-	public static final Stat FACE = new Stat(55, 1, 1, "Face");
+	public static final Stat FACE = new Stat(55, 0, 3, "Face");
 	/**
 	 * Preset face ID.
 	 */
@@ -90,7 +90,8 @@ public final class Stats {
 	public static final Stat HEAD_LENGTH = new Stat(StatType.integer4, 43, 4, 0xF, "Head Length");
 	public static final Stat HEAD_WIDTH = new Stat(StatType.integer4, 44, 0, 0xF, "Head Width");
 
-	public static final Stat HAIR = new Stat(45, 0, 0xFFF, "Hair");
+	public static final Stat HAIR = new Stat(45, 0, 0x7FF, "Hair");
+	public static final Stat SPECIAL_HAIRSTYLES2 = new Stat(52, 6, 1, "Is Special Hairstyles2");
 
 	public static final Stat HEIGHT = new Stat(StatType.height148, 41, 0, 0x3F, "Height");
 	public static final Stat WEIGHT = new Stat(42, 0, 0x7F, "Weight");
@@ -355,7 +356,7 @@ public final class Stats {
 	public static final String[] MOD_1_4 = {"1", "2", "3", "4"};
 
 	public static final int MAX_STAT99 = 99;
-	public static final String[] MOD_FACE = {"Build", "Preset"};
+	public static final String[] MOD_FACE = {"Build", "Preset 1", "Preset"};
 
 	//endregion
 
@@ -439,7 +440,7 @@ public final class Stats {
 		} else if (stat.getType() == StatType.injuryId) {
 			result = MOD_INJURY[val];
 		} else if (stat.compareTo(FACE) == 0) {
-			result = MOD_FACE[val];
+			result = MOD_FACE[Math.min(val, MOD_FACE.length - 1)];
 		} else {
 			result = Integer.toString(val + stat.minValue());
 		}

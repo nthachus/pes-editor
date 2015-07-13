@@ -156,16 +156,15 @@ public abstract class BaseTest {
 		Field f = clazz.getDeclaredField(name);
 		if (null == f) {
 			throw new NoSuchFieldException(name);
-		} else if ((null == target) != Modifier.isStatic(f.getModifiers())
-				|| (null != isFinal && isFinal != Modifier.isFinal(f.getModifiers()))) {
+		}
+		if (null != isFinal && isFinal != Modifier.isFinal(f.getModifiers())) {
 			throw new IllegalAccessException(f.toString());
 		}
 
 		if (!Modifier.isPublic(f.getModifiers()) && forceAccess) {
 			f.setAccessible(true);
 		}
-
-		return f.get(target);
+		return f.get(Modifier.isStatic(f.getModifiers()) ? null : target);
 	}
 
 	public static Object readStaticField(Class<?> clazz, String name, Boolean isFinal, boolean forceAccess)

@@ -202,6 +202,7 @@ public class PlayerDialog extends JDialog implements ActionListener {
 		Stats.setValue(of, index, Stats.FACE, generalPan.getFaceBox().getSelectedIndex());
 		Stats.setValue(of, index, Stats.FACE_TYPE, generalPan.getFaceField().getText());
 		Stats.setValue(of, index, Stats.HAIR, generalPan.getHairField().getText());
+		Stats.setValue(of, index, Stats.SPECIAL_HAIRSTYLES2, Bits.toByte(generalPan.getSpecHairCheck().isSelected()));
 
 		Stats.setValue(of, index, Stats.ABILITY_EDITED, 1);
 		Stats.setValue(of, index, Stats.APPEARANCE_EDITED, 1);
