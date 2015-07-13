@@ -1,8 +1,10 @@
 package editor.ui;
 
+import editor.data.Hairs;
 import editor.data.OptionFile;
 import editor.data.Stat;
 import editor.data.Stats;
+import editor.lang.JTextChangeListener;
 import editor.lang.JTextFieldLimit;
 import editor.lang.NullArgumentException;
 import editor.util.Resources;
@@ -10,12 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GeneralAbilityPanel extends JPanel implements ActionListener {
+public class GeneralAbilityPanel extends JPanel implements ActionListener, ChangeListener {
 	private static final long serialVersionUID = -7411807493467061728L;
 	private static final Logger log = LoggerFactory.getLogger(GeneralAbilityPanel.class);
 
@@ -52,6 +56,7 @@ public class GeneralAbilityPanel extends JPanel implements ActionListener {
 	private/* final*/ JComboBox faceBox;
 	private/* final*/ JTextField faceField;
 	private/* final*/ JTextField hairField;
+	private/* final*/ JCheckBox specHairCheck;
 
 	private void initComponents() {
 		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("genAbility.title")));
@@ -234,6 +239,10 @@ public class GeneralAbilityPanel extends JPanel implements ActionListener {
 		hairField = new JTextField(4);
 		hairField.setDocument(new JTextFieldLimit(Integer.toString(Stats.HAIR.maxValue()).length()));
 		hairField.setInputVerifier(new StatVerifier(Stats.HAIR));
+		hairField.getDocument().addDocumentListener(new JTextChangeListener(hairField, this));
+
+		specHairCheck = new JCheckBox("Is Spec 2");
+		specHairCheck.setToolTipText(Resources.getMessage("genAbility.specHair"));
 
 		lab = new JLabel(Resources.getMessage("genAbility.face"));
 		lab.setLabelFor(faceBox);
@@ -252,7 +261,10 @@ public class GeneralAbilityPanel extends JPanel implements ActionListener {
 		c.gridy++;
 		add(lab, c);
 		c.gridx++;
-		add(hairField, c);
+		pan = new JPanel(new GridLayout(0, 2));
+		pan.add(hairField);
+		pan.add(specHairCheck);
+		add(pan, c);
 	}
 
 	//endregion
@@ -325,6 +337,10 @@ public class GeneralAbilityPanel extends JPanel implements ActionListener {
 		return hairField;
 	}
 
+	public JCheckBox getSpecHairCheck() {
+		return specHairCheck;
+	}
+
 	public void load(int player) {
 		log.info("Try to load general abilities for player: {}", player);
 
@@ -350,6 +366,7 @@ public class GeneralAbilityPanel extends JPanel implements ActionListener {
 		faceField.setText(Stats.getString(of, player, Stats.FACE_TYPE));
 		faceBox.setSelectedItem(Stats.getString(of, player, Stats.FACE));
 		hairField.setText(Stats.getString(of, player, Stats.HAIR));
+		specHairCheck.setSelected(Stats.getValue(of, player, Stats.SPECIAL_HAIRSTYLES2) != 0);
 	}
 
 	public void actionPerformed(ActionEvent evt) {
@@ -360,6 +377,27 @@ public class GeneralAbilityPanel extends JPanel implements ActionListener {
 
 		if ("Face".equalsIgnoreCase(evt.getActionCommand())) {
 			faceField.setEnabled(faceBox.getSelectedIndex() > 0);
+		}
+	}
+
+	public void stateChanged(ChangeEvent evt) {
+		if (null == evt) {
+			throw new NullArgumentException("evt");
+		}
+		if (!(evt.getSource() instanceof JTextComponent)) {
+			throw new IllegalArgumentException("evt");
+		}
+
+		JTextComponent tf = (JTextComponent) evt.getSource();
+		String text = tf.getText();
+		// DEBUG
+		log.info("Try to analyze changed hair value: {}", text);
+
+		try {
+			int v = Integer.parseInt(text);
+			tf.setToolTipText(Hairs.toString(v));
+		} catch (RuntimeException ignore) {
+			tf.setToolTipText(null);
 		}
 	}
 
