@@ -152,8 +152,9 @@ public class TransferPanel extends JPanel
 	public void actionPerformed(ActionEvent evt) {
 		log.info("Try to perform Transfer action: {}", (null == evt) ? null : evt.getActionCommand());
 
-		//if ("Compare".equalsIgnoreCase(evt.getActionCommand()))
+		//if ("Compare".equalsIgnoreCase(evt.getActionCommand())) {
 		compareStats();
+		//}
 	}
 
 	private void compareStats() {
@@ -1129,8 +1130,9 @@ public class TransferPanel extends JPanel
 				if (source != EventSource.freeList || !owner.freeList.isAlphaOrder()) {
 
 					listS.setSelectedIndex(idx + 1);
-					if (source == EventSource.freeList)
+					if (source == EventSource.freeList) {
 						listS.ensureIndexIsVisible(idx + 1);
+					}
 				}
 			}
 		}
