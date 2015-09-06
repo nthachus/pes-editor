@@ -260,7 +260,16 @@ public final class Emblems {
 		}
 
 		int adr = (slot < TOTAL128) ? getOffset128(slot) : getOffset16(slot - TOTAL128);
-		return Bits.toInt16(of.getData(), adr + 4);
+		int id = Bits.toInt16(of.getData(), adr + 4);
+
+		// Try to fix incorrect emblem ID
+		if (id < Clubs.FIRST_EMBLEM) {
+			// DEBUG
+			log.debug("Try to fix emblem#{} ID: {} -> {}", slot, id, Clubs.FIRST_EMBLEM + slot);
+			id = Clubs.FIRST_EMBLEM + slot;
+			Bits.toBytes(Bits.toInt16(id), of.getData(), adr + 4);
+		}
+		return id;
 	}
 
 	public static void delete16(OptionFile of, int slot) {
