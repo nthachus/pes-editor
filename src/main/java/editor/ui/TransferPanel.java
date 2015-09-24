@@ -1118,7 +1118,7 @@ public class TransferPanel extends JPanel
 
 			int idx = listS.getSelectedIndex();
 			Player p = (Player) listS.getSelectedValue();
-			if (!text.equals(p.getName())) {
+			if (p.getIndex() > 0 && !text.equals(p.getName())) {
 				p.setName(text);
 				String shirt = Player.buildShirtName(text);
 				p.setShirtName(shirt);
@@ -1305,9 +1305,12 @@ public class TransferPanel extends JPanel
 			}
 
 			Player p = (Player) listS.getSelectedValue();
-			p.setShirtName(text);
+			if (p.getIndex() > 0) {
+				p.setShirtName(text);
 
-			owner.refreshLists();
+				owner.refreshLists();
+			}
+
 			if (idx >= 0) {
 				listS.setSelectedIndex(idx + 1);
 			}
