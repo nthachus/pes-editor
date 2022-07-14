@@ -204,6 +204,7 @@ public final class SplashWindow extends Window implements MouseListener {
 	 * @param imageUrl The url of the splash image.
 	 */
 	public static void splash(URL imageUrl) {
+		log.debug("Open the splash image: {}", imageUrl);
 		if (imageUrl != null) {
 			splash(Toolkit.getDefaultToolkit().createImage(imageUrl));
 		}
