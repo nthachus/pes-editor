@@ -373,6 +373,7 @@ public class TransferPanel extends JPanel
 					} else if (autoGaps.isSelected()) {
 
 						int t = squadId;
+						//noinspection ConstantConditions
 						if (t >= Squads.FIRST_CLUB) {
 							t -= Squads.EDIT_TEAM_COUNT;
 						}
@@ -808,6 +809,7 @@ public class TransferPanel extends JPanel
 		}
 	}
 
+	@SuppressWarnings("RedundantIfStatement")
 	private boolean isDragSafety(
 			JList targetList, int squadS,
 			int playerS, int playerT,
@@ -1033,7 +1035,7 @@ public class TransferPanel extends JPanel
 
 	//region Nested Classes
 
-	private static enum EventSource {
+	private /*static*/ enum EventSource {
 		freeList,
 		squadLeft,
 		squadRight

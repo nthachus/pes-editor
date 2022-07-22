@@ -99,7 +99,9 @@ public class LogoPanel extends JPanel implements ActionListener {
 		log.info("Try to perform logo action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
-			isTrans = !isTrans;
+			synchronized (this) {
+				isTrans = !isTrans;
+			}
 			refresh();
 
 		} else {

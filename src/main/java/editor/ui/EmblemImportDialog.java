@@ -81,15 +81,17 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 		log.info("Perform emblem-import action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
-			isTrans = !isTrans;
+			synchronized (this) {
+				isTrans = !isTrans;
+			}
 			refresh();
 
 		} else {
-			slot = Integer.parseInt(evt.getActionCommand());
+			int slot = Integer.parseInt(evt.getActionCommand());
 			if (slot >= Emblems.count16(of2)) {
-				slot = Emblems.TOTAL16 - slot - 1;
+				this.slot = Emblems.TOTAL16 - slot - 1;
 			} else {
-				slot += Emblems.TOTAL128;
+				this.slot = Emblems.TOTAL128 + slot;
 			}
 
 			setVisible(false);
@@ -127,7 +129,7 @@ public class EmblemImportDialog extends JDialog implements ActionListener {
 			start = Emblems.count16(of2);
 			end = emblemButtons.length;
 		} else if (type == EmblemType.highRes) {
-			start = 0;
+			//start = 0;
 			end = emblemButtons.length - Emblems.count128(of2);
 		}
 

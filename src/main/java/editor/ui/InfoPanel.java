@@ -148,6 +148,7 @@ public class InfoPanel extends JScrollPane {
 		return s.toString();
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	private void insertRole(int index1, int index2) throws BadLocationException {
 		int fsz = 0;
 		if (index2 > 0) {

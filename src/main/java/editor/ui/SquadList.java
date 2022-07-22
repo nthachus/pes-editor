@@ -79,7 +79,7 @@ public class SquadList extends JList/*<Player>*/ {
 			}
 		}
 
-		Player[] listData = model.toArray(new Player[model.size()]);
+		Player[] listData = model.toArray(new Player[0]);
 		Arrays.sort(listData);
 
 		setListData(listData);

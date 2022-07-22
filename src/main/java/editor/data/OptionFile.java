@@ -19,7 +19,7 @@ public class OptionFile implements Serializable {
 	private static final String SHARK_PORT = "\15\0\0\0SharkPortSave";
 	private static final String MAGIC_MAX = "Ps2PowerSave";
 
-	private static final String GAME_ID = "(?i:(BESLES|BASLUS)\\-.*2013OPT|.*3013OPT)";
+	private static final String GAME_ID = "(?i:(BESLES|BASLUS)-.*2013OPT|.*3013OPT)";
 	public static final int GAME_LEN = 19;
 
 	public static final int LENGTH = 1095680;
@@ -58,6 +58,7 @@ public class OptionFile implements Serializable {
 		return saveName;
 	}
 
+	@SuppressWarnings("unused")
 	public void setSaveName(String saveName) {
 		this.saveName = saveName;
 	}
@@ -434,6 +435,7 @@ public class OptionFile implements Serializable {
 
 			total = Clubs.TOTAL;
 			byte[] clubKits = new byte[total * Kits.SIZE_CLUB];
+			//noinspection ConstantConditions
 			sz = Kits.SIZE_CLUB - 300;
 			for (int ofs = 0; total > 0; total--, ofs += Kits.SIZE_CLUB) {
 				System.arraycopy(data, Kits.START_CLUB_ADR + ofs, clubKits, ofs, sz);

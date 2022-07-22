@@ -141,15 +141,15 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 			g2.setPaint(Color.GRAY);
 			g2.draw(new Ellipse2D.Double(SQR_QRT, SQR_QRT, SQR_SIZE, SQR_SIZE));
 			g2.setPaint(Color.BLUE);
-			g2.fill(new Ellipse2D.Double(SQR_QRT, SQR_MID * 3 / 2, SQR_SIZE, SQR_SIZE));
+			g2.fill(new Ellipse2D.Double(SQR_QRT, 1.5 * SQR_MID, SQR_SIZE, SQR_SIZE));
 		} else if (def == 0) {
 			g2.setPaint(Color.BLUE);
 			g2.fill(new Ellipse2D.Double(SQR_QRT, SQR_QRT, SQR_SIZE, SQR_SIZE));
-			g2.fill(new Ellipse2D.Double(SQR_QRT, SQR_MID * 3 / 2, SQR_SIZE, SQR_SIZE));
+			g2.fill(new Ellipse2D.Double(SQR_QRT, 1.5 * SQR_MID, SQR_SIZE, SQR_SIZE));
 		} else {
 			g2.setPaint(Color.GRAY);
 			g2.draw(new Ellipse2D.Double(SQR_QRT, SQR_QRT, SQR_SIZE, SQR_SIZE));
-			g2.draw(new Ellipse2D.Double(SQR_QRT, SQR_MID * 3 / 2, SQR_SIZE, SQR_SIZE));
+			g2.draw(new Ellipse2D.Double(SQR_QRT, 1.5 * SQR_MID, SQR_SIZE, SQR_SIZE));
 		}
 	}
 
@@ -160,7 +160,7 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 		log.debug("Perform mouse pressed with selected-index: {}, squad: {}", selectedIndex, squad);
 
 		int alt = Integer.MIN_VALUE;
-		// Checks whether or not the cursor is inside of the rectangle while the user is pressing the mouse.
+		// Checks whether the cursor is inside the rectangle while the user is pressing the mouse.
 		if (new Ellipse2D.Double(SQR_MID, SQR_MID, SQR_SIZE, SQR_SIZE).contains(e.getX(), e.getY())) {
 			alt = altBox.getSelectedIndex();
 			Formations.setAttack(of, squad, alt, selectedIndex, -1);
@@ -171,7 +171,7 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 			int def = Formations.getDefence(of, squad, alt, selectedIndex);
 			Formations.setDefence(of, squad, alt, selectedIndex, (def == 0) ? 1 : 0);
 
-		} else if (new Ellipse2D.Double(SQR_QRT, SQR_MID * 3 / 2, SQR_SIZE, SQR_SIZE).contains(e.getX(), e.getY())) {
+		} else if (new Ellipse2D.Double(SQR_QRT, 1.5 * SQR_MID, SQR_SIZE, SQR_SIZE).contains(e.getX(), e.getY())) {
 			alt = altBox.getSelectedIndex();
 			int def = Formations.getDefence(of, squad, alt, selectedIndex);
 			Formations.setDefence(of, squad, alt, selectedIndex, (def == 2) ? 1 : 2);

@@ -404,7 +404,7 @@ public final class Stats {
 	}
 
 	/**
-	 * @throws NumberFormatException
+	 * @throws NumberFormatException Invalid numeric {@code value} for the player stat
 	 */
 	public static void setValue(OptionFile of, int player, Stat stat, String value) {
 		if (null == stat) {
@@ -428,7 +428,7 @@ public final class Stats {
 	}
 
 	/**
-	 * @throws IndexOutOfBoundsException
+	 * @throws IndexOutOfBoundsException The player stat value is out-of-range
 	 */
 	public static String getString(OptionFile of, int player, Stat stat) {
 		int val = getValue(of, player, stat);

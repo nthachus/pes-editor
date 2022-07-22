@@ -92,18 +92,22 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 		this.selectedIdx = selected;
 	}
 
+	@SuppressWarnings("unused")
 	public void setShowAttack(boolean isShowAttack) {
 		showAttack = isShowAttack;
 	}
 
+	@SuppressWarnings("unused")
 	public void setShowDefence(boolean isShowDefence) {
 		showDefence = isShowDefence;
 	}
 
+	@SuppressWarnings("unused")
 	public void setShowNumber(boolean isShowNumber) {
 		showNumber = isShowNumber;
 	}
 
+	@SuppressWarnings("unused")
 	public void setRoleOn(boolean isRoleOn) {
 		roleOn = isRoleOn;
 	}
@@ -366,7 +370,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	private void findPressedIndex(MouseEvent e) {
-		// Checks whether or not the cursor is inside of the rectangle while the user is pressing the mouse
+		// Checks whether the cursor is inside the rectangle while the user is pressing the mouse
 		Ellipse2D circle;
 		for (int i = 1; i < Formations.PLAYER_COUNT; i++) {
 			int x = getXForPlayer(i);

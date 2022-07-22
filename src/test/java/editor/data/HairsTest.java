@@ -15,8 +15,8 @@ public final class HairsTest {
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(1));
 		Assert.assertEquals(Integer.valueOf(4), test.getShape(4));
 
-		Assert.assertEquals(test.getFront(1), null);
-		Assert.assertEquals(test.getBandana(1), null);
+		Assert.assertNull(test.getFront(1));
+		Assert.assertNull(test.getBandana(1));
 
 		Assert.assertEquals("Bald / Shape1", Hairs.toString(1));
 		Assert.assertEquals("Bald / Shape4", Hairs.toString(4));
@@ -29,7 +29,7 @@ public final class HairsTest {
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(5));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(5));
-		Assert.assertEquals(test.getVolume(5), null);
+		Assert.assertNull(test.getVolume(5));
 		Assert.assertEquals(Integer.valueOf(1), test.getDarkness(5));
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x18));
@@ -59,7 +59,7 @@ public final class HairsTest {
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x55));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x55));
-		Assert.assertEquals(test.getVolume(0x55), null);
+		Assert.assertNull(test.getVolume(0x55));
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x5A));
 		Assert.assertEquals(Integer.valueOf(6), test.getFront(0x5A));
@@ -81,7 +81,7 @@ public final class HairsTest {
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x6D));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x6D));
-		Assert.assertEquals(test.getVolume(0x6D), null);
+		Assert.assertNull(test.getVolume(0x6D));
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x75));
 		Assert.assertEquals(Integer.valueOf(9), test.getFront(0x75));
@@ -111,7 +111,7 @@ public final class HairsTest {
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x9A));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x9A));
 		Assert.assertEquals(Integer.valueOf(1), test.getVolume(0x9A));
-		Assert.assertEquals(test.getDarkness(0x9A), null);
+		Assert.assertNull(test.getDarkness(0x9A));
 		Assert.assertEquals(Integer.valueOf(0), test.getBandana(0x9A));
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x9C));
@@ -132,12 +132,12 @@ public final class HairsTest {
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0xEC));
 		Assert.assertEquals(Integer.valueOf(10), test.getFront(0xEC));
 		Assert.assertEquals(Integer.valueOf(2), test.getVolume(0xEC));
-		Assert.assertEquals(test.getBandana(0xEC), null);
+		Assert.assertNull(test.getBandana(0xEC));
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0xFF));
 		Assert.assertEquals(Integer.valueOf(16), test.getFront(0xFF));
 		Assert.assertEquals(Integer.valueOf(3), test.getVolume(0xFF));
-		Assert.assertEquals(test.getBandana(0xFF), null);
+		Assert.assertNull(test.getBandana(0xFF));
 
 		Assert.assertEquals(Integer.valueOf(2), test.getShape(0x100));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x100));
@@ -147,7 +147,7 @@ public final class HairsTest {
 		Assert.assertEquals(Integer.valueOf(4), test.getShape(0x231));
 		Assert.assertEquals(Integer.valueOf(16), test.getFront(0x231));
 		Assert.assertEquals(Integer.valueOf(3), test.getVolume(0x231));
-		Assert.assertEquals(test.getBandana(0x231), null);
+		Assert.assertNull(test.getBandana(0x231));
 
 		Assert.assertEquals("Straight1 / Shape1 / Front16 / Volume3", Hairs.toString(0xFF));
 		Assert.assertEquals("Straight1 / Shape2 / Front1 / Volume1 / Bandana0", Hairs.toString(0x100));
@@ -161,7 +161,7 @@ public final class HairsTest {
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x232));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x232));
 		Assert.assertEquals(Integer.valueOf(1), test.getVolume(0x232));
-		Assert.assertEquals(test.getDarkness(0x232), null);
+		Assert.assertNull(test.getDarkness(0x232));
 		Assert.assertEquals(Integer.valueOf(0), test.getBandana(0x232));
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x243));
@@ -172,12 +172,12 @@ public final class HairsTest {
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x252));
 		Assert.assertEquals(Integer.valueOf(7), test.getFront(0x252));
 		Assert.assertEquals(Integer.valueOf(3), test.getVolume(0x252));
-		Assert.assertEquals(test.getBandana(0x252), null);
+		Assert.assertNull(test.getBandana(0x252));
 
 		Assert.assertEquals(Integer.valueOf(3), test.getShape(0x294));
 		Assert.assertEquals(Integer.valueOf(7), test.getFront(0x294));
 		Assert.assertEquals(Integer.valueOf(3), test.getVolume(0x294));
-		Assert.assertEquals(test.getBandana(0x294), null);
+		Assert.assertNull(test.getBandana(0x294));
 
 		Assert.assertEquals("Straight2 / Shape1 / Front2 / Volume3 / Bandana2", Hairs.toString(0x243));
 		Assert.assertEquals("Straight2 / Shape3 / Front7 / Volume3", Hairs.toString(0x294));
@@ -191,7 +191,7 @@ public final class HairsTest {
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x295));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x295));
 		Assert.assertEquals(Integer.valueOf(1), test.getVolume(0x295));
-		Assert.assertEquals(test.getDarkness(0x295), null);
+		Assert.assertNull(test.getDarkness(0x295));
 		Assert.assertEquals(Integer.valueOf(0), test.getBandana(0x295));
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x2C1));
@@ -202,12 +202,12 @@ public final class HairsTest {
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x2C7));
 		Assert.assertEquals(Integer.valueOf(7), test.getFront(0x2C7));
 		Assert.assertEquals(Integer.valueOf(3), test.getVolume(0x2C7));
-		Assert.assertEquals(test.getBandana(0x2C7), null);
+		Assert.assertNull(test.getBandana(0x2C7));
 
 		Assert.assertEquals(Integer.valueOf(4), test.getShape(0x360));
 		Assert.assertEquals(Integer.valueOf(7), test.getFront(0x360));
 		Assert.assertEquals(Integer.valueOf(3), test.getVolume(0x360));
-		Assert.assertEquals(test.getBandana(0x360), null);
+		Assert.assertNull(test.getBandana(0x360));
 
 		Assert.assertEquals("Curly1 / Shape1 / Front5 / Volume3 / Bandana2", Hairs.toString(0x2C1));
 		Assert.assertEquals("Curly1 / Shape4 / Front7 / Volume3", Hairs.toString(0x360));
@@ -221,8 +221,8 @@ public final class HairsTest {
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x361));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x361));
 		Assert.assertEquals(Integer.valueOf(1), test.getVolume(0x361));
-		Assert.assertEquals(test.getDarkness(0x361), null);
-		Assert.assertEquals(test.getBandana(0x361), null);
+		Assert.assertNull(test.getDarkness(0x361));
+		Assert.assertNull(test.getBandana(0x361));
 
 		Assert.assertEquals(Integer.valueOf(2), test.getShape(0x376));
 		Assert.assertEquals(Integer.valueOf(5), test.getFront(0x376));
@@ -244,8 +244,8 @@ public final class HairsTest {
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x391));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x391));
 		Assert.assertEquals(Integer.valueOf(1), test.getVolume(0x391));
-		Assert.assertEquals(test.getDarkness(0x391), null);
-		Assert.assertEquals(test.getBandana(0x391), null);
+		Assert.assertNull(test.getDarkness(0x391));
+		Assert.assertNull(test.getBandana(0x391));
 
 		Assert.assertEquals(Integer.valueOf(2), test.getShape(0x3A4));
 		Assert.assertEquals(Integer.valueOf(3), test.getFront(0x3A4));
@@ -267,8 +267,8 @@ public final class HairsTest {
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x3B5));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x3B5));
 		Assert.assertEquals(Integer.valueOf(1), test.getVolume(0x3B5));
-		Assert.assertEquals(test.getDarkness(0x3B5), null);
-		Assert.assertEquals(test.getBandana(0x3B5), null);
+		Assert.assertNull(test.getDarkness(0x3B5));
+		Assert.assertNull(test.getBandana(0x3B5));
 
 		Assert.assertEquals(Integer.valueOf(2), test.getShape(0x3C5));
 		Assert.assertEquals(Integer.valueOf(2), test.getFront(0x3C5));
@@ -290,8 +290,8 @@ public final class HairsTest {
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x3D9));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x3D9));
 		Assert.assertEquals(Integer.valueOf(1), test.getVolume(0x3D9));
-		Assert.assertEquals(test.getDarkness(0x3D9), null);
-		Assert.assertEquals(test.getBandana(0x3D9), null);
+		Assert.assertNull(test.getDarkness(0x3D9));
+		Assert.assertNull(test.getBandana(0x3D9));
 
 		Assert.assertEquals(Integer.valueOf(2), test.getShape(0x3E6));
 		Assert.assertEquals(Integer.valueOf(3), test.getFront(0x3E6));
@@ -316,8 +316,8 @@ public final class HairsTest {
 
 		Assert.assertEquals(Integer.valueOf(2), test.getShape(0x3F7));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x3F7));
-		Assert.assertEquals(test.getVolume(0x3F7), null);
-		Assert.assertEquals(test.getBandana(0x3F7), null);
+		Assert.assertNull(test.getVolume(0x3F7));
+		Assert.assertNull(test.getBandana(0x3F7));
 
 		Assert.assertEquals(Integer.valueOf(3), test.getShape(0x402));
 		Assert.assertEquals(Integer.valueOf(6), test.getFront(0x402));
@@ -332,12 +332,12 @@ public final class HairsTest {
 		Assert.assertEquals(test.start(), 0x403);
 
 		Assert.assertEquals(Integer.valueOf(3), test.getShape(0x405));
-		Assert.assertEquals(test.getFront(0x405), null);
-		Assert.assertEquals(test.getVolume(0x405), null);
-		Assert.assertEquals(test.getBandana(0x405), null);
+		Assert.assertNull(test.getFront(0x405));
+		Assert.assertNull(test.getVolume(0x405));
+		Assert.assertNull(test.getBandana(0x405));
 
 		Assert.assertEquals(Integer.valueOf(17), test.getShape(0x413));
-		Assert.assertEquals(test.getFront(0x413), null);
+		Assert.assertNull(test.getFront(0x413));
 
 		Assert.assertEquals("SpecialHairstyles1 / Shape3", Hairs.toString(0x405));
 		Assert.assertEquals("SpecialHairstyles1 / Shape17", Hairs.toString(0x413));

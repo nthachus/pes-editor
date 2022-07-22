@@ -101,7 +101,7 @@ public final class Files {
 	}
 
 	public static boolean isFilenameLegal(String filename) {
-		return (null == filename || !filename.matches(".*[\\|<>\"\\?\\*:/\\\\].*"));
+		return (null == filename || !filename.matches(".*[|<>\"?*:/\\\\].*"));
 	}
 
 	public static byte[] readBytes(File file) {

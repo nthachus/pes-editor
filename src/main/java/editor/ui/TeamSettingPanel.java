@@ -36,7 +36,6 @@ public class TeamSettingPanel extends JPanel implements ActionListener {
 		initComponents();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void initComponents() {
 		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("setting.title")));
 

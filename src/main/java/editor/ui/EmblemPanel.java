@@ -246,7 +246,9 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 		log.info("Try to perform emblem action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
-			isTrans = !isTrans;
+			synchronized (this) {
+				isTrans = !isTrans;
+			}
 			refresh();
 		} else if ("Add".equalsIgnoreCase(evt.getActionCommand())) {
 			addEmblem();

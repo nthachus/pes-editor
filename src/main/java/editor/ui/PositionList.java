@@ -55,7 +55,6 @@ public class PositionList extends JList/*<String>*/ {
 		this.alt = alt;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void refresh(int team) {
 		log.info("Refresh Position list for team: {}, in-transfer: {}", team, inTransfer);
 

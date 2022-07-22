@@ -33,7 +33,6 @@ public class NationalityList extends JList/*<Player>*/ {
 		setVisibleRowCount(Formations.CLUB_TEAM_SIZE);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void refresh(int nation, boolean alphaOrder) {
 		log.info("Reload Nationality list #{} for country: {}, sort: {}", hashCode(), nation, alphaOrder);
 
@@ -103,7 +102,7 @@ public class NationalityList extends JList/*<Player>*/ {
 		}
 		// DEBUG
 		log.debug("{} Free Agents was found", model.size());
-		return model.toArray(new Player[model.size()]);
+		return model.toArray(new Player[0]);
 	}
 
 	private Player[] getAllPlayers() {
@@ -121,7 +120,7 @@ public class NationalityList extends JList/*<Player>*/ {
 		}
 		// DEBUG
 		log.debug("All {} players was loaded", model.size());
-		return model.toArray(new Player[model.size()]);
+		return model.toArray(new Player[0]);
 	}
 
 	private Player[] getNationPlayers(int nation) {
@@ -139,7 +138,7 @@ public class NationalityList extends JList/*<Player>*/ {
 		}
 		// DEBUG
 		log.debug("{} Nationality #{} players was found", model.size(), nation);
-		return model.toArray(new Player[model.size()]);
+		return model.toArray(new Player[0]);
 	}
 
 	private Player[] getDuplicatedPlayers() {
@@ -153,7 +152,7 @@ public class NationalityList extends JList/*<Player>*/ {
 		}
 		// DEBUG
 		log.debug("{} Duplicated players was found", model.size());
-		return model.toArray(new Player[model.size()]);
+		return model.toArray(new Player[0]);
 	}
 
 	private int getDupe(int player) {

@@ -95,40 +95,42 @@ public final class StringsTest {
 	}
 
 	@Test
+	@SuppressWarnings("ConstantConditions")
 	public void testEqualsIgnoreCase() {
 		boolean res = Strings.equalsIgnoreCase(null, null);
-		Assert.assertEquals(true, res);
+		Assert.assertTrue(res);
 
 		res = Strings.equalsIgnoreCase(null, "");
-		Assert.assertEquals(false, res);
+		Assert.assertFalse(res);
 
 		res = Strings.equalsIgnoreCase("", null);
-		Assert.assertEquals(false, res);
+		Assert.assertFalse(res);
 
 		res = Strings.equalsIgnoreCase("", "");
-		Assert.assertEquals(true, res);
+		Assert.assertTrue(res);
 
 		res = Strings.equalsIgnoreCase("Aa", "aA");
-		Assert.assertEquals(true, res);
+		Assert.assertTrue(res);
 	}
 
 	@Test
 	public void testIsEmpty() {
-		Assert.assertEquals(true, Strings.isEmpty(null));
-		Assert.assertEquals(true, Strings.isEmpty(""));
-		Assert.assertEquals(false, Strings.isEmpty(" "));
-		Assert.assertEquals(false, Strings.isEmpty("bob"));
-		Assert.assertEquals(false, Strings.isEmpty("  bob  "));
+		//noinspection ConstantConditions
+		Assert.assertTrue(Strings.isEmpty(null));
+		Assert.assertTrue(Strings.isEmpty(""));
+		Assert.assertFalse(Strings.isEmpty(" "));
+		Assert.assertFalse(Strings.isEmpty("bob"));
+		Assert.assertFalse(Strings.isEmpty("  bob  "));
 	}
 
 	@Test
 	public void testIsBlank() {
-		Assert.assertEquals(true, Strings.isBlank(null));
-		Assert.assertEquals(true, Strings.isBlank(""));
-		Assert.assertEquals(true, Strings.isBlank(" "));
-		Assert.assertEquals(true, Strings.isBlank(" \t \n\r "));
-		Assert.assertEquals(false, Strings.isBlank("bob"));
-		Assert.assertEquals(false, Strings.isBlank("  bob  "));
+		Assert.assertTrue(Strings.isBlank(null));
+		Assert.assertTrue(Strings.isBlank(""));
+		Assert.assertTrue(Strings.isBlank(" "));
+		Assert.assertTrue(Strings.isBlank(" \t \n\r "));
+		Assert.assertFalse(Strings.isBlank("bob"));
+		Assert.assertFalse(Strings.isBlank("  bob  "));
 	}
 
 	@Test

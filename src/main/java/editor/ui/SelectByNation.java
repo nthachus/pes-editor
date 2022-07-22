@@ -36,7 +36,6 @@ public class SelectByNation extends JPanel implements ActionListener {
 		//refresh();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void initComponents() {
 		sortButton = new JButton(Resources.getMessage("nation.sortAlpha"));
 		sortButton.setActionCommand("Sort");
@@ -75,7 +74,7 @@ public class SelectByNation extends JPanel implements ActionListener {
 		list.addAll(Arrays.asList(arr));
 
 		log.debug("All {} nations was fetched", list.size());
-		return list.toArray(new String[list.size()]);
+		return list.toArray(new String[0]);
 	}
 
 	public void actionPerformed(ActionEvent evt) {
