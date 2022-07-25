@@ -40,7 +40,7 @@ public class OptionFileFilter extends FileFilter {
 			identCheck = readIdentFromARMax(file);
 		}
 
-		return (null != identCheck && OptionFile.isValidGameId(identCheck));
+		return OptionFile.isValidGameId(identCheck);
 	}
 
 	public String getDescription() {

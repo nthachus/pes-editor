@@ -74,7 +74,6 @@ public class KitImportDialog extends JDialog implements MouseListener {
 		return index;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void refresh(int teamId) {
 		log.info("Refresh importable Kit teams for team: {}", teamId);
 
@@ -99,7 +98,7 @@ public class KitImportDialog extends JDialog implements MouseListener {
 			}
 		}
 
-		KitItem[] listData = model.toArray(new KitItem[model.size()]);
+		KitItem[] listData = model.toArray(new KitItem[0]);
 		list.setListData(listData);
 
 		fileLabel.setText(Resources.getMessage("import.label", of2.getFilename()));

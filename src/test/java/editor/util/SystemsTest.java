@@ -14,15 +14,15 @@ public final class SystemsTest {
 	@Test
 	public void testComparator() {
 		Assert.assertFalse(null instanceof JButton);
+		//noinspection ConstantConditions
 		Assert.assertFalse("".equalsIgnoreCase(null));
 	}
 
 	@Test
-	@SuppressWarnings("StringEquality")
 	public void testJvmInfo() {
 		String info = Program.getJvmInfo();
 		Assert.assertNotNull(info);
-		Assert.assertTrue(info == Program.getJvmInfo());
+		Assert.assertSame(info, Program.getJvmInfo());
 		// DEBUG
 		log.debug("JVM info: {}", info);
 

@@ -37,6 +37,7 @@ public class SimpleEntry<K, V> implements Map.Entry<K, V>, Serializable {
 	 *
 	 * @param entry the entry to copy
 	 */
+	@SuppressWarnings("unused")
 	public SimpleEntry(Map.Entry<? extends K, ? extends V> entry) {
 		this.key = entry.getKey();
 		this.value = entry.getValue();

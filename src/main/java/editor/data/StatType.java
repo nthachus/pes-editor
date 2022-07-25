@@ -7,13 +7,13 @@ public enum StatType {
 	integer,
 
 	/**
-	 * Indicates if the {@link Stat} value is a person height in centimeters
+	 * Indicates if the {@link Stat} value is a person height in centimeters,
 	 * and it will be decreased by 148cm before saving.
 	 */
 	height148,
 
 	/**
-	 * Indicates if the {@link Stat} value is a person age
+	 * Indicates if the {@link Stat} value is a person age,
 	 * and it will be decreased by 15yo before saving.
 	 */
 	age15,
@@ -29,7 +29,7 @@ public enum StatType {
 	footId,
 
 	/**
-	 * Indicates if the {@link Stat} value is a positive integer
+	 * Indicates if the {@link Stat} value is a positive integer,
 	 * and it will be decreased by 1 before saving.
 	 */
 	positiveInt,

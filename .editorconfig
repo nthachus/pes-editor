@@ -10,11 +10,18 @@ max_line_length = 120
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+[{*.yml,mvnw}]
+indent_size = 2
+
 [*.{bat,cmd}]
 end_of_line = crlf
 
 [*.{java,xml}]
 indent_style = tab
+continuation_indent_size = 8
+
+[*.properties]
+keep_blank_lines = true
 
 [*.{html,css}]
 max_line_length = 100

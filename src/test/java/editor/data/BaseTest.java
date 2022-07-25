@@ -44,6 +44,7 @@ public abstract class BaseTest {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public static InputStream getResourceStream(String resourceName) {
 		InputStream fs = BaseTest.class.getResourceAsStream(getResourcePath(resourceName));
 		Assert.assertNotNull("Resource file '" + resourceName + "' was not found.", fs);
@@ -98,6 +99,7 @@ public abstract class BaseTest {
 		return sb.toString();
 	}
 
+	@SuppressWarnings("unused")
 	public static String randomString(int minLength, int maxLength) {
 		int l = rand.nextInt(maxLength + 1 - minLength) + minLength;
 		return randomString(l);
@@ -154,6 +156,7 @@ public abstract class BaseTest {
 		}
 
 		Field f = clazz.getDeclaredField(name);
+		//noinspection ConstantConditions
 		if (null == f) {
 			throw new NoSuchFieldException(name);
 		}

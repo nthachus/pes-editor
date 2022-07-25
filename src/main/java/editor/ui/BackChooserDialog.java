@@ -52,6 +52,7 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 			// load each flag background images
 			backUrl = getClass().getResource("/META-INF/images/backFlag" + i + ".png");
 			try {
+				//noinspection ConstantConditions
 				img = ImageIO.read(backUrl);
 				rasterData[i] = img.getRaster();
 			} catch (Exception e) {

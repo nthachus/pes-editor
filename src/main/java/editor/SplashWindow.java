@@ -26,7 +26,7 @@ import java.net.URL;
  * opens the splash window, invokes the main method of your Application class,
  * and disposes the splash window afterwards. Please note that we want to keep
  * the Splasher class and the SplashWindow class as small as possible. The less
- * code and the less classes must be loaded into the JVM to open the splash
+ * code and the fewer classes must be loaded into the JVM to open the splash
  * screen, the faster it will appear.
  * <p/>
  * <pre>

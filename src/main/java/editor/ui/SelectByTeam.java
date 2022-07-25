@@ -132,7 +132,6 @@ public class SelectByTeam extends JPanel implements ActionListener {
 		return squads;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void refresh() {
 		log.info("Try to reload By Team dropdown #{}", hashCode());
 		teamBox.setActionCommand("n");

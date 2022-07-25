@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@SuppressWarnings("unchecked")
 public class FormationPanel extends JPanel
 		implements ActionListener, ListSelectionListener, DropTargetListener, DragSourceListener, DragGestureListener {
 	private static final long serialVersionUID = 8650634277665523195L;

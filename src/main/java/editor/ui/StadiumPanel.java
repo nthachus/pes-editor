@@ -66,7 +66,6 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 		add(contentPane);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void refresh() {
 		log.info("Try to reload all Stadiums from OF: {}", of.getFilename());
 

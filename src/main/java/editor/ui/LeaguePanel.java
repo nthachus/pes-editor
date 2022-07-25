@@ -54,7 +54,6 @@ public class LeaguePanel extends JPanel implements ActionListener, ListSelection
 		add(contentPane);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void refresh() {
 		log.info("Try to reload all leagues list");
 

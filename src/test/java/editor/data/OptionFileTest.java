@@ -15,7 +15,7 @@ public final class OptionFileTest extends BaseTest {
 
 	@Test
 	public void testAddresses() throws NoSuchFieldException, IllegalAccessException {
-		Assert.assertTrue((OptionFile.LENGTH % 4) == 0);
+		Assert.assertEquals(0, (OptionFile.LENGTH % 4));
 		Assert.assertEquals(1086464, OptionFile.LENGTH);
 		Assert.assertEquals(2058577996, readStaticField(OptionFile.class, "KEY_MASK", true, true));
 
@@ -73,13 +73,13 @@ public final class OptionFileTest extends BaseTest {
 	public void testLoadWithNonExistsFile() {
 		OptionFile of = new OptionFile();
 		boolean res = of.load(new File(getClass().getName()));
-		Assert.assertEquals(false, res);
+		Assert.assertFalse(res);
 	}
 
 	@Test
 	public void testSaveBeforeLoad() {
 		OptionFile of = new OptionFile();
-		Assert.assertEquals(false, of.save(null));
+		Assert.assertFalse(of.save(null));
 	}
 
 	@Test(expected = NullArgumentException.class)

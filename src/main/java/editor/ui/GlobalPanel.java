@@ -52,7 +52,7 @@ public class GlobalPanel extends JPanel implements ActionListener {
 			scopes.add(st.getName());
 		}
 
-		return scopes.toArray(new String[scopes.size()]);
+		return scopes.toArray(new String[0]);
 	}
 
 	private static final Stat[] STAT_NAMES = {
@@ -76,7 +76,7 @@ public class GlobalPanel extends JPanel implements ActionListener {
 		}
 
 		log.debug("All {} Stats was retrieved", names.size());
-		return names.toArray(new String[names.size()]);
+		return names.toArray(new String[0]);
 	}
 
 	private static Stat getStat(int nameIndex) {
@@ -94,7 +94,6 @@ public class GlobalPanel extends JPanel implements ActionListener {
 
 	private static final String[] OPS = {"+", "-", "=", "+ %", "- %"};
 
-	@SuppressWarnings("unchecked")
 	private void initComponents() {
 		scopeBox = new JComboBox/*<String>*/(getScopes());
 		teamBox = new JComboBox/*<String>*/();
@@ -295,9 +294,7 @@ public class GlobalPanel extends JPanel implements ActionListener {
 			return true;
 		} else if (scopeId > 0) {
 			int v = Stats.getValue(of, player, Stats.REG_POS);
-			if (Stats.regPosToRole(v) == scopeId - 1) {
-				return true;
-			}
+			return (Stats.regPosToRole(v) == scopeId - 1);
 		}
 		return false;
 	}
@@ -323,7 +320,6 @@ public class GlobalPanel extends JPanel implements ActionListener {
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void updateTeamBox(String[] teams) {
 		if (null == teams) {
 			throw new NullArgumentException("teams");
