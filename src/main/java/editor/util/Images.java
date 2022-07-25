@@ -76,9 +76,7 @@ public final class Images {
 
 			System.arraycopy(data, adr, pixel, 0, pixel.length);
 			if (opaque) {
-				for (int i = 0; i < alpha.length; i++) {
-					alpha[i] = -1;
-				}
+				java.util.Arrays.fill(alpha, (byte) -1);
 			}
 		}
 

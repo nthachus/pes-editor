@@ -393,8 +393,7 @@ public final class Emblems {
 			int location = getLocationInternal(of, i);
 			if (location != -1) {
 
-				if (location < TOTAL128 || location >= TOTAL
-						/*|| lowResIndexes.contains(location)*/) {
+				if (location < TOTAL128 || location >= TOTAL /*|| lowResIndexes.contains(location)*/) {
 					setLocationInternal(of, i, EMPTY_IDX_VALUE);
 					isUpdated = true;
 				} else {
@@ -442,7 +441,7 @@ public final class Emblems {
 	}
 
 	/**
-	 * Fixes emblem ID based on it's index.
+	 * Fixes emblem ID based on its index.
 	 */
 	private static boolean fixIdBasedOnIndex(OptionFile of, int index, int slot) {
 		int adr = (slot < TOTAL128) ? getOffset128(slot) : getOffset16(slot - TOTAL128);

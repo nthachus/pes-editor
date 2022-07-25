@@ -112,7 +112,6 @@ public class Stat implements Serializable, Comparable<Stat> {
 		return (offset << 24) | (shift << 16) | mask;
 	}
 
-	@SuppressWarnings("NullableProblems")
 	public int compareTo(Stat o) {
 		if (null == o) {
 			return 1;

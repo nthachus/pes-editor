@@ -22,6 +22,7 @@ public final class Bits {
 		return ((int) value & 0xFF);
 	}
 
+	@SuppressWarnings("unused")
 	public static int toInt(short value) {
 		return ((int) value & 0xFFFF);
 	}
@@ -48,6 +49,7 @@ public final class Bits {
 		return temp;
 	}
 
+	@SuppressWarnings("unused")
 	public static byte[] toBytes(short value) {
 		if (value == 0) {
 			return new byte[]{0, 0};

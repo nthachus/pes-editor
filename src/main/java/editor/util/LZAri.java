@@ -28,7 +28,7 @@ public final class LZAri {
 	private volatile OutputStream outFile;
 
 	private volatile long textSize = 0, printCount = 0;
-	private/* volatile*/ long codeSize = 0;
+	private volatile long codeSize = 0;
 	private volatile int wBuffer = 0, wMask = 128;
 	private volatile int rBuffer, rMask = 0;
 
@@ -91,7 +91,7 @@ public final class LZAri {
 
 	/**
 	 * Ring buffer of size {@link #N},
-	 * with extra {@link #F}-1 bytes to facilitate string comparison of longest match.
+	 * with extra {@link #F}-1 bytes to facilitate string comparison of the longest match.
 	 * These are set by the {@link #insertNode(int)} procedure.
 	 */
 	private final int[] textBuffer = new int[N + F - 1];
@@ -246,12 +246,12 @@ public final class LZAri {
 
 	/**
 	 * Q1 (= 2 to the {@link #M}) must be sufficiently large,
-	 * but not so large as the unsigned long 4 * Q1 * (Q1 - 1) overflows.
+	 * but not so large as the unsigned long Q1 * 4 * (Q1 - 1) overflows.
 	 */
 	private static final long Q1 = (1L << M);
-	private static final long Q2 = (2 * Q1);
-	private static final long Q3 = (3 * Q1);
-	private static final long Q4 = (4 * Q1);
+	private static final long Q2 = (Q1 * 2);
+	private static final long Q3 = (Q1 * 3);
+	private static final long Q4 = (Q1 * 4);
 	private static final long MAX_CUM = (Q1 - 1);
 
 	/**
@@ -263,7 +263,7 @@ public final class LZAri {
 	/**
 	 * Counts for magnifying low and high around {@link #Q2}
 	 */
-	private/* volatile*/ int shifts = 0;
+	private volatile int shifts = 0;
 	private final int[] charToSym = new int[N_CHAR],
 			symToChar = new int[N_CHAR + 1];
 
@@ -353,8 +353,10 @@ public final class LZAri {
 		int sym = charToSym[ch];
 		long range = high - low;// uint
 
-		high = low + (range * symCum[sym - 1]) / symCum[0];
-		low += (range * symCum[sym]) / symCum[0];
+		synchronized (this) {
+			high = low + (range * symCum[sym - 1]) / symCum[0];
+			low += (range * symCum[sym]) / symCum[0];
+		}
 
 		for (; ; ) {
 			if (high <= Q2) {
@@ -362,21 +364,26 @@ public final class LZAri {
 			} else if (low >= Q2) {
 				output(1);
 
-				low -= Q2;
-				high -= Q2;
+				synchronized (this) {
+					low -= Q2;
+					high -= Q2;
+				}
 			} else if (low >= Q1 && high <= Q3) {
 				synchronized (log) {
 					shifts++;
 				}
-
-				low -= Q1;
-				high -= Q1;
+				synchronized (this) {
+					low -= Q1;
+					high -= Q1;
+				}
 			} else {
 				break;
 			}
 
-			low *= 2;
-			high *= 2;
+			synchronized (this) {
+				low *= 2;
+				high *= 2;
+			}
 		}
 
 		updateModel(sym);
@@ -385,8 +392,10 @@ public final class LZAri {
 	private void encodePosition(int position) throws IOException {
 		long range = high - low;// uint
 
-		high = low + (range * positionCum[position]) / positionCum[0];
-		low += (range * positionCum[position + 1]) / positionCum[0];
+		synchronized (this) {
+			high = low + (range * positionCum[position]) / positionCum[0];
+			low += (range * positionCum[position + 1]) / positionCum[0];
+		}
 
 		for (; ; ) {
 			if (high <= Q2) {
@@ -394,21 +403,26 @@ public final class LZAri {
 			} else if (low >= Q2) {
 				output(1);
 
-				low -= Q2;
-				high -= Q2;
+				synchronized (this) {
+					low -= Q2;
+					high -= Q2;
+				}
 			} else if (low >= Q1 && high <= Q3) {
 				synchronized (log) {
 					shifts++;
 				}
-
-				low -= Q1;
-				high -= Q1;
+				synchronized (this) {
+					low -= Q1;
+					high -= Q1;
+				}
 			} else {
 				break;
 			}
 
-			low *= 2;
-			high *= 2;
+			synchronized (this) {
+				low *= 2;
+				high *= 2;
+			}
 		}
 	}
 
@@ -467,8 +481,11 @@ public final class LZAri {
 	}
 
 	private void startDecode() throws IOException {
-		for (int i = 0; i < M + 2; i++) {
-			value = 2 * value + getBit();
+		for (int b, i = 0; i < M + 2; i++) {
+			b = getBit();
+			synchronized (this) {
+				value = value * 2 + b;
+			}
 		}
 	}
 
@@ -476,25 +493,34 @@ public final class LZAri {
 		long range = high - low;// uint
 		int sym = binarySearchSym(((value - low + 1) * symCum[0] - 1) / range);
 
-		high = low + (range * symCum[sym - 1]) / symCum[0];
-		low += (range * symCum[sym]) / symCum[0];
+		synchronized (this) {
+			high = low + (range * symCum[sym - 1]) / symCum[0];
+			low += (range * symCum[sym]) / symCum[0];
+		}
 
-		for (; ; ) {
+		for (int b; ; ) {
 			if (low >= Q2) {
-				value -= Q2;
-				low -= Q2;
-				high -= Q2;
+				synchronized (this) {
+					value -= Q2;
+					low -= Q2;
+					high -= Q2;
+				}
 			} else if (low >= Q1 && high <= Q3) {
-				value -= Q1;
-				low -= Q1;
-				high -= Q1;
+				synchronized (this) {
+					value -= Q1;
+					low -= Q1;
+					high -= Q1;
+				}
 			} else if (high > Q2) {
 				break;
 			}
 
-			low *= 2;
-			high *= 2;
-			value = 2 * value + getBit();
+			b = getBit();
+			synchronized (this) {
+				low *= 2;
+				high *= 2;
+				value = value * 2 + b;
+			}
 		}
 
 		int ch = symToChar[sym];
@@ -507,25 +533,34 @@ public final class LZAri {
 		long range = high - low;// uint
 		int position = binarySearchPos(((value - low + 1) * positionCum[0] - 1) / range);
 
-		high = low + (range * positionCum[position]) / positionCum[0];
-		low += (range * positionCum[position + 1]) / positionCum[0];
+		synchronized (this) {
+			high = low + (range * positionCum[position]) / positionCum[0];
+			low += (range * positionCum[position + 1]) / positionCum[0];
+		}
 
-		for (; ; ) {
+		for (int b; ; ) {
 			if (low >= Q2) {
-				value -= Q2;
-				low -= Q2;
-				high -= Q2;
+				synchronized (this) {
+					value -= Q2;
+					low -= Q2;
+					high -= Q2;
+				}
 			} else if (low >= Q1 && high <= Q3) {
-				value -= Q1;
-				low -= Q1;
-				high -= Q1;
+				synchronized (this) {
+					value -= Q1;
+					low -= Q1;
+					high -= Q1;
+				}
 			} else if (high > Q2) {
 				break;
 			}
 
-			low *= 2;
-			high *= 2;
-			value = 2 * value + getBit();
+			b = getBit();
+			synchronized (this) {
+				low *= 2;
+				high *= 2;
+				value = value * 2 + b;
+			}
 		}
 
 		return position;
@@ -593,9 +628,14 @@ public final class LZAri {
 				insertNode(r);
 			}
 
-			if ((textSize += i) > printCount) {
+			synchronized (this) {
+				textSize += i;
+			}
+			if (textSize > printCount) {
 				//System.out.print("%12ld\r", textSize);
-				printCount += 1024;
+				synchronized (this) {
+					printCount += 1024;
+				}
 			}
 
 			while (i++ < lastMatchLength) {
@@ -660,7 +700,9 @@ public final class LZAri {
 
 			if (count > printCount) {
 				//System.out.print("%12lu\r", count);
-				printCount += 1024;
+				synchronized (this) {
+					printCount += 1024;
+				}
 			}
 		}
 

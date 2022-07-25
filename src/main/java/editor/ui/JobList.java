@@ -59,7 +59,6 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 		return team;
 	}*/
 
-	@SuppressWarnings("unchecked")
 	public void refresh(int team) {
 		log.info("Try to refresh Job list '{}' for team: {}", job, team);
 

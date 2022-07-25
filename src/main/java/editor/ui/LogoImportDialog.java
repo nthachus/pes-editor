@@ -121,7 +121,9 @@ public class LogoImportDialog extends JDialog implements ActionListener {
 		log.info("Perform import action: {} for logo: {}", evt.getActionCommand(), slot);
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
-			isTrans = !isTrans; // toggle transparency
+			synchronized (this) {
+				isTrans = !isTrans; // toggle transparency
+			}
 			reloadLogos();
 
 		} else {

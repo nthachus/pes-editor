@@ -54,7 +54,6 @@ public class StrategyPanel extends JPanel implements ActionListener {
 		return Strings.COMMA_REGEX.split(s);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void initComponents() {
 		setBorder(BorderFactory.createTitledBorder(Resources.getMessage("strategy.title")));
 
@@ -116,7 +115,9 @@ public class StrategyPanel extends JPanel implements ActionListener {
 	}
 
 	private void autoStrategy() {
-		isAuto = !isAuto;
+		synchronized (this) {
+			isAuto = !isAuto;
+		}
 		if (isAuto) {
 			autoButton.setText(Resources.getMessage("strategy.auto"));
 		} else {
@@ -221,7 +222,6 @@ public class StrategyPanel extends JPanel implements ActionListener {
 		log.debug("Refresh completed on Auto button: {} for squad: {}", isAuto, squad);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void refreshOverlapBox(boolean olCB) {
 		overlapBox.removeAllItems();
 

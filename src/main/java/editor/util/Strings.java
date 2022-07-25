@@ -28,6 +28,7 @@ public final class Strings {
 	public static final String NEW_LINE = System.getProperty("line.separator");
 
 	public static final String EMPTY = "";
+	@SuppressWarnings("unused")
 	public static final String CR = "\r";
 	public static final String LF = "\n";
 	public static final String TAB = "\t";
@@ -95,6 +96,7 @@ public final class Strings {
 		return readANSI(bytes, 0, bytes.length, UTF8, false);
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private static String readUNICODE(byte[] bytes, int offset, int length, String charset, boolean checkBounds) {
 		if (checkBounds) {
 			checkBounds(bytes, offset, length);

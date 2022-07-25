@@ -79,7 +79,9 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 		log.info("Perform Logo chooser action: {}", evt.getActionCommand());
 
 		if ("Transparency".equalsIgnoreCase(evt.getActionCommand())) {
-			isTrans = !isTrans;
+			synchronized (this) {
+				isTrans = !isTrans;
+			}
 			refresh();
 		} else {
 			slot = Integer.parseInt(evt.getActionCommand());

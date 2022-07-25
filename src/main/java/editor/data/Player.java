@@ -142,7 +142,6 @@ public class Player implements Serializable, Comparable<Player> {
 		return index;
 	}
 
-	@SuppressWarnings("NullableProblems")
 	public int compareTo(Player other) {
 		if (null == other) {
 			return 1;
@@ -258,7 +257,7 @@ public class Player implements Serializable, Comparable<Player> {
 		return Strings.EMPTY;
 	}
 
-	private static final String SHIRT_NAME_PATTERN = "[^a-zA-Z \\._]";
+	private static final String SHIRT_NAME_PATTERN = "[^a-zA-Z ._]";
 
 	public static String buildShirtName(String name) {
 		if (Strings.isEmpty(name)) {

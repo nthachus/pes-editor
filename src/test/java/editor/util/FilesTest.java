@@ -38,6 +38,7 @@ public final class FilesTest {
 	}
 
 	@Test
+	@SuppressWarnings("ConstantConditions")
 	public void testAddExtension() {
 		File fd = Files.addExtension(null, null);
 		Assert.assertNull(fd);
@@ -80,12 +81,13 @@ public final class FilesTest {
 
 	@Test
 	public void testIllegalFilename() {
-		Assert.assertEquals(true, Files.isFilenameLegal(null));
-		Assert.assertEquals(true, Files.isFilenameLegal(""));
-		Assert.assertEquals(true, Files.isFilenameLegal(" da%^()-"));
-		Assert.assertEquals(false, Files.isFilenameLegal(" >"));
-		Assert.assertEquals(false, Files.isFilenameLegal("!>:"));
-		Assert.assertEquals(false, Files.isFilenameLegal("/"));
+		//noinspection ConstantConditions
+		Assert.assertTrue(Files.isFilenameLegal(null));
+		Assert.assertTrue(Files.isFilenameLegal(""));
+		Assert.assertTrue(Files.isFilenameLegal(" da%^()-"));
+		Assert.assertFalse(Files.isFilenameLegal(" >"));
+		Assert.assertFalse(Files.isFilenameLegal("!>:"));
+		Assert.assertFalse(Files.isFilenameLegal("/"));
 	}
 
 	@Test
