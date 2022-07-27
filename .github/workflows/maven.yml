@@ -1,0 +1,30 @@
+# This workflow will build the project with Maven, and cache any dependencies to improve the workflow execution time
+# See: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Java CI
+
+on: [ push, pull_request ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        distribution: [ temurin, zulu ]
+        version: [ 7, 8 ]
+        exclude:
+          - distribution: temurin
+            version: 7
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup OpenJDK ${{ matrix.version }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.version }}
+          distribution: ${{ matrix.distribution }}
+          cache: maven
+      - name: Build with Maven-wrapper
+        run: ./mvnw --batch-mode clean verify

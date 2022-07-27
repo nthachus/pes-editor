@@ -118,7 +118,7 @@ if [ -z "$JAVACMD" ]; then
       JAVACMD="$JAVA_HOME/bin/java"
     fi
   else
-    JAVACMD="$(\\unset -f command; \\command -v java)"
+    JAVACMD="$(\unset -f command; \command -v java)"
   fi
 fi
 

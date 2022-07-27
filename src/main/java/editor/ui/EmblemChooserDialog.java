@@ -82,11 +82,11 @@ public class EmblemChooserDialog extends JDialog implements ActionListener {
 			refresh();
 
 		} else {
-			int slot = Integer.parseInt(evt.getActionCommand());
-			if (slot >= Emblems.count16(of)) {
-				this.slot = Emblems.TOTAL16 - slot - 1;
+			int n = Integer.parseInt(evt.getActionCommand());
+			if (n >= Emblems.count16(of)) {
+				slot = Emblems.TOTAL16 - n - 1;
 			} else {
-				this.slot = Emblems.TOTAL128 + slot;
+				slot = Emblems.TOTAL128 + n;
 			}
 
 			setVisible(false);

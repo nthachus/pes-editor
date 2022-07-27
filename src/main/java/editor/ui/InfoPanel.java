@@ -148,7 +148,6 @@ public class InfoPanel extends JScrollPane {
 		return s.toString();
 	}
 
-	@SuppressWarnings("ConstantConditions")
 	private void insertRole(int index1, int index2) throws BadLocationException {
 		int fsz = 0;
 		if (index2 > 0) {
@@ -179,6 +178,7 @@ public class InfoPanel extends JScrollPane {
 			s1 = buildRoleLine(of, index1, Stats.CWP, Stats.CBT);
 			text.append(s1);
 		} else {
+			//noinspection ConstantConditions
 			s1 = null;
 		}
 		if (index2 > 0) {
@@ -194,6 +194,7 @@ public class InfoPanel extends JScrollPane {
 			s1 = buildRoleLine(of, index1, Stats.SB, Stats.WB, Stats.DM);
 			text.append(s1);
 		} else {
+			//noinspection ConstantConditions
 			s1 = null;
 		}
 		if (index2 > 0) {
@@ -209,6 +210,7 @@ public class InfoPanel extends JScrollPane {
 			s1 = buildRoleLine(of, index1, Stats.CM, Stats.SM, Stats.AM);
 			text.append(s1);
 		} else {
+			//noinspection ConstantConditions
 			s1 = null;
 		}
 		if (index2 > 0) {
@@ -224,6 +226,7 @@ public class InfoPanel extends JScrollPane {
 			s1 = buildRoleLine(of, index1, Stats.SS, Stats.CF, Stats.WG);
 			text.append(s1);
 		} else {
+			//noinspection ConstantConditions
 			s1 = null;
 		}
 		if (index2 > 0) {
