@@ -124,7 +124,6 @@ public class PlayerDialog extends JDialog implements ActionListener {
 		setVisible(true);
 	}
 
-	@SuppressWarnings("RedundantIfStatement")
 	private boolean isFormValid() {
 		for (int i = 0; i < Stats.ABILITY99.length; i++) {
 			if (!Verifier99.verify(abilityPan.getField(i))) {
@@ -145,7 +144,8 @@ public class PlayerDialog extends JDialog implements ActionListener {
 		if (!StatVerifier.verify(Stats.FACE_TYPE, generalPan.getFaceField())) {
 			return false;
 		}
-		if (!StatVerifier.verify(Stats.HAIR, generalPan.getHairField())) {
+		//noinspection RedundantIfStatement
+		if (!StatVerifier.verify(Stats.HAIR, generalPan.getHairField())) { //NOSONAR java:S1126
 			return false;
 		}
 

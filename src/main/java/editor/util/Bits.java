@@ -19,16 +19,15 @@ public final class Bits {
 	}
 
 	public static int toInt(byte value) {
-		return ((int) value & 0xFF);
+		return (0xFF & value);
 	}
 
-	@SuppressWarnings("unused")
 	public static int toInt(short value) {
-		return ((int) value & 0xFFFF);
+		return (0xFFFF & value);
 	}
 
 	public static long toInt64(int value) {
-		return ((long) value & 0xFFFFFFFFL);
+		return (0xFFFFFFFFL & value);
 	}
 
 	public static int toInt(long value) {
@@ -49,7 +48,6 @@ public final class Bits {
 		return temp;
 	}
 
-	@SuppressWarnings("unused")
 	public static byte[] toBytes(short value) {
 		if (value == 0) {
 			return new byte[]{0, 0};

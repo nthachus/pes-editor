@@ -100,7 +100,9 @@ public class LogoChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public int getLogo(String title, Image image) {
-		log.info("Try to choice '{}' for image: {}", title, Strings.valueOf(image));
+		if (log.isInfoEnabled()) {
+			log.info("Try to choice '{}' for image: {}", title, Strings.valueOf(image));
+		}
 		slot = -1;
 
 		setTitle(title);

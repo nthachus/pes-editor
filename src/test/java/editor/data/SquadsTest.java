@@ -18,7 +18,7 @@ public final class SquadsTest extends BaseTest {
 		Assert.assertEquals(8, Squads.EDIT_TEAM_COUNT);
 		Assert.assertEquals(73, Squads.LAST_EDIT_NATION);
 		Assert.assertEquals(75, Squads.FIRST_CLUB);
-		Assert.assertEquals(Squads.FIRST_CLUB + Clubs.TOTAL, Squads.LAST_CLUB);
+		Assert.assertEquals(Squads.LAST_CLUB, Squads.FIRST_CLUB + Clubs.TOTAL);
 
 		Integer firstClubSlot = (Integer) readStaticField(Squads.class, "FIRST_CLUB_SLOT", true, true);
 		Assert.assertEquals(3450 / 2, firstClubSlot.intValue());

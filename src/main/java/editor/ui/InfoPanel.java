@@ -33,7 +33,9 @@ public class InfoPanel extends JScrollPane {
 		this.of = of;
 		selector = teamDropdown;
 
-		log.debug("Initialize Info panel #{} for Team dropdown: {}", hashCode(), Strings.valueOf(teamDropdown));
+		if (log.isDebugEnabled()) {
+			log.debug("Initialize Info panel #{} for Team dropdown: {}", hashCode(), Strings.valueOf(teamDropdown));
+		}
 		initComponents();
 	}
 
@@ -42,8 +44,8 @@ public class InfoPanel extends JScrollPane {
 	}
 
 	private JEditorPane ta;
-	private MutableAttributeSet attr;
-	private StyledDocument doc;
+	private transient MutableAttributeSet attr;
+	private transient StyledDocument doc;
 
 	private void initComponents() {
 		//setBorder(BorderFactory.createTitledBorder("Player info"));
@@ -365,8 +367,8 @@ public class InfoPanel extends JScrollPane {
 
 	private static String buildPhysicalInfo(int foot, int side, String height, String weight) {
 		String fs = Stats.MOD_FOOT_SIDE[foot * 3 + side];
-		fs = fs.replaceAll("\\b(?i:foot)\\b", "F")
-				.replaceAll("\\b(?i:side)\\b", "S")
+		fs = fs.replaceAll("(?i)\\bfoot\\b", "F")
+				.replaceAll("(?i)\\bside\\b", "S")
 				.replaceAll("\\s+", Strings.EMPTY);
 
 		return String.format("%s, %scm, %sKg", fs, height, weight);

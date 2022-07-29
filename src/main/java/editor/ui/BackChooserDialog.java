@@ -84,7 +84,9 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	}
 
 	public int getBackFlag(Image image, byte[] red, byte[] green, byte[] blue) {
-		log.info("Try to choice Background Flag for image: {}", Strings.valueOf(image));
+		if (log.isInfoEnabled()) {
+			log.info("Try to choice Background Flag for image: {}", Strings.valueOf(image));
+		}
 		slot = -1;
 
 		refresh(image, red, green, blue);
@@ -105,7 +107,9 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 	}
 
 	private void refresh(Image image, byte[] red, byte[] green, byte[] blue) {
-		log.info("Try to refresh dialog with image: {}", Strings.valueOf(image));
+		if (log.isInfoEnabled()) {
+			log.info("Try to refresh dialog with image: {}", Strings.valueOf(image));
+		}
 
 		ImageIcon flag;
 		for (int i = 0; i < flagButtons.length; i++) {
@@ -118,7 +122,7 @@ public class BackChooserDialog extends JDialog implements ActionListener {
 		if (bgIndex < 0 || bgIndex >= rasterData.length) {
 			throw new IndexOutOfBoundsException("bgIndex#" + bgIndex);
 		}
-		if (null != image) {
+		if (null != image && log.isInfoEnabled()) {
 			log.info("Try to build Background Flag with image: {}", Strings.valueOf(image));
 		}
 

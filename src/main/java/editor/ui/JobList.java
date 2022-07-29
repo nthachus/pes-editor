@@ -39,7 +39,9 @@ public class JobList extends JList/*<String>*/ implements ListSelectionListener 
 
 		refresh(-1);// used to fix width x height for the JList
 
-		log.debug("Initialize Job list '{}' at {}, color: {}", job, offset, UIUtil.htmlColor(colour));
+		if (log.isDebugEnabled()) {
+			log.debug("Initialize Job list '{}' at {}, color: {}", job, offset, UIUtil.htmlColor(colour));
+		}
 		initComponents(colour);
 	}
 

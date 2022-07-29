@@ -157,6 +157,7 @@ public class Ability99Panel extends JPanel implements ActionListener, ChangeList
 	}
 
 	public void keyTyped(KeyEvent evt) {
+		// Handle key-press event only
 	}
 
 	public void keyPressed(KeyEvent evt) {
@@ -190,6 +191,7 @@ public class Ability99Panel extends JPanel implements ActionListener, ChangeList
 	}
 
 	public void keyReleased(KeyEvent evt) {
+		// Handle key-press event only
 	}
 
 	public static class Verifier99 extends InputVerifier {

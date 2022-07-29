@@ -14,14 +14,21 @@ public final class Resources {
 	private Resources() {
 	}
 
-	private static volatile ResourceBundle messages = null;
+	private static/* volatile*/ ResourceBundle messages = null;
 
 	public static ResourceBundle getMessages(Locale locale) {
-		if (null == messages || !locale.equals(messages.getLocale())) {
-			messages = ResourceBundle.getBundle("META-INF/i18n/messages", locale);
-			if (null == messages) {
-				throw new IllegalStateException("messages must not be null.");
+		if (null != messages && locale.equals(messages.getLocale())) {
+			return messages;
+		}
+		ResourceBundle bundle = ResourceBundle.getBundle("META-INF/i18n/messages", locale);
+		synchronized (log) {
+			if (null != messages && locale.equals(messages.getLocale())) {
+				return messages;
 			}
+			messages = bundle;
+		}
+		if (null == messages) {
+			throw new IllegalStateException("messages must not be null.");
 		}
 		return messages;
 	}
@@ -69,7 +76,7 @@ public final class Resources {
 
 	public static String[] getMessages(String... keys) {
 		if (null == keys) {
-			return null;
+			return null; //NOSONAR java:S1168
 		}
 		String[] translated = new String[keys.length];
 		for (int i = 0; i < translated.length; i++) {

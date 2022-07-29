@@ -49,7 +49,7 @@ public final class SplashWindow extends Window implements MouseListener {
 	/**
 	 * The current instance of the splash window. (Singleton design pattern).
 	 */
-	private static volatile SplashWindow instance = null;
+	private static/* volatile*/ SplashWindow instance = null;
 
 	/**
 	 * The splash image which is displayed on the splash window.
@@ -84,7 +84,7 @@ public final class SplashWindow extends Window implements MouseListener {
 		mt.addImage(image, 0);
 		try {
 			mt.waitForID(0);
-		} catch (InterruptedException ie) {
+		} catch (InterruptedException ie) { //NOSONAR java:S2142
 			log.warn(ie.toString());
 		}
 
@@ -123,20 +123,25 @@ public final class SplashWindow extends Window implements MouseListener {
 	}
 
 	public void mousePressed(MouseEvent e) {
+		// Handle mouse click event only
 	}
 
 	public void mouseReleased(MouseEvent e) {
+		// Handle mouse click event only
 	}
 
 	public void mouseEntered(MouseEvent e) {
+		// Handle mouse click event only
 	}
 
 	public void mouseExited(MouseEvent e) {
+		// Handle mouse click event only
 	}
 
 	/**
 	 * Updates the display area of the window.
 	 */
+	@Override
 	public void update(Graphics g) {
 		// [*] Since the paint method is going to draw an
 		// image that covers the complete area of the component we
@@ -147,6 +152,7 @@ public final class SplashWindow extends Window implements MouseListener {
 	/**
 	 * Paints the image on the window.
 	 */
+	@Override
 	public void paint(Graphics g) {
 		if (null == g) {
 			throw new NullArgumentException("g");
@@ -168,14 +174,19 @@ public final class SplashWindow extends Window implements MouseListener {
 	 *
 	 * @param image The splash image.
 	 */
-	@SuppressWarnings("SynchronizeOnNonFinalField")
 	public static void splash(Image image) {
 		if (instance != null || image == null) {
 			return;
 		}
 
 		// Create the splash image
-		instance = new SplashWindow(new Frame(), image);
+		SplashWindow splasher = new SplashWindow(new Frame(), image);
+		synchronized (log) {
+			if (instance != null) {
+				return;
+			}
+			instance = splasher;
+		}
 
 		// Show the window.
 		instance.setVisible(true);
@@ -186,11 +197,11 @@ public final class SplashWindow extends Window implements MouseListener {
 		// If more than one processor is available, we don't wait,
 		// and maximize CPU throughput instead.
 		if (!EventQueue.isDispatchThread() && Runtime.getRuntime().availableProcessors() == 1) {
-			synchronized (instance) {
+			synchronized (log) {
 				while (!instance.isPaintCalled) {
 					try {
 						instance.wait();
-					} catch (InterruptedException e) {
+					} catch (InterruptedException e) { //NOSONAR java:S2142
 						log.warn(e.toString());
 					}
 				}

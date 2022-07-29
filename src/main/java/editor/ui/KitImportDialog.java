@@ -47,8 +47,8 @@ public class KitImportDialog extends JDialog implements MouseListener {
 		list.addMouseListener(this);
 
 		JScrollPane scroll = new JScrollPane(
-				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setViewportView(list);
 
 		JButton cancelButton = new CancelButton(this);
@@ -120,15 +120,19 @@ public class KitImportDialog extends JDialog implements MouseListener {
 	}
 
 	public void mousePressed(MouseEvent evt) {
+		// Handle mouse-click event only
 	}
 
 	public void mouseReleased(MouseEvent evt) {
+		// Handle mouse-click event only
 	}
 
 	public void mouseEntered(MouseEvent evt) {
+		// Handle mouse-click event only
 	}
 
 	public void mouseExited(MouseEvent evt) {
+		// Handle mouse-click event only
 	}
 
 	public void mouseClicked(MouseEvent evt) {
