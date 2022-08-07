@@ -155,30 +155,51 @@
 				</property>
 			</activation>
 			<properties>
-				<sonar.issue.ignore.multicriteria>commentBlock,constantName,dupString,declareLine, complexMethod,publicMutable,
-					tooManyParams,dupCodeBlock,subExpression,rawGeneric</sonar.issue.ignore.multicriteria>
+				<sonar.issue.ignore.multicriteria>commentBlock,constantName,dupString,declareLine,
+					complexMethod,publicMutable, tooManyParams,dupCodeBlock,subExpression,rawGeneric
+				</sonar.issue.ignore.multicriteria>
 
-				<sonar.issue.ignore.multicriteria.commentBlock.ruleKey>java:S125</sonar.issue.ignore.multicriteria.commentBlock.ruleKey>
-				<sonar.issue.ignore.multicriteria.commentBlock.resourceKey>**</sonar.issue.ignore.multicriteria.commentBlock.resourceKey>
-				<sonar.issue.ignore.multicriteria.constantName.ruleKey>java:S115</sonar.issue.ignore.multicriteria.constantName.ruleKey>
-				<sonar.issue.ignore.multicriteria.constantName.resourceKey>**</sonar.issue.ignore.multicriteria.constantName.resourceKey>
-				<sonar.issue.ignore.multicriteria.dupString.ruleKey>java:S1192</sonar.issue.ignore.multicriteria.dupString.ruleKey>
-				<sonar.issue.ignore.multicriteria.dupString.resourceKey>**</sonar.issue.ignore.multicriteria.dupString.resourceKey>
-				<sonar.issue.ignore.multicriteria.declareLine.ruleKey>java:S1659</sonar.issue.ignore.multicriteria.declareLine.ruleKey>
-				<sonar.issue.ignore.multicriteria.declareLine.resourceKey>**</sonar.issue.ignore.multicriteria.declareLine.resourceKey>
-				<sonar.issue.ignore.multicriteria.complexMethod.ruleKey>java:S3776</sonar.issue.ignore.multicriteria.complexMethod.ruleKey>
-				<sonar.issue.ignore.multicriteria.complexMethod.resourceKey>**</sonar.issue.ignore.multicriteria.complexMethod.resourceKey>
-				<sonar.issue.ignore.multicriteria.publicMutable.ruleKey>java:S2386</sonar.issue.ignore.multicriteria.publicMutable.ruleKey>
-				<sonar.issue.ignore.multicriteria.publicMutable.resourceKey>**</sonar.issue.ignore.multicriteria.publicMutable.resourceKey>
+				<sonar.issue.ignore.multicriteria.commentBlock.ruleKey>java:S125
+				</sonar.issue.ignore.multicriteria.commentBlock.ruleKey>
+				<sonar.issue.ignore.multicriteria.commentBlock.resourceKey>**
+				</sonar.issue.ignore.multicriteria.commentBlock.resourceKey>
+				<sonar.issue.ignore.multicriteria.constantName.ruleKey>java:S115
+				</sonar.issue.ignore.multicriteria.constantName.ruleKey>
+				<sonar.issue.ignore.multicriteria.constantName.resourceKey>**
+				</sonar.issue.ignore.multicriteria.constantName.resourceKey>
+				<sonar.issue.ignore.multicriteria.dupString.ruleKey>java:S1192
+				</sonar.issue.ignore.multicriteria.dupString.ruleKey>
+				<sonar.issue.ignore.multicriteria.dupString.resourceKey>**
+				</sonar.issue.ignore.multicriteria.dupString.resourceKey>
+				<sonar.issue.ignore.multicriteria.declareLine.ruleKey>java:S1659
+				</sonar.issue.ignore.multicriteria.declareLine.ruleKey>
+				<sonar.issue.ignore.multicriteria.declareLine.resourceKey>**
+				</sonar.issue.ignore.multicriteria.declareLine.resourceKey>
+				<sonar.issue.ignore.multicriteria.complexMethod.ruleKey>java:S3776
+				</sonar.issue.ignore.multicriteria.complexMethod.ruleKey>
+				<sonar.issue.ignore.multicriteria.complexMethod.resourceKey>**
+				</sonar.issue.ignore.multicriteria.complexMethod.resourceKey>
+				<sonar.issue.ignore.multicriteria.publicMutable.ruleKey>java:S2386
+				</sonar.issue.ignore.multicriteria.publicMutable.ruleKey>
+				<sonar.issue.ignore.multicriteria.publicMutable.resourceKey>**
+				</sonar.issue.ignore.multicriteria.publicMutable.resourceKey>
 
-				<sonar.issue.ignore.multicriteria.tooManyParams.ruleKey>java:S107</sonar.issue.ignore.multicriteria.tooManyParams.ruleKey>
-				<sonar.issue.ignore.multicriteria.tooManyParams.resourceKey>**</sonar.issue.ignore.multicriteria.tooManyParams.resourceKey>
-				<sonar.issue.ignore.multicriteria.dupCodeBlock.ruleKey>java:S1871</sonar.issue.ignore.multicriteria.dupCodeBlock.ruleKey>
-				<sonar.issue.ignore.multicriteria.dupCodeBlock.resourceKey>**</sonar.issue.ignore.multicriteria.dupCodeBlock.resourceKey>
-				<sonar.issue.ignore.multicriteria.subExpression.ruleKey>java:S1121</sonar.issue.ignore.multicriteria.subExpression.ruleKey>
-				<sonar.issue.ignore.multicriteria.subExpression.resourceKey>**</sonar.issue.ignore.multicriteria.subExpression.resourceKey>
-				<sonar.issue.ignore.multicriteria.rawGeneric.ruleKey>java:S3740</sonar.issue.ignore.multicriteria.rawGeneric.ruleKey>
-				<sonar.issue.ignore.multicriteria.rawGeneric.resourceKey>**</sonar.issue.ignore.multicriteria.rawGeneric.resourceKey>
+				<sonar.issue.ignore.multicriteria.tooManyParams.ruleKey>java:S107
+				</sonar.issue.ignore.multicriteria.tooManyParams.ruleKey>
+				<sonar.issue.ignore.multicriteria.tooManyParams.resourceKey>**
+				</sonar.issue.ignore.multicriteria.tooManyParams.resourceKey>
+				<sonar.issue.ignore.multicriteria.dupCodeBlock.ruleKey>java:S1871
+				</sonar.issue.ignore.multicriteria.dupCodeBlock.ruleKey>
+				<sonar.issue.ignore.multicriteria.dupCodeBlock.resourceKey>**
+				</sonar.issue.ignore.multicriteria.dupCodeBlock.resourceKey>
+				<sonar.issue.ignore.multicriteria.subExpression.ruleKey>java:S1121
+				</sonar.issue.ignore.multicriteria.subExpression.ruleKey>
+				<sonar.issue.ignore.multicriteria.subExpression.resourceKey>**
+				</sonar.issue.ignore.multicriteria.subExpression.resourceKey>
+				<sonar.issue.ignore.multicriteria.rawGeneric.ruleKey>java:S3740
+				</sonar.issue.ignore.multicriteria.rawGeneric.ruleKey>
+				<sonar.issue.ignore.multicriteria.rawGeneric.resourceKey>**
+				</sonar.issue.ignore.multicriteria.rawGeneric.resourceKey>
 			</properties>
 		</profile>
 	</profiles>
