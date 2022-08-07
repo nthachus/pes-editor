@@ -25,7 +25,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	private static final int DIA = 14;
 
 	private final OptionFile of;
-	private final FormationPanel parent;
+	private final FormationPanel parentPan;
 	private final SquadList squadList;
 	private final AtkDefPanel atkDefPan;
 	private final JComboBox altBox;
@@ -65,7 +65,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 			throw new NullArgumentException("numList");
 		}
 		this.of = of;
-		this.parent = parent;
+		this.parentPan = parent;
 		this.squadList = squadList;
 		this.atkDefPan = adp;
 		this.altBox = altBox;
@@ -92,22 +92,18 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 		this.selectedIdx = selected;
 	}
 
-	@SuppressWarnings("unused")
 	public void setShowAttack(boolean isShowAttack) {
 		showAttack = isShowAttack;
 	}
 
-	@SuppressWarnings("unused")
 	public void setShowDefence(boolean isShowDefence) {
 		showDefence = isShowDefence;
 	}
 
-	@SuppressWarnings("unused")
 	public void setShowNumber(boolean isShowNumber) {
 		showNumber = isShowNumber;
 	}
 
-	@SuppressWarnings("unused")
 	public void setRoleOn(boolean isRoleOn) {
 		roleOn = isRoleOn;
 	}
@@ -150,12 +146,12 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 
 	private void drawStadiumLayout(Graphics2D g2) {
 		g2.setPaint(Color.BLACK);
-		g2.fill(new Rectangle2D.Double(0, 0, 329 + ADJ * 2, 200 + ADJ * 2));
+		g2.fill(new Rectangle2D.Double(0, 0, 329.0 + ADJ * 2, 200.0 + ADJ * 2));
 		g2.setPaint(Color.GRAY);
 		//g2.setStroke(stroke);
-		g2.draw(new Rectangle2D.Double(13, 13, 329 + 2, 200 + 2));
+		g2.draw(new Rectangle2D.Double(13, 13, 329.0 + 2, 200.0 + 2));
 		g2.draw(new Line2D.Double(178, 13, 178, 215));
-		g2.draw(new Ellipse2D.Double(178 - 33, 114 - 33, 66, 66));
+		g2.draw(new Ellipse2D.Double(178.0 - 33, 114.0 - 33, 66, 66));
 		g2.draw(new Rectangle2D.Double(13, 62, 46, 104));
 		g2.draw(new Rectangle2D.Double(298, 62, 46, 104));
 		g2.draw(new Rectangle2D.Double(13, 85, 17, 58));
@@ -331,9 +327,9 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 		selectedIdx = -1;
 		findPressedIndex(e);
 
-		parent.setFromPitch(true);
+		parentPan.setFromPitch(true);
 		if (selectedIdx < 0) {
-			Ellipse2D circle = new Ellipse2D.Double(ADJ, 90 + ADJ, DIA, DIA);
+			Ellipse2D circle = new Ellipse2D.Double(ADJ, 90.0 + ADJ, DIA, DIA);
 			if (circle.contains(e.getX(), e.getY())) {
 				selectedIdx = 0;
 				squadList.setSelectedIndex(selectedIdx);
@@ -389,15 +385,19 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	public void mouseReleased(MouseEvent e) {
+		// Handle drag-n-drop event only
 	}
 
 	public void mouseClicked(MouseEvent e) {
+		// Handle drag-n-drop event only
 	}
 
 	public void mouseExited(MouseEvent e) {
+		// Handle drag-n-drop event only
 	}
 
 	public void mouseEntered(MouseEvent e) {
+		// Handle drag-n-drop event only
 	}
 
 	public void mouseDragged(MouseEvent e) {
@@ -454,6 +454,7 @@ public class PitchPanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	public void mouseMoved(MouseEvent e) {
+		// Handle drag-n-drop event only
 	}
 
 }

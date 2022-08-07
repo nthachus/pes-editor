@@ -414,7 +414,8 @@ public final class Emblems {
 						/*|| highResIndexes.contains(location)*/
 						// overwritten emblems
 						|| lowResIndexes.contains(swapLocation = (TOTAL - 2 * (location + 1)))
-						|| lowResIndexes.contains(swapLocation + 1)) {
+						|| lowResIndexes.contains(swapLocation + 1)
+				) {
 					setLocationInternal(of, i, EMPTY_IDX_VALUE);
 					isUpdated = true;
 				} else {

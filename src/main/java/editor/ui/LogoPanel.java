@@ -40,7 +40,9 @@ public class LogoPanel extends JPanel implements ActionListener {
 		this.of = of;
 		logoImportDia = lid;
 
-		log.debug("Initialize Logo panel with import dialog: {}", Strings.valueOf(lid));
+		if (log.isDebugEnabled()) {
+			log.debug("Initialize Logo panel with import dialog: {}", Strings.valueOf(lid));
+		}
 		initComponents();
 
 		//refresh();

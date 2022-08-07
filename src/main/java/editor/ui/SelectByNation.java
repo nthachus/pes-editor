@@ -51,8 +51,8 @@ public class SelectByNation extends JPanel implements ActionListener {
 		freeList.setVisibleRowCount(Formations.PLAYER_COUNT);
 
 		JScrollPane scroll = new JScrollPane(
-				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setViewportView(freeList);
 
 		add(nationBox, BorderLayout.NORTH);

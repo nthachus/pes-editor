@@ -17,15 +17,22 @@ public class PlayerTransferable implements Transferable {
 		data = player;
 	}
 
-	private static volatile DataFlavor dataFlavor = null;
+	private static/* volatile*/ DataFlavor dataFlavor = null;
 
 	public static DataFlavor getDataFlavor() {
-		if (null == dataFlavor) {
-			try {
-				dataFlavor = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType + ";class=" + Player.class.getName());
-			} catch (ClassNotFoundException e) {
-				log.warn("Unable to create data flavor: {}", e.toString());
+		if (null != dataFlavor) {
+			return dataFlavor;
+		}
+		try {
+			DataFlavor flavor = new DataFlavor(
+					DataFlavor.javaJVMLocalObjectMimeType + ";class=" + Player.class.getName());
+			synchronized (log) {
+				if (null == dataFlavor) {
+					dataFlavor = flavor;
+				}
 			}
+		} catch (ClassNotFoundException e) {
+			log.warn("Unable to create data flavor: {}", e.toString());
 		}
 		return dataFlavor;
 	}
@@ -42,6 +49,6 @@ public class PlayerTransferable implements Transferable {
 	}
 
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
-		return getDataFlavor().equals(flavor);
+		return getDataFlavor().equals(flavor); //NOSONAR java:S2259
 	}
 }

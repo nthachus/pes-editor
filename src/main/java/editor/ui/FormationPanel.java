@@ -183,7 +183,9 @@ public class FormationPanel extends JPanel
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.info("Perform Formation action '{}' on: {}", evt.getActionCommand(), Strings.valueOf(evt.getSource()));
+		if (log.isInfoEnabled()) {
+			log.info("Perform Formation action '{}' on: {}", evt.getActionCommand(), Strings.valueOf(evt.getSource()));
+		}
 
 		if (evt.getSource() == altBox) {
 			altChanged(evt);
@@ -240,7 +242,7 @@ public class FormationPanel extends JPanel
 		//countFormations();
 
 		if (oldPos > 0 && oldPos < 8 && (role.index < 1 || role.index > 7)) {
-			if (alt == 0 && squadIndex == Formations.getCBOverlap(of, team)) {
+			if (alt == 0 && squadIndex == Formations.getCBOverlap(of, team)) { //NOSONAR java:S1066
 				Formations.setCBOverlap(of, team, 0);
 			}
 		}
@@ -294,8 +296,9 @@ public class FormationPanel extends JPanel
 				Formations.setY(of, team, alt, squadIndex, 28);
 			}
 		} else if (roleId == 9 || roleId == 16 || roleId == 23 || roleId == 30) {
-			if (oldPos != 9 && oldPos != 16 && oldPos != 23 && oldPos != 30
-					&& Formations.getY(of, team, alt, squadIndex) < 54) {
+			if (oldPos != 9 && oldPos != 16 && oldPos != 23 && oldPos != 30 //NOSONAR java:S1066
+					&& Formations.getY(of, team, alt, squadIndex) < 54
+			) {
 				Formations.setY(of, team, alt, squadIndex, 76);
 			}
 		}
@@ -462,7 +465,7 @@ public class FormationPanel extends JPanel
 		boolean isCB = false;
 
 		Role role;
-		for (int r = 1; r < 41; r++) {
+		for (int r = 1; r < 41; r++) { //NOSONAR java:S135
 			boolean isFree = isRoleFree(alt, selPos, r);
 			if (!isFree) {
 				continue;
@@ -667,9 +670,11 @@ public class FormationPanel extends JPanel
 	//region Drag and Drop
 
 	public void dragEnter(DropTargetDragEvent evt) {
+		// Handle drag-n-drop event only
 	}
 
 	public void dragExit(DropTargetEvent evt) {
+		// Handle drag-n-drop event only
 	}
 
 	public void dragOver(DropTargetDragEvent evt) {
@@ -750,6 +755,7 @@ public class FormationPanel extends JPanel
 	}
 
 	public void dropActionChanged(DropTargetDragEvent evt) {
+		// Handle drag-n-drop event only
 	}
 
 	public void dragGestureRecognized(DragGestureEvent evt) {
@@ -795,15 +801,19 @@ public class FormationPanel extends JPanel
 	}
 
 	public void dragEnter(DragSourceDragEvent evt) {
+		// Handle drag-n-drop event only
 	}
 
 	public void dragExit(DragSourceEvent evt) {
+		// Handle drag-n-drop event only
 	}
 
 	public void dragOver(DragSourceDragEvent evt) {
+		// Handle drag-n-drop event only
 	}
 
 	public void dropActionChanged(DragSourceDragEvent evt) {
+		// Handle drag-n-drop event only
 	}
 
 	//endregion

@@ -51,8 +51,8 @@ public class SelectByTeam extends JPanel implements ActionListener {
 			add(numList, BorderLayout.EAST);
 		} else {
 			JScrollPane scroll = new JScrollPane(
-					JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-					JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+					ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+					ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			scroll.setViewportView(squadList);
 
 			setPreferredSize(null);

@@ -33,7 +33,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 	private final GlobalPanel globalPan;
 	private final KitImportDialog kitImportDia;
 
-	private volatile EmblemPanel emblemPan;
+	private/* volatile*/ EmblemPanel emblemPan;
 
 	private final String[] teams = new String[Clubs.TOTAL];
 	private volatile boolean isOk = false;
@@ -41,7 +41,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 	public TeamPanel(
 			OptionFile of, OptionFile of2,
 			TransferPanel tp, EmblemChooserDialog fc,
-			LogoPanel imgPan, GlobalPanel gp, KitImportDialog kid, LogoChooserDialog lc) {
+			LogoPanel imgPan, GlobalPanel gp, KitImportDialog kid, LogoChooserDialog lc
+	) {
 		super(new BorderLayout());
 
 		if (null == of) {
@@ -188,8 +189,8 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		contentPane.add(new JPanel());
 
 		JScrollPane scroll = new JScrollPane(
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setViewportView(teamList);
 
 		add(scroll, BorderLayout.WEST);
@@ -214,8 +215,10 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		if (team < 0) {
 			return;
 		}
-		log.info("Perform action: {} for team: {}, on: {}",
-				evt.getActionCommand(), team, Strings.valueOf(evt.getSource()));
+		if (log.isInfoEnabled()) {
+			log.info("Perform action: {} for team: {}, on: {}",
+					evt.getActionCommand(), team, Strings.valueOf(evt.getSource()));
+		}
 
 		if ("BackFlag".equalsIgnoreCase(evt.getActionCommand())) {
 			selectBackFlag(team);
@@ -432,15 +435,19 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 	}
 
 	public void mousePressed(MouseEvent e) {
+		// Handle mouse click event only
 	}
 
 	public void mouseReleased(MouseEvent e) {
+		// Handle mouse click event only
 	}
 
 	public void mouseEntered(MouseEvent e) {
+		// Handle mouse click event only
 	}
 
 	public void mouseExited(MouseEvent e) {
+		// Handle mouse click event only
 	}
 
 	/**
@@ -662,7 +669,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 	}
 
 	private void importLogos(int teamSource, int teamDest) {
-		for (int l = 0; l < Kits.TOTAL_LOGO; l++) {
+		for (int l = 0; l < Kits.TOTAL_LOGO; l++) { //NOSONAR java:S1186
 			if (!Kits.isLogoUsed(of2, teamSource, l)) {
 				continue;
 			}

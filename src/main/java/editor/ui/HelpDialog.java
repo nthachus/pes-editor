@@ -40,8 +40,8 @@ public class HelpDialog extends JDialog implements ActionListener, HyperlinkList
 		editPanel.addHyperlinkListener(this);
 
 		JScrollPane scroll = new JScrollPane(
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setViewportView(editPanel);
 		scroll.setPreferredSize(new Dimension(645, 550));
 

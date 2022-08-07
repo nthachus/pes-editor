@@ -8,6 +8,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 public final class Files {
 	private static final Logger log = LoggerFactory.getLogger(Files.class);
@@ -101,7 +102,7 @@ public final class Files {
 	}
 
 	public static boolean isFilenameLegal(String filename) {
-		return (null == filename || !filename.matches(".*[|<>\"?*:/\\\\].*"));
+		return (null == filename || !Pattern.compile("[|<>\"?*:/\\\\]").matcher(filename).find());
 	}
 
 	public static byte[] readBytes(File file) {
@@ -117,13 +118,13 @@ public final class Files {
 			int res = fs.read(buffer);
 			if (res < 0) {
 				log.error("Cannot read entire file: {}", file.getPath());
-				return null;
+				return null; //NOSONAR java:S1168
 			}
 			return buffer;
 
 		} catch (Exception e) {
 			log.error("Failed to read entire file:", e);
-			return null;
+			return null; //NOSONAR java:S1168
 		} finally {
 			closeStream(fs);
 		}

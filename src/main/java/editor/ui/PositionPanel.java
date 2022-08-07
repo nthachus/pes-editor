@@ -118,7 +118,9 @@ public class PositionPanel extends JPanel implements ActionListener {
 		if (null == evt) {
 			throw new NullArgumentException("evt");
 		}
-		log.info("Perform position action: {} from: {}", evt.getActionCommand(), Strings.valueOf(evt.getSource()));
+		if (log.isInfoEnabled()) {
+			log.info("Perform position action: {} from: {}", evt.getActionCommand(), Strings.valueOf(evt.getSource()));
+		}
 
 		if (evt.getSource() == regBox) {
 			registerRole(evt);

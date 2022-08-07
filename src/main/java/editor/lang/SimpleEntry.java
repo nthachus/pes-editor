@@ -16,8 +16,8 @@ import java.util.Map;
 public class SimpleEntry<K, V> implements Map.Entry<K, V>, Serializable {
 	private static final long serialVersionUID = -8499721149061103585L;
 
-	private final K key;
-	private volatile V value;
+	private final transient K key;
+	private transient V value;
 
 	/**
 	 * Creates an entry representing a mapping from the specified
@@ -37,7 +37,6 @@ public class SimpleEntry<K, V> implements Map.Entry<K, V>, Serializable {
 	 *
 	 * @param entry the entry to copy
 	 */
-	@SuppressWarnings("unused")
 	public SimpleEntry(Map.Entry<? extends K, ? extends V> entry) {
 		this.key = entry.getKey();
 		this.value = entry.getValue();
@@ -100,7 +99,7 @@ public class SimpleEntry<K, V> implements Map.Entry<K, V>, Serializable {
 			return false;
 		}
 
-		Map.Entry e = (Map.Entry) o;
+		Map.Entry e = (Map.Entry) o; //NOSONAR java:S3740
 		return eq(key, e.getKey()) && eq(value, e.getValue());
 	}
 
