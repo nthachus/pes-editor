@@ -417,9 +417,11 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 	//region Emblem Icon button Mouse Events
 
 	public void mousePressed(MouseEvent e) {
+		// Handle mouse-hover event only
 	}
 
 	public void mouseReleased(MouseEvent e) {
+		// Handle mouse-hover event only
 	}
 
 	public void mouseEntered(MouseEvent e) {
@@ -449,6 +451,7 @@ public class EmblemPanel extends JPanel implements MouseListener, ActionListener
 	}
 
 	public void mouseClicked(MouseEvent e) {
+		// Handle mouse-hover event only
 	}
 
 	//endregion

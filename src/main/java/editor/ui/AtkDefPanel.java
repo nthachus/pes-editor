@@ -28,9 +28,9 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 
 	private volatile int squad = 0;
 	private volatile int selectedIndex = -1;
-	private volatile PitchPanel pitch;
+	private/* volatile*/ PitchPanel pitch;
 
-	private final Rectangle2D[] atkSquares = new Rectangle2D[8];// 8 directions
+	private final transient Rectangle2D[] atkSquares = new Rectangle2D[8];// 8 directions
 
 	public AtkDefPanel(OptionFile of, JComboBox altBox) {
 		super();
@@ -214,15 +214,19 @@ public class AtkDefPanel extends JPanel implements MouseListener {
 	}
 
 	public void mouseReleased(MouseEvent e) {
+		// Handle mouse-press event only
 	}
 
 	public void mouseClicked(MouseEvent e) {
+		// Handle mouse-press event only
 	}
 
 	public void mouseExited(MouseEvent e) {
+		// Handle mouse-press event only
 	}
 
 	public void mouseEntered(MouseEvent e) {
+		// Handle mouse-press event only
 	}
 
 }

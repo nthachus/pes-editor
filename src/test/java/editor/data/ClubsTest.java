@@ -177,7 +177,7 @@ public final class ClubsTest extends BaseTest {
 	}
 
 	@Test
-	public void testGetClubInfo() {
+	public void testGetClubInfo() { //NOSONAR java:S5961
 		OptionFile of = loadOriginalOF();
 		int cid = 10;
 

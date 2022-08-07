@@ -370,7 +370,9 @@ public class GeneralAbilityPanel extends JPanel implements ActionListener, Chang
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		log.info("Perform general-ability changed action: {}", (null == evt) ? null : evt.getActionCommand());
+		if (log.isInfoEnabled()) {
+			log.info("Perform general-ability changed action: {}", (null == evt) ? null : evt.getActionCommand());
+		}
 
 		//if ("Face".equalsIgnoreCase(evt.getActionCommand())) {
 		faceField.setEnabled(faceBox.getSelectedIndex() > 0);

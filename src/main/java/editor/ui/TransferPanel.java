@@ -31,7 +31,7 @@ public class TransferPanel extends JPanel
 	private final FormationDialog teamDia;
 
 	private volatile int releasedIndex = 0;
-	private volatile JList sourceList = null;
+	private/* volatile*/ JList sourceList = null;
 	private volatile int sourceIndex = -1;
 	private volatile int compareIndex = 0;
 	private volatile int lastIndex = 0;
@@ -150,7 +150,9 @@ public class TransferPanel extends JPanel
 	//endregion
 
 	public void actionPerformed(ActionEvent evt) {
-		log.info("Try to perform Transfer action: {}", (null == evt) ? null : evt.getActionCommand());
+		if (log.isInfoEnabled()) {
+			log.info("Try to perform Transfer action: {}", (null == evt) ? null : evt.getActionCommand());
+		}
 
 		//if ("Compare".equalsIgnoreCase(evt.getActionCommand())) {
 		compareStats();
@@ -267,8 +269,10 @@ public class TransferPanel extends JPanel
 			throw new NullArgumentException("e");
 		}
 		// DEBUG
-		log.debug("Perform mouse-pressed action for button: {}, control: {}, on: {}",
-				e.getButton(), e.isControlDown(), Strings.valueOf(e.getSource()));
+		if (log.isDebugEnabled()) {
+			log.debug("Perform mouse-pressed action for button: {}, control: {}, on: {}",
+					e.getButton(), e.isControlDown(), Strings.valueOf(e.getSource()));
+		}
 		if (e.getButton() != MouseEvent.BUTTON1 || !e.isControlDown()) {
 			return;
 		}
@@ -300,12 +304,15 @@ public class TransferPanel extends JPanel
 	}
 
 	public void mouseReleased(MouseEvent e) {
+		// Handle mouse-click event only
 	}
 
 	public void mouseEntered(MouseEvent e) {
+		// Handle mouse-click event only
 	}
 
 	public void mouseExited(MouseEvent e) {
+		// Handle mouse-click event only
 	}
 
 	public void mouseClicked(MouseEvent e) {
@@ -315,8 +322,10 @@ public class TransferPanel extends JPanel
 
 		int clicks = e.getClickCount();
 		// DEBUG
-		log.debug("Perform mouse-clicked action for button: {}, clicks: {}, on: {}",
-				e.getButton(), clicks, Strings.valueOf(e.getSource()));
+		if (log.isDebugEnabled()) {
+			log.debug("Perform mouse-clicked action for button: {}, clicks: {}, on: {}",
+					e.getButton(), clicks, Strings.valueOf(e.getSource()));
+		}
 		if (e.getButton() == MouseEvent.BUTTON1 && clicks > 1) {
 			if (e.getSource() instanceof JList) {
 
@@ -333,7 +342,7 @@ public class TransferPanel extends JPanel
 				}
 			}
 		} else if (e.getButton() == MouseEvent.BUTTON3 && clicks == 1) {
-			if (e.getSource() instanceof SquadList) {
+			if (e.getSource() instanceof SquadList) { //NOSONAR java:S1066
 
 				SquadList list = (SquadList) e.getSource();
 				showFormationDialog(list.getTeam());
@@ -356,7 +365,7 @@ public class TransferPanel extends JPanel
 				}
 
 				if (result < 0) {
-					if (!release || sp < Formations.PLAYER_COUNT) {
+					if (!release || sp < Formations.PLAYER_COUNT) { //NOSONAR java:S1066
 						result = squadId;
 						if (release) {
 							releasedIndex = sp;
@@ -391,9 +400,11 @@ public class TransferPanel extends JPanel
 	//region Drag and Drop
 
 	public void dragEnter(DropTargetDragEvent evt) {
+		// Handle drag-n-drop event only
 	}
 
 	public void dragExit(DropTargetEvent evt) {
+		// Handle drag-n-drop event only
 	}
 
 	public void dragOver(DropTargetDragEvent evt) {
@@ -454,9 +465,11 @@ public class TransferPanel extends JPanel
 		Player sourcePlayer = (Player) sourceList.getModel().getElementAt(sourceIndex);
 		int playerS = sourcePlayer.getIndex();
 		// DEBUG
-		log.info("Drop Player [{}] {} from source: {}, at: {} -> to target List {}, at: {}",
-				playerS, sourcePlayer, Strings.valueOf(sourceList), sourceIndex,
-				Strings.valueOf(targetList), targetList.getSelectedIndex());
+		if (log.isInfoEnabled()) {
+			log.info("Drop Player [{}] {} from source: {}, at: {} -> to target List {}, at: {}",
+					playerS, sourcePlayer, Strings.valueOf(sourceList), sourceIndex,
+					Strings.valueOf(targetList), targetList.getSelectedIndex());
+		}
 
 		Player targetPlayer;
 		if (targetList.getSelectedIndex() < 0) {
@@ -474,7 +487,7 @@ public class TransferPanel extends JPanel
 
 			if (sourceList == targetList) {
 				if (isValidSquad(squadS) || squadS == Squads.TOTAL) {// NOTE: should not need == Squads.TOTAL
-					if (playerS != playerT) {
+					if (playerS != playerT) { //NOSONAR java:S1066
 						evt.acceptDrop(DnDConstants.ACTION_MOVE);
 						transferSwap(sourcePlayer, targetPlayer, squadS, squadT, sourceList, targetList);
 					}
@@ -515,6 +528,7 @@ public class TransferPanel extends JPanel
 	}
 
 	public void dropActionChanged(DropTargetDragEvent evt) {
+		// Handle drag-n-drop event only
 	}
 
 	public void dragGestureRecognized(DragGestureEvent evt) {
@@ -583,15 +597,19 @@ public class TransferPanel extends JPanel
 	}
 
 	public void dragEnter(DragSourceDragEvent evt) {
+		// Handle drag-n-drop event only
 	}
 
 	public void dragExit(DragSourceEvent evt) {
+		// Handle drag-n-drop event only
 	}
 
 	public void dragOver(DragSourceDragEvent evt) {
+		// Handle drag-n-drop event only
 	}
 
 	public void dropActionChanged(DragSourceDragEvent evt) {
+		// Handle drag-n-drop event only
 	}
 
 	//endregion
@@ -601,8 +619,10 @@ public class TransferPanel extends JPanel
 		int playerS = sourcePlayer.getIndex();
 		int playerT = targetPlayer.getIndex();
 		// DEBUG
-		log.debug("Check safety (safe-mode: {}) for dragging [{}] {} -> [{}] {} in target list {}",
-				safeMode, playerS, sourcePlayer, playerT, targetPlayer, Strings.valueOf(targetList));
+		if (log.isDebugEnabled()) {
+			log.debug("Check safety (safe-mode: {}) for dragging [{}] {} -> [{}] {} in target list {}",
+					safeMode, playerS, sourcePlayer, playerT, targetPlayer, Strings.valueOf(targetList));
+		}
 
 		int squadS = -1;
 		if (sourceList == selectorL.getSquadList()) {
@@ -668,7 +688,8 @@ public class TransferPanel extends JPanel
 			int squadL, int squadR,
 			AtomicBoolean transferFL, AtomicBoolean transferFR,
 			AtomicBoolean transferLR, AtomicBoolean transferRL,
-			AtomicBoolean releaseL, AtomicBoolean releaseR) {
+			AtomicBoolean releaseL, AtomicBoolean releaseR
+	) {
 		// DEBUG
 		log.debug("Detect safety transfer; indexF: {}, fEmpty: {}, indexL: {}, lEmpty: {}, indexR: {}, rEmpty: {},"
 						+ " squadL: {}, squadR: {}, transferFL: {}, transferFR: {}, transferLR: {}, transferRL: {},"
@@ -727,7 +748,8 @@ public class TransferPanel extends JPanel
 
 	private void detectSafeTransferSide(
 			int squadFrom, int indexFree, int squadTo, int indexTo,
-			AtomicBoolean transferFree, AtomicBoolean transferTo, AtomicBoolean transferFrom, AtomicBoolean release) {
+			AtomicBoolean transferFree, AtomicBoolean transferTo, AtomicBoolean transferFrom, AtomicBoolean release
+	) {
 		// DEBUG
 		log.debug("Detect safety transfer from side; squadFrom: {}, indexFree: {}, squadTo: {}, indexTo: {},"
 						+ " transferFree: {}, transferTo: {}, transferFrom: {}, release: {}",
@@ -815,12 +837,15 @@ public class TransferPanel extends JPanel
 			int playerS, int playerT,
 			boolean transferFL, boolean transferFR,
 			boolean transferLR, boolean transferRL,
-			boolean releaseL, boolean releaseR) {
+			boolean releaseL, boolean releaseR
+	) {
 		// DEBUG
-		log.debug("Is drag safety; targetList: {}, squadS: {}, playerS: {}, playerT: {},"
-						+ " transferFL: {}, transferFR: {}, transferLR: {}, transferRL: {}, releaseL: {}, releaseR: {}",
-				Strings.valueOf(targetList), squadS, playerS, playerT,
-				transferFL, transferFR, transferLR, transferRL, releaseL, releaseR);
+		if (log.isDebugEnabled()) {
+			log.debug("Is drag safety; targetList: {}, squadS: {}, playerS: {}, playerT: {},"
+							+ " transferFL: {}, transferFR: {}, transferLR: {}, transferRL: {}, releaseL: {}, releaseR: {}",
+					Strings.valueOf(targetList), squadS, playerS, playerT,
+					transferFL, transferFR, transferLR, transferRL, releaseL, releaseR);
+		}
 
 		if (sourceList != freeList.getFreeList() && targetList != freeList.getFreeList()) {
 			if (sourceList == targetList) {
@@ -1129,7 +1154,7 @@ public class TransferPanel extends JPanel
 			}
 
 			if (idx < listS.getModel().getSize() - 1) {
-				if (source != EventSource.freeList || !owner.freeList.isAlphaOrder()) {
+				if (source != EventSource.freeList || !owner.freeList.isAlphaOrder()) { //NOSONAR java:S1066
 
 					listS.setSelectedIndex(idx + 1);
 					if (source == EventSource.freeList) {

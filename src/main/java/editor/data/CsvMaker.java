@@ -104,7 +104,11 @@ public class CsvMaker implements Serializable {
 		out.write(separator);
 		int v = Stats.getValue(of, player, Stats.REG_POS);
 		//assert (v >= 0 && v <= Stats.ROLES.length) : "Invalid registered position #" + v + " of player #" + player;
-		out.writeBytes(v > Stats.ROLES.length ? v + "?" : Stats.ROLES[Stats.regPosToRole(v)] + (v == 1 ? "*" : Strings.EMPTY));
+		if (v > Stats.ROLES.length) {
+			out.writeBytes(v + "?");
+		} else {
+			out.writeBytes(Stats.ROLES[Stats.regPosToRole(v)] + (v == 1 ? "*" : Strings.EMPTY));
+		}
 
 		out.write(separator);
 		out.writeBytes(Stats.getString(of, player, Stats.INJURY));
@@ -215,8 +219,8 @@ public class CsvMaker implements Serializable {
 		int playerClubNo = 0;
 		String club = Strings.EMPTY;
 
-		outerLoop:
-		for (int c = 0; c < Clubs.TOTAL; c++) {
+		boolean found = false;
+		for (int c = 0; c < Clubs.TOTAL && !found; c++) {
 			for (int np = 0; np < Formations.CLUB_TEAM_SIZE; np++) {
 
 				int p = Squads.getTeamPlayer(of, c + Squads.FIRST_CLUB, np);
@@ -224,7 +228,9 @@ public class CsvMaker implements Serializable {
 					// get squad number
 					playerClubNo = Squads.getTeamSquadNum(of, c + Squads.FIRST_CLUB, np);
 					club = clubNames[c];
-					break outerLoop;
+
+					found = true;
+					break;
 				}
 			}
 		}

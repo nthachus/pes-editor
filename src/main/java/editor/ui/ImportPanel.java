@@ -30,7 +30,8 @@ public class ImportPanel extends JPanel implements ActionListener {
 	public ImportPanel(
 			OptionFile of, OptionFile of2,
 			WenShopPanel wenShop, StadiumPanel stadiumPan, LeaguePanel leaguePan, TeamPanel teamPan,
-			EmblemPanel emblemPan, LogoPanel logoPan, TransferPanel transferPan) {
+			EmblemPanel emblemPan, LogoPanel logoPan, TransferPanel transferPan
+	) {
 		super(new BorderLayout());
 
 		if (null == of) {

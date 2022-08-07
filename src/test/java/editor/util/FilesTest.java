@@ -81,7 +81,6 @@ public final class FilesTest {
 
 	@Test
 	public void testIllegalFilename() {
-		//noinspection ConstantConditions
 		Assert.assertTrue(Files.isFilenameLegal(null));
 		Assert.assertTrue(Files.isFilenameLegal(""));
 		Assert.assertTrue(Files.isFilenameLegal(" da%^()-"));

@@ -24,8 +24,8 @@ public final class LZAri {
 
 	//********** Bit I/O **********//
 
-	private volatile InputStream inFile;
-	private volatile OutputStream outFile;
+	private/* volatile*/ InputStream inFile;
+	private/* volatile*/ OutputStream outFile;
 
 	private volatile long textSize = 0, printCount = 0;
 	private volatile long codeSize = 0;
@@ -481,8 +481,8 @@ public final class LZAri {
 	}
 
 	private void startDecode() throws IOException {
-		for (int b, i = 0; i < M + 2; i++) {
-			b = getBit();
+		for (int i = 0; i < M + 2; i++) {
+			int b = getBit();
 			synchronized (this) {
 				value = value * 2 + b;
 			}
@@ -498,7 +498,7 @@ public final class LZAri {
 			low += (range * symCum[sym]) / symCum[0];
 		}
 
-		for (int b; ; ) {
+		for (; ; ) {
 			if (low >= Q2) {
 				synchronized (this) {
 					value -= Q2;
@@ -515,7 +515,7 @@ public final class LZAri {
 				break;
 			}
 
-			b = getBit();
+			int b = getBit();
 			synchronized (this) {
 				low *= 2;
 				high *= 2;
@@ -538,7 +538,7 @@ public final class LZAri {
 			low += (range * positionCum[position + 1]) / positionCum[0];
 		}
 
-		for (int b; ; ) {
+		for (; ; ) {
 			if (low >= Q2) {
 				synchronized (this) {
 					value -= Q2;
@@ -555,7 +555,7 @@ public final class LZAri {
 				break;
 			}
 
-			b = getBit();
+			int b = getBit();
 			synchronized (this) {
 				low *= 2;
 				high *= 2;
@@ -714,14 +714,18 @@ public final class LZAri {
 		if (null == file) {
 			throw new NullArgumentException("file");
 		}
-		inFile = file;
+		synchronized (this) {
+			inFile = file;
+		}
 	}
 
 	public void setOutput(OutputStream file) {
 		if (null == file) {
 			throw new NullArgumentException("file");
 		}
-		outFile = file;
+		synchronized (this) {
+			outFile = file;
+		}
 	}
 
 	public byte[] encode(byte[] data, int offset, int length) throws IOException {
@@ -747,7 +751,7 @@ public final class LZAri {
 			encode();
 			return sw.toByteArray();
 		} finally {
-			if (null != sr) {
+			if (null != sr) { //NOSONAR java:S2589
 				sr.close();
 			}
 			if (null != sw) {
@@ -779,7 +783,7 @@ public final class LZAri {
 			decode();
 			return sw.toByteArray();
 		} finally {
-			if (null != sr) {
+			if (null != sr) { //NOSONAR java:S2589
 				sr.close();
 			}
 			if (null != sw) {

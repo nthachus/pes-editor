@@ -10,7 +10,7 @@ public final class HairsTest {
 	@Test
 	public void testBald() {
 		Hairs test = Hairs.Bald;
-		Assert.assertEquals(test.start(), 0x01);
+		Assert.assertEquals(0x01, test.start());
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(1));
 		Assert.assertEquals(Integer.valueOf(4), test.getShape(4));
@@ -25,7 +25,7 @@ public final class HairsTest {
 	@Test
 	public void testCrewCut() {
 		Hairs test = Hairs.CrewCut;
-		Assert.assertEquals(test.start(), 0x05);
+		Assert.assertEquals(0x05, test.start());
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(5));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(5));
@@ -55,7 +55,7 @@ public final class HairsTest {
 	@Test
 	public void testShort1() {
 		Hairs test = Hairs.Short1;
-		Assert.assertEquals(test.start(), 0x55);
+		Assert.assertEquals(0x55, test.start());
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x55));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x55));
@@ -77,7 +77,7 @@ public final class HairsTest {
 	@Test
 	public void testShort2() {
 		Hairs test = Hairs.Short2;
-		Assert.assertEquals(test.start(), 0x6D);
+		Assert.assertEquals(0x6D, test.start());
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x6D));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x6D));
@@ -104,9 +104,9 @@ public final class HairsTest {
 	}
 
 	@Test
-	public void testStraight1() {
+	public void testStraight1() { //NOSONAR java:S5961
 		Hairs test = Hairs.Straight1;
-		Assert.assertEquals(test.start(), 0x9A);
+		Assert.assertEquals(0x9A, test.start());
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x9A));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x9A));
@@ -156,7 +156,7 @@ public final class HairsTest {
 	@Test
 	public void testStraight2() {
 		Hairs test = Hairs.Straight2;
-		Assert.assertEquals(test.start(), 0x232);
+		Assert.assertEquals(0x232, test.start());
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x232));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x232));
@@ -186,7 +186,7 @@ public final class HairsTest {
 	@Test
 	public void testCurly1() {
 		Hairs test = Hairs.Curly1;
-		Assert.assertEquals(test.start(), 0x295);
+		Assert.assertEquals(0x295, test.start());
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x295));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x295));
@@ -216,7 +216,7 @@ public final class HairsTest {
 	@Test
 	public void testCurly2() {
 		Hairs test = Hairs.Curly2;
-		Assert.assertEquals(test.start(), 0x361);
+		Assert.assertEquals(0x361, test.start());
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x361));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x361));
@@ -239,7 +239,7 @@ public final class HairsTest {
 	@Test
 	public void testPonytail1() {
 		Hairs test = Hairs.Ponytail1;
-		Assert.assertEquals(test.start(), 0x391);
+		Assert.assertEquals(0x391, test.start());
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x391));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x391));
@@ -262,7 +262,7 @@ public final class HairsTest {
 	@Test
 	public void testPonytail2() {
 		Hairs test = Hairs.Ponytail2;
-		Assert.assertEquals(test.start(), 0x3B5);
+		Assert.assertEquals(0x3B5, test.start());
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x3B5));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x3B5));
@@ -285,7 +285,7 @@ public final class HairsTest {
 	@Test
 	public void testDreadlocks() {
 		Hairs test = Hairs.Dreadlocks;
-		Assert.assertEquals(test.start(), 0x3D9);
+		Assert.assertEquals(0x3D9, test.start());
 
 		Assert.assertEquals(Integer.valueOf(1), test.getShape(0x3D9));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x3D9));
@@ -312,7 +312,7 @@ public final class HairsTest {
 	@Test
 	public void testHairband() {
 		Hairs test = Hairs.Hairband;
-		Assert.assertEquals(test.start(), 0x3F1);
+		Assert.assertEquals(0x3F1, test.start());
 
 		Assert.assertEquals(Integer.valueOf(2), test.getShape(0x3F7));
 		Assert.assertEquals(Integer.valueOf(1), test.getFront(0x3F7));
@@ -329,7 +329,7 @@ public final class HairsTest {
 	@Test
 	public void testSpecialHairstyles1() {
 		Hairs test = Hairs.SpecialHairstyles1;
-		Assert.assertEquals(test.start(), 0x403);
+		Assert.assertEquals(0x403, test.start());
 
 		Assert.assertEquals(Integer.valueOf(3), test.getShape(0x405));
 		Assert.assertNull(test.getFront(0x405));

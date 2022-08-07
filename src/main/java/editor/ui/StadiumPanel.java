@@ -36,7 +36,9 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 		this.of = of;
 		this.teamPanel = tp;
 
-		log.debug("Initialize Stadium panel by Team panel: {}", Strings.valueOf(tp));
+		if (log.isDebugEnabled()) {
+			log.debug("Initialize Stadium panel by Team panel: {}", Strings.valueOf(tp));
+		}
 		initComponents();
 
 		//refresh();
@@ -54,8 +56,8 @@ public class StadiumPanel extends JPanel implements ActionListener, ListSelectio
 		list.addListSelectionListener(this);
 
 		JScrollPane scroll = new JScrollPane(
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setViewportView(list);
 
 		JPanel contentPane = new JPanel();

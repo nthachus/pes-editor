@@ -98,21 +98,27 @@ public class FormationDialog extends JDialog implements ActionListener, WindowLi
 	}
 
 	public void windowClosed(WindowEvent e) {
+		// Handle window-closing event only
 	}
 
 	public void windowActivated(WindowEvent e) {
+		// Handle window-closing event only
 	}
 
 	public void windowDeactivated(WindowEvent e) {
+		// Handle window-closing event only
 	}
 
 	public void windowDeiconified(WindowEvent e) {
+		// Handle window-closing event only
 	}
 
 	public void windowIconified(WindowEvent e) {
+		// Handle window-closing event only
 	}
 
 	public void windowOpened(WindowEvent e) {
+		// Handle window-closing event only
 	}
 
 }

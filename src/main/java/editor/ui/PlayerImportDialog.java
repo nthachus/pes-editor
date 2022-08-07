@@ -120,15 +120,19 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 	}
 
 	public void mousePressed(MouseEvent e) {
+		// Handle mouse-click event only
 	}
 
 	public void mouseReleased(MouseEvent e) {
+		// Handle mouse-click event only
 	}
 
 	public void mouseEntered(MouseEvent e) {
+		// Handle mouse-click event only
 	}
 
 	public void mouseExited(MouseEvent e) {
+		// Handle mouse-click event only
 	}
 
 	public void mouseClicked(MouseEvent e) {
@@ -138,7 +142,9 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 		if (e.getClickCount() < 2) {
 			return;
 		}
-		log.debug("On double-clicked on list: {}", Strings.valueOf(e.getSource()));
+		if (log.isDebugEnabled()) {
+			log.debug("On double-clicked on list: {}", Strings.valueOf(e.getSource()));
+		}
 
 		if (!(e.getSource() instanceof JList)) {
 			throw new IllegalArgumentException("e");
@@ -174,7 +180,7 @@ public class PlayerImportDialog extends JDialog implements ListSelectionListener
 		byte[] temp = new byte[Player.SIZE];
 		System.arraycopy(of2.getData(), repAdr, temp, 0, temp.length);
 
-		importPlayerStats(of, index, of2, replacement);
+		importPlayerStats(of, index, of2, replacement); //NOSONAR java:S2234
 		System.arraycopy(of2.getData(), repAdr, of.getData(), adr, Player.SIZE);
 
 		Stats.setValue(of, index, Stats.NAME_EDITED, 1);

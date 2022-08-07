@@ -326,23 +326,23 @@ public enum Hairs {
 
 	public abstract int total();
 
-	public Integer getShape(int hair) {
+	public Integer getShape(int hair) { //NOSONAR java:S1172
 		return null;
 	}
 
-	public Integer getFront(int hair) {
+	public Integer getFront(int hair) { //NOSONAR java:S1172
 		return null;
 	}
 
-	public Integer getVolume(int hair) {
+	public Integer getVolume(int hair) { //NOSONAR java:S1172
 		return null;
 	}
 
-	public Integer getDarkness(int hair) {
+	public Integer getDarkness(int hair) { //NOSONAR java:S1172
 		return null;
 	}
 
-	public Integer getBandana(int hair) {
+	public Integer getBandana(int hair) { //NOSONAR java:S1172
 		return null;
 	}
 

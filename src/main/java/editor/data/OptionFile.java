@@ -58,7 +58,6 @@ public class OptionFile implements Serializable {
 		return saveName;
 	}
 
-	@SuppressWarnings("unused")
 	public void setSaveName(String saveName) {
 		this.saveName = saveName;
 	}
@@ -156,7 +155,9 @@ public class OptionFile implements Serializable {
 		long crc = crc32.getValue();
 
 		if ((int) crc != chk) {
-			log.warn("Invalid ARMax CRC32 0x{}, expected: 0x{}", Integer.toHexString(chk), Long.toHexString(crc));
+			if (log.isWarnEnabled()) {
+				log.warn("Invalid ARMax CRC32 0x{}, expected: 0x{}", Integer.toHexString(chk), Long.toHexString(crc));
+			}
 			return;
 		}
 
